@@ -5,7 +5,7 @@ This repository contains the reference implementation and artifact for the paper
 **“A Systematic Empirical Study on the Properties of Watermarking for LLM-Generated Code”** (ISSTA 2026)
 
 It provides:
-- **ProWES** ($\textbf{Pro}$ject-structured $\textbf{W}$atermarking $\textbf{E}$valuation $\textbf{S}$ystem) for end-to-end evaluation of **logits-bias** watermarking on *multi-file, buildable, executable* repositories.
+- **ProWES** (**Pro**ject-structured **W**atermarking **E**valuation **S**ystem) for end-to-end evaluation of **logits-bias** watermarking on *multi-file, buildable, executable* repositories.
 - **metaProjectDEV**, a *project-level* benchmark dataset for measuring applicability + detectability of logits-bias watermarks.
 - A **randomized, channel-stratified, strength-controlled transformation** framework for robustness evaluation of **semantic-preserving** watermarking methods.
 - Scripts to reproduce paper results for **RQ1 / RQ2 / RQ3**.
