@@ -1,0 +1,12 @@
+Metadata-Version: 2.4
+Name: cStyleCodeObfuscator
+Version: 0.1.0
+Summary: C-style code obfuscator for Python
+Author-email: "Cruise.zrz" <cruise.zrz@gmail.com>
+License: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=9; extra == "dev"
+Requires-Dist: black>=25; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"

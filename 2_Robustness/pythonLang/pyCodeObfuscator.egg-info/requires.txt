@@ -1,0 +1,5 @@
+libcst>=1.8.0
+click>=8.1.0
+
+[dev]
+pytest>=7.0

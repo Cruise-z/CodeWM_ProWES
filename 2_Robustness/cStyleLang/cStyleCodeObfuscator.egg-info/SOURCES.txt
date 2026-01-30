@@ -1,0 +1,9 @@
+pyproject.toml
+cStyleCodeObfuscator/__init__.py
+cStyleCodeObfuscator/code_transform_provider.py
+cStyleCodeObfuscator/format.py
+cStyleCodeObfuscator.egg-info/PKG-INFO
+cStyleCodeObfuscator.egg-info/SOURCES.txt
+cStyleCodeObfuscator.egg-info/dependency_links.txt
+cStyleCodeObfuscator.egg-info/requires.txt
+cStyleCodeObfuscator.egg-info/top_level.txt

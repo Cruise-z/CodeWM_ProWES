@@ -1,0 +1,8 @@
+pyproject.toml
+pyCodeObfuscator/__init__.py
+pyCodeObfuscator/cli.py
+pyCodeObfuscator.egg-info/PKG-INFO
+pyCodeObfuscator.egg-info/SOURCES.txt
+pyCodeObfuscator.egg-info/dependency_links.txt
+pyCodeObfuscator.egg-info/requires.txt
+pyCodeObfuscator.egg-info/top_level.txt

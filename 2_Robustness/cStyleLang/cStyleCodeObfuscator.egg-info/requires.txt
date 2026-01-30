@@ -1,0 +1,5 @@
+
+[dev]
+pytest>=9
+black>=25
+mypy>=1.0
