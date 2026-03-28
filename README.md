@@ -29,11 +29,21 @@ It provides:
 
 This setup exposes failures that snippet/function-level benchmarks cannot capture (e.g., cross-file consistency, dependency resolution, build/test integration).
 
+### Instructions for Use
+
+1. `./1_Applibility/datasets` contains some of the prompts used in the evaluation, along with the generated code repositories.
+2. The remaining content is located in the subfolders under `./1_Applibility/DT`. Each subfolder includes a `README.md` file with instructions for use, so please refer to those files when operating it.
+
+We will further refine the overall layout in future updates to improve readability and make reproduction more convenient.
+
 ## Robustness test:
 
 Inspired by Dual-Channel Constraints theory, we construct a hierarchical code transformation framework. This framework supports multiple programming languages and provides a diverse set of transformations. In the following, we evaluate the robustness of existing semantic-preserving watermarking methods under randomized, channel-stratified code transformation attacks:![image-20260130205112564](./README.assets/image-20260130205112564.png)
 
+### Instructions for Use
 
+1. `./2_Robustness` contains the obfuscators constructed in the paper.
+2. `./2_Robustness/project` contains the adaptation scripts used to evaluate other watermarking methods under obfuscation attacks. 
 
-
+For the remaining content, please refer to the usage instructions provided in the repositories of the other watermarking methods for reproduction.
 
