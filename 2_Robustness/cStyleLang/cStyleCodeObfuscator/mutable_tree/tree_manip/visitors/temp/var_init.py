@@ -118,13 +118,13 @@ class MergeVarInitAndDeclVisitor(TransformingVisitor):
         parent_attr: Optional[str] = None,
     ):
         self.generic_visit(node, parent, parent_attr)
-        # 第一次遍历找到所有只有声明没有init的变量, 及这些变量的第一个assignment
-        # 第二次遍历用assignment给变量赋初值
+        # First pass: find variables that are declared without initialization, along with their first assignment
+        # Second pass: use that assignment to initialize the variables
 
         var_init = {}
         uninit_vars = set()
 
-        # 第一次遍历
+        # First pass
         temp_children_list = []
         for child_attr in node.get_children_names():
             child = node.get_child_at(child_attr)
@@ -149,7 +149,7 @@ class MergeVarInitAndDeclVisitor(TransformingVisitor):
             else:
                 temp_children_list.append(child)
 
-        # 第二次遍历
+        # Second pass
         new_children_list = []
         for child in temp_children_list:
             if isinstance(child, LocalVariableDeclaration):

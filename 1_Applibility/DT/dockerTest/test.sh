@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ====== 可调参数 ======
-CTR_NAME=${CTR_NAME:-CodeWM-DT}     # 你的长期运行容器名
-WORKDIR=/workspace                  # 容器工作区
-EXTRA_MVN_ARGS=${EXTRA_MVN_ARGS:-"-Djavafx.platform=linux"}  # OpenJFX 平台 classifier，可按需置空
-EXTRA_JAVA_ARGS=${EXTRA_JAVA_ARGS:-""}   # 额外 JVM 参数（如 -Xmx512m）
+# ====== Configurable parameters ======
+CTR_NAME=${CTR_NAME:-CodeWM-DT}     # Name of the long-running container
+WORKDIR=/workspace                  # Container workspace
+EXTRA_MVN_ARGS=${EXTRA_MVN_ARGS:-"-Djavafx.platform=linux"}  # OpenJFX platform classifier; can be cleared if unnecessary
+EXTRA_JAVA_ARGS=${EXTRA_JAVA_ARGS:-""}   # Extra JVM arguments (for example -Xmx512m)
 
-# ====== 参数检查 ======
+# ====== Argument validation ======
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 </path/to/File.java>"
   exit 1
@@ -27,7 +27,7 @@ if [[ ! -f "$PROJECT_DIR/pom.xml" ]]; then
   exit 1
 fi
 
-# 容器是否在运行
+# Check whether the container is running
 if ! docker ps --format '{{.Names}}' | grep -q "^${CTR_NAME}$"; then
   echo "Container ${CTR_NAME} is not running."
   echo "Start it first (e.g. docker run -d --name ${CTR_NAME} maven-only:11)"
@@ -37,15 +37,15 @@ fi
 STAMP="$(date +%Y%m%d_%H%M%S)"
 IN_CTR_DIR="${WORKDIR}/proj_${STAMP}"
 
-# ====== 统一日志与产物目录（都放在 .java 同目录下）======
+# ====== Unified log and artifact directories (kept beside the .java file) ======
 OUTPUT_DIR="${PROJECT_DIR}/DTResults"
 OUT_DIR="${OUTPUT_DIR}/out_${STAMP}"
 mkdir -p "$OUTPUT_DIR" "$OUT_DIR"
 
-# 单一日志文件（所有阶段合并在一起）
+# Single log file for all stages
 LOG="${OUT_DIR}/full_${STAMP}.log"
-# 全局重定向：stdout + stderr -> 同时写到屏幕与 LOG
-# 若宿主 bash 支持进程替换（大多数 Linux 均支持），这就是最简方案：
+# Global redirection: stdout + stderr -> both screen and LOG
+# If the host bash supports process substitution (most Linux environments do), this is the simplest setup:
 exec > >(tee -a "$LOG") 2>&1
 
 echo "===== BEGIN @ ${STAMP} ====="
@@ -61,7 +61,7 @@ echo ">>> Copy project into container: $PROJECT_DIR -> ${CTR_NAME}:${IN_CTR_DIR}
 docker exec "$CTR_NAME" bash -lc "mkdir -p '$IN_CTR_DIR'"
 docker cp "$PROJECT_DIR/." "$CTR_NAME:$IN_CTR_DIR/"
 
-# 规范化源码布局（把单文件移到 src/main/java/<package>/）
+# Normalize source layout (move a single file into src/main/java/<package>/)
 echo ">>> Normalize source layout (src/main/java)"
 docker exec \
   -e IN_CTR_DIR="$IN_CTR_DIR" \
@@ -96,7 +96,7 @@ docker exec "$CTR_NAME" bash -lc "
   mvn -q -B \$MAVEN_OPTS dependency:copy-dependencies -DoutputDirectory=target/dependency ${EXTRA_MVN_ARGS} || true
 "
 
-# 寻找可执行 JAR
+# Find an executable JAR
 JAR_PATH="$(docker exec "$CTR_NAME" bash -lc "
   cd '$IN_CTR_DIR'
   CAND=\$(ls target/*-with-dependencies.jar 2>/dev/null | head -n1)
@@ -104,7 +104,7 @@ JAR_PATH="$(docker exec "$CTR_NAME" bash -lc "
   echo -n \"\$CAND\"
 ")"
 
-# 判断 JAR 是否带 Main-Class
+# Check whether the JAR contains Main-Class
 HAS_EXECUTABLE_JAR=""
 if [[ -n "$JAR_PATH" ]]; then
   HAS_EXECUTABLE_JAR="$(docker exec "$CTR_NAME" bash -lc "
@@ -120,7 +120,7 @@ if [[ -n "$JAR_PATH" ]]; then
   ")"
 fi
 
-# 从源文件推导主类（package + 类名）
+# Derive the main class from the source file (package + class name)
 CLASS_NAME="$(basename "$BASE_JAVA_FILE" .java)"
 PKG_NAME="$(grep -E '^\s*package\s+' "$JAVA_FILE_PATH" 2>/dev/null | sed -E 's/^\s*package\s+([^;]+);.*/\1/' | tr -d '\r\n' | xargs || true)"
 if [[ -n "$PKG_NAME" ]]; then
@@ -129,7 +129,7 @@ else
   MAIN_CLASS="$CLASS_NAME"
 fi
 
-# 检测 JavaFX 依赖（决定 module-path 与 add-modules）
+# Detect JavaFX dependencies (to decide module-path and add-modules)
 HAS_JAVAFX="$(docker exec "$CTR_NAME" bash -lc "
   cd '$IN_CTR_DIR'
   ls target/dependency/javafx-*.jar >/dev/null 2>&1 && echo yes || true
@@ -137,7 +137,7 @@ HAS_JAVAFX="$(docker exec "$CTR_NAME" bash -lc "
 
 echo ">>> Run"
 if [[ -n "$HAS_EXECUTABLE_JAR" ]]; then
-  # 先尝试 java -jar
+  # Try java -jar first
   set +e
   docker exec \
     -e IN_CTR_DIR="$IN_CTR_DIR" \
@@ -184,7 +184,7 @@ if [[ -n "$HAS_EXECUTABLE_JAR" ]]; then
   fi
 
 else
-  # 没有可执行 JAR：直接按源码主类运行
+  # No executable JAR: run directly from the source-derived main class
   if [[ -n "$HAS_JAVAFX" ]]; then
     docker exec \
       -e IN_CTR_DIR="$IN_CTR_DIR" \
@@ -214,7 +214,7 @@ else
   fi
 fi
 
-# 回收产物（target 保持原样拷回），日志已统一在 $LOG
+# Collect artifacts (target is copied back as-is); logs have already been consolidated into $LOG
 echo ">>> Collect artifacts"
 docker cp "$CTR_NAME:$IN_CTR_DIR/target" "$OUT_DIR/target" 2>/dev/null || true
 

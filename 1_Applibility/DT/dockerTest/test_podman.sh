@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ====== 可调参数 ======
-CTR_NAME=${CTR_NAME:-CodeWM-DT}     # 你的长期运行容器名
-WORKDIR=/workspace                  # 容器工作区
-EXTRA_MVN_ARGS=${EXTRA_MVN_ARGS:-"-Djavafx.platform=linux"}  # OpenJFX 平台 classifier，可按需置空
-EXTRA_JAVA_ARGS=${EXTRA_JAVA_ARGS:-""}   # 额外 JVM 参数(如 -Xmx512m). 不要加 -Djava.awt.headless=true
+# ====== Configurable parameters ======
+CTR_NAME=${CTR_NAME:-CodeWM-DT}     # Name of the long-running container
+WORKDIR=/workspace                  # Container workspace
+EXTRA_MVN_ARGS=${EXTRA_MVN_ARGS:-"-Djavafx.platform=linux"}  # OpenJFX platform classifier; can be cleared if unnecessary
+EXTRA_JAVA_ARGS=${EXTRA_JAVA_ARGS:-""}   # Extra JVM arguments (for example -Xmx512m). Do not add -Djava.awt.headless=true
 
-# 统一超时策略：若两分钟仍未退出，则强制结束并视为“成功”
-TIME_LIMIT=${TIME_LIMIT:-120}       # 秒
-KILL_AFTER=${KILL_AFTER:-5}         # 超时后再等多少秒发送 SIGKILL
-# 说明：timeout 退出码 124 表示超时，这里把 124 当作 0（成功）
+# Unified timeout policy: if the app still does not exit after two minutes,
+# force-stop it and treat the run as successful
+TIME_LIMIT=${TIME_LIMIT:-120}       # Seconds
+KILL_AFTER=${KILL_AFTER:-5}         # Seconds to wait before sending SIGKILL after timeout
+# Note: timeout exit code 124 means timeout; here it is treated as 0 (success)
 
-# ====== 宿主机代理 ======
+# ====== Host proxy ======
 HOST_HTTP_PROXY=${HTTP_PROXY:-}
 HOST_HTTPS_PROXY=${HTTPS_PROXY:-}
 
-# ====== 参数检查 ======
+# ====== Argument validation ======
 if [[ $# -lt 1 ]]; then
   echo "Usage: $0 </path/to/File.java>"
   exit 1
@@ -36,14 +37,14 @@ if [[ ! -f "$PROJECT_DIR/pom.xml" ]]; then
   exit 1
 fi
 
-# 容器是否在运行
+# Check whether the container is running
 if ! podman ps --format '{{.Names}}' | grep -q "^${CTR_NAME}$"; then
   echo "Container ${CTR_NAME} is not running."
   echo "Start it first (e.g. podman run -d --name ${CTR_NAME} codewm_dt_docker:11 sleep infinity)"
   exit 1
 fi
 
-# 确认容器里的 Xvfb 已就绪（需要镜像里有 xdpyinfo）
+# Ensure Xvfb is ready inside the container (the image must include xdpyinfo)
 if ! podman exec "$CTR_NAME" sh -lc 'xdpyinfo -display "${DISPLAY:-:99}" >/dev/null 2>&1'; then
   echo "Xvfb is not ready inside container '${CTR_NAME}'."
   echo "Ensure you started it from the image with xvfb-entrypoint (codewm_dt_docker:11),"
@@ -54,12 +55,12 @@ fi
 STAMP="$(date +%Y%m%d_%H%M%S)"
 IN_CTR_DIR="${WORKDIR}/proj_${STAMP}"
 
-# ====== 统一日志与产物目录（都放在 .java 同目录下）======
+# ====== Unified log and artifact directories (kept beside the .java file) ======
 OUTPUT_DIR="${PROJECT_DIR}/DTResults"
 OUT_DIR="${OUTPUT_DIR}/out_${STAMP}"
 mkdir -p "$OUTPUT_DIR" "$OUT_DIR"
 
-# 单一日志文件（所有阶段合并在一起）
+# Single log file for all stages
 LOG="${OUT_DIR}/full_${STAMP}.log"
 exec > >(tee -a "$LOG") 2>&1
 
@@ -81,7 +82,7 @@ podman exec \
   "$CTR_NAME" bash -lc "mkdir -p '$IN_CTR_DIR'"
 podman cp "$PROJECT_DIR/." "$CTR_NAME:$IN_CTR_DIR/"
 
-# ====== 写入 Maven 代理配置（按需修改/去掉） =======
+# ====== Write Maven proxy configuration (adjust or remove as needed) =======
 echo ">>> Write Maven proxy config to container"
 podman exec "$CTR_NAME" bash -lc '
   mkdir -p /root/.m2
@@ -174,10 +175,10 @@ HAS_JAVAFX="$(podman exec "$CTR_NAME" bash -lc "
   ls target/dependency/javafx-*.jar >/dev/null 2>&1 && echo yes || true
 ")"
 
-# ====== helper: 执行 podman exec + timeout，并把 124 当作成功 ======
+# ====== Helper: run podman exec + timeout, and treat 124 as success ======
 run_with_timeout() {
   # $1: container name
-  # $2: command (string) — 在容器 bash -lc 中执行
+  # $2: command (string) - executed via bash -lc inside the container
   local _ctr="$1"
   local _cmd="$2"
   set +e

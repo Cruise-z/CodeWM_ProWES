@@ -10,19 +10,19 @@ import libcst as cst
 
 class OpOrOpEqualUsageForm(str, Enum):
     """
-    两种「写法风格」：
-    - OP_EQUAL  : 使用复合赋值（x += y / x -= y / x *= y / x /= y）
-    - OP_ASSIGN : 使用普通赋值（x = x + y / x = x - y ...）
+    Two syntax styles:
+    - OP_EQUAL  : use augmented assignment (x += y / x -= y / x *= y / x /= y)
+    - OP_ASSIGN : use regular assignment (x = x + y / x = x - y ...)
 
-    注意：虽然名字里是 Op/OpEqual，但已经拓展到 + - * / 四种运算。
+    Note: although the name mentions Op/OpEqual, it has already been extended to the four operators + - * /.
     """
-    OP_EQUAL = "opequal"      # 复合赋值风格
-    OP_ASSIGN = "op_assign"   # 显式二元表达式赋值风格
+    OP_EQUAL = "opequal"      # augmented-assignment style
+    OP_ASSIGN = "op_assign"   # explicit binary-expression assignment style
 
 
 class OpOrOpEqualOpKind(str, Enum):
     """
-    支持的运算符种类。
+    Supported operator kinds.
     """
     ADD = "add"  # +
     SUB = "sub"  # -
@@ -33,12 +33,12 @@ class OpOrOpEqualOpKind(str, Enum):
 @dataclass
 class OpOrOpEqualUsageMatch:
     """
-    一次命中的信息：
-      - form    : 写法风格（OP_EQUAL / OP_ASSIGN）
-      - op_kind : 使用的运算符种类（ADD / SUB / MUL / DIV）
-      - stmt    : 整个简单语句行（SimpleStatementLine）
-      - target  : 被更新的变量（目前只匹配简单 Name）
-      - delta   : 增量/变化量表达式
+    Information for a single match:
+      - form    : syntax style (OP_EQUAL / OP_ASSIGN)
+      - op_kind : operator kind used (ADD / SUB / MUL / DIV)
+      - stmt    : the whole SimpleStatementLine
+      - target  : the variable being updated (currently only simple Name is matched)
+      - delta   : increment/change expression
     """
     form: OpOrOpEqualUsageForm
     op_kind: OpOrOpEqualOpKind
@@ -51,8 +51,8 @@ def _detect_augassign_op_kind(
     op: cst.BaseAugOp,
 ) -> Optional[OpOrOpEqualOpKind]:
     """
-    将 AugAssign 的 operator 映射到我们自己的 op_kind 枚举。
-    只支持 + - * / 四种。
+    Map an AugAssign operator to the internal op_kind enum.
+    Only + - * / are supported.
     """
     if isinstance(op, cst.AddAssign):
         return OpOrOpEqualOpKind.ADD
@@ -69,8 +69,8 @@ def _detect_binary_op_kind(
     op: cst.BaseBinaryOp,
 ) -> Optional[OpOrOpEqualOpKind]:
     """
-    将 BinaryOperation 的 operator 映射到 op_kind 枚举。
-    同样只支持 + - * /。
+    Map a BinaryOperation operator to the op_kind enum.
+    Again, only + - * / are supported.
     """
     if isinstance(op, cst.Add):
         return OpOrOpEqualOpKind.ADD
@@ -86,7 +86,7 @@ def _detect_binary_op_kind(
 def _match_augassign(
     stmt: cst.SimpleStatementLine,
 ) -> Optional[OpOrOpEqualUsageMatch]:
-    # 只处理「单一小语句」的情况
+    # Only handle the case of a single small statement
     if len(stmt.body) != 1:
         return None
 
@@ -99,7 +99,7 @@ def _match_augassign(
         return None
 
     target = small.target
-    # 保守起见，目前只匹配简单变量名：x += y / x -= y ...
+    # Conservatively, only match simple variable names for now: x += y / x -= y ...
     if not isinstance(target, cst.Name):
         return None
 
@@ -122,14 +122,14 @@ def _match_assign(
     if not isinstance(small, cst.Assign):
         return None
 
-    # 只处理单一目标：x = ...
+    # Only handle a single target: x = ...
     if len(small.targets) != 1:
         return None
 
     assign_target = small.targets[0]
     target_expr = assign_target.target
 
-    # 同样只匹配简单变量名：x = ...
+    # Again, only match simple variable names: x = ...
     if not isinstance(target_expr, cst.Name):
         return None
 
@@ -141,7 +141,7 @@ def _match_assign(
     if op_kind is None:
         return None
 
-    # 对所有运算符一视同仁，只接受 x = x <op> delta 形式
+    # Treat all supported operators uniformly and only accept the form x = x <op> delta
     if not target_expr.deep_equals(value.left):
         return None
 
@@ -160,19 +160,19 @@ def match_op_opequal_usage(
     node: cst.CSTNode,
 ) -> Optional[OpOrOpEqualUsageMatch]:
     """
-    顶层匹配入口。
+    Top-level matching entry point.
 
-    目前只在 SimpleStatementLine 上工作：
+    Currently this only works on SimpleStatementLine:
       - x += y / x -= y / x *= y / x /= y
       - x = x + y / x = x - y / x = x * y / x = x / y
     """
     if not isinstance(node, cst.SimpleStatementLine):
         return None
 
-    # 先尝试匹配复合赋值形态
+    # Try the augmented-assignment form first
     m = _match_augassign(node)
     if m is not None:
         return m
 
-    # 再尝试匹配「显式二元表达式」形态
+    # Then try the explicit binary-expression form
     return _match_assign(node)

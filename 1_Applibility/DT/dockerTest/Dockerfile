@@ -1,7 +1,7 @@
-# 基础：Maven 3.9.x + Eclipse Temurin JDK 11（可换 17/21）
+# Base image: Maven 3.9.x + Eclipse Temurin JDK 11 (can be switched to 17/21)
 FROM maven:3.9.6-eclipse-temurin-11
 
-# 工作区 & Maven 本地仓库缓存位置
+# Workspace and local Maven repository cache path
 ENV WORKDIR=/workspace \
     MAVEN_OPTS="-Dmaven.repo.local=/workspace/.m2" \
     DEBIAN_FRONTEND=noninteractive \
@@ -9,7 +9,7 @@ ENV WORKDIR=/workspace \
     DISPLAY=":99" \
     XVFB_ARGS="-screen 0 1280x800x24 -nolisten tcp -dpi 96"
 
-# 常用基础工具 + Xvfb + 字体/音频库（含 x11-utils 供就绪检测）
+# Common utilities + Xvfb + font/audio libraries (including x11-utils for readiness checks)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates tzdata locales \
     curl wget git nano vim less tree unzip zip \
@@ -22,24 +22,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
  && rm -rf /var/lib/apt/lists/*
 
-# 设定 UTF-8 本地化
+# Configure UTF-8 locale
 RUN sed -i 's/# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
-# 工作区与 Maven 缓存目录
+# Workspace and Maven cache directories
 RUN mkdir -p $WORKDIR $WORKDIR/.m2
 WORKDIR $WORKDIR
 
-# 拷入并启用入口脚本（避免 heredoc 兼容性坑）
+# Copy and enable the entrypoint script (avoids heredoc compatibility issues)
 COPY xvfb-entrypoint.sh /usr/local/bin/xvfb-entrypoint.sh
 RUN chmod +x /usr/local/bin/xvfb-entrypoint.sh
 
-# 健康检查：确保虚拟显示可用
+# Health check: ensure the virtual display is available
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s \
   CMD xdpyinfo -display "$DISPLAY" >/dev/null 2>&1 || exit 1
 
-# 入口：先起 Xvfb 并等待就绪，再执行传入命令
+# Entrypoint: start Xvfb, wait until ready, then run the provided command
 ENTRYPOINT ["/usr/local/bin/xvfb-entrypoint.sh"]
 
-# 默认进入交互 shell；在 podman/docker run 后追加你的命令即可
+# Default to an interactive shell; append your command after podman/docker run if needed
 CMD ["bash"]

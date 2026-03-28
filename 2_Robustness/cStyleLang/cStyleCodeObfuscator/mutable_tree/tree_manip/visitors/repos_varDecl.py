@@ -34,7 +34,7 @@ from ...nodes import (
 
 
 def get_identifier_from_declarator(node: Declarator) -> Identifier:
-    # 复用你给过的取标识符逻辑
+    # Reuse the identifier-extraction logic you provided earlier
     if isinstance(node, VariableDeclarator):
         return node.decl_id
     else:
@@ -42,7 +42,7 @@ def get_identifier_from_declarator(node: Declarator) -> Identifier:
 
 
 def get_all_identifiers(node: Node) -> List[str]:
-    # 复用 var_pos 风格的标识符收集（不做改动以最大复用）
+    # Reuse the var_pos-style identifier collection logic unchanged for maximum reuse
     ids: List[str] = []
 
     def _walk(n: Node):
@@ -61,7 +61,7 @@ def get_all_identifiers(node: Node) -> List[str]:
 
 def _match_simple_assign_to_var(stmt: Statement, var_name: str):
     """
-    若 stmt 是 'var_name = <rhs>;' 这种简单赋值，返回 rhs；否则返回 None。
+    If stmt is a simple assignment like 'var_name = <rhs>;', return rhs; otherwise return None.
     """
     if isinstance(stmt, ExpressionStatement) and isinstance(stmt.expr, AssignmentExpression):
         assign = stmt.expr
@@ -73,28 +73,28 @@ def _match_simple_assign_to_var(stmt: Statement, var_name: str):
 
 class ReposVarDeclVisitor(TransformingVisitor):
     """
-    对 StatementList：
-      1) 找到所有变量 v 的声明位置与首次使用位置；
-      2) 分情况对 v 的声明进行：
-         - 若“声明即初始化”（声明位置 == 首次使用位置）：
-             (a) 若该处仍有其它相同类型的声明（同一条 LocalVariableDeclaration 里还有别的声明符）：
-                 将 v 的“声明/初始化”拆开：在原位置“下一条语句处”放入 'v = init;'（赋值语句）；
-                 同时把“声明”（不带初始化）随机放到 [块首..初始化位置之前] 的任意槽位（可含 slot=decl_idx）；
-             (b) 若该处没有其它相同类型声明（独占一条）：
-                 删除该条“带初始化声明”，在其“下一条语句处”放入 'v = init;'；
-                 并把“声明”（不带初始化）随机放到 [块首..初始化位置之前] 的任意槽位。
-         - 若“声明与首次使用不同位置”：
-             (a) 若该处仍有其它相同类型声明：可二选一（随机）：
-                 - 移动“声明”（不带初始化）到 [块首..首次使用之前] 的任意槽位（不包含初始槽位）；
-                 - 或与“首次使用”合并（若首次使用是 'v = rhs;'），在首次使用处生成 'T v = rhs;' 替换该赋值。
-             (b) 若该处没有其它相同类型声明：同上二选一（移动或合并）。
-      注：若候选槽位在排除原槽位后为空，则退回原槽位（务实回退）。
+    For a StatementList:
+      1) Find the declaration position and first-use position of every variable v
+      2) Then handle the declaration of v case by case:
+         - If declaration and initialization happen together (declaration position == first-use position):
+             (a) If other same-typed declarators remain in that LocalVariableDeclaration:
+                 Split v's declaration/initialization, place 'v = init;' as an assignment after the original statement,
+                 and randomly move the declaration without initialization to any slot in [block start .. before init position]
+             (b) If no other same-typed declarators remain:
+                 Remove the initialized declaration, place 'v = init;' after it,
+                 and randomly move the declaration without initialization to any slot in [block start .. before init position]
+         - If declaration and first use happen at different positions:
+             (a) If other same-typed declarators remain: randomly choose one:
+                 - move the declaration without initialization to any slot before first use, excluding the original slot
+                 - or merge it with the first use if the first use is 'v = rhs;', replacing it with 'T v = rhs;'
+             (b) If no other same-typed declarators remain: same two choices apply
+      Note: if no candidate slot remains after excluding the original slot, fall back to the original slot.
     """
 
     def __init__(self, seed: Optional[int] = None, prefer_merge_prob: float = 0.5):
         super().__init__()
         self._rng = random.Random(seed)
-        self._prefer_merge_prob = prefer_merge_prob  # 控制 3.* 情况下“移动 vs 合并”的概率
+        self._prefer_merge_prob = prefer_merge_prob  # Controls the "move vs merge" probability for case 3.*
 
     def visit_StatementList(
         self,
@@ -102,7 +102,7 @@ class ReposVarDeclVisitor(TransformingVisitor):
         parent: Optional[Node] = None,
         parent_attr: Optional[str] = None,
     ):
-        # === Phase 0: 拿到原始语句序列（不立即修改）
+        # === Phase 0: collect the original statement sequence (without modifying it yet)
         original: List[Statement] = []
         for attr in node.get_children_names():
             ch = node.get_child_at(attr)
@@ -111,21 +111,21 @@ class ReposVarDeclVisitor(TransformingVisitor):
             original.append(cast(Statement, ch))
         N = len(original)
 
-        # === Phase 1: 收集所有变量的声明信息
+        # === Phase 1: collect declaration information for all variables
         # name -> (decl_idx, decl_stmt: LocalVariableDeclaration, declarator, has_init, init_value_if_any, type_node, multi_in_stmt)
         VarInfo = Tuple[int, LocalVariableDeclaration, Declarator, bool, Optional[Node], Node, bool]
         var_info: Dict[str, VarInfo] = {}
-        # 记录每条 LocalVariableDeclaration 的所有变量名（便于判断“是否还有其他相同类型声明”）
+        # Record all variable names in each LocalVariableDeclaration so we can tell whether sibling declarators remain
         decl_stmt_vars: Dict[int, List[str]] = {}
 
         for idx, stmt in enumerate(original):
             if not isinstance(stmt, LocalVariableDeclaration):
                 continue
 
-            all_decls = stmt.declarators.node_list  # 该条声明语句中的所有声明符
+            all_decls = stmt.declarators.node_list  # All declarators in this declaration statement
             names_in_stmt: List[str] = []
             for d in all_decls:
-                # tree-sitter 有时把 initializer 识别为 FunctionDeclarator，这里与原脚本一致地视为“带初始化”
+                # tree-sitter sometimes recognizes the initializer as FunctionDeclarator; keep treating it as initialized as in the original script
                 has_init = isinstance(d, InitializingDeclarator) or isinstance(d, FunctionDeclarator)
                 ident = get_identifier_from_declarator(d)
                 vname = ident.name
@@ -142,14 +142,14 @@ class ReposVarDeclVisitor(TransformingVisitor):
                 )
             decl_stmt_vars[idx] = names_in_stmt
 
-        # === Phase 2: 计算首次使用位置
+        # === Phase 2: compute first-use positions
         first_use_idx: Dict[str, int] = {}
         for name, (decl_idx, _decl_stmt, _declarator, has_init, _init_val, _type_node, _multi) in var_info.items():
             if has_init:
-                # 声明即初始化：首次使用=声明位置
+                # Declaration with initialization: first use equals declaration position
                 first_use_idx[name] = decl_idx
             else:
-                # 从声明之后开始找第一次出现
+                # Search for the first occurrence after the declaration
                 found = None
                 for j in range(decl_idx + 1, N):
                     if name in get_all_identifiers(original[j]):
@@ -158,23 +158,23 @@ class ReposVarDeclVisitor(TransformingVisitor):
                 if found is not None:
                     first_use_idx[name] = found
                 else:
-                    # 若未发现使用，就视为“未使用”，我们把 first_use 定义为块尾（用于随机槽位上界）
+                    # If no use is found, treat it as unused and set first_use to the block end
                     first_use_idx[name] = N
 
-        # === Phase 3: 计划修改（不立刻改 AST）
-        # 3.1 需要从原声明语句删除的变量
+        # === Phase 3: plan the edits (without mutating the AST yet)
+        # 3.1 Variables to remove from their original declaration statements
         to_remove_from_decl: Dict[int, Set[str]] = {}
-        # 3.2 在某个“slot”（插入点）前插入的新“仅声明”语句（不带初始化）
+        # 3.2 New declaration-only statements to insert before a given slot
         inserts_at_slot: Dict[int, List[Statement]] = {i: [] for i in range(N + 1)}
-        # 3.3 在某条语句之后插入的新语句（用于“init 拆成赋值语句放在下一条”）
+        # 3.3 New statements to insert after a given statement (for split init -> assignment)
         inserts_after_stmt: Dict[int, List[Statement]] = {}
-        # 3.4 替换某条语句（用于“合并：用初始化式声明替换首次使用处的赋值语句”）
+        # 3.4 Statement replacements (for merge: replace first use assignment with an initializing declaration)
         replace_stmt_at: Dict[int, Statement] = {}
 
         def choose_slot(upto_inclusive: int, exclude_slot: int) -> int:
             """
-            从槽位 {0..upto_inclusive} 中随机选择一个，排除 exclude_slot。
-            若空集则回退到 exclude_slot。
+            Randomly choose a slot from {0..upto_inclusive}, excluding exclude_slot.
+            If the candidate set is empty, fall back to exclude_slot.
             """
             if upto_inclusive < 0:
                 return exclude_slot
@@ -185,52 +185,52 @@ class ReposVarDeclVisitor(TransformingVisitor):
                 return exclude_slot
             return self._rng.choice(candidates)
 
-        # 3.5：为每个变量规划动作
+        # 3.5 Plan actions for each variable
         for name, (decl_idx, decl_stmt, declarator, has_init, init_val, type_node, multi_in_stmt) in var_info.items():
-            fidx = first_use_idx[name]  # 首次使用（或 N=块尾）
-            original_slot = decl_idx     # 原声明插入槽位（即“在该语句之前”）
+            fidx = first_use_idx[name]  # First use (or N = end of block)
+            original_slot = decl_idx     # Original declaration insertion slot (before that statement)
 
-            # case A: 声明即初始化（decl == first use）
+            # Case A: declaration with initialization (decl == first use)
             if has_init and fidx == decl_idx:
-                # 拆分为“声明 + 赋值”，赋值放在“原位置的下一条语句”处
-                # 赋值语句
+                # Split into "declaration + assignment", placing the assignment after the original statement
+                # Assignment statement
                 ident = get_identifier_from_declarator(declarator)
                 if isinstance(declarator, InitializingDeclarator):
                     rhs = init_val
                 else:
-                    # FunctionDeclarator 特例等，无显式 value；此时不做拆分以免构造不完整 rhs
-                    # 直接跳过（也可改为仅移动声明，视需要）
+                    # FunctionDeclarator special case: no explicit value; skip splitting to avoid incomplete rhs construction
+                    # Skip directly (or change to declaration-only movement if desired)
                     continue
 
                 assign_expr = node_factory.create_assignment_expr(ident, rhs, AssignmentOps.EQUAL)
                 assign_stmt = node_factory.create_expression_stmt(assign_expr)
                 inserts_after_stmt.setdefault(decl_idx, []).append(assign_stmt)
 
-                # 从原声明里移除 v
+                # Remove v from the original declaration
                 to_remove_from_decl.setdefault(decl_idx, set()).add(name)
 
-                # “声明（不带 init）”随机放到 [块首..初始化位置之前] 的槽位
-                # 初始化位置在 decl_idx+1 的前一条，即 upto = decl_idx
-                # 若该处还有其它同类型声明（multi_in_stmt=True），或独占一条，都这么做
+                # Randomly place the declaration without init somewhere before the initialization position
+                # The initialization is effectively right after decl_idx, so upto = decl_idx
+                # Do the same whether sibling declarators remain or not
                 new_decl = node_factory.create_local_variable_declaration(
                     type_node,
                     node_factory.create_declarator_list(
                         [node_factory.create_variable_declarator(ident)]
                     ),
                 )
-                slot = choose_slot(decl_idx, original_slot)  # 允许 decl_idx, 排除原槽位
+                slot = choose_slot(decl_idx, original_slot)  # Allow decl_idx, exclude the original slot
                 inserts_at_slot[slot].append(new_decl)
 
-            # case B: 声明与首次使用不同位置
+            # Case B: declaration and first use are at different positions
             else:
-                # 二选一：合并 或 移动（若首次使用不是简单赋值，则只能“移动”）
+                # Two choices: merge or move (if the first use is not a simple assignment, only "move" is valid)
                 do_merge = self._rng.random() < self._prefer_merge_prob
                 rhs_at_use = None
                 if fidx < N:
                     rhs_at_use = _match_simple_assign_to_var(original[fidx], name)
 
                 if do_merge and (rhs_at_use is not None):
-                    # 合并：在首次使用处用“初始化式声明”替换原赋值；并从原声明处删除 v
+                    # Merge: replace the first-use assignment with an initializing declaration and remove v from the original declaration
                     ident = get_identifier_from_declarator(declarator)
                     init_decl = node_factory.create_initializing_declarator(
                         node_factory.create_variable_declarator(ident),
@@ -243,7 +243,7 @@ class ReposVarDeclVisitor(TransformingVisitor):
                     replace_stmt_at[fidx] = merged_decl
                     to_remove_from_decl.setdefault(decl_idx, set()).add(name)
                 else:
-                    # 纯移动：把“仅声明”随机放到 [块首..首次使用之前] 的任意槽位（不含原槽位）
+                    # Pure move: randomly place the declaration-only statement somewhere before first use, excluding the original slot
                     ident = get_identifier_from_declarator(declarator)
                     new_decl = node_factory.create_local_variable_declaration(
                         type_node,
@@ -251,25 +251,25 @@ class ReposVarDeclVisitor(TransformingVisitor):
                             [node_factory.create_variable_declarator(ident)]
                         ),
                     )
-                    slot = choose_slot(fidx, original_slot)  # 到 first-use 之前（含），排除原槽位
+                    slot = choose_slot(fidx, original_slot)  # Up to and including first use, excluding the original slot
                     inserts_at_slot[slot].append(new_decl)
-                    # 从原声明处删除 v
+                    # Remove v from the original declaration
                     to_remove_from_decl.setdefault(decl_idx, set()).add(name)
 
-        # === Phase 4: 重建语句序列
+        # === Phase 4: rebuild the statement sequence
         new_list: List[Statement] = []
         for i in range(N):
-            # 4.1 在第 i 条语句之前插入
+            # 4.1 Insert before statement i
             if inserts_at_slot[i]:
                 new_list.extend(inserts_at_slot[i])
 
             stmt = original[i]
 
-            # 4.2 如果这是原声明语句，需要删除其中的若干变量
+            # 4.2 If this is an original declaration statement, remove selected variables from it
             if isinstance(stmt, LocalVariableDeclaration):
                 to_remove = to_remove_from_decl.get(i, set())
                 if to_remove:
-                    # 重建 declarator_list，去掉被删除的变量
+                    # Rebuild the declarator list without removed variables
                     kept_decls: List[Declarator] = []
                     for d in stmt.declarators.node_list:
                         vname = get_identifier_from_declarator(d).name
@@ -282,27 +282,27 @@ class ReposVarDeclVisitor(TransformingVisitor):
                             node_factory.create_declarator_list(kept_decls),
                         )
                     else:
-                        stmt = None  # 该声明语句已空，整体删除
+                        stmt = None  # The declaration statement is now empty, so remove it entirely
 
-            # 4.3 首次使用处的替换（合并）
+            # 4.3 Replacement at first use (merge)
             if stmt is not None and (i in replace_stmt_at):
-                # 用合并后的初始化式声明替换原语句
+                # Replace the original statement with the merged initializing declaration
                 stmt = replace_stmt_at[i]
 
-            # 4.4 输出本条（若仍存在）
+            # 4.4 Emit the current statement if it still exists
             if stmt is not None:
                 new_list.append(stmt)
 
-            # 4.5 在该条语句之后的插入（用于“init 拆分”的赋值语句）
+            # 4.5 Insert after this statement (used for split init assignment statements)
             if i in inserts_after_stmt:
                 new_list.extend(inserts_after_stmt[i])
 
-        # 4.6 块尾插入
+        # 4.6 Insert at the end of the block
         if inserts_at_slot[N]:
             new_list.extend(inserts_at_slot[N])
 
         node.node_list = new_list
 
-        # 与既有 visitor 一致：重建后再递归访问子树
+        # Keep behavior consistent with existing visitors: recurse only after rebuilding
         self.generic_visit(node, parent, parent_attr)
         return False, []

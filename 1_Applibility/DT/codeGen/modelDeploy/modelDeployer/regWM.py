@@ -2,11 +2,11 @@
 import torch
 from server import register_internal, register_external_builder, model, tokenizer, vocab_ids
 
-# 示例A：把 HF 的 WatermarkLogitsProcessor 当作“内置”
+# Example A: use HF's WatermarkLogitsProcessor as an "internal" processor
 # from transformers import WatermarkLogitsProcessor
 # greenlist = WatermarkLogitsProcessor(
-#     vocab_size=max(vocab_ids)+1,  # 或直接 tokenizer.vocab_size
-#     device="cuda",                # 按需
+#     vocab_size=max(vocab_ids)+1,  # Or directly use tokenizer.vocab_size
+#     device="cuda",                # As needed
 #     greenlist_ratio=0.25,
 #     bias=2.0,
 #     hashing_key=123456789,
@@ -15,7 +15,7 @@ from server import register_internal, register_external_builder, model, tokenize
 # )
 # register_internal("greenlist_default", greenlist)
 
-# 示例B：你的自定义处理器，当作“外置”
+# Example B: use your custom processor as an "external" processor
 from libWM.wllm import WLLMLogitsProcessor as WLLM
 from libWM.sweet import SWEETLogitsProcessor as Sweet
 from libWM.waterfall import WaterfallLogitsProcessor as Waterfall
@@ -23,13 +23,13 @@ from libWM.stone import STONEWMLogitsProcessor as Stone
 from libWM.ewd import EWDWMLogitsProcessor as EWD
 from libWM.codeip.codeipLP import CodeipLogitsProcessor as Codeip
 
-# ===== 纯 builder 化：仅注册可参数化 builder =====
+# ===== Pure builder-based registration: only register parameterizable builders =====
 def build_wllm(**cfg):
     gamma = cfg.get("gamma", 0.5)
     delta = cfg.get("delta", 1)
     z_threshold = cfg.get("z_threshold", 4.0)
     ignore_repeated_bigrams = cfg.get("ignore_repeated_bigrams", False)
-    # vocab 由服务端注入 vocab_ids，这里不从 cfg 读取
+    # vocab_ids are injected by the server, so they are not read from cfg here
     return WLLM(
         vocab=vocab_ids, 
         gamma=gamma, 
@@ -50,25 +50,25 @@ def build_sweet(**cfg):
         gamma=gamma, 
         delta=delta, 
         entropy_threshold=entropy_threshold,
-        tokenizer=tokenizer,  # 便于 detect_from_text 使用；纯 token id 检测不强制
+        tokenizer=tokenizer,  # Helpful for detect_from_text; not required for pure token-id detection
         z_threshold=z_threshold,
         ignore_repeated_bigrams=bool(ignore_repeated_bigrams),
     )
 
-# 例：若你的环境提供 tokenizer，可不传 vocab_ids/N
-# 若仅有 vocab_ids，且是 0..N-1 稠密区间，也可只传 vocab_ids
-# 若 vocab_ids 非稠密，请显式传 N=模型词表大小
+# Example: if your environment provides a tokenizer, you do not need to pass vocab_ids/N
+# If you only have vocab_ids and they form a dense 0..N-1 range, passing vocab_ids alone is also fine
+# If vocab_ids are not dense, explicitly pass N=model vocabulary size
 
 def build_waterfall(**cfg):
     """
-    cfg 可用字段：
+    Available cfg fields:
       id_mu(int), k_p(int), kappa(float), n_gram(int=2), wm_fn(str="fourier"),
-      # N 的确定（传其一即可，优先级：tokenizer > 稠密 vocab_ids）
+      # How N is determined (provide any one of them; priority: tokenizer > dense vocab_ids)
       tokenizer=None, vocab_ids=None,
-      # 动态批检测（默认 'batch'；如有动态合批/拆分，建议 'row_any'）
+      # Dynamic batch detection (default 'batch'; if dynamic batching/splitting is used, 'row_any' is recommended)
       auto_reset(bool)=True, detect_mode(str)="batch"  # or "row_any"
     """
-    # 先从 cfg 中读取并保存到局部变量
+    # Read values from cfg into local variables first
     id_mu = int(cfg.get("id_mu", 42))
     k_p = int(cfg.get("k_p", 1))
     kappa = float(cfg.get("kappa", 2.0))
@@ -77,7 +77,7 @@ def build_waterfall(**cfg):
     auto_reset = bool(cfg.get("auto_reset", True))
     detect_mode = str(cfg.get("detect_mode", "batch"))
 
-    # 使用上述变量进行构造
+    # Build the processor with the values above
     return Waterfall(
         tokenizer=tokenizer,
         vocab_ids=vocab_ids,
@@ -92,34 +92,34 @@ def build_waterfall(**cfg):
     )
 
 def infer_device(model) -> torch.device:
-    # 单卡/常规加载：model.device 就够用
+    # Single-GPU / standard loading: model.device is enough
     dev = getattr(model, "device", None)
     if dev is not None and dev != torch.device("meta"):
         return dev
-    # 兜底：从参数推断
+    # Fallback: infer from model parameters
     try:
         return next(model.parameters()).device
     except StopIteration:
-        # 极少数场景（比如刚构建还没init参数）
+        # Rare edge cases, for example when the model was just constructed and parameters are not initialized yet
         if torch.cuda.is_available():
             return torch.device("cuda")
         return torch.device("cpu")
 
 def infer_vocab_size(tokenizer, model) -> int:
-    # 首选 tokenizer.vocab_size（和 HF 生态最对齐）
+    # Prefer tokenizer.vocab_size first for best alignment with the HF ecosystem
     if hasattr(tokenizer, "vocab_size") and tokenizer.vocab_size:
         return int(tokenizer.vocab_size)
-    # 其次看模型 config
+    # Otherwise look at the model config
     if hasattr(model, "config") and hasattr(model.config, "vocab_size"):
         return int(model.config.vocab_size)
-    # 再兜底看输出层
+    # Final fallback: check the output embeddings
     out_emb = getattr(model, "get_output_embeddings", lambda: None)()
     if out_emb is not None and hasattr(out_emb, "num_embeddings"):
         return int(out_emb.num_embeddings)
-    raise ValueError("无法推断 vocab_size：请手动传入或检查 tokenizer/model 是否已就绪")
+    raise ValueError("Unable to infer vocab_size: pass it explicitly or check whether tokenizer/model is ready")
 
 def build_ewd(**cfg):
-    # 先从 cfg / 现有上下文读取并保存到局部变量
+    # Read values from cfg / existing context into local variables first
     vocab_size   = infer_vocab_size(tokenizer, model)
     device       = infer_device(model)
     gamma        = float(cfg.get("gamma", 0.5))
@@ -129,10 +129,10 @@ def build_ewd(**cfg):
     prefix_length= int(cfg.get("prefix_length", 1))
     gen_kwargs   = cfg.get("gen_kwargs") or {}
 
-    # 使用上述变量进行构造
+    # Build the processor with the values above
     return EWD(
         tokenizer=tokenizer,
-        model=model,               # EWD 的零参检测需要用到模型计算熵
+        model=model,               # EWD zero-argument detection needs the model to compute entropy
         device=device,
         vocab_size=vocab_size,
         gamma=gamma,
@@ -143,7 +143,7 @@ def build_ewd(**cfg):
     )
 
 def build_stone(**cfg):
-    # 先从 cfg 中读取并保存到局部变量
+    # Read values from cfg into local variables first
     vocab_size = infer_vocab_size(tokenizer, model)
     device     = infer_device(model)
     gamma          = float(cfg.get("gamma", 0.5))
@@ -155,7 +155,7 @@ def build_stone(**cfg):
     watermark_on_pl = str(cfg.get("watermark_on_pl", "False"))
     skipping_rule  = cfg.get("skipping_rule", "all_pl")
 
-    # 使用上述变量进行构造
+    # Build the processor with the values above
     return Stone(
         tokenizer=tokenizer,
         vocab_size=vocab_size,

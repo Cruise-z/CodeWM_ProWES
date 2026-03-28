@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class RestoreJavaFormat {
     public static void main(String[] args) throws Exception {
-        // ✅ 从标准输入读取 Java 源码
+        // Read Java source code from standard input
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder codeBuilder = new StringBuilder();
         String line;
@@ -20,19 +20,19 @@ public class RestoreJavaFormat {
         }
         String code = codeBuilder.toString();
 
-        // ✅ 使用 JavaParser 解析源码
+        // Parse the source code with JavaParser
         JavaParser parser = new JavaParser(new ParserConfiguration());
         ParseResult<CompilationUnit> result = parser.parse(code);
 
         Optional<CompilationUnit> optionalCU = result.getResult();
         if (!optionalCU.isPresent()) {
-            System.out.println("无法解析 Java 代码。");
+            System.out.println("Unable to parse the Java code.");
             return;
         }
 
         CompilationUnit cu = optionalCU.get();
 
-        // ✅ 配置格式化规则
+        // Configure formatting rules
         PrettyPrinterConfiguration config = new PrettyPrinterConfiguration();
         config.setIndentSize(4);
         config.setPrintComments(true);
@@ -41,8 +41,7 @@ public class RestoreJavaFormat {
         PrettyPrinter printer = new PrettyPrinter(config);
         String formatted = printer.print(cu);
 
-        // ✅ 输出格式化结果
+        // Output the formatted result
         System.out.println(formatted);
     }
 }
-

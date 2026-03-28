@@ -102,7 +102,7 @@ class MoveVarDeclToBeforeUsedVisitor(TransformingVisitor):
                     decl_map[identifier] = None
             node.node_list.append(child)
 
-        # 一些变量声明但没有被使用到, 放到block最后
+        # Move declarations of unused variables to the end of the block
         for _, decl_node in decl_map.items():
             node.node_list.append(decl_node)
 

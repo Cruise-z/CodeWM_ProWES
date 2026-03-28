@@ -35,44 +35,44 @@ def highlight_print(text, fg='white', bg='yellow', bold=True):
 
 def preprocess_code(code: str) -> str:
     """
-    预处理 Java 等类 C 语言代码字符串：
-    - 移除所有换行符、缩进符（\r \n \t 等）
-    - 移除单行注释（//...）与多行注释（/*...*/）
-    - 保留字符串与字符字面量，含转义字符
-    - 输出一行干净的代码文本
+    Preprocess Java and other C-style code strings:
+    - Remove line breaks and indentation characters (\r \n \t, etc.)
+    - Remove both single-line (//...) and multi-line (/*...*/) comments
+    - Preserve string and character literals, including escaped characters
+    - Output a clean single-line code string
     """
 
     _STRING_PLACEHOLDER = "__<STR:%d>__"
     literals: List[str] = []
 
     def freeze_literals(src: str) -> str:
-        """用占位符替换字符串与字符字面量"""
+        """Replace string and character literals with placeholders."""
         def _store(match):
             idx = len(literals)
             literals.append(match.group(0))
             return _STRING_PLACEHOLDER % idx
 
-        pattern = r'"(?:\\.|[^"\\])*"' + r"|'(?:\\.|[^'\\])'"  # 支持字符串和字符
+        pattern = r'"(?:\\.|[^"\\])*"' + r"|'(?:\\.|[^'\\])'"  # Supports both strings and chars
         return re.sub(pattern, _store, src)
 
     def remove_comments(src: str) -> str:
-        """移除单行和多行注释"""
+        """Remove single-line and multi-line comments."""
         no_block_comments = re.sub(r'/\*.*?\*/', '', src, flags=re.DOTALL)
         no_line_comments = re.sub(r'//.*$', '', no_block_comments, flags=re.MULTILINE)
         return no_line_comments
 
     def collapse_whitespace(src: str) -> str:
-        """将所有空白符折叠为单个空格"""
+        """Collapse all whitespace into a single space."""
         return re.sub(r'\s+', ' ', src).strip()
 
     def restore_literals(src: str) -> str:
-        """恢复之前冻结的字符串字面量"""
+        """Restore previously frozen string literals."""
         def _restore(match):
             idx = int(match.group(1))
             return literals[idx]
         return re.sub(r'__<STR:(\d+)>__', _restore, src)
 
-    # === 执行流程 ===
+    # === Execution flow ===
     code_frozen = freeze_literals(code)
     code_no_comments = remove_comments(code_frozen)
     code_flat = collapse_whitespace(code_no_comments)
@@ -82,12 +82,12 @@ def preprocess_code(code: str) -> str:
 
 def format_func(class_name:str, code:str, lang:str) -> str:
     """
-    1. 使用 google-java-format 对 Java 源码进行格式化测试；
-    2. 使用 javaparser-core-3.25.4.jar 对 Java 源码进行自定义格式化；
-    3. 需编写 RestoreJavaFormat.java 来规定格式化样式
+    1. Use google-java-format to format Java source code.
+    2. Use javaparser-core-3.25.4.jar for custom Java formatting.
+    3. Define formatting rules in RestoreJavaFormat.java.
     """
     toolpath = SCRIPT_DIR / "CodeFormat_adapter"
-    code = preprocess_code(code)  # 预处理代码，移除注释和多余空格
+    code = preprocess_code(code)  # Preprocess the code by removing comments and extra spaces
     if lang == 'java':
         code = f"public class {class_name} {{\n{code}\n}}"
         code = code
@@ -101,7 +101,7 @@ def format_func(class_name:str, code:str, lang:str) -> str:
         )
         fcode, stderr = process.communicate(code)
         if process.returncode != 0:
-            raise RuntimeError(f"预处理失败: {stderr.strip()}")
+            raise RuntimeError(f"Preprocessing failed: {stderr.strip()}")
         class_name = "RestoreJavaFormat"
         jar_path = f"{toolpath}:{toolpath}/javaparser-core-3.25.4.jar"
         process = subprocess.Popen(
@@ -113,7 +113,7 @@ def format_func(class_name:str, code:str, lang:str) -> str:
         )
         fcode, stderr = process.communicate(input=fcode)
         if process.returncode != 0:
-            raise RuntimeError(f"格式化失败：{stderr.strip()}")
+            raise RuntimeError(f"Formatting failed: {stderr.strip()}")
         lines = fcode.splitlines()
         non_blank_lines = [line for line in lines if line.strip() != ""]
         fcode = "\n".join(non_blank_lines)
@@ -218,13 +218,13 @@ def reversed_suffix_similarity(line1: str, line2: str) -> float:
 
     return base_score * length_boost
 
-# 3. 动态规划全局对齐（Needleman-Wunsch）
+# 3. Dynamic-programming global alignment (Needleman-Wunsch)
 def dp_align(A: List[str], B: List[str], gap_cost=0.3) -> Tuple[List[str], List[str]]:
     n, m = len(A), len(B)
     dp = [[0.0] * (m + 1) for _ in range(n + 1)]
-    back = [[None] * (m + 1) for _ in range(n + 1)]  # 记录回溯路径
+    back = [[None] * (m + 1) for _ in range(n + 1)]  # Record the traceback path
 
-    # 初始化边界
+    # Initialize boundaries
     for i in range(1, n + 1):
         dp[i][0] = -i * gap_cost
         back[i][0] = 'up'
@@ -232,7 +232,7 @@ def dp_align(A: List[str], B: List[str], gap_cost=0.3) -> Tuple[List[str], List[
         dp[0][j] = -j * gap_cost
         back[0][j] = 'left'
 
-    # 填表
+    # Fill the DP table
     for i in range(1, n + 1):
         for j in range(1, m + 1):
             match = dp[i-1][j-1] + reversed_suffix_similarity(A[i-1], B[j-1])
@@ -247,7 +247,7 @@ def dp_align(A: List[str], B: List[str], gap_cost=0.3) -> Tuple[List[str], List[
             else:
                 back[i][j] = 'left'
 
-    # 回溯
+    # Trace back
     alignedA, alignedB = [], []
     i, j = n, m
     while i > 0 or j > 0:
@@ -277,7 +277,7 @@ def align_CodeBlocks(code1: str, code2: str) -> Tuple[str, str]:
 
 def attach_lineNum_func(formatcode: str) -> str:
     lines = formatcode.splitlines()
-    width = len(str(len(lines)))  # 计算最大行号宽度
+    width = len(str(len(lines)))  # Compute the maximum line-number width
     numbered_lines = [
         f"{str(idx).rjust(width)} | {line}"
         for idx, line in enumerate(lines, start=1)
@@ -287,18 +287,18 @@ def attach_lineNum_func(formatcode: str) -> str:
 def print_nodeNText(node, prefix="", is_last=True):
     connector = "└── " if is_last else "├── "
 
-    # 决定如何显示当前节点
+    # Decide how to display the current node
     if node.type == "identifier" or node.type.endswith("_identifier") or node.type == "type_identifier":
         display = f'{node.type}'
     elif node.is_named:
         display = f"{node.type}"
     else:
-        # 匿名终结符，直接输出符号（例如 `{`, `;` 等）
+        # Anonymous terminal: print the symbol directly (for example `{`, `;`, etc.)
         display = f'"{node.type}"'
 
     print(f"{prefix}{connector}{display}")
 
-    # 子节点递归处理
+    # Recurse through child nodes
     child_prefix = prefix + ("    " if is_last else "│   ")
     child_count = len(node.children)
     for i, child in enumerate(node.children):
@@ -306,10 +306,10 @@ def print_nodeNText(node, prefix="", is_last=True):
         print_nodeNText(child, child_prefix, is_last_child)
 
 def print_nodeText(node, source_code, prefix="", is_last=True):
-    # 当前节点前缀符号
+    # Prefix symbol for the current node
     connector = "└── " if is_last else "├── "
 
-    # 获取当前节点文本（避免换行）
+    # Get the current node text (avoid line breaks)
     text = source_code[node.start_byte:node.end_byte].strip().replace("\n", "\\n")
     if node.type == "identifier" or node.type.endswith("_identifier") or node.type == "type_identifier":
         display = f'{node.type} "{text}"'
@@ -320,7 +320,7 @@ def print_nodeText(node, source_code, prefix="", is_last=True):
 
     print(f"{prefix}{connector}{display}")
 
-    # 子节点处理
+    # Process child nodes
     child_prefix = prefix + ("    " if is_last else "│   ")
     child_count = len(node.children)
     for i, child in enumerate(node.children):
@@ -335,12 +335,12 @@ def printAST(parser, format_code: str, lang: str, text:bool=False):
     else:
         print_nodeNText(root)
 
-# 单个实体格式化为字符串
+# Format a single entity as a string
 def field_formatter(entity: Any, field) -> str:
     name = field.name
     value = getattr(entity, name)
 
-    #!对renameableEntity实体
+    #! For renameableEntity entities
     if name == "scope" and isinstance(value, list):
         return f"  - scope: {' -> '.join(value)}"
     elif name == "modifiers" and value:
@@ -363,10 +363,10 @@ def field_formatter(entity: Any, field) -> str:
             if value else
             "  - first used at: [not found]"
         )
-    #!对所有diffTag中共同出现的实体
+    #! For entities shared by all diffTag variants
     elif name == "strategy":
         return f"  - strategy: \n{textwrap.indent(value, '    ')}"
-    #!对diffTag1_2实体
+    #! For diffTag1_2 entities
     elif name == "decPosDiff":
         if value[0] and value[1]:
             return f"  - declared at line: {value[0][1]}: {value[0][0]}\n    →obfuscated to line {value[1][1]}: {value[1][0]}"

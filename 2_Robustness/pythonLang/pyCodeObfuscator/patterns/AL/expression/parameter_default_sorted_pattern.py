@@ -10,7 +10,7 @@ import libcst as cst
 
 class ParameterDefaultSortedForm(str, Enum):
     """
-    两种形态：
+    Two forms:
     - NO_REVERSE             : sorted(iterable)
     - EXPLICIT_REVERSE_FALSE : sorted(iterable, reverse=False)
     """
@@ -21,11 +21,12 @@ class ParameterDefaultSortedForm(str, Enum):
 @dataclass
 class ParameterDefaultSortedMatch:
     """
-    一次命中的信息：
-      - form        : 当前形态
-      - call        : 整个 sorted(...) 调用表达式
-      - func        : 调用的函数（理论上就是 Name('sorted')）
-      - reverse_arg : 若有显式 reverse=False，则记录对应的 Arg；否则为 None
+    Information for one match:
+      - form        : current form
+      - call        : the full sorted(...) call expression
+      - func        : the called function (in practice Name('sorted'))
+      - reverse_arg : the corresponding Arg if reverse=False is explicitly
+                      present; otherwise None
     """
     form: ParameterDefaultSortedForm
     call: cst.Call
@@ -35,10 +36,10 @@ class ParameterDefaultSortedMatch:
 
 def _is_reverse_false_arg(arg: cst.Arg) -> bool:
     """
-    判断一个 Arg 是否形如 reverse=False。
-    目前只接受最简单的字面形式：
-        - keyword 名为 'reverse'
-        - value 为 Name('False')
+    Determine whether an Arg has the form reverse=False.
+    Currently only accepts the simplest literal form:
+        - keyword is 'reverse'
+        - value is Name('False')
     """
     if arg.keyword is None:
         return False
@@ -53,26 +54,27 @@ def _is_reverse_false_arg(arg: cst.Arg) -> bool:
 
 def _match_no_reverse(call: cst.Call) -> Optional[ParameterDefaultSortedMatch]:
     """
-    匹配：
+    Match:
         sorted(iterable)
-    或：
-        sorted(iterable, key=..., <其它 keyword>...)
-    但前提是 **没有任何 reverse=... 参数**。
+    or:
+        sorted(iterable, key=..., <other keywords>...)
+    provided that there is **no reverse=... argument at all**.
     """
-    # 必须是 sorted(...)
+    # Must be sorted(...)
     func = call.func
     if not (isinstance(func, cst.Name) and func.value == "sorted"):
         return None
 
-    # 不允许已有 reverse 参数
+    # Existing reverse arguments are not allowed.
     for arg in call.args:
         if arg.keyword is None:
             continue
         if isinstance(arg.keyword, cst.Name) and arg.keyword.value == "reverse":
-            # 已经有 reverse=...，无论值是什么，都不算 NO_REVERSE 形态
+            # reverse=... is already present, so this is not the NO_REVERSE
+            # form regardless of the value.
             return None
 
-    # 通过即认为是 NO_REVERSE
+    # If it passes the checks, treat it as NO_REVERSE.
     return ParameterDefaultSortedMatch(
         form=ParameterDefaultSortedForm.NO_REVERSE,
         call=call,
@@ -85,11 +87,11 @@ def _match_explicit_reverse_false(
     call: cst.Call,
 ) -> Optional[ParameterDefaultSortedMatch]:
     """
-    匹配：
+    Match:
         sorted(iterable, reverse=False)
-    或：
+    or:
         sorted(iterable, key=..., reverse=False, ...)
-    只要存在一个 reverse=False，就视为该形态。
+    As long as one reverse=False exists, treat it as this form.
     """
     func = call.func
     if not (isinstance(func, cst.Name) and func.value == "sorted"):
@@ -116,16 +118,16 @@ def match_parameter_default_sorted(
     node: cst.CSTNode,
 ) -> Optional[ParameterDefaultSortedMatch]:
     """
-    顶层匹配入口。
+    Top-level matching entry point.
 
-    只对 sorted(...) 的调用表达式生效：
+    Only applies to sorted(...) call expressions:
       - sorted(iterable)
       - sorted(iterable, reverse=False)
     """
     if not isinstance(node, cst.Call):
         return None
 
-    # 优先判断 explicit 形态（更具体）
+    # Prefer the explicit form first because it is more specific.
     m = _match_explicit_reverse_false(node)
     if m is not None:
         return m

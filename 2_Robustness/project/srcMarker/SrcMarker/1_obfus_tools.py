@@ -29,10 +29,10 @@ import textwrap
 import configparser
 
 def count_lines_in_jsonl(file_path):
-    # 执行 wc -l 命令
+    # Run the wc -l command
     result = subprocess.run(['wc', '-l', file_path], capture_output=True, text=True)
     
-    # result.stdout 的格式为 '  1234 your_file.jsonl'，需要提取数字
+    # result.stdout looks like '  1234 your_file.jsonl', so extract the number
     line_count = int(result.stdout.split()[0])
     return line_count
 
@@ -45,8 +45,8 @@ def parse_args():
     return parser.parse_args()
 
 def obfus(myJObfuscator:JObfuscator, line:str):
-    data = json.loads(line)  # 解析 JSON 行
-    if "after_watermark" in data:  # 确保 "test" 字段存在
+    data = json.loads(line)  # Parse a JSONL row
+    if "after_watermark" in data:  # Make sure the target field exists
         sourceCode = data["after_watermark"]
         Wrapped_code = f"@Obfuscate\npublic class Example {{\n{sourceCode}\n}}"
         result = myJObfuscator.obfuscate_java_source(Wrapped_code)
@@ -83,9 +83,9 @@ def main(args):
     #
     # create JObfuscator class instance (we are using our activation key)
     #
-    # 创建配置解析器
+    # Create the config parser
     config = configparser.ConfigParser()
-    # 读取 .ini 文件
+    # Read the .ini file
     config.read('config.ini')
 
     myJObfuscator = JObfuscator(config['default']['ID_Token'])
@@ -102,11 +102,11 @@ def main(args):
     #
     # source code in Java format
     #
-    # 创建文件夹（如果已存在，则不会报错）
+    # Create the directory if it does not already exist
     json_src = "./results/4bit_gru_srcmarker_42_csn_java_test.jsonl"
     json_dest = "./results_obfus/4bit_gru_srcmarker_42_csn_java_tag1_1.jsonl"
     os.makedirs(RESULT_DIR, exist_ok=True)
-    #读取log计数文件中已经执行到的位置
+    # Read the current processed position from the output file line count
     if os.path.exists(json_dest):
         cur_idx = count_lines_in_jsonl(json_dest)
     else:
@@ -120,7 +120,7 @@ def main(args):
 
     
     if SAMPLE:
-        #若进行采样，则选取采样数据后进行混淆
+        # If sampling is enabled, select the sampled data before obfuscation
         json_lines = sorted(
             (line for line in raw_lines if len(json.loads(line).get("after_watermark", "")) <= MXLEN),
             key=lambda x: len(json.loads(x).get("after_watermark", "")),

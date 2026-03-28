@@ -10,7 +10,7 @@ import libcst as cst
 
 class NoneUsageForm(str, Enum):
     """
-    两种形态：
+    Two forms:
     - BARE_TRUTHY : if x:
     - IS_NOT_NONE : if x is not None:
     """
@@ -21,16 +21,16 @@ class NoneUsageForm(str, Enum):
 @dataclass
 class NoneUsageMatch:
     """
-    'x' <-> 'x is not None' 的一次命中信息。
+    Match information for one occurrence of 'x' <-> 'x is not None'.
     """
     form: NoneUsageForm
-    expr: cst.BaseExpression        # 整个条件表达式（可能带括号）
-    var_expr: cst.BaseExpression    # 变量表达式 x 或 obj.x
+    expr: cst.BaseExpression        # Entire conditional expression, possibly with parentheses
+    var_expr: cst.BaseExpression    # Variable expression x or obj.x
 
 
 def _match_is_not_none(expr: cst.BaseExpression) -> Optional[NoneUsageMatch]:
     """
-    匹配 'x is not None' 形式。
+    Match the form 'x is not None'.
     """
     if not isinstance(expr, cst.Comparison):
         return None
@@ -39,16 +39,16 @@ def _match_is_not_none(expr: cst.BaseExpression) -> Optional[NoneUsageMatch]:
 
     target = expr.comparisons[0]
 
-    # operator 必须是 "is not"
+    # Operator must be "is not"
     if not isinstance(target.operator, cst.IsNot):
         return None
 
-    # 右侧必须是 None
+    # Right side must be None
     comparator = target.comparator
     if not isinstance(comparator, cst.Name) or comparator.value != "None":
         return None
 
-    # 左侧变量：Name 或 Attribute（x / obj.x）
+    # Left-side variable: Name or Attribute (x / obj.x)
     left = expr.left
     if not isinstance(left, (cst.Name, cst.Attribute)):
         return None
@@ -62,11 +62,11 @@ def _match_is_not_none(expr: cst.BaseExpression) -> Optional[NoneUsageMatch]:
 
 def _match_bare_truthy(expr: cst.BaseExpression) -> Optional[NoneUsageMatch]:
     """
-    匹配裸变量条件：if x: / if obj.x:
-    （避免把复杂表达式、字面量当成这个规则。）
+    Match bare-variable conditions: if x: / if obj.x:
+    This avoids treating complex expressions or literals as this rule.
     """
     if isinstance(expr, (cst.Name, cst.Attribute)):
-        # 排除 None / True / False 这些字面量名
+        # Exclude literal names such as None / True / False
         if isinstance(expr, cst.Name) and expr.value in ("None", "True", "False"):
             return None
 
@@ -82,14 +82,14 @@ def match_none_usage(
     expr: cst.BaseExpression,
 ) -> Optional[NoneUsageMatch]:
     """
-    在一个表达式上尝试匹配：
+    Try to match on an expression:
 
       - x
       - x is not None
 
-    命中返回 NoneUsageMatch，否则返回 None。
+    Return NoneUsageMatch on success, otherwise return None.
     """
-    # 更具体的 is-not-None 先判
+    # Check the more specific is-not-None form first
     m = _match_is_not_none(expr)
     if m is not None:
         return m

@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cStyleCodeObfuscator"        # pip list 中显示的名字 / pip install 用的名
+name = "cStyleCodeObfuscator"        # Name shown in pip list / used by pip install
 version = "0.1.0"
 description = "C-style code obfuscator for Python"
 readme = "README.md"
@@ -13,11 +13,11 @@ authors = [
 ]
 license = { text = "MIT" }
 
-# 运行时依赖（没有就留空列表）
+# Runtime dependencies (leave as an empty list if none)
 dependencies = [
 ]
 
-# 一些可选依赖组，比如开发用
+# Optional dependency groups, for example for development
 [project.optional-dependencies]
 dev = [
   "pytest>=9",
@@ -26,5 +26,5 @@ dev = [
 ]
 
 [tool.setuptools]
-# 明确指定要打包的顶层包名（即 import 用的那个目录名）
+# Explicitly specify the top-level package name to include (the directory name used for import)
 packages = ["cStyleCodeObfuscator"]

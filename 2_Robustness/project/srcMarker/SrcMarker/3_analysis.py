@@ -8,10 +8,10 @@ import textwrap
 import configparser
 
 def count_lines_in_jsonl(file_path):
-    # 执行 wc -l 命令
+    # Run the wc -l command
     result = subprocess.run(['wc', '-l', file_path], capture_output=True, text=True)
     
-    # result.stdout 的格式为 '  1234 your_file.jsonl'，需要提取数字
+    # result.stdout looks like '  1234 your_file.jsonl', so extract the number
     line_count = int(result.stdout.split()[0])
     return line_count
 

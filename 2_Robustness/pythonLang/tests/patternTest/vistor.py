@@ -89,13 +89,13 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m1 is not None:
             self.op_opequal_usage_matches.append(m1)
 
-        # 先尝试两行模式：上一个 simple stmt + 当前这个
+        # First try the two-line pattern: previous simple stmt + current stmt
         if self._last_simple_stmt is not None:
             pair = match_initialize_ways_pair(self._last_simple_stmt, node)
             if pair is not None:
                 self.initialize_ways_matches.append(pair)
 
-        # 当前这一行自身如果是 dict_call，也记录一下
+        # Also record the current line itself if it is a dict_call
         single = match_initialize_ways_single(node)
         if single is not None:
             self.initialize_ways_matches.append(single)
@@ -111,7 +111,7 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m2 is not None:
             self.parameter_default_sorted_matches.append(m2)
     
-    # ---- 针对 If 节点的规则 ----
+    # ---- Rules for If nodes ----
     def visit_If(self, node: cst.If) -> None:
         m1 = match_remove_unnecessary_else(node)
         if m1 is not None:
@@ -125,7 +125,7 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m3 is not None:
             self.none_usage_matches.append(m3)
     
-    # ---- 针对 IfExp（三元表达式）节点的规则 ----        
+    # ---- Rules for IfExp (ternary expression) nodes ----        
     def visit_IfExp(self, node: cst.IfExp) -> None:
         m1 = match_condition_parentheses(node.test)
         if m1 is not None:
@@ -135,7 +135,7 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m2 is not None:
             self.none_usage_matches.append(m2)
             
-    # ---- 针对 CompIf（带 elif / else 的 if 语句）节点的规则 ----
+    # ---- Rules for CompIf nodes (if statements with elif / else) ----
     def visit_CompIf(self, node: cst.CompIf) -> None:
         m1 = match_condition_parentheses(node.test)
         if m1 is not None:
@@ -145,13 +145,13 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m2 is not None:
             self.none_usage_matches.append(m2)
 
-    # ---- 针对 For 节点的规则 ----
+    # ---- Rules for For nodes ----
     def visit_For(self, node: cst.For) -> None:
         m1 = match_loop_index_direct_reference(node)
         if m1 is not None:
             self.loop_index_matches.append(m1)
     
-    # ---- 针对 While 节点的规则 ----
+    # ---- Rules for While nodes ----
     def visit_While(self, node: cst.While) -> None:
         m1 = match_condition_parentheses(node.test)
         if m1 is not None:
@@ -161,19 +161,19 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m2 is not None:
             self.none_usage_matches.append(m2)
     
-    # ---- 针对 Comparison 节点的规则 ----
+    # ---- Rules for Comparison nodes ----
     def visit_Comparison(self, node: cst.Comparison) -> None:
         m = match_dict_keys_usage(node)
         if m is not None:
             self.dict_keys_matches.append(m)
 
-    # ---- 针对 Assign（表达式级规则看 RHS）----
+    # ---- Rules for Assign (expression-level rule checks RHS) ----
     def visit_Assign(self, node: cst.Assign) -> None:
         m1 = match_boolean_explicit_true_false(node.value)
         if m1 is not None:
             self.bool_explicit_matches.append(m1)
             
-    # ---- 针对 Assert 节点的规则 ----
+    # ---- Rules for Assert nodes ----
     def visit_Assert(self, node: cst.Assert) -> None:
         m1 = match_condition_parentheses(node.test)
         if m1 is not None:
@@ -183,12 +183,12 @@ class SPTPatternCollector(cst.CSTVisitor):
         if m2 is not None:
             self.none_usage_matches.append(m2)
             
-    # ---- 针对块级语句序列的规则（for 循环 <-> 列表推导）----
+    # ---- Rules for block-level statement sequences (for loop <-> list comprehension) ----
     def visit_IndentedBlock(self, node: cst.IndentedBlock) -> None:
         self._collect_for_listcomp_in_body(node.body)
 
     def visit_Module(self, node: cst.Module) -> None:
-        # 顶层语句序列同样跑一次 for -> list comprehension 的模式匹配
+        # Run one more for -> list comprehension pattern match on the top-level statement sequence
         self._collect_for_listcomp_in_body(node.body)
 
     def _collect_for_listcomp_in_body(

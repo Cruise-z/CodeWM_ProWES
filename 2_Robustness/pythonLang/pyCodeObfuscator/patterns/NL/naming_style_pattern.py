@@ -19,7 +19,7 @@ class NamingStyle(str, Enum):
 class NamingStyleMatch:
     style: NamingStyle
     name_node: cst.Name
-    words: List[str]  # 统一用小写单词序列表示，比如 ["user", "add", "num"]
+    words: List[str]  # Represent uniformly as a lowercase word sequence, for example ["user", "add", "num"]
 
 
 _PY_KEYWORDS = set(keyword.kwlist)
@@ -27,7 +27,7 @@ _PY_CONSTANTS = {"True", "False", "None"}
 
 
 def _is_valid_identifier(name: str) -> bool:
-    # 简单过滤：合法标识符、不是关键字、不是 True/False/None
+    # Basic filtering: valid identifier, not a keyword, and not True/False/None
     if not name.isidentifier():
         return False
     if name in _PY_KEYWORDS or name in _PY_CONSTANTS:
@@ -52,13 +52,13 @@ def _split_snake(name: str) -> Optional[List[str]]:
     if any(not p[0].isalpha() for p in parts):
         return None
 
-    # 统一用小写单词
+    # Normalize to lowercase words
     return [p.lower() for p in parts]
 
 
 def _split_camel(name: str) -> Optional[List[str]]:
     """
-    UserAddNum  （这里按你的例子，首字母大写的 Camel / Pascal）
+    UserAddNum  (following your example, Camel / Pascal with an uppercase first letter)
     """
     if "_" in name:
         return None
@@ -83,8 +83,8 @@ def _split_camel(name: str) -> Optional[List[str]]:
 def _split_pascal_underscore(name: str) -> Optional[List[str]]:
     """
     user_Add_Num
-      - 第一段：全小写
-      - 后续每段：首字母大写，其余小写
+      - First segment: all lowercase
+      - Following segments: uppercase first letter, lowercase remainder
     """
     if "_" not in name:
         return None
@@ -109,15 +109,15 @@ def _split_pascal_underscore(name: str) -> Optional[List[str]]:
 
 def match_naming_style(name_node: cst.Name) -> Optional[NamingStyleMatch]:
     """
-    只对 cst.Name 做命名风格匹配。
-    返回风格 + 单词序列；若不是这三种风格之一，则返回 None。
+    Perform naming-style matching only on cst.Name.
+    Return the style plus the word sequence; if it is not one of these three styles, return None.
     """
     name = name_node.value
 
     if not _is_valid_identifier(name):
         return None
 
-    # 优先判断 snake，再判断 user_Add_Num，再判断 UserAddNum
+    # Check snake first, then user_Add_Num, then UserAddNum
     words = _split_snake(name)
     if words is not None:
         return NamingStyleMatch(
@@ -147,7 +147,7 @@ def match_naming_style(name_node: cst.Name) -> Optional[NamingStyleMatch]:
 
 def build_name(style: NamingStyle, words: List[str]) -> str:
     """
-    根据统一小写单词序列构造不同风格的标识符字符串。
+    Construct an identifier string in a target style from a normalized lowercase word sequence.
     """
     if style is NamingStyle.SNAKE:
         return "_".join(words)
@@ -164,5 +164,5 @@ def build_name(style: NamingStyle, words: List[str]) -> str:
         rest = [w.capitalize() for w in words[1:]]
         return "_".join([first] + rest)
 
-    # 理论上不会走到这里
+    # This path should not be reached in theory
     return "_".join(words)

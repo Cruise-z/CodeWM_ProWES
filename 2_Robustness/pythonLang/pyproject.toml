@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyCodeObfuscator"        # pip list 中显示的名字 / pip install 用的名
+name = "pyCodeObfuscator"        # Name shown by `pip list` / used by `pip install`
 version = "0.1.0"
 description = "Python code obfuscator"
 readme = "README.md"
@@ -13,18 +13,18 @@ authors = [
 ]
 license = { text = "MIT" }
 
-# 运行时依赖（没有就留空列表）
+# Runtime dependencies (leave empty if there are none)
 dependencies = [
   "libcst>=1.8.0",
   "click>=8.1.0",
 ]
 
-# 一些可选依赖组，比如开发用
+# Optional dependency groups, for example development-only dependencies
 [project.optional-dependencies]
 dev = [
   "pytest>=7.0",
 ]
 
 [tool.setuptools]
-# 明确指定要打包的顶层包名（即 import 用的那个目录名）
+# Explicitly specify the top-level package to include (the directory name used in imports)
 packages = ["pyCodeObfuscator"]

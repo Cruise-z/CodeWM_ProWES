@@ -12,10 +12,10 @@ import os
 from watermark import WatermarkLogitsProcessor
 from sweet import SweetLogitsProcessor
 
-# 1) 初始化引擎（可换任意 HF CausalLM）
+# 1) Initialize the engine (can be replaced with any HF CausalLM)
 engine = HFModelEngine(
-    model_name="bigcode/starcoder",   # 换 model 只改这里
-    device_map=None,                  # 单卡最稳；需要分片用 "auto"
+    model_name="bigcode/starcoder",   # Only change this to switch models
+    device_map=None,                  # Single-GPU is most stable; use "auto" for sharding
     fp16=True,
 )
 
@@ -28,16 +28,16 @@ sweet_processor = SweetLogitsProcessor(vocab=list(engine.tokenizer.get_vocab().v
                                        delta=1,
                                        entropy_threshold=0.9)
 
-# 2) 适配你的 retriever
+# 2) Adapt your retriever
 retriever = FunctionRetriever(retrieve_reference)
 
-# 3) 编排器
+# 3) Orchestrator
 rag_gen = RagConstrainedGenerator(engine, retriever)
 
 prompt = "Task: use java Create a snake game ..."
 prefix = "package correct;\nimport javax.swing.*; ..."
 
-# A) 自适应软约束（推荐，等效硬夹紧但形式“软”）：
+# A) Adaptive soft constraint (recommended; equivalent to hard clamping but in a "soft" form):
 res = rag_gen.generate(
     prompt, prefix,
     top_k=1,
@@ -55,15 +55,15 @@ res = rag_gen.generate(
     gamma_safe = 1e-6,
     fixed_bias = 12.0,
     # watermark_processor = None,
-    watermark_processor=sweet_processor  # 这里可换成你自己的水印 Processor
+    watermark_processor=sweet_processor  # You can replace this with your own watermark processor
 )
 print(res["route"], res["exact_match"], len(res["text"]))
 print(res["text"])
 
-# B) 固定偏置软约束：
+# B) Fixed-bias soft constraint:
 # res2 = rag_gen.generate(prompt, prefix, constraint="fixed", fixed_bias=16.0)
 # print(res2["route"], res2["exact_match"], len(res2["text"]))
 
-# C) 硬夹紧（100%一致，用于极端对照）：
+# C) Hard clamping (100% consistent, for extreme comparison cases):
 # res3 = rag_gen.generate(prompt, prefix, constraint="hard")
 # print(res3["route"], res3["exact_match"], len(res3["text"]))

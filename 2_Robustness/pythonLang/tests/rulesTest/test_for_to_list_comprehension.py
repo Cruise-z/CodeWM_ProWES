@@ -25,7 +25,7 @@ def f():
     cubes = [i**3 for i in range(20)]
     return cubes
 """
-    # 统一转为列表推导（comprehension）
+    # Normalize to the list-comprehension form
     assert _apply(original, RuleDirection.to_variant("comprehension")).strip() == expected.strip()
 
 
@@ -42,7 +42,7 @@ def f():
         cubes.append(i**3)
     return cubes
 """
-    # 统一转为 loop-based 形态
+    # Normalize to the loop-based form
     assert _apply(original, RuleDirection.to_variant("loop")).strip() == expected.strip()
 
 
@@ -56,9 +56,9 @@ def f():
     squares = [j**2 for j in range(10)]
     return cubes, squares
 """
-    # AUTO 下：
-    # - cubes 部分：LOOP_BASED -> COMPREHENSION_BASED
-    # - squares 部分：COMPREHENSION_BASED -> LOOP_BASED
+    # Under AUTO:
+    # - cubes part: LOOP_BASED -> COMPREHENSION_BASED
+    # - squares part: COMPREHENSION_BASED -> LOOP_BASED
     expected = """
 def f():
     cubes = [i**3 for i in range(20)]

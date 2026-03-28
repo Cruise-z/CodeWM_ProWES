@@ -28,7 +28,7 @@ def f(a=None):
     x = 2
     print(x)
 """
-    # 统一转为“无 else”形态
+    # Normalize to the "no else" form
     assert _apply(original, RuleDirection.to_variant("no_else")).strip() == expected.strip()
 
 
@@ -48,13 +48,13 @@ def f(a=None):
         x = 2
         print(x)
 """
-    # 统一转为“有 else”形态
+    # Normalize to the "with else" form
     assert _apply(transformed, RuleDirection.to_variant("with_else")).strip() == expected.strip()
 
 
 def test_auto_mixed_original_and_transformed():
-    # f 使用 original 形式（有 else）
-    # g 使用 transformed 形式（无 else）
+    # f uses the original form (with else)
+    # g uses the transformed form (without else)
     src = """
 def f(a=None):
     if a is None:
@@ -75,9 +75,9 @@ def g(a=None):
     print(x)
 """
 
-    # 期望：
-    # - f: original -> transformed（去掉 else，else 体下沉）
-    # - g: transformed -> original（把后续语句“吸进” else）
+    # Expected:
+    # - f: original -> transformed (remove else and sink the else body downward)
+    # - g: transformed -> original (pull the following statements into else)
     expected = """
 def f(a=None):
     if a is None:

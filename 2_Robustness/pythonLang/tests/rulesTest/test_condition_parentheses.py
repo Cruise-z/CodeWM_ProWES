@@ -24,7 +24,7 @@ def f(userid):
     if userid == 0:
         return 0
 """
-    # 统一去掉外层括号
+    # Normalize by removing the outer parentheses
     assert _apply(original, RuleDirection.to_variant("no_parens")).strip() == expected.strip()
 
 
@@ -39,7 +39,7 @@ def f(userid):
     if (userid == 0):
         return 0
 """
-    # 统一加上一层括号
+    # Normalize by adding one outer layer of parentheses
     assert _apply(original, RuleDirection.to_variant("parens")).strip() == expected.strip()
 
 
@@ -52,9 +52,9 @@ def f(userid, flag):
     if flag and userid > 10:
         return 1
 """
-    # AUTO 下：
-    # - 第一个 if: HAS_PARENS -> 去括号
-    # - 第二个 if: NO_PARENS  -> 加括号
+    # Under AUTO:
+    # - first if: HAS_PARENS -> remove parentheses
+    # - second if: NO_PARENS -> add parentheses
     expected = """
 def f(userid, flag):
     if userid == 0:
@@ -105,9 +105,9 @@ def f(userid, flag):
     while flag and userid > 10:
         userid -= 1
 """
-    # AUTO 下：
-    # - 第一个 while: HAS_PARENS -> 去括号
-    # - 第二个 while: NO_PARENS  -> 加括号
+    # Under AUTO:
+    # - first while: HAS_PARENS -> remove parentheses
+    # - second while: NO_PARENS -> add parentheses
     expected = """
 def f(userid, flag):
     while userid == 0:
@@ -152,9 +152,9 @@ def f(userid, flag):
 
     assert flag and userid > 10
 """
-    # AUTO 下：
-    # - 第一个 assert: HAS_PARENS -> 去括号
-    # - 第二个 assert: NO_PARENS  -> 加括号
+    # Under AUTO:
+    # - first assert: HAS_PARENS -> remove parentheses
+    # - second assert: NO_PARENS -> add parentheses
     expected = """
 def f(userid, flag):
     assert userid == 0
@@ -164,7 +164,7 @@ def f(userid, flag):
     assert _apply(src, RuleDirection.AUTO).strip() == expected.strip()
 
 
-# ---- 三元表达式 ----
+# ---- Ternary expressions ----
 
 def test_ifexp_has_parens_to_no_parens_to_variant():
     original = """
@@ -197,9 +197,9 @@ def f(userid, flag):
     v2 = 0 if flag and userid > 10 else 1
     return v1, v2
 """
-    # AUTO 下：
-    # - v1 条件: HAS_PARENS -> 去括号
-    # - v2 条件: NO_PARENS  -> 加括号
+    # Under AUTO:
+    # - v1 condition: HAS_PARENS -> remove parentheses
+    # - v2 condition: NO_PARENS -> add parentheses
     expected = """
 def f(userid, flag):
     v1 = 0 if userid == 0 else 1
@@ -209,7 +209,7 @@ def f(userid, flag):
     assert _apply(src, RuleDirection.AUTO).strip() == expected.strip()
 
 
-# ---- 推导式中的 if ----
+# ---- if inside comprehensions ----
 
 def test_comprehension_if_has_parens_to_no_parens_to_variant():
     original = """
@@ -242,9 +242,9 @@ def f(xs, ys):
     b = [y for y in ys if y > 0]
     return a, b
 """
-    # AUTO 下：
-    # - a 的 if 条件: HAS_PARENS -> 去括号
-    # - b 的 if 条件: NO_PARENS  -> 加括号
+    # Under AUTO:
+    # - a's if condition: HAS_PARENS -> remove parentheses
+    # - b's if condition: NO_PARENS -> add parentheses
     expected = """
 def f(xs, ys):
     a = [x for x in xs if x > 0]

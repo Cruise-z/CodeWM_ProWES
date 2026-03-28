@@ -10,7 +10,7 @@ import libcst as cst
 
 class InitializeWaysForm(str, Enum):
     """
-    初始化风格的两种形态：
+    Two initialization-style forms:
     - DICT_CALL            : d = dict(name="1")
     - EMPTY_THEN_SUBSCRIPT : d = {}; d["name"] = "1"
     """
@@ -21,18 +21,18 @@ class InitializeWaysForm(str, Enum):
 @dataclass
 class InitializeWaysMatch:
     """
-    一次初始化模式命中的信息。
+    Match information for one initialization-style pattern.
 
-    通用字段：
-      - form       : 当前形态（DICT_CALL / EMPTY_THEN_SUBSCRIPT）
-      - target     : 被初始化的变量名（目前只匹配简单 Name）
-      - first_stmt : 参与模式的第一条简单语句
-      - second_stmt: 若是两行形式，则为第二条简单语句；单行形式则为 None
+    Common fields:
+      - form       : current form (DICT_CALL / EMPTY_THEN_SUBSCRIPT)
+      - target     : variable name being initialized (currently only simple Name is matched)
+      - first_stmt : first simple statement participating in the pattern
+      - second_stmt: second simple statement for the two-line form; None for the single-line form
 
-    额外字段：
-      - call       : 若是 DICT_CALL，则为右侧的 Call 节点；否则为 None
-      - keys       : 若是 EMPTY_THEN_SUBSCRIPT，则为下标 key 列表（当前实现只匹配一个）
-      - values     : 初始化 value 列表（两种形态都会用到）
+    Extra fields:
+      - call       : if the form is DICT_CALL, this is the Call node on the RHS; otherwise None
+      - keys       : if the form is EMPTY_THEN_SUBSCRIPT, this is the list of subscript keys (the current implementation only matches one)
+      - values     : list of initialized values, used by both forms
     """
     form: InitializeWaysForm
     target: cst.Name
@@ -45,7 +45,7 @@ class InitializeWaysMatch:
 
 
 # ---------------------------
-# 单行：d = dict(name="1")
+# Single-line form: d = dict(name="1")
 # ---------------------------
 
 
@@ -53,12 +53,12 @@ def _match_dict_call_single(
     stmt: cst.SimpleStatementLine,
 ) -> Optional[InitializeWaysMatch]:
     """
-    匹配：
+    Match:
         d = dict(name="1", age=2, ...)
-    约束：
-      - 只处理单一小语句
-      - 左侧是简单变量名
-      - 右侧是对内建 dict 的调用，且参数全部为 keyword 形式
+    Constraints:
+      - only handle a single small statement
+      - left side must be a simple variable name
+      - right side must be a call to the built-in dict, and all parameters must be keyword arguments
     """
     if len(stmt.body) != 1:
         return None
@@ -67,7 +67,7 @@ def _match_dict_call_single(
     if not isinstance(small, cst.Assign):
         return None
 
-    # 只处理单一目标：d = ...
+    # Only handle a single target: d = ...
     if len(small.targets) != 1:
         return None
 
@@ -81,20 +81,20 @@ def _match_dict_call_single(
     if not isinstance(value, cst.Call):
         return None
 
-    # 要求是 dict(...) 调用
+    # Require a dict(...) call
     func = value.func
     if not (isinstance(func, cst.Name) and func.value == "dict"):
         return None
 
     values: List[cst.BaseExpression] = []
 
-    # 只接受 keyword 形式的参数：dict(name="1", age=2)
+    # Only accept keyword-style arguments: dict(name="1", age=2)
     if not value.args:
         return None
 
     for arg in value.args:
         if arg.keyword is None:
-            # 带位置参数或者 **kwargs 的情况先不处理
+            # Do not handle positional arguments or **kwargs yet
             return None
         values.append(arg.value)
 
@@ -104,7 +104,7 @@ def _match_dict_call_single(
         first_stmt=stmt,
         second_stmt=None,
         call=value,
-        keys=[],  # 单行 dict 调用暂不使用 keys
+        keys=[],  # Single-line dict() calls do not use keys for now
         values=values,
     )
 
@@ -113,7 +113,7 @@ def match_initialize_ways_single(
     node: cst.CSTNode,
 ) -> Optional[InitializeWaysMatch]:
     """
-    单行版本匹配入口：
+    Matching entry point for the single-line form:
         d = dict(name="1")
     """
     if not isinstance(node, cst.SimpleStatementLine):
@@ -123,7 +123,7 @@ def match_initialize_ways_single(
 
 
 # ------------------------------------------
-# 两行：d = {}; d["name"] = "1" 这样的模式
+# Two-line form: d = {}; d["name"] = "1"
 # ------------------------------------------
 
 
@@ -131,11 +131,11 @@ def _match_empty_dict_assign(
     stmt: cst.SimpleStatementLine,
 ) -> Optional[cst.Name]:
     """
-    匹配：
+    Match:
         d = {}
-    或：
+    Or:
         d = dict()
-    返回被初始化的变量名 Name。
+    Return the initialized variable name as a Name.
     """
     if len(stmt.body) != 1:
         return None
@@ -154,13 +154,13 @@ def _match_empty_dict_assign(
 
     value = small.value
 
-    # 1) 空字面量：d = {}
+    # 1) Empty literal: d = {}
     if isinstance(value, cst.Dict):
         if len(value.elements) == 0:
             return target_expr
         return None
 
-    # 2) 空 dict() 调用：d = dict()
+    # 2) Empty dict() call: d = dict()
     if isinstance(value, cst.Call):
         func = value.func
         if isinstance(func, cst.Name) and func.value == "dict":
@@ -175,9 +175,9 @@ def _extract_subscript_key_value(
     target_name: cst.Name,
 ) -> Optional[Tuple[cst.BaseExpression, cst.BaseExpression]]:
     """
-    匹配：
+    Match:
         d["name"] = value
-    其中 d 是 target_name。
+    where d is target_name.
     """
     if len(stmt.body) != 1:
         return None
@@ -195,14 +195,14 @@ def _extract_subscript_key_value(
     if not isinstance(subscript, cst.Subscript):
         return None
 
-    # d["name"][...] 这样的链式下标暂不支持，只处理 d[...] 一层
+    # Chained subscripts such as d["name"][...] are not supported yet; only a single d[...] layer is handled
     base = subscript.value
     if not (isinstance(base, cst.Name) and base.value == target_name.value):
         return None
 
-    # 只处理单一下标维度：d[...]
+    # Only handle a single subscript dimension: d[...]
     slices = subscript.slice
-    # 不同版本的 libcst 这里可能是 tuple 或 list，统一当做 sequence 处理
+    # Different versions of libcst may use tuple or list here; handle both uniformly as a sequence
     if not isinstance(slices, (list, tuple)) or len(slices) != 1:
         return None
 
@@ -225,12 +225,12 @@ def match_initialize_ways_pair(
     second: cst.CSTNode,
 ) -> Optional[InitializeWaysMatch]:
     """
-    两行版本匹配入口：
+    Matching entry point for the two-line form:
 
         d = {}
         d["name"] = "1"
 
-    只在两个连续的 SimpleStatementLine 之间检查这种模式。
+    Only check this pattern across two consecutive SimpleStatementLine nodes.
     """
     if not (
         isinstance(first, cst.SimpleStatementLine)

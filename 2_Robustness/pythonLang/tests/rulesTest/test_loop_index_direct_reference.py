@@ -29,7 +29,7 @@ def f():
         x = user.name
 """
 
-    # 统一转为 element-based 形态
+    # Normalize to the element-based form
     assert _apply(original, RuleDirection.to_variant("element")).strip() == expected.strip()
 
 
@@ -50,12 +50,12 @@ def f():
         x = users[user_idx].name
 """
 
-    # 统一转为 index-based 形态
+    # Normalize to the index-based form
     assert _apply(original, RuleDirection.to_variant("index")).strip() == expected.strip()
 
 
 def test_auto_mixed_index_and_direct():
-    # f 使用 index 形式，g 使用 element 形式
+    # f uses the index form, while g uses the element form
     src = """
 def f():
     for i in range(len(currencies)):
@@ -66,7 +66,7 @@ def g():
         print(currency)
 """
 
-    # AUTO 模式下:
+    # Under AUTO:
     # - f: index -> element
     # - g: element -> index
     expected = """

@@ -7,15 +7,15 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers.generation.logits_process import LogitsProcessor, LogitsProcessorList
 
 ########################################################
-# 1) Retriever 接口 & 适配器
+# 1) Retriever interface and adapter
 ########################################################
 
 class RetrievalHit(Dict[str, Any]):
     """
-    约定字段（至少要有 reference）。你也可扩展更多元数据。
-      - reference: str      # 召回的参考代码文本
-      - score: float        # 可选，召回分
-      - task_id / task_name / prompt / prefix ... 任选
+    Expected fields (must include at least reference). You can extend it with more metadata.
+      - reference: str      # Retrieved reference code text
+      - score: float        # Optional retrieval score
+      - task_id / task_name / prompt / prefix ... any of these may also appear
     """
     pass
 
@@ -24,9 +24,9 @@ class Retriever(Protocol):
 
 class FunctionRetriever:
     """
-    用你的已有函数适配为 Retriever：
-    你的函数签名形如: fn(query_text: str, top_k: int) -> List[Dict]
-    返回的 Dict 里必须包含 'reference'.
+    Adapt your existing function into a Retriever:
+    the expected function signature is: fn(query_text: str, top_k: int) -> List[Dict]
+    and the returned Dict must include 'reference'.
     """
     def __init__(self, fn: Callable[[str, int], List[Dict]]):
         self.fn = fn
@@ -35,20 +35,22 @@ class FunctionRetriever:
         if not hits:
             return []
         if "reference" not in hits[0]:
-            raise ValueError("retriever 返回结果缺少 'reference' 字段")
+            raise ValueError("retriever result is missing the 'reference' field")
         return hits  # type: ignore
 
 
 ########################################################
-# 2) SoftConstraint 处理器（可与水印 Processor 叠加）
+# 2) Soft-constraint processors (can be stacked with a watermark processor)
 ########################################################
 
 # class ReferenceMarginEnforcer(LogitsProcessor):
 #     """
-#     自适应软约束：
-#       每步对参考下一 token 增加“最小必要偏置”使其成为 argmax（不屏蔽其它 token）。
-#       finish_with_eos=True: 复制完后一键强制 EOS。
-#     适合与 Watermark Processor 串联（把它放在链的末端兜底，保证一致性）。
+#     Adaptive soft constraint:
+#       At each step, add the minimum necessary bias to the next reference token
+#       so it becomes the argmax, without masking other tokens.
+#       finish_with_eos=True: force EOS in one step after copying completes.
+#     Suitable for chaining with a Watermark Processor; place it at the end of
+#     the chain as a final safeguard to ensure consistency.
 #     """
 #     def __init__(
 #         self,
@@ -83,8 +85,12 @@ class FunctionRetriever:
 
 # class ReferenceMarginEnforcer(LogitsProcessor):
 #     """
-#     自适应软约束：通过渐进性约束和动态参考调整，确保生成的代码尽可能接近参考代码。
-#     同时，通过 logit 平滑（temperature scaling）和多样性增强（beam search、top-k）模拟真实推理过程。
+#     Adaptive soft constraint: use progressive constraints and dynamic
+#     reference adjustment to keep generated code as close as possible to the
+#     reference code.
+#     At the same time, simulate more realistic inference through logit
+#     smoothing (temperature scaling) and diversity enhancements
+#     (beam search, top-k).
 #     """
 #     def __init__(
 #         self,
@@ -100,18 +106,21 @@ class FunctionRetriever:
 #         finish_with_eos: bool = True,
 #     ):
 #         """
-#         初始化 ReferenceMarginEnforcer，接受软约束和其他参数:
-#         参数：
-#         - ref_ids: 参考代码的 token IDs。
-#         - start_len: 输入部分的 token 长度。
-#         - eos_token_id: EOS token 的 ID。
-#         - max_margin: 最大 margin，用于控制参考的偏置强度。
-#         - min_margin: 最小 margin，防止 margin 过小。
-#         - decay_rate: margin 随着步骤递减的速率。
-#         - temperature: 控制 logits 的平滑程度。
-#         - max_bias: 最大偏置，防止过大偏置。
-#         - finish_with_eos: 是否在生成结束后强制使用 EOS。
-#         - window_size: 动态参考窗口大小，控制参考序列的更新频率。
+#         Initialize ReferenceMarginEnforcer with soft-constraint and related
+#         parameters:
+#         Parameters:
+#         - ref_ids: token IDs of the reference code.
+#         - start_len: token length of the input prefix.
+#         - eos_token_id: the ID of the EOS token.
+#         - max_margin: maximum margin controlling the strength of the
+#           reference bias.
+#         - min_margin: minimum margin to avoid margins becoming too small.
+#         - decay_rate: the rate at which the margin decays over steps.
+#         - temperature: controls the smoothness of logits.
+#         - max_bias: maximum bias to prevent excessive biasing.
+#         - finish_with_eos: whether to force EOS when generation ends.
+#         - window_size: size of the dynamic reference window, controlling how
+#           frequently the reference sequence is updated.
 #         """
 #         self.ref_ids = ref_ids
 #         self.start_len = start_len
@@ -127,90 +136,93 @@ class FunctionRetriever:
 #     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
 #         step = input_ids.shape[-1] - self.start_len
 
-#         # 动态计算 margin：随着生成过程递减
+#         # Dynamically compute the margin: decay it as generation progresses.
 #         margin = max(self.min_margin, self.max_margin * (self.decay_rate ** step))
 
-#         # 计算参考 token 的得分（目标是让参考 token 成为 argmax）
+#         # Compute the score of the reference token; the goal is to make it
+#         # the argmax.
 #         if step < len(self.ref_ids):
 #             tgt = self.ref_ids[step]
 #             tgt_score = scores[:, tgt:tgt+1]
 
-#             # 计算其他 token 的最大分数
+#             # Compute the maximum score among the other tokens.
 #             tmp = scores.clone()
 #             tmp[:, tgt] = float("-inf")
 #             max_others = tmp.max(dim=-1, keepdim=True).values
 #             need = torch.clamp(max_others - tgt_score + margin, min=0.0, max=self.max_bias)
 #             scores[:, tgt] += need.squeeze(-1)
 
-#         # 动态参考调整：允许参考序列在生成过程中更新
+#         # Dynamic reference adjustment: allow the reference sequence to update
+#         # during generation.
 #         reference_window = self.ref_ids[max(0, step - self.window_size):step]
 #         for ref_token in reference_window:
-#             scores[:, ref_token] += 1.0  # 增加参考 token 的得分
+#             scores[:, ref_token] += 1.0  # Increase the reference token score
 
-#         # 如果生成完参考内容，强制 EOS 结束
+#         # If the reference content has been fully generated, force EOS.
 #         if step >= len(self.ref_ids) and self.finish_with_eos:
 #             scores[:] = float("-inf")
 #             scores[:, self.eos_token_id] = 0.0
 
-#         # 平滑 logits 分布：通过 temperature 缩放 logits（增加多样性）
+#         # Smooth the logits distribution by temperature scaling to increase
+#         # diversity.
 #         scores = scores / self.temperature
 
 #         return scores
 
 class HybridKLProjectionEnforcer(LogitsProcessor):
     """
-    同时支持 'margin' 与 'prob' 约束，并通过 λ∈[0,1] 平滑过渡：
-      - λ=0: 仅边际约束 s_t' - max_{j≠t} s_j' ≥ γ（硬复制更稳）
-      - λ=1: 仅概率约束 q_t(δ) = α（KL最小抬升使概率达到目标）
-      - 0<λ<1: 同时满足 弱化的边际 γ_λ 与 强化的概率 α_λ
-    可选 ensure_copy=True 以极小安全边际兜底，保证贪心解码严格复制。
+    Support both 'margin' and 'prob' constraints and transition smoothly through lambda in [0,1]:
+      - lambda=0: margin-only constraint s_t' - max_{j!=t} s_j' >= gamma (more stable for hard copying)
+      - lambda=1: probability-only constraint q_t(delta) = alpha (minimum KL lift to reach the target probability)
+      - 0<lambda<1: satisfy both weakened margin gamma_lambda and strengthened probability alpha_lambda
+    Optionally, ensure_copy=True provides a tiny safety margin to guarantee strict copying under greedy decoding.
     """
     def __init__(
         self,
         ref_ids: List[int],
         start_len: int,
         eos_token_id: int,
-        # 目标参数
-        gamma: float = 2.5,       # 纯margin时的目标logit边际
-        alpha: float = 0.5,       # 纯prob时的目标概率
-        # 混合与调度:
-        # λ=0: 完全logit复制；λ=1: 完全prob强化
+        # Target parameters
+        gamma: float = 2.5,       # Target logit margin in pure-margin mode
+        alpha: float = 0.5,       # Target probability in pure-prob mode
+        # Mixing and scheduling:
+        # lambda=0: pure logit copying; lambda=1: pure probability boosting
         lambda_start: float = 0.0,
         lambda_end: float = 1.0,
-        schedule: str = "linear",   # "constant" | "linear"（按步数从 start→end）
-        # 数值与安全
+        schedule: str = "linear",   # "constant" | "linear" (step-wise interpolation from start to end)
+        # Numerical stability and safety
         max_bias: float = 50.0,
         eps: float = 1e-12,
         compute_in_fp32: bool = False,
         finish_with_eos: bool = True,
-        ensure_copy: bool = False,      # 兜底保证复制
-        gamma_safe: float = 1e-6,       # 兜底的极小边际
+        ensure_copy: bool = False,      # Fallback safeguard to enforce copying
+        gamma_safe: float = 1e-6,       # Tiny fallback margin
     ):
         self.ref_ids = [int(t) for t in ref_ids]
         self.start_len = int(start_len)
         self.eos_token_id = int(eos_token_id)
-        # 目标
+        # Targets
         self.gamma = float(gamma)
         self.alpha = float(alpha)
-        # 混合调度
+        # Mixing schedule
         self.lambda_start = float(lambda_start)
         self.lambda_end = float(lambda_end)
         assert 0.0 <= self.lambda_start <= 1.0 and 0.0 <= self.lambda_end <= 1.0
         assert schedule in ("constant", "linear")
         self.schedule = schedule
-        # 数值
+        # Numerical settings
         self.max_bias = float(max_bias)
         self.eps = float(eps)
         self.compute_in_fp32 = bool(compute_in_fp32)
         self.finish_with_eos = bool(finish_with_eos)
-        # 兜底复制
+        # Copy fallback
         self.ensure_copy = bool(ensure_copy)
         self.gamma_safe = float(gamma_safe)
 
     def _lambda_at(self, step: int, total_steps: int) -> float:
         if self.schedule == "constant" or total_steps <= 1:
-            return self.lambda_end  # 恒定
-        # 线性从 start -> end
+            return self.lambda_end  # Constant
+        # Linearly interpolate from start -> end
         ratio = step / (total_steps - 1)
         return self.lambda_start + (self.lambda_end - self.lambda_start) * ratio
 
@@ -220,14 +232,14 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
 
         if step < L:
             t = self.ref_ids[step]
-            # 1) 当前步的混合系数 λ
+            # 1) Mixing coefficient lambda at the current step
             lam = self._lambda_at(step, L)  # in [0,1]
 
-            # 2) 边际目标弱化：γ_λ = (1-λ)*γ
+            # 2) Weakened margin target: gamma_lambda = (1-lambda)*gamma
             gamma_eff = (1.0 - lam) * self.gamma
 
-            # 3) 概率目标强化：α_λ = (1-λ)*p_t + λ*α
-            #    先计算当前 p_t（建议在FP32下做logsumexp）
+            # 3) Strengthened probability target: alpha_lambda = (1-lambda)*p_t + lambda*alpha
+            #    First compute the current p_t (prefer logsumexp in FP32)
             scores = torch.clamp(scores, min=-1e5, max=1e5)
             if self.compute_in_fp32 and scores.dtype != torch.float32:
                 scores_f = scores.float()
@@ -239,21 +251,21 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
             alpha_eff = ((1.0 - lam) * p_t) + (lam * self.alpha)
             alpha_eff = alpha_eff.clamp(self.eps, 1.0 - self.eps)   # Bx1
 
-            # 4) 计算两种约束的最小抬升量
-            #   margin: δ_m = max(0, γ_λ - (s_t - m))
+            # 4) Compute the minimum lift required by each constraint
+            #   margin: delta_m = max(0, gamma_lambda - (s_t - m))
             tmp = scores.clone()
             tmp[:, t] = float("-inf")
             max_others = tmp.max(dim=-1, keepdim=True).values  # Bx1
             delta_m = (max_others - scores[:, t:t+1] + gamma_eff).clamp_min(0.0)
 
-            #   prob: δ_p = log( α_eff(1-p) / (p(1-α_eff)) ), 若为负则置0
+            #   prob: delta_p = log(alpha_eff(1-p) / (p(1-alpha_eff))); clamp to zero if negative
             delta_p = torch.log(alpha_eff * (1.0 - p_t) / (p_t * (1.0 - alpha_eff)))
             delta_p = delta_p.clamp_min(0.0)
 
-            # 5) 同时满足两者 => 取最大；并裁剪 max_bias
+            # 5) Satisfy both constraints by taking the maximum, then clamp by max_bias
             need = torch.maximum(delta_m, delta_p).clamp_max(self.max_bias)
 
-            # 6) 可选兜底：确保贪心复制（极小的硬边际）
+            # 6) Optional fallback: ensure greedy copying with a tiny hard margin
             if self.ensure_copy:
                 delta_safe = (max_others - scores[:, t:t+1] + self.gamma_safe).clamp_min(0.0)
                 need = torch.maximum(need, delta_safe)
@@ -268,58 +280,64 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
 
 # class HybridKLProjectionEnforcer(LogitsProcessor):
 #     """
-#     同时支持 'margin' 与 'prob' 约束，并通过 λ∈[0,1] 平滑过渡：
-#       - λ=0: 仅边际约束 s_t' - max_{j≠t} s_j' ≥ γ（硬复制更稳）
-#       - λ=1: 仅概率约束 q_t(δ) > max(p_others)（目标概率略大于其它 token）
-#       - 0<λ<1: 同时满足 弱化的边际 γ_λ 与 强化的概率 α_λ
-#     可选 ensure_copy=True 以极小安全边际兜底，保证贪心解码严格复制。
+#     Support both 'margin' and 'prob' constraints and transition smoothly
+#     through λ∈[0,1]:
+#       - λ=0: margin-only constraint s_t' - max_{j≠t} s_j' ≥ γ
+#         (more stable for hard copying)
+#       - λ=1: probability-only constraint q_t(δ) > max(p_others)
+#         (target probability is slightly larger than other tokens)
+#       - 0<λ<1: satisfy both weakened margin γ_λ and strengthened
+#         probability α_λ
+#     Optionally, ensure_copy=True provides a tiny safety margin fallback to
+#     guarantee strict greedy copying.
 #     """
 #     def __init__(
 #         self,
 #         ref_ids: List[int],
 #         start_len: int,
 #         eos_token_id: int,
-#         # 目标参数
-#         gamma: float = 2.0,       # 纯margin时的目标logit边际
-#         # 修改：使用增量来确保目标token的概率比当前最大概率多出一定的增量
-#         alpha: float = 0.1,  # 增量：目标token概率比最大概率多出的值
-#         # 混合与调度:
+#         # Target parameters
+#         gamma: float = 2.0,       # Target logit margin in pure-margin mode
+#         # Revised: use an increment to ensure the target token probability is
+#         # larger than the current maximum probability by a fixed amount
+#         alpha: float = 0.1,  # Increment above the current maximum probability
+#         # Mixing and scheduling:
 #         lambda_start: float = 0.0,
 #         lambda_end: float = 1.0,
-#         schedule: str = "linear",   # "constant" | "linear"（按步数从 start→end）
-#         # 数值与安全
+#         schedule: str = "linear",   # "constant" | "linear" (step-wise start→end)
+#         # Numerical stability and safety
 #         max_bias: float = 50.0,
 #         eps: float = 1e-12,
 #         compute_in_fp32: bool = False,
 #         finish_with_eos: bool = True,
-#         ensure_copy: bool = False,      # 兜底保证复制
-#         gamma_safe: float = 1e-6,       # 兜底的极小边际
+#         ensure_copy: bool = False,      # Fallback to guarantee copying
+#         gamma_safe: float = 1e-6,       # Tiny fallback margin
 #     ):
 #         self.ref_ids = [int(t) for t in ref_ids]
 #         self.start_len = int(start_len)
 #         self.eos_token_id = int(eos_token_id)
-#         # 目标
+#         # Targets
 #         self.gamma = float(gamma)
 #         self.alpha = float(alpha)
-#         # 混合调度
+#         # Mixing schedule
 #         self.lambda_start = float(lambda_start)
 #         self.lambda_end = float(lambda_end)
 #         assert 0.0 <= self.lambda_start <= 1.0 and 0.0 <= self.lambda_end <= 1.0
 #         assert schedule in ("constant", "linear")
 #         self.schedule = schedule
-#         # 数值
+#         # Numerical settings
 #         self.max_bias = float(max_bias)
 #         self.eps = float(eps)
 #         self.compute_in_fp32 = bool(compute_in_fp32)
 #         self.finish_with_eos = bool(finish_with_eos)
-#         # 兜底复制
+#         # Copy fallback
 #         self.ensure_copy = bool(ensure_copy)
 #         self.gamma_safe = float(gamma_safe)
 
 #     def _lambda_at(self, step: int, total_steps: int) -> float:
 #         if self.schedule == "constant" or total_steps <= 1:
-#             return self.lambda_end  # 恒定
-#         # 线性从 start -> end
+#             return self.lambda_end  # Constant
+#         # Linear interpolation from start -> end
 #         ratio = step / (total_steps - 1)
 #         return self.lambda_start + (self.lambda_end - self.lambda_start) * ratio
 
@@ -329,13 +347,14 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
 
 #         if step < L:
 #             t = self.ref_ids[step]
-#             # 1) 当前步的混合系数 λ
+#             # 1) Mixing coefficient λ at the current step
 #             lam = self._lambda_at(step, L)  # in [0,1]
 
-#             # 2) 边际目标弱化：γ_λ = (1-λ)*γ
+#             # 2) Weakened margin target: γ_λ = (1-λ)*γ
 #             gamma_eff = (1.0 - lam) * self.gamma
 
-#             # 3) 概率目标：目标 token 的概率比当前最大概率多出的增量
+#             # 3) Probability target: the target token probability exceeds the
+#             # current maximum probability by a fixed increment
 #             if self.compute_in_fp32 and scores.dtype != torch.float32:
 #                 scores_f = scores.float()
 #             else:
@@ -343,26 +362,29 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
 
 #             logZ = torch.logsumexp(scores_f, dim=-1, keepdim=True)  # Bx1
 #             raw_probs = torch.softmax(scores_f, dim=-1)  # BxV
-#             max_other_probs, _ = raw_probs.max(dim=-1, keepdim=True)  # Bx1: 最大概率
+#             max_other_probs, _ = raw_probs.max(dim=-1, keepdim=True)  # Bx1: max probability
 
-#             # 目标token概率略高于当前最大概率
+#             # Set the target token probability slightly above the current
+#             # maximum probability.
 #             target_prob = max_other_probs + self.alpha
-#             target_prob = target_prob.clamp(self.eps, 1.0 - self.eps)  # 保证不超出[0, 1]
+#             target_prob = target_prob.clamp(self.eps, 1.0 - self.eps)  # Keep within [0, 1]
 
-#             # 计算目标token的logit需要增加的偏移量
+#             # Compute the required logit offset for the target token.
 #             log_target_prob = target_prob.log()
 #             delta_p = log_target_prob - scores_f[:, t:t+1]
 
-#             # 4) 计算边际约束：δ_m = max(0, γ_λ - (s_t - m))
+#             # 4) Compute the margin constraint: δ_m = max(0, γ_λ - (s_t - m))
 #             tmp = scores.clone()
 #             tmp[:, t] = float("-inf")
 #             max_others = tmp.max(dim=-1, keepdim=True).values  # Bx1
 #             delta_m = (max_others - scores[:, t:t+1] + gamma_eff).clamp_min(0.0)
 
-#             # 5) 同时满足两者 => 取最大；并裁剪 max_bias
+#             # 5) Satisfy both constraints by taking the maximum, then clamp by
+#             # max_bias.
 #             need = torch.maximum(delta_m, delta_p).clamp_max(self.max_bias)
 
-#             # 6) 可选兜底：确保贪心复制（极小的硬边际）
+#             # 6) Optional fallback: ensure greedy copying with a tiny hard
+#             # margin.
 #             if self.ensure_copy:
 #                 delta_safe = (max_others - scores[:, t:t+1] + self.gamma_safe).clamp_min(0.0)
 #                 need = torch.maximum(need, delta_safe)
@@ -378,8 +400,8 @@ class HybridKLProjectionEnforcer(LogitsProcessor):
 
 class ReferenceBias(LogitsProcessor):
     """
-    固定偏置软约束：对参考下一 token 加 +bias，不屏蔽其它 token。
-    bias=12~20 常能达到 99%+ 一致；比 Margin 版更简单。
+    Fixed-bias soft constraint: add +bias to the next reference token without masking other tokens.
+    A bias of 12~20 often reaches 99%+ consistency and is simpler than the margin-based version.
     """
     def __init__(self, ref_ids, start_len, eos_token_id, bias=12.0, finish_with_eos=True):
         self.ref_ids = [int(t) for t in ref_ids]
@@ -398,8 +420,8 @@ class ReferenceBias(LogitsProcessor):
 
 class HardClampToReference(LogitsProcessor):
     """
-    硬夹紧（可选）：每步只允许参考下一 token；复制完只允许 eos。
-    用于 100% 一致的极端情形；与 Watermark 同用时建议把它放到处理器链的“最后”。
+    Hard clamping (optional): allow only the next reference token at each step, and only eos after copying finishes.
+    This is for extreme cases requiring 100% consistency; when combined with a watermark processor, place it last in the processor chain.
     """
     def __init__(self, ref_ids, start_len, eos_token_id):
         self.ref_ids = [int(t) for t in ref_ids]
@@ -416,22 +438,22 @@ class HardClampToReference(LogitsProcessor):
 
 
 ########################################################
-# 3) HuggingFace 模型引擎（通用，可换任意 CausalLM）
+# 3) HuggingFace model engine (generic, can be replaced with any CausalLM)
 ########################################################
 
 class HFModelEngine:
     """
-    统一封装 HuggingFace CausalLM：
-      - 自动处理 pad_token / attention_mask
-      - 单卡最稳（device_map=None）；分片 (device_map="auto") 时自动把输入放到嵌入层设备
-      - 提供带 logits_processor 的确定性 generate 接口
+    Unified wrapper around a HuggingFace CausalLM:
+      - Automatically handles pad_token / attention_mask
+      - Single GPU is the safest (device_map=None); when sharding with device_map="auto", inputs are automatically moved to the embedding-layer device
+      - Provides a deterministic generate interface with logits_processor support
     """
     def __init__(
         self,
         model_name: str,
         device: Optional[str] = None,
         fp16: bool = True,
-        device_map: Optional[str] = None,   # None: 单卡; "auto": 分片
+        device_map: Optional[str] = None,   # None: single GPU; "auto": sharded
         revision: Optional[str] = None,
         trust_remote_code: bool = True,
         use_auth_token: bool = True,
@@ -455,10 +477,10 @@ class HFModelEngine:
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch_dtype,
-            device_map=device_map,              # 建议先用 None
+            device_map=device_map,              # It is recommended to start with None
             trust_remote_code=trust_remote_code,
         )
-        # 输入目标设备
+        # Target device for model inputs
         if hasattr(self.model, "hf_device_map") and device_map == "auto":
             wte_dev = self.model.hf_device_map.get("transformer.wte")
             self.input_device = torch.device(wte_dev if wte_dev is not None else list(self.model.hf_device_map.values())[0])
@@ -494,29 +516,29 @@ class HFModelEngine:
         out = self.model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
-            max_new_tokens=max_new_tokens,  # 生成的最大 token 数量
-            do_sample=True,                 # 启用采样
-            temperature=0.2,                # 设置温度
-            top_p=0.95,                     # 使用 top_p (nucleus sampling)
-            num_beams=1,                    # 使用贪心解码
-            use_cache=True,                 # 使用缓存
-            eos_token_id=eos_token_id,      # 结束 token id
-            pad_token_id=pad_token_id,      # 填充 token id
-            logits_processor=processors     # 添加 logits processor 进行约束
+            max_new_tokens=max_new_tokens,  # Maximum number of generated tokens
+            do_sample=True,                 # Enable sampling
+            temperature=0.2,                # Set temperature
+            top_p=0.95,                     # Use top-p (nucleus sampling)
+            num_beams=1,                    # Use greedy/one-beam decoding
+            use_cache=True,                 # Enable cache
+            eos_token_id=eos_token_id,      # End-of-sequence token id
+            pad_token_id=pad_token_id,      # Padding token id
+            logits_processor=processors     # Apply logits processors as constraints
         )
         return out
 
 
 ########################################################
-# 4) RAG 编排：检索 + 软约束/硬夹紧 + （可选）水印
+# 4) RAG orchestration: retrieval + soft constraint / hard clamp + optional watermark
 ########################################################
 
 class RagConstrainedGenerator:
     """
-    编排器：给定 retriever + HF 模型引擎
-      1) 使用 retriever(query) 召回 reference
-      2) 构造软约束/硬夹紧 LogitsProcessor（可叠加 watermark_processor）
-      3) 调用 HF 引擎 generate
+    Orchestrator with a retriever and an HF model engine:
+      1) Use retriever(query) to recall a reference
+      2) Build a soft-constraint or hard-clamp LogitsProcessor (optionally stacked with watermark_processor)
+      3) Call the HF engine generate method
     """
     def __init__(self, engine: HFModelEngine, retriever: Retriever):
         self.engine = engine
@@ -525,7 +547,7 @@ class RagConstrainedGenerator:
     def _check_context(self, start_len: int, ref_len: int):
         total = start_len + ref_len + 1  # +1 for EOS
         if total > self.engine.max_context:
-            raise ValueError(f"上下文超限: input({start_len}) + gen({ref_len}+1) = {total} > {self.engine.max_context}")
+            raise ValueError(f"Context limit exceeded: input({start_len}) + gen({ref_len}+1) = {total} > {self.engine.max_context}")
 
     def generate(
         self,
@@ -548,23 +570,23 @@ class RagConstrainedGenerator:
         watermark_processor: Optional[LogitsProcessor] = None,
         system_prompt: str = "Output exactly the following code. Begin now.\n",
     ) -> Dict[str, Any]:
-        # 1) RAG 检索
+        # 1) RAG retrieval
         hits = self.retriever.retrieve((prompt or "") + "\n" + (prefix or ""), top_k=top_k)
         if not hits:
-            raise RuntimeError("RAG 未检索到参考代码。")
+            raise RuntimeError("RAG did not retrieve any reference code.")
         best = hits[0]
         ref_text = best["reference"]
 
-        # 2) 准备输入
+        # 2) Prepare the input
         input_ids, attention_mask = self.engine.tokenize_to_device(system_prompt)
         start_len = input_ids.shape[-1]
         ref_ids = self.engine.ids_from_text(ref_text)
         self._check_context(start_len, len(ref_ids))
 
-        # 3) 处理器链（顺序：约束 → 水印）
+        # 3) Processor chain (order: constraint -> watermark)
         processors = LogitsProcessorList()
 
-        # 根据 constraint 类型选择不同的约束策略
+        # Select the constraint strategy based on the constraint type
         if constraint == "adaptive":
             processors.append(HybridKLProjectionEnforcer(
                 ref_ids=ref_ids,
@@ -597,12 +619,12 @@ class RagConstrainedGenerator:
                 eos_token_id=self.engine.tokenizer.eos_token_id
             ))
         else:
-            raise ValueError("constraint 需为 'adaptive' | 'fixed' | 'hard'")
+            raise ValueError("constraint must be one of 'adaptive' | 'fixed' | 'hard'")
         
         if watermark_processor is not None:
             processors.append(watermark_processor)
 
-        # 4) 解码过程：传递处理器链和生成参数
+        # 4) Decoding: pass the processor chain and generation parameters
         out = self.engine.generate_with_processors(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -614,7 +636,7 @@ class RagConstrainedGenerator:
 
         exact_match = (text == ref_text) or text.endswith(ref_text)
         return {
-            # "text": ref_text if not exact_match else text,  # 保险回落
+            # "text": ref_text if not exact_match else text,  # Safe fallback
             "text": text,
             "exact_match": bool(exact_match),
             "ref_len_tokens": len(ref_ids),

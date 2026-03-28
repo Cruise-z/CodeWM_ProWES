@@ -10,10 +10,10 @@ import subprocess
 import textwrap
 
 def count_lines_in_jsonl(file_path):
-    # 执行 wc -l 命令
+    # Run the wc -l command
     result = subprocess.run(['wc', '-l', file_path], capture_output=True, text=True)
     
-    # result.stdout 的格式为 '  1234 your_file.jsonl'，需要提取数字
+    # result.stdout looks like '  1234 your_file.jsonl', so extract the number
     line_count = int(result.stdout.split()[0])
     return line_count
 
@@ -26,10 +26,10 @@ def parse_args():
     return parser.parse_args()
 
 def obfus(Client:Client, line:str):
-    data = json.loads(line)  # 解析 JSON 行
-    if "after_watermark" in data:  # 确保 "test" 字段存在
+    data = json.loads(line)  # Parse a JSONL row
+    if "after_watermark" in data:  # Make sure the target field exists
         sourceCode = data["after_watermark"]
-        messages = [f"请你基于上传的java代码混淆规则文件中的第4条混淆规则即整数常量加密，将这段源码:{sourceCode}仿照此混淆规则进行混淆并给出结果，输出内容中除混淆后源码外不包含任何内容，以```java\n(混淆源码内容)\n```的格式输出"]
+        messages = [f'Please apply Rule 4 from the uploaded Java code obfuscation rules file, namely integer-constant encryption, to obfuscate this source code: {sourceCode}. Return only the obfuscated source code and nothing else, using the format ```java\\n(obfuscated source code)\\n```']
         if Client.CheckType() == 'Kimi':
             ans = common_chat(Client, Model.kimi_128k, messages, StreamMode=True, cache_tag="obfus_files")
         else:
@@ -57,11 +57,11 @@ def main(args):
     #
     # source code in Java format
     #
-    # 创建文件夹（如果已存在，则不会报错）
+    # Create the directory if it does not already exist
     json_src = "./results/4bit_gru_srcmarker_42_csn_java_test.jsonl"
     json_dest = f"./results_obfus/4bit_gru_srcmarker_42_csn_java_test_obfus_ai_{client.CheckType()}_rules4.jsonl"
     os.makedirs(RESULT_DIR, exist_ok=True)
-    #读取log计数文件中已经执行到的位置
+    # Read the current processed position from the output file line count
     if os.path.exists(json_dest):
         cur_idx = count_lines_in_jsonl(json_dest)
     else:
@@ -75,7 +75,7 @@ def main(args):
 
     
     if SAMPLE:
-        #若进行采样，则选取采样数据后进行混淆
+        # If sampling is enabled, select the sampled data before obfuscation
         json_lines = sorted(
             (line for line in raw_lines if len(json.loads(line).get("after_watermark", "")) <= MXLEN),
             key=lambda x: len(json.loads(x).get("after_watermark", "")),
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     # delete_cache_kimi(client, cache_id)
 
     # source_code = "protected final void fastPathOrderedEmit(U value, boolean delayError, Disposable disposable) {\n        final Observer<? super V> observer = downstream;\n        final SimplePlainQueue<U> q = queue;\n        if (wip.get() == 0 && wip.compareAndSet(0, 1)) {\n            if (q.isEmpty()) {\n                accept(observer, value);\n                if (leave(-1) == 0) {\n                    return;\n                }\n            } else {\n                q.offer(value);\n            }\n        } else {\n            q.offer(value);\n            if (!enter()) {\n                return;\n            }\n        }\n        QueueDrainHelper.drainLoop(q, observer, delayError, disposable, this);\n    }"
-    # messages = [f"请你基于上传的java代码混淆规则文件中的第1条混淆规则，将这段源码:{source_code}仿照此混淆规则进行混淆并给出结果，输出内容中除混淆后源码外不包含任何内容"]
+    # messages = [f"Please apply Rule 1 from the uploaded Java obfuscation rules file to this source code: {source_code}, and return only the obfuscated result."]
 
     # # files_chat(client, Model.kimi_128k, ["./1_obfus_AI_rules.txt"], [".."], StreamMode=True, cache_tag="obfus_files")
     

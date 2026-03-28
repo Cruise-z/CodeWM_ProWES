@@ -233,7 +233,7 @@ class BaseLLM(ABC):
     async def acompletion_text_local(
         self, messages: list[dict], stream: bool = False, timeout: int = USE_CONFIG_TIMEOUT
     ) -> tuple[str, str]:
-        #! 工具函数
+        #! Utility function
         def _deep_merge(dst: dict, src: dict) -> dict:
             for k, v in src.items():
                 if k in PROTECTED:
@@ -243,23 +243,23 @@ class BaseLLM(ABC):
                 else:
                     dst[k] = v
             return dst
-        #! 主函数逻辑
+        #! Main logic
         """Asynchronous version of completion. Return str."""
-        import httpx  # 局部导入，避免改动全局
-        # 读取配置（若不存在则给默认值，避免属性缺失报错）
+        import httpx  # Local import to avoid modifying global imports
+        # Read configuration values and fall back to defaults to avoid missing-attribute errors
         model = getattr(self.config, "model", None) or getattr(self, "model", "Qwen/Qwen2.5-Coder-32B-Instruct")
         base_url = (getattr(self.config, "base_url", None) or "http://127.0.0.1:8000/v1").rstrip("/")
         api_key = getattr(self.config, "api_key", None) or "EMPTY"
-        # 你如果未来要支持流式，可在此根据 stream 加 payload["stream"]=True 并按 SSE 解析
+        # If streaming is needed in the future, set payload["stream"]=True here and parse SSE accordingly
         url = f"{base_url}/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
-        # 默认值（顶层没给时）
+        # Default values when the top level does not provide them
         payload = {
             "model": model,
-            "messages": messages,  # 直接使用入参
+            "messages": messages,  # Use the input arguments directly
             "temperature": 0.0,
             "max_tokens": 8192,
             "parallel": False,
@@ -270,7 +270,7 @@ class BaseLLM(ABC):
         if isinstance(cfg_xargs, dict):
             _deep_merge(payload, cfg_xargs)
         
-        # 使用 MetaGPT 原有的超时获取逻辑
+        # Reuse MetaGPT's original timeout retrieval logic
         client_timeout = self.get_timeout(timeout)
 
         async with httpx.AsyncClient(timeout=client_timeout) as client:
@@ -278,7 +278,7 @@ class BaseLLM(ABC):
             resp.raise_for_status()
             data = resp.json()
 
-        # 维持原行为：把“原始响应对象”传给解析函数
+        # Preserve the original behavior: pass the raw response object to the parser
         if payload["parallel"]:
             return self.get_choice_text_local(data, 0), self.get_choice_text_local(data, 1)
         else:

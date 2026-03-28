@@ -15,7 +15,7 @@ from ....patterns.AL.expression.condition_parentheses_pattern import (
 
 def _remove_outer_parens(expr: cst.BaseExpression) -> cst.BaseExpression:
     """
-    从表达式上去掉一层外层括号（如果有）。
+    Remove one layer of outer parentheses from the expression, if present.
     """
     lpar: Sequence[cst.LeftParen] = getattr(expr, "lpar", ())
     rpar: Sequence[cst.RightParen] = getattr(expr, "rpar", ())
@@ -36,7 +36,7 @@ def _remove_outer_parens(expr: cst.BaseExpression) -> cst.BaseExpression:
 
 def _add_outer_parens(expr: cst.BaseExpression) -> cst.BaseExpression:
     """
-    在表达式外侧再包一层括号。
+    Wrap the expression in one additional outer pair of parentheses.
     """
     lpar: Sequence[cst.LeftParen] = getattr(expr, "lpar", ())
     rpar: Sequence[cst.RightParen] = getattr(expr, "rpar", ())
@@ -50,7 +50,7 @@ def _add_outer_parens(expr: cst.BaseExpression) -> cst.BaseExpression:
     return expr.with_changes(lpar=new_lpar, rpar=new_rpar)
 
 
-# 将 variant 字符串映射到目标形态：
+# Map variant strings to target forms:
 #   - "no_parens"/"bare"       -> NO_PARENS
 #   - "parens"/"with_parens"   -> HAS_PARENS
 _VARIANT_KEY_TO_FORM: dict[str, ConditionParensForm] = {
@@ -67,38 +67,38 @@ _VARIANT_KEY_TO_FORM: dict[str, ConditionParensForm] = {
 @register_rule
 class ConditionParenthesesRule(BaseRule):
     """
-    条件括号使用规则，当前作用于这些位置：
+    Rule for condition-parentheses usage, currently applied to these positions:
 
       - if <cond>:
       - while <cond>:
       - assert <cond>
-      - <a> if <cond> else <b>   （三元表达式）
-      - 推导式中的 if <cond>：
+      - <a> if <cond> else <b>   (ternary expression)
+      - `if <cond>` inside comprehensions:
             [x for x in xs if <cond>]
             {x for x in xs if <cond>}
             (x for x in xs if <cond>)
             {k: v for k, v in xs if <cond>}
 
-    多形态方向约定（基于新的 RuleDirection）：
+    Multi-variant direction rules (based on the new RuleDirection):
 
       - direction.mode == "AUTO":
             HAS_PARENS  -> NO_PARENS
             NO_PARENS   -> HAS_PARENS
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "no_parens" / "bare" / "minimal"
                 "parens" / "with_parens" / "wrapped"
-            本规则将这些 key 映射到 ConditionParensForm，并在两种形态之间做对应转换。
+            This rule maps those keys to ConditionParensForm and performs the corresponding conversion between the two forms.
     """
 
     rule_id = "refactoring.condition_parentheses_usage"
-    description = "条件表达式外层括号的使用（if/while/assert/ifexp/comprehension）"
+    description = "Use of outer parentheses in conditional expressions (if/while/assert/ifexp/comprehension)"
 
-    # 声明本规则支持的变体名称（用于 CLI/文档）
+    # Declare the variant names supported by this rule (used for CLI/docs)
     variants = ("no_parens", "parens")
 
-    # ----------------- 公共决策逻辑：当前形态 -> 目标形态 -----------------
+    # ----------------- Shared decision logic: current form -> target form -----------------
 
     def _target_form_for(
         self,
@@ -106,7 +106,7 @@ class ConditionParenthesesRule(BaseRule):
     ) -> Optional[ConditionParensForm]:
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if current is ConditionParensForm.HAS_PARENS:
                 target = ConditionParensForm.NO_PARENS
@@ -115,38 +115,38 @@ class ConditionParenthesesRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 如果当前形态已经是目标形态，则不改写
+        # Do not rewrite if the current form already matches the target
         if target is current:
             return None
 
         return target
 
-    # ----------------- 公共表达式改写逻辑 -----------------
+    # ----------------- Shared expression rewrite logic -----------------
 
     def _rewrite_test_expr(
         self,
         test_expr: cst.BaseExpression,
     ) -> Optional[cst.BaseExpression]:
         """
-        对条件表达式应用括号规则：
-          - HAS_PARENS -> NO_PARENS：去掉一层括号
-          - NO_PARENS  -> HAS_PARENS：加一层括号
-        具体由 RuleDirection 决定是否以及朝哪个方向改写。
+        Apply the parentheses rule to a conditional expression:
+          - HAS_PARENS -> NO_PARENS: remove one layer of parentheses
+          - NO_PARENS  -> HAS_PARENS: add one layer of parentheses
+        RuleDirection determines whether and in which direction the rewrite occurs.
         """
         match = match_condition_parentheses(test_expr)
         if match is None:
@@ -172,7 +172,7 @@ class ConditionParenthesesRule(BaseRule):
 
         return None
 
-    # ----------------- 具体语法节点 -----------------
+    # ----------------- Concrete syntax nodes -----------------
 
     def leave_If(self, original_node: cst.If, updated_node: cst.If) -> cst.If:
         new_test = self._rewrite_test_expr(updated_node.test)
@@ -219,7 +219,7 @@ class ConditionParenthesesRule(BaseRule):
         updated_node: cst.CompIf,
     ) -> cst.CompIf:
         """
-        推导式中的 if <cond> 子句：
+        The `if <cond>` clause inside a comprehension:
             [x for x in xs if <cond>]
         """
         new_test = self._rewrite_test_expr(updated_node.test)

@@ -15,10 +15,10 @@ import textwrap
 import tree_sitter
 
 def count_lines_in_jsonl(file_path):
-    # 执行 wc -l 命令
+    # Run the wc -l command
     result = subprocess.run(['wc', '-l', file_path], capture_output=True, text=True)
     
-    # result.stdout 的格式为 '  1234 your_file.jsonl'，需要提取数字
+    # result.stdout looks like '  1234 your_file.jsonl', so extract the number
     line_count = int(result.stdout.split()[0])
     return line_count
 
@@ -45,13 +45,13 @@ def obfus(line:str, lang:str):
         return toks
     
     def _wrap_for_lang(code: str, lang: str) -> str:
-        # 与原脚本一致：Java 为了解析/比对加类包装；其它语言原样
+        # Match the original script: wrap Java in a class for parsing/comparison; keep other languages unchanged
         if lang == "java":
             return f"public class Test {{\n{code}\n}}"
         return code
 
     def _normalize_js_wrapped(provider: CodeTransformProvider, code_wrapped: str, lang: str) -> str:
-        # 与原脚本一致：JS 先 stringify 一次，减少无关格式差异
+        # Match the original script: stringify JS once first to reduce irrelevant formatting differences
         if lang != "javascript":
             return code_wrapped
         try:
@@ -68,8 +68,8 @@ def obfus(line:str, lang:str):
         source_code: str,
     ) -> Dict[str, List[str]]:
         """
-        返回: { transformer_name: [feasible_key, ...], ... }
-        - 单 key 可行性：code_transform 成功 + 新旧 token 有变化 + 新代码可再次解析为 mutable_tree
+        Returns: { transformer_name: [feasible_key, ...], ... }
+        - A single key is feasible if code_transform succeeds, the old/new tokens differ, and the new code can be parsed again into mutable_tree
         """
         per_tf_feasible: Dict[str, List[str]] = {}
 
@@ -79,13 +79,13 @@ def obfus(line:str, lang:str):
             keys = t.get_available_transforms()
             for key in keys:
                 feasible = False
-                # 1) 单 key 尝试
+                # 1) Try a single key
                 try:
                     new_code = provider.code_transform(source_code, [key])
                 except Exception:
-                    continue  # 此 key 不可用
+                    continue  # This key is not usable
 
-                # 2) 语法树 token 对比
+                # 2) Compare syntax-tree tokens
                 code_wrapped = _wrap_for_lang(source_code, lang)
                 new_code_wrapped = _wrap_for_lang(new_code, lang)
                 if lang == "javascript":
@@ -94,7 +94,7 @@ def obfus(line:str, lang:str):
                 code_tree = parser.parse(code_wrapped.encode("utf-8"))
                 new_code_tree = parser.parse(new_code_wrapped.encode("utf-8"))
 
-                # 3) 新代码可再次解析为 mutable_tree（语法有效）
+                # 3) The new code can be parsed again into mutable_tree (syntactically valid)
                 try:
                     provider.to_mutable_tree(new_code)
                 except Exception:
@@ -126,30 +126,30 @@ def obfus(line:str, lang:str):
         source_code: str,
     ) -> List[Tuple[str, ...]]:
         """
-        - 基于“当前源码”求每个变换器的可执行 keys；
-        - 若某变换器无可执行 key，按原脚本逻辑补上它的“第一个理论 key”兜底；
-        - 对各变换器 keys 做笛卡尔积，得到可执行组合（近似）。
+        - Compute executable keys for each transformer based on the current source code;
+        - If a transformer has no executable key, fall back to its first theoretical key as in the original script;
+        - Take the Cartesian product of transformer keys to get executable combinations (approximate).
         """
         per_tf = enumerate_feasible_keys_for_code(provider, parser, transformers, lang, source_code)
 
-        # 兜底补全
+        # Fallback completion
         idict: Dict[str, List[str]] = {}
         for t in transformers:
             t_name = t.name
             theoreticals = list(t.get_available_transforms())
             feasibles = list(per_tf.get(t_name, []))
             if len(feasibles) < len(theoreticals):
-                # 至少有一个不可行；补一个未出现过的理论 key
+                # At least one key is infeasible; append a theoretical key that has not appeared yet
                 for tt in theoreticals:
                     if tt not in feasibles:
                         feasibles.append(tt)
                         break
-            # 若理论 keys 为空（极少见），仍保证字典中有键
+            # Even if theoretical keys are empty (very rare), still keep the dictionary keyed
             if not feasibles and theoreticals:
                 feasibles = [theoreticals[0]]
             idict[t_name] = feasibles
 
-        # 笛卡尔积（按 transformers 顺序）
+        # Cartesian product in transformer order
         combos: List[Tuple[str, ...]] = []
         def _dfs(i: int, cur: List[str]):
             if i == len(transformers):
@@ -169,16 +169,16 @@ def obfus(line:str, lang:str):
     parser_lang = tree_sitter.Language("/home/zrz/projects/Python_Projects/VSCode/Python/CodeWM_AutoTest/2_Robustness/cStyleLang/parser/languages.so", lang)
     parser.set_language(parser_lang)
     
-    # 2) 选择要用的变换器（示例仅用你的 ReposVarDecl；需要可自行增删）
+    # 2) Select the transformers to use (the example only uses your ReposVarDecl-style set; add or remove as needed)
     code_transformers = [
-        # NL:content 级别
+        # NL: content level
         # ast_transformers.IdRenameTransformer(),
         # ast_transformers.VarNameStyleTransformer(),
-        # AL:expr 级别
+        # AL: expression level
         # ast_transformers.ReposVarDeclTransformer(),
         # ast_transformers.UpdateTransformer(),
         # ast_transformers.LoopCondTransformer(),
-        # AL:block 级别
+        # AL: block level
         ast_transformers.LoopStmtTransformer(),
         ast_transformers.IfFlatNestTransformer(),
         ast_transformers.ConditionTransformer(),
@@ -189,12 +189,12 @@ def obfus(line:str, lang:str):
     provider = CodeTransformProvider(lang, parser, code_transformers)
     # print("Total theoretical combos (cartesian product over transformers):", len(provider.get_transform_keys()))
     
-    data = json.loads(line)  # 解析 JSON 行
-    if "after_watermark" in data:  # 确保 "test" 字段存在
+    data = json.loads(line)  # Parse a JSONL row
+    if "after_watermark" in data:  # Make sure the target field exists
         sourceCode = data["after_watermark"]
         
         try:
-            # 5) 基于“当前源码”计算可执行组合（近似），并选一个组合来执行
+            # 5) Compute executable combinations (approximately) from the current source and choose one to run
             feasible_combos = enumerate_feasible_combos_for_code(
                 provider=provider,
                 parser=parser,
@@ -206,11 +206,11 @@ def obfus(line:str, lang:str):
             # for i, combo in enumerate(feasible_combos[:5]):
             #     print(f"[{i}] {combo}")
                 
-            # 选第 0 个可执行组合
+            # Select the first executable combination
             selected_keys = feasible_combos[0] if feasible_combos else provider.get_transform_keys()[0]
 
-            # 6) 实际执行转换（直接用 provider；也可以把 Runner 扩展为接受 selected_keys）
-            source_prep = preprocess_code(sourceCode)  # 你的预处理
+            # 6) Execute the transformation (directly with the provider; Runner could also be extended to accept selected_keys)
+            source_prep = preprocess_code(sourceCode)  # Your preprocessing
             code_obfus = provider.code_transform(source_prep, selected_keys)
             
             data["after_obfus"] = code_obfus
@@ -238,7 +238,7 @@ def main(args):
     #
     # source code in Java format
     #
-    # 创建文件夹（如果已存在，则不会报错）
+    # Create the directory if it does not already exist
     # local
     # json_src = "/home/zrz/Projects/GitRepo/Repo/Python_Projects/VSCode/Python/CodeWM_AutoTest/2_Robustness/project/srcMarker/testResult/4bit_gru_srcmarker_42_csn_java_test.jsonl"
     # json_dest = "/home/zrz/Projects/GitRepo/Repo/Python_Projects/VSCode/Python/CodeWM_AutoTest/2_Robustness/project/srcMarker/obfusResult/4bit_gru_srcmarker_42_csn_java_obfus_ALL.jsonl"
@@ -246,7 +246,7 @@ def main(args):
     json_src = "/home/zrz/projects/Python_Projects/VSCode/Python/CodeWM_AutoTest/2_Robustness/project/srcMarker/testResult/4bit_gru_codemark_42_github_java_funcs_test.jsonl"
     json_dest = "/home/zrz/projects/Python_Projects/VSCode/Python/CodeWM_AutoTest/2_Robustness/project/srcMarker/obfusResult/4bit_gru_codemark_42_github_java_funcs_obfus_AL2.jsonl"
     os.makedirs(RESULT_DIR, exist_ok=True)
-    #读取log计数文件中已经执行到的位置
+    # Read the current processed position from the output file line count
     if os.path.exists(json_dest):
         cur_idx = count_lines_in_jsonl(json_dest)
     else:
@@ -260,7 +260,7 @@ def main(args):
 
     
     if SAMPLE:
-        #若进行采样，则选取采样数据后进行混淆
+        # If sampling is enabled, select the sampled data before obfuscation
         json_lines = sorted(
             (line for line in raw_lines if len(json.loads(line).get("after_watermark", "")) <= MXLEN),
             key=lambda x: len(json.loads(x).get("after_watermark", "")),

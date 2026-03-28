@@ -1,7 +1,7 @@
 from typing import Final
 from .baseline import baseline
 
-# 简短描述，可自由修改
+# Short description, can be edited freely
 desc: Final[str] = "Build tiny Java project (Video player App, Maven, Java 11, strict 2-file repo)."
 
 idea: Final[str] = f"""

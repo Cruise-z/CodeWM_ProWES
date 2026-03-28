@@ -11,7 +11,7 @@ from ....patterns.AL.expression.boolean_explicit_true_false_pattern import (
 )
 
 
-# 将 variant 字符串映射到形态：
+# Map variant strings to forms:
 #   - "explicit" / "true_false" / "ternary"   -> EXPLICIT_TRUE_FALSE
 #   - "direct" / "expr" / "boolean_expr"      -> DIRECT_EXPR
 _VARIANT_KEY_TO_FORM: dict[str, BooleanExplicitForm] = {
@@ -29,7 +29,7 @@ _VARIANT_KEY_TO_FORM: dict[str, BooleanExplicitForm] = {
 
 def _wrap_as_explicit_true_false(match: BooleanExplicitTrueFalseMatch) -> cst.IfExp:
     """
-    根据匹配结果，把 inner_expr 包装成:
+    Based on the match result, wrap inner_expr as:
         True if inner_expr else False
     """
     return cst.IfExp(
@@ -42,32 +42,32 @@ def _wrap_as_explicit_true_false(match: BooleanExplicitTrueFalseMatch) -> cst.If
 @register_rule
 class BooleanExplicitTrueFalseRule(BaseRule):
     """
-    多形态规则：
+    Multi-variant rule:
 
-    形态 A：EXPLICIT_TRUE_FALSE
+    Form A: EXPLICIT_TRUE_FALSE
         var = True if b_expression else False
 
-    形态 B：DIRECT_EXPR
+    Form B: DIRECT_EXPR
         var = b_expression
 
-    方向约定（基于新的 RuleDirection）：
+    Direction rules, based on the new RuleDirection:
 
       - direction.mode == "AUTO":
             EXPLICIT_TRUE_FALSE  -> DIRECT_EXPR
             DIRECT_EXPR          -> EXPLICIT_TRUE_FALSE
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "explicit" / "true_false" / "ternary" / ...
                 "direct" / "expr" / "boolean_expr" / ...
-            本规则将这些 key 映射到 BooleanExplicitForm，并在两种形态之间做对应转换。
+            This rule maps those keys to BooleanExplicitForm and converts between the two forms accordingly.
     """
 
     rule_id = "refactoring.boolean_explicit_true_false"
     description = "True if b_expr else False <-> b_expr"
     variants = ("explicit", "direct")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(
         self,
@@ -76,7 +76,7 @@ class BooleanExplicitTrueFalseRule(BaseRule):
         cur = match.form
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if cur is BooleanExplicitForm.EXPLICIT_TRUE_FALSE:
                 target = BooleanExplicitForm.DIRECT_EXPR
@@ -85,28 +85,28 @@ class BooleanExplicitTrueFalseRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 如果当前形态已经是目标形态，则不改写
+        # Do not rewrite if the current form already matches the target
         if target is cur:
             return None
 
         return target
 
-    # ------- 主重写逻辑：对赋值 RHS 进行重写 -------
+    # ------- Main rewrite logic: rewrite the RHS of assignments -------
 
     def leave_Assign(
         self,
@@ -116,7 +116,7 @@ class BooleanExplicitTrueFalseRule(BaseRule):
         value = updated_node.value
 
         match = match_boolean_explicit_true_false(value)
-        # 没匹配到这条规则的任何形态，直接返回
+        # No form of this rule matched, so return directly
         if match is None:
             return updated_node
 
@@ -138,7 +138,7 @@ class BooleanExplicitTrueFalseRule(BaseRule):
             match.form is BooleanExplicitForm.DIRECT_EXPR
             and target_form is BooleanExplicitForm.EXPLICIT_TRUE_FALSE
         ):
-            # 只处理简单单目标赋值：var = ...
+            # Only handle simple single-target assignments: var = ...
             if len(updated_node.targets) != 1:
                 return updated_node
             target = updated_node.targets[0].target
@@ -148,5 +148,5 @@ class BooleanExplicitTrueFalseRule(BaseRule):
             new_value = _wrap_as_explicit_true_false(match)
             return updated_node.with_changes(value=new_value)
 
-        # 兜底：不改写
+        # Fallback: do not rewrite
         return updated_node

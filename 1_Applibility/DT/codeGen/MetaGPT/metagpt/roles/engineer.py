@@ -59,11 +59,11 @@ otherwise, answer 'YES' in JSON format.
 """
 
 def extract_and_remove_tagContent(tag: str, text: str):
-    """返回: (第一个匹配到的代码块字符串或"", 删除后的文本)"""
+    """Return: (the first matched code block string or "", the text after removal)."""
     t = re.escape(tag)
     WM_BLOCK = re.compile(rf"\s*<{t}>\s*(.*?)\s*</{t}>\s*", re.IGNORECASE | re.DOTALL)
     blocks = WM_BLOCK.findall(text)          # list[str]
-    new_text = WM_BLOCK.sub("", text)        # 从原文本中移除这些块
+    new_text = WM_BLOCK.sub("", text)        # Remove these blocks from the original text
     return (blocks[0] if blocks else ""), new_text.strip()
 
 class Engineer(Role):
@@ -118,7 +118,7 @@ class Engineer(Role):
             TODO: The goal is not to need it. After clear task decomposition, based on the design idea, you should be able to write a single file without needing other codes. If you can't, it means you need a clearer definition. This is the key to writing longer code.
             """
             coding_context = await todo.run()
-            #TODO: 从coding_context.code_doc.content中提取水印代码和源代码
+            # TODO: extract watermark code and original source code from coding_context.code_doc.content
             content_wm, code_ori = extract_and_remove_tagContent("wm_code", coding_context.code_doc.content)
             coding_context.code_doc.content = code_ori
             detRes, code_wm = extract_and_remove_tagContent("det_res", content_wm)
@@ -144,12 +144,12 @@ class Engineer(Role):
                 content=coding_context.code_doc.content,
             )
             await self.project_repo.srcs.save(
-                # 水印文件不参与dependency管理
+                # Watermark files do not participate in dependency management
                 filename=fileName_wmCode,
                 content=code_wm,
             )
             await self.project_repo.srcs.save(
-                # 水印文件不参与dependency管理
+                # Watermark files do not participate in dependency management
                 filename=fileName_wmDetRes,
                 content=detRes,
             )

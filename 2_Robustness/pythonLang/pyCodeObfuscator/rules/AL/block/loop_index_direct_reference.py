@@ -15,10 +15,10 @@ from ....patterns.AL.block.loop_index_direct_reference_pattern import (
 
 def _make_element_name(list_name: str) -> str:
     """
-    根据列表名猜一个元素变量名，用于:
+    Guess an element variable name from the list name, for example:
         currencies -> currency
         users      -> user
-        默认: xxx -> xxx_item
+        Default: xxx -> xxx_item
     """
     if list_name.endswith("ies") and len(list_name) > 3:
         return list_name[:-3] + "y"
@@ -29,7 +29,7 @@ def _make_element_name(list_name: str) -> str:
 
 class _IndexToElementReplacer(cst.CSTTransformer):
     """
-    把 list[i] 替换为 element 变量。
+    Replace `list[i]` with an element variable.
     """
 
     def __init__(self, list_name: str, index_name: str, element_name: str) -> None:
@@ -40,13 +40,13 @@ class _IndexToElementReplacer(cst.CSTTransformer):
     def leave_Subscript(
         self, original_node: cst.Subscript, updated_node: cst.Subscript
     ) -> cst.BaseExpression:
-        # 只处理 list_name[...] 这种下标
+        # Only handle subscripts of the form list_name[...]
         if not isinstance(updated_node.value, cst.Name):
             return updated_node
         if updated_node.value.value != self.list_name:
             return updated_node
 
-        # 只处理单一下标: list[i]
+        # Only handle a single index: list[i]
         if len(updated_node.slice) != 1:
             return updated_node
 
@@ -64,7 +64,7 @@ class _IndexToElementReplacer(cst.CSTTransformer):
 
 class _ElementToIndexReplacer(cst.CSTTransformer):
     """
-    把 element 变量替换为 list[index]。
+    Replace the element variable with `list[index]`.
     """
 
     def __init__(self, list_name: str, index_name: str, element_name: str) -> None:
@@ -75,7 +75,7 @@ class _ElementToIndexReplacer(cst.CSTTransformer):
     def leave_Name(
         self, original_node: cst.Name, updated_node: cst.Name
     ) -> cst.BaseExpression:
-        # 把 element_name 替换成 list[index]
+        # Replace element_name with list[index]
         if original_node.value != self.element_name:
             return updated_node
 
@@ -93,8 +93,8 @@ class _ElementToIndexReplacer(cst.CSTTransformer):
 
 class _VarAssignedFinder(cst.CSTVisitor):
     """
-    检测某个变量在 body 中是否被赋值（作为赋值目标）。
-    如果被赋值，则认为转换不安全。
+    Detect whether a variable is assigned inside the loop body.
+    If it is assigned, treat the transformation as unsafe.
     """
 
     def __init__(self, var_name: str) -> None:
@@ -106,7 +106,7 @@ class _VarAssignedFinder(cst.CSTVisitor):
             t = target.target
             if isinstance(t, cst.Name) and t.value == self.var_name:
                 self.assigned = True
-                return False  # 提前停止遍历
+                return False  # Stop traversal early
         return None
 
     def visit_AugAssign(self, node: cst.AugAssign) -> Optional[bool]:
@@ -117,14 +117,14 @@ class _VarAssignedFinder(cst.CSTVisitor):
         return None
 
 
-# 将 variant 字符串映射到形态
+# Map variant strings to forms
 _VARIANT_KEY_TO_FORM: dict[str, LoopIndexForm] = {
-    # index-based 形态
+    # index-based form
     "index": LoopIndexForm.INDEX_BASED,
     "index_based": LoopIndexForm.INDEX_BASED,
     "range_len": LoopIndexForm.INDEX_BASED,
 
-    # element-based 形态
+    # element-based form
     "element": LoopIndexForm.ELEMENT_BASED,
     "direct": LoopIndexForm.ELEMENT_BASED,
     "direct_element": LoopIndexForm.ELEMENT_BASED,
@@ -141,32 +141,32 @@ class LoopIndexDirectReferenceRule(BaseRule):
     for currency in currencies:
         print(currency)
 
-    多形态方向约定（基于 RuleDirection）：
+    Multi-variant direction rules (based on RuleDirection):
 
       - direction.mode == "AUTO":
             INDEX_BASED      -> ELEMENT_BASED
             ELEMENT_BASED    -> INDEX_BASED
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "index" / "index_based" / "range_len"
                 "element" / "direct" / "direct_element"
-            本规则将这些 key 映射到 LoopIndexForm 并进行相应转换。
+            This rule maps those keys to LoopIndexForm and performs the corresponding conversion.
     """
 
     rule_id = "refactoring.loop_index_direct_reference"
-    description = "下标访问 <-> 直接元素变量 的循环重构"
+    description = "Loop refactor: indexed access <-> direct element variable"
 
-    # 声明本规则支持的变体名称（主要用于 CLI/文档）
+    # Declare the variant names supported by this rule (mainly for CLI/docs)
     variants = ("index", "element")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(self, match: LoopIndexDirectReferenceMatch) -> Optional[LoopIndexForm]:
         cur = match.form
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if cur is LoopIndexForm.INDEX_BASED:
                 target = LoopIndexForm.ELEMENT_BASED
@@ -175,28 +175,28 @@ class LoopIndexDirectReferenceRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 如果当前形态已经是目标形态，则不改写
+        # Do not rewrite if the current form already matches the target
         if target is cur:
             return None
 
         return target
 
-    # ------- 主重写逻辑 -------
+    # ------- Main rewrite logic -------
 
     def leave_For(self, original_node: cst.For, updated_node: cst.For) -> cst.For:
         match = match_loop_index_direct_reference(updated_node)
@@ -221,10 +221,10 @@ class LoopIndexDirectReferenceRule(BaseRule):
         ):
             return self._element_to_index(updated_node, match)
 
-        # 兜底：保持不变
+        # Fallback: keep unchanged
         return updated_node
 
-    # --------------- 方向 1: INDEX_BASED -> ELEMENT_BASED ---------------
+    # --------------- Direction 1: INDEX_BASED -> ELEMENT_BASED ---------------
 
     def _index_to_element(
         self, node: cst.For, match: LoopIndexDirectReferenceMatch
@@ -233,7 +233,7 @@ class LoopIndexDirectReferenceRule(BaseRule):
 
         list_name = match.list_name
         index_name = match.index_name
-        # 如果 pattern 没给出 element_name，就根据 list_name 猜一个
+        # If the pattern does not provide element_name, infer one from list_name
         element_name = match.element_name or _make_element_name(list_name)
 
         replacer = _IndexToElementReplacer(
@@ -249,7 +249,7 @@ class LoopIndexDirectReferenceRule(BaseRule):
             body=new_body,
         )
 
-    # --------------- 方向 2: ELEMENT_BASED -> INDEX_BASED ---------------
+    # --------------- Direction 2: ELEMENT_BASED -> INDEX_BASED ---------------
 
     def _element_to_index(
         self, node: cst.For, match: LoopIndexDirectReferenceMatch
@@ -260,7 +260,7 @@ class LoopIndexDirectReferenceRule(BaseRule):
         element_name = match.element_name
         index_name = f"{element_name}_idx"
 
-        # 如果 element 变量在 body 中被赋值，转换可能改变语义，保守起见跳过
+        # If the element variable is assigned in the body, the transform may change semantics, so skip it conservatively
         finder = _VarAssignedFinder(element_name)
         node.body.visit(finder)
         if finder.assigned:
@@ -273,7 +273,7 @@ class LoopIndexDirectReferenceRule(BaseRule):
         )
         new_body = node.body.visit(replacer)
 
-        # 构造 range(len(list_name))
+        # Build range(len(list_name))
         new_iter = cst.Call(
             func=cst.Name("range"),
             args=[

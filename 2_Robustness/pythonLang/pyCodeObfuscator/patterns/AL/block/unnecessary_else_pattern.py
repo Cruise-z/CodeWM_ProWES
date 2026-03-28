@@ -16,15 +16,15 @@ class RemoveElseForm(str, Enum):
 @dataclass
 class RemoveElseMatch:
     """
-    匹配到“去除多余 else”规则的命中信息。
+    Match information for the "remove unnecessary else" rule.
 
     form:
-        - ORIGINAL:  当前是 original 形态
-        - TRANSFORMED: 当前是 transformed 形态
+        - ORIGINAL:  current form is original
+        - TRANSFORMED: current form is transformed
 
-    if_node:    命中的 if 语句节点
-    then_block: if 分支的代码块
-    else_block: 如果当前是 ORIGINAL，会是 else 的代码块；否则为 None
+    if_node:    matched if statement node
+    then_block: code block for the if branch
+    else_block: if the current form is ORIGINAL, this is the else block; otherwise None
     """
     form: RemoveElseForm
     if_node: cst.If
@@ -34,8 +34,8 @@ class RemoveElseMatch:
 
 def block_ends_with_early_exit(block: cst.IndentedBlock) -> bool:
     """
-    判断一个缩进块最后一条语句是否为 return / raise / break / continue，
-    作为“可以安全去掉 else”的必要条件。
+    Check whether the last statement in an indented block is return / raise / break / continue,
+    which is the necessary condition for safely removing else.
     """
     if not block.body:
         return False
@@ -55,18 +55,18 @@ def block_ends_with_early_exit(block: cst.IndentedBlock) -> bool:
 
 def match_remove_unnecessary_else(node: cst.CSTNode) -> Optional[RemoveElseMatch]:
     """
-    在单个节点上尝试匹配“多余 else”模式。
+    Try to match the unnecessary-else pattern on a single node.
 
-    命中两种形态之一时，返回 RemoveElseMatch：
-        - form == ORIGINAL:    if 有 else，且 then_block 早退
-        - form == TRANSFORMED: if 无 else，且 then_block 早退
+    Return RemoveElseMatch when one of the two forms matches:
+        - form == ORIGINAL:    if has an else block and then_block exits early
+        - form == TRANSFORMED: if has no else block and then_block exits early
 
-    其它情况返回 None。
+    Return None in all other cases.
     """
     if not isinstance(node, cst.If):
         return None
 
-    # 情形 1：original 形态
+    # Case 1: original form
     if node.orelse is not None:
         if not isinstance(node.body, cst.IndentedBlock):
             return None
@@ -82,7 +82,7 @@ def match_remove_unnecessary_else(node: cst.CSTNode) -> Optional[RemoveElseMatch
             else_block=node.orelse.body,
         )
 
-    # 情形 2：transformed 形态
+    # Case 2: transformed form
     if node.orelse is None:
         if not isinstance(node.body, cst.IndentedBlock):
             return None

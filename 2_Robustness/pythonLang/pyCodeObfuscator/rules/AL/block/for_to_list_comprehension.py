@@ -12,14 +12,14 @@ from ....patterns.AL.block.for_to_list_comprehension_pattern import (
     ForListCompMatch,
 )
 
-# 将字符串 variant key 映射到具体形态
+# Map string variant keys to concrete forms
 _VARIANT_KEY_TO_FORM: dict[str, ForListCompForm] = {
-    # loop-based 形态
+    # loop-based form
     "loop": ForListCompForm.LOOP_BASED,
     "loop_based": ForListCompForm.LOOP_BASED,
     "for_loop": ForListCompForm.LOOP_BASED,
 
-    # comprehension 形态
+    # comprehension form
     "comprehension": ForListCompForm.COMPREHENSION_BASED,
     "listcomp": ForListCompForm.COMPREHENSION_BASED,
     "list_comprehension": ForListCompForm.COMPREHENSION_BASED,
@@ -29,44 +29,44 @@ _VARIANT_KEY_TO_FORM: dict[str, ForListCompForm] = {
 @register_rule
 class ForToListComprehensionRule(BaseRule):
     """
-    多形态规则：
+    Multi-variant rule:
 
-    LOOP_BASED 形态：
+    LOOP_BASED form:
         cubes = []
         for i in range(20):
             cubes.append(i**3)
 
-    COMPREHENSION_BASED 形态：
+    COMPREHENSION_BASED form:
         cubes = [i**3 for i in range(20)]
 
-    方向约定（基于新的 RuleDirection）：
+    Direction rules, based on the new RuleDirection:
 
       - direction.mode == "AUTO":
             LOOP_BASED            -> COMPREHENSION_BASED
             COMPREHENSION_BASED   -> LOOP_BASED
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "loop" / "loop_based" / "for_loop"
                 "comprehension" / "listcomp" / "list_comprehension"
-            本规则将这些 key 映射到 ForListCompForm：
-                - 如果当前就是目标形态，则不改写；
-                - 否则在两种形态之间做对应转换。
+            This rule maps those keys to ForListCompForm:
+                - if the current form is already the target form, no rewrite is performed;
+                - otherwise it converts between the two forms accordingly.
     """
 
     rule_id = "refactoring.for_to_list_comprehension"
-    description = "for 循环 <-> 列表推导式"
+    description = "for loop <-> list comprehension"
 
-    # 声明本规则支持的变体名称（主要用于文档/CLI）
+    # Declare the variant names supported by this rule, mainly for docs/CLI
     variants = ("loop", "comprehension")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(self, match: ForListCompMatch) -> Optional[ForListCompForm]:
         cur = match.form
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if cur is ForListCompForm.LOOP_BASED:
                 target = ForListCompForm.COMPREHENSION_BASED
@@ -75,28 +75,28 @@ class ForToListComprehensionRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：安全起见不改写
+                # Unknown key: do not rewrite for safety
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 如果当前形态已经是目标形态，则不改写
+        # Do not rewrite if the current form already matches the target
         if target is cur:
             return None
 
         return target
 
-    # ------- 主重写逻辑：在缩进块中成对处理 assign + for -------
+    # ------- Main rewrite logic: handle assign + for pairs inside indented blocks -------
 
     def leave_IndentedBlock(
         self,
@@ -115,16 +115,16 @@ class ForToListComprehensionRule(BaseRule):
 
             match = match_for_list_comprehension_pair(stmt, next_stmt)
 
-            # 未命中这条规则，直接保留
+            # This rule did not match, so keep the statement unchanged
             if match is None:
                 new_body.append(stmt)
                 i += 1
                 continue
 
-            # 根据当前形态 + direction 决定目标形态
+            # Determine the target form from the current form and direction
             target_form = self._target_form_for(match)
             if target_form is None:
-                # 不需要改写，原样保留
+                # No rewrite needed, keep as-is
                 new_body.append(stmt)
                 i += 1
                 continue
@@ -134,10 +134,10 @@ class ForToListComprehensionRule(BaseRule):
                 match.form is ForListCompForm.LOOP_BASED
                 and target_form is ForListCompForm.COMPREHENSION_BASED
             ):
-                # 构造一条列表推导赋值，替换原来的 assign + for 两条语句
+                # Build a list-comprehension assignment to replace the original assign + for statement pair
                 new_assign = _build_comprehension_assign(match)
                 new_body.append(new_assign)
-                # 跳过 for 语句
+                # Skip the for statement
                 i += 2
                 continue
 
@@ -146,30 +146,30 @@ class ForToListComprehensionRule(BaseRule):
                 match.form is ForListCompForm.COMPREHENSION_BASED
                 and target_form is ForListCompForm.LOOP_BASED
             ):
-                # 把一条列表推导赋值拆成 assign [] + for ... append(...)
+                # Split a list-comprehension assignment into assign [] + for ... append(...)
                 init_assign, for_stmt = _build_loop_from_comprehension(match)
                 new_body.append(init_assign)
                 new_body.append(for_stmt)
                 i += 1
                 continue
 
-            # 其它情况理论上不会发生，兜底保留原样
+            # Other cases should not happen in theory; keep the original form as a fallback
             new_body.append(stmt)
             i += 1
 
         return updated_node.with_changes(body=new_body)
 
 
-# ------- 辅助构造函数 -------
+# ------- Helper constructors -------
 
 
 def _build_comprehension_assign(match: ForListCompMatch) -> cst.SimpleStatementLine:
     """
-    根据 LOOP_BASED 匹配结果构造：
+    Build from a LOOP_BASED match:
 
         cubes = [value_expr for index_name in iter_expr]
     """
-    # 保留原 assign（target 等），只改 value
+    # Keep the original assignment, including target and related parts, and only replace the value
     assign = _extract_single_assign_from_stmt(match.assign_stmt)
     assert assign is not None
 
@@ -191,7 +191,7 @@ def _build_loop_from_comprehension(
     match: ForListCompMatch,
 ) -> Tuple[cst.SimpleStatementLine, cst.For]:
     """
-    根据 COMPREHENSION_BASED 匹配结果构造：
+    Build from a COMPREHENSION_BASED match:
 
         cubes = []
         for i in iter_expr:

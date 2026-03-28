@@ -71,7 +71,7 @@ def parse_args_for_evaluation():
     return parser.parse_args()
 
 def write_to_file(file: str, filtered_data: list):
-    """将筛选后的数据写入临时文件"""
+    """Write the filtered data into a temporary file."""
     with open(file, 'w', encoding='utf-8') as file:
         for item in filtered_data:
             json_data = json.dumps(item, ensure_ascii=False)
@@ -266,13 +266,13 @@ def main(args):
             wmids = wmids.to(DEVICE)
             src_mask = src_mask.to(DEVICE)
 
-            # 提取原始代码实例
+            # Extract the original code instance
             ori_instances = transform_manager.get_original_instances(instance_ids)
             if not ori_instances[0].source:
                 continue
             # print("instance is:" + str(ori_instances[0].source))
             
-            # 加载转换后的代码到张量
+            # Load the transformed code into tensors
             dec_x, dec_l, dec_m = transform_manager.load_to_tensor(ori_instances)
             dec_x = dec_x.to(DEVICE)
             dec_m = dec_m.to(DEVICE)
@@ -295,7 +295,7 @@ def main(args):
                 repowise_long_msg[repo].extend(preds[0].tolist())
                 repowise_long_gt[repo].extend(wms[0].long().tolist())
 
-            # 更新提取结果
+            # Update extraction results
             test_obj["obfus_extract"] = preds[0].tolist()
             # json_item = json.dumps(test_obj, ensure_ascii=False)
             results.append(test_obj)

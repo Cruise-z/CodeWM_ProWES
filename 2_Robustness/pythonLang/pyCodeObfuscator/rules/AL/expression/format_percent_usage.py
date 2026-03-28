@@ -16,7 +16,7 @@ from ....patterns.AL.expression.format_percent_usage_pattern import (
 def _percent_inner_to_format(inner: str) -> str:
     """
     "%s,%s" -> "{},{}"
-    （pattern 已保证只存在 %s，没有 %d/%f/%% 等）
+    (the pattern already guarantees that only %s appears, with no %d/%f/%% and so on)
     """
     return inner.replace("%s", "{}")
 
@@ -25,9 +25,9 @@ def _format_inner_to_percent(inner: str) -> str:
     """
     "{},{}" / "{0},{1}" -> "%s,%s"
 
-    假设 inner 已经通过 pattern 的 _check_format_template 校验：
-      - 只包含 {} 或 {数字}
-      - 没有 {{ / }} 等复杂情况
+    Assume inner has already passed the pattern's _check_format_template validation:
+      - It contains only {} or {number}
+      - It does not include complex cases such as {{ / }}
     """
     out_chars: list[str] = []
     i = 0
@@ -38,11 +38,11 @@ def _format_inner_to_percent(inner: str) -> str:
         if ch == "{":
             j = inner.find("}", i + 1)
             if j == -1:
-                # 理论上不会发生（pattern 已校验），这里兜个底
+                # This should not happen in theory (the pattern has already validated it), but keep a fallback here
                 out_chars.append(ch)
                 i += 1
             else:
-                # 跳过 {...}，统一改成 %s
+                # Skip {...} and normalize everything to %s
                 out_chars.append("%s")
                 i = j + 1
         else:
@@ -89,15 +89,15 @@ def _build_percent_binop(match: FormatPercentUsageMatch) -> cst.BinaryOperation:
     )
 
 
-# --- variant 映射：percent / format ---
+# --- Variant mapping: percent / format ---
 
 _VARIANT_KEY_TO_FORM: dict[str, FormatPercentForm] = {
-    # 百分号形式: "%s" % args
+    # Percent form: "%s" % args
     "percent": FormatPercentForm.PERCENT,
     "%":       FormatPercentForm.PERCENT,
     "percent_op": FormatPercentForm.PERCENT,
 
-    # format 形式: "{}".format(args)
+    # format form: "{}".format(args)
     "format":      FormatPercentForm.FORMAT,
     "format_call": FormatPercentForm.FORMAT,
 }
@@ -108,29 +108,29 @@ class FormatPercentUsageRule(BaseRule):
     """
     "%s,%s" % (h, w)  <->  "{},{}".format(h, w) / "{0},{1}".format(h, w)
 
-    多形态方向约定（基于新的 RuleDirection）：
+    Multi-variant direction rules (based on the new RuleDirection):
 
       - direction.mode == "AUTO":
             PERCENT  -> FORMAT
             FORMAT   -> PERCENT
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "percent" / "%" / "percent_op"
                 "format" / "format_call"
-            本规则将这些 key 映射到 FormatPercentForm，并在两种形态之间做对应转换。
+            This rule maps those keys to FormatPercentForm and performs the corresponding conversion between the two forms.
     """
 
     rule_id = "refactoring.format_percent_usage"
-    description = "字符串格式化：'%%s' % args <-> '{}'.format(args) / '{0}'.format(args)"
+    description = "String formatting: '%%s' % args <-> '{}'.format(args) / '{0}'.format(args)"
     variants = ("percent", "format")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(self, current: FormatPercentForm) -> FormatPercentForm | None:
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if current is FormatPercentForm.PERCENT:
                 target = FormatPercentForm.FORMAT
@@ -139,22 +139,22 @@ class FormatPercentUsageRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 当前形态已经是目标形态则不改写
+        # Do not rewrite if the current form already matches the target
         if target is current:
             return None
 
@@ -168,7 +168,7 @@ class FormatPercentUsageRule(BaseRule):
         updated_node: cst.BinaryOperation,
     ) -> cst.BaseExpression:
         match = match_format_percent_usage(updated_node)
-        # 只在当前是 PERCENT、且目标为 FORMAT 时改写
+        # Rewrite only when the current form is PERCENT and the target is FORMAT
         if match is None or match.form is not FormatPercentForm.PERCENT:
             return updated_node
 
@@ -189,7 +189,7 @@ class FormatPercentUsageRule(BaseRule):
         updated_node: cst.Call,
     ) -> cst.BaseExpression:
         match = match_format_percent_usage(updated_node)
-        # 只在当前是 FORMAT、且目标为 PERCENT 时改写
+        # Rewrite only when the current form is FORMAT and the target is PERCENT
         if match is None or match.form is not FormatPercentForm.FORMAT:
             return updated_node
 

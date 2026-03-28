@@ -21,16 +21,16 @@ from transformers.generation.stopping_criteria import (
 )
 import threading
 
-# ================= 配置项(是否开启采样/双路同配置) =================
+# ================= Configuration (sampling on/off and dual-branch setup) =================
 import os
-# SERVER_DO_SAMPLE: "1"/"true" 开启采样；"0"/"false" 走贪心。默认开启。
+# SERVER_DO_SAMPLE: "1"/"true" enables sampling; "0"/"false" uses greedy decoding. Enabled by default.
 def _as_bool(x: str) -> bool:
     return str(x).strip().lower() not in ("0", "false", "no", "off", "")
 SERVER_DO_SAMPLE = _as_bool(os.getenv("SERVER_DO_SAMPLE", "1"))
 # SAMPLING_MODE: "lenient_openai" | "map_to_greedy" | "strict"
-# 详见 normalize_sampling_args() 说明。默认 "lenient_openai"。
+# See normalize_sampling_args() below for details. Default: "lenient_openai".
 def _as_mode(x: str) -> str:
-    """把字符串归一化到 {'lenient_openai','map_to_greedy','strict'} 三者之一。"""
+    """Normalize a string into one of {'lenient_openai', 'map_to_greedy', 'strict'}."""
     s = str(x or "").strip().lower().replace("-", "_")
     if s in ("lenient_openai", "lenient", "openai", "lo"):
         return "lenient_openai"
@@ -38,24 +38,24 @@ def _as_mode(x: str) -> str:
         return "map_to_greedy"
     if s in ("strict", "error", "raise", "s"):
         return "strict"
-    # 不认识就回退到宽松模式
+    # Fall back to the lenient mode if the value is unrecognized
     return "lenient_openai"
 SAMPLING_MODE = _as_mode(os.getenv("SAMPLING_MODE", "lenient_openai"))
 
-# 是否强制在并行模式下提供 external_processor_names（避免“两路同配置”的误用）
+# Whether to require external_processor_names in parallel mode, to avoid mistakenly using identical configurations on both branches
 REQUIRE_EXTERNAL_IN_PARALLEL = _as_bool(os.getenv("REQUIRE_EXTERNAL_IN_PARALLEL", "0"))
 
-# 并行返回 usage 统计口径：1=每个 choice 单独统计（默认）；0=旧口径（合并统计）
+# Usage accounting in parallel responses: 1 = each choice has its own usage (default); 0 = legacy merged accounting
 USAGE_PER_CHOICE = _as_bool(os.getenv("USAGE_PER_CHOICE", "1"))
 
-# 在不支持 `generator=` 的模型上启用回退；默认启用
+# Enable fallback for models that do not support `generator=`; enabled by default
 ALLOW_GENERATOR_FALLBACK = _as_bool(os.getenv("ALLOW_GENERATOR_FALLBACK", "1"))
 
-# RNG 种子策略（与上传文档建议保持一致）：默认不为未传 seed 派生种子，行为与 HF 一致；
-# 如需兼容旧行为，可设 RNG_SEED_FALLBACK=derived
+# RNG seed policy (kept consistent with the uploaded documentation): by default, no seed is derived when one is not provided, matching HF behavior;
+# to keep compatibility with older behavior, set RNG_SEED_FALLBACK=derived
 RNG_SEED_FALLBACK = os.getenv("RNG_SEED_FALLBACK", "none").strip().lower()
 
-# （可选）极致确定性：设置 DETERMINISTIC=1 开启；会牺牲性能
+# Optional: extreme determinism. Set DETERMINISTIC=1 to enable it, at the cost of performance.
 if _as_bool(os.getenv("DETERMINISTIC", "0")):
     try:
         torch.use_deterministic_algorithms(True)
@@ -66,19 +66,19 @@ if _as_bool(os.getenv("DETERMINISTIC", "0")):
     except Exception as _e:
         print(f"[server] DETERMINISTIC setup failed: {_e}")
 
-# ====== 原始请求体打印控制（默认关闭，按需开启）======
-# LOG_REQ_BODY=1 开启打印；LOG_REQ_BODY_BYTES 控制最多打印多少原始字节
+# ====== Raw request-body logging control (disabled by default, enable when needed) ======
+# LOG_REQ_BODY=1 enables body logging; LOG_REQ_BODY_BYTES controls the maximum number of raw bytes to print
 LOG_REQ_BODY = _as_bool(os.getenv("LOG_REQ_BODY", "0"))
 LOG_REQ_BODY_BYTES = int(os.getenv("LOG_REQ_BODY_BYTES", "4096"))
 
-# ================= 模型加载（默认不启用任何内置水印） =================
+# ================= Model loading (no built-in watermark enabled by default) =================
 MODEL_ID = "Qwen/Qwen2.5-Coder-32B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID, torch_dtype=torch.bfloat16, device_map="cuda"
 )
 model.eval()
-# === 生成前的 tokenizer/model 配置兜底：避免 pad 缺失导致的警告或越界 ===
+# === Pre-generation tokenizer/model fallback configuration to avoid warnings or out-of-range issues when pad is missing ===
 try:
     if tokenizer.pad_token_id is None and tokenizer.eos_token_id is not None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
@@ -89,29 +89,29 @@ try:
         if getattr(cfg, "eos_token_id", None) is None and tokenizer.eos_token_id is not None:
             cfg.eos_token_id = tokenizer.eos_token_id
 except Exception:
-    # 兜底不应影响主流程，静默即可
+    # This fallback should not affect the main flow, so fail silently
     pass
 
-# 供你的处理器构造使用的词表（与本服务 tokenizer 完全一致）
-# 覆盖到外置 builder 的 vocab 参数：保证是 0..N-1 的连续 id
-# 使用连续 id 列表，避免 dict.values() 顺序不定导致 builder 误用
+# Vocabulary IDs used to construct your processors, fully consistent with this service's tokenizer
+# Injected into external builders as the vocab parameter to guarantee a contiguous 0..N-1 id range
+# A contiguous id list is used to avoid accidental misuse caused by nondeterministic dict.values() ordering
 vocab_ids: List[int] = list(range(len(tokenizer)))
 
-# ================= 处理器注册表 & 注册函数 =================
-# 你可以按自己的喜好把“HF内置水印/你自定义的水印”注册到任意一侧
-# 注册**工厂函数**，在请求解析阶段再实例化，避免跨请求共享可变状态
+# ================= Processor registries and registration helpers =================
+# You can register "HF built-in watermarking / your custom watermarking" on either side as you prefer
+# Register **factory functions** and instantiate them at request parsing time to avoid sharing mutable state across requests
 ProcessorFactory = Callable[[], LogitsProcessorList]
 INTERNAL_PROCESSORS: Dict[str, ProcessorFactory] = {}
-EXTERNAL_PROCESSORS: Dict[str, ProcessorFactory] = {} # 保留类型与 API，但解析时将不再使用
+EXTERNAL_PROCESSORS: Dict[str, ProcessorFactory] = {} # Kept for type/API compatibility, but no longer used during request resolution
 
-# ===== 纯 builder 化：外置处理器通过可参数化 builder 动态实例化 =====
+# ===== Pure builder-based flow: external processors are instantiated dynamically via parameterizable builders =====
 ParametricBuilder = Callable[..., Any]
 EXTERNAL_BUILDERS: Dict[str, ParametricBuilder] = {}
 
 def register_external_builder(name: str, builder: ParametricBuilder) -> None:
     """
-    注册可参数化的外置处理器 builder。请求端可通过 external_processor_params[name]
-    传参；这里会强制覆盖 vocab=vocab_ids，忽略来路 vocab。
+    Register a parameterizable external-processor builder. The request side can pass parameters through external_processor_params[name].
+    vocab=vocab_ids is forced here, and any incoming vocab argument is ignored.
     """
     if not callable(builder):
         raise TypeError(f"external builder for '{name}' must be callable")
@@ -119,9 +119,9 @@ def register_external_builder(name: str, builder: ParametricBuilder) -> None:
 
 def _ensure_lp_list(p) -> LogitsProcessorList:
     """
-    将对象规范化为 LogitsProcessorList，并做强类型校验：
-      - 禁止 None
-      - 允许：单个 LogitsProcessor、LogitsProcessorList、list/tuple[LogitsProcessor]
+    Normalize an object into LogitsProcessorList and enforce strict type validation:
+      - None is forbidden
+      - Allowed inputs: a single LogitsProcessor, a LogitsProcessorList, or list/tuple[LogitsProcessor]
     """
     if p is None:
         raise TypeError("LogitsProcessor is None (expected LogitsProcessor or LogitsProcessorList).")
@@ -141,17 +141,17 @@ def _ensure_lp_list(p) -> LogitsProcessorList:
 
 def _as_factory(factory_or_obj: Any) -> ProcessorFactory:
     """
-    统一转为“无参工厂函数”：
-      1) 若是处理器实例（即使可调用，也当实例对待）→ 每次返回克隆；
-      2) 否则若是可调用的 0 参工厂 → 调用并做强校验；
+    Convert any supported input into a zero-argument factory:
+      1) If it is already a processor instance (even if callable), treat it as an instance and return a clone each time;
+      2) Otherwise, if it is a callable zero-argument factory, call it and validate the result;
     """
-    # ✅ 优先处理实例（LogitsProcessor / LogitsProcessorList / list/tuple[LogitsProcessor]）
+    # Prefer handling concrete instances first (LogitsProcessor / LogitsProcessorList / list/tuple[LogitsProcessor])
     if isinstance(factory_or_obj, (LogitsProcessor, LogitsProcessorList, list, tuple)):
         inst_lp = _ensure_lp_list(factory_or_obj)
         def _factory_from_instance() -> LogitsProcessorList:
             return _clone_lp_list(inst_lp)
         return _factory_from_instance
-    # ✅ 其次才把“可调用对象”视作 0 参工厂
+    # Only then treat a callable object as a zero-argument factory
     if callable(factory_or_obj):
         def _factory_from_callable() -> LogitsProcessorList:
             prod = factory_or_obj()
@@ -163,20 +163,20 @@ def _as_factory(factory_or_obj: Any) -> ProcessorFactory:
     )
 
 def register_internal(name: str, factory_or_obj: Any) -> None:
-    """注册到“内置处理器列表”命名空间（以工厂的形式存储）。"""
+    """Register into the internal processor namespace, stored as a factory."""
     INTERNAL_PROCESSORS[name] = _as_factory(factory_or_obj)
 
 def register_external(name: str, factory_or_obj: Any) -> None:
     """
-    兼容函数：保留以防老代码调用，但解析阶段不再使用 EXTERNAL_PROCESSORS。
-    如继续调用，本函数只做注册，不参与生成路径。
+    Compatibility helper kept in case older code still calls it, but EXTERNAL_PROCESSORS is no longer used during request resolution.
+    If called, it only registers the object and does not participate in the generation path.
     """
     EXTERNAL_PROCESSORS[name] = _as_factory(factory_or_obj)
 
 def _clone_lp_list(lp: LogitsProcessorList) -> LogitsProcessorList:
     """
-    为每次请求克隆一份处理器实例，避免跨请求/双路共享内部状态导致串扰。
-    deepcopy 失败则回退到原对象（尽量不阻断）。
+    Clone processor instances per request to avoid cross-request or cross-branch state interference.
+    If deepcopy fails, fall back to the original object rather than blocking execution.
     """
     new = []
     for p in lp:
@@ -193,8 +193,9 @@ def _resolve_lp_list(
     *,
     external_params: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> Optional[LogitsProcessorList]:
-    """按名称把多个处理器拼成一个 LogitsProcessorList，保持你传入的顺序。
-       约定：并行模式下内置先于外置；单路模式下也遵循“先内置、后外置”的顺序。
+    """Resolve multiple named processors into a single LogitsProcessorList while preserving the input order.
+       Convention: in parallel mode, internal processors come before external processors; the same "internal first, external second"
+       ordering is also used in single-branch mode.
     """
     chain: List[Any] = []
 
@@ -202,12 +203,12 @@ def _resolve_lp_list(
         for n in internal_names:
             if n not in INTERNAL_PROCESSORS:
                 raise HTTPException(status_code=400, detail=f"Unknown internal processor: {n}")
-            # 实例化工厂 -> 得到当次请求的独立处理器链
+            # Instantiate the factory to get an independent processor chain for this request
             try:
                 lp = INTERNAL_PROCESSORS[n]()
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Internal processor '{n}' factory error: {e}") from e
-            # 逐项强类型校验
+            # Validate each produced item strictly
             for it in lp:
                 if not isinstance(it, LogitsProcessor):
                     raise HTTPException(status_code=400, detail=f"Internal processor '{n}' produced invalid item: {type(it)}")
@@ -216,9 +217,9 @@ def _resolve_lp_list(
     if mode != "internal_only" and external_names:
         for n in external_names:
             if n not in EXTERNAL_BUILDERS:
-                # 纯 builder 化：未注册 builder 直接报错
+                # Pure builder-based flow: fail immediately if the builder is not registered
                 raise HTTPException(status_code=400, detail=f"Unknown external builder: {n}")
-            # 从请求取参数并强制覆盖 vocab
+            # Read parameters from the request and forcefully override vocab
             cfg = dict((external_params or {}).get(n) or {})
             cfg.pop("vocab", None)
             try:
@@ -239,11 +240,11 @@ _GLOBAL_RNG_LOCK = threading.Lock()
 
 def _pick_seed(rng_seed: Optional[int], input_ids: torch.LongTensor) -> Optional[int]:
     """
-    选择用于本次采样的种子：
-      - 传入 rng_seed → 直接使用；
-      - 否则按 RNG_SEED_FALLBACK：
-          * 'derived' → 从 prompt 求和派生一个稳定 seed；
-          * 其它 → 返回 None（与 HF 默认一致，不传 generator）
+    Choose the seed used for this sampling run:
+      - If rng_seed is provided, use it directly;
+      - Otherwise follow RNG_SEED_FALLBACK:
+          * 'derived' -> derive a stable seed from the prompt sum;
+          * anything else -> return None, which matches HF default behavior by not passing a generator
     """
     if rng_seed is not None:
         return int(rng_seed)
@@ -251,20 +252,20 @@ def _pick_seed(rng_seed: Optional[int], input_ids: torch.LongTensor) -> Optional
         return int(torch.sum(input_ids).item() % (2**31 - 1))
     return None
 
-# ===== 在此处插入：自动加载 uiAPI（可选）=====
+# ===== Insert optional auto-loading of uiAPI / processor registration here =====
 try:
     import importlib, sys, os
     here = os.path.dirname(os.path.abspath(__file__))
     if here not in sys.path:
         sys.path.insert(0, here)
-    importlib.import_module("regWM")  # 其中应在顶层调用 register_xxx 完成注册
+    importlib.import_module("regWM")  # register_xxx should be called at module top level inside regWM
     print("[server] processors loaded ->",
           "internal:", list(INTERNAL_PROCESSORS.keys()),
           "external_builders:", list(EXTERNAL_BUILDERS.keys()))
 except Exception as e:
     print(f"[server] regWM not loaded: {e}")
 
-# ================== OpenAI 兼容请求/响应模型 ==================
+# ================== OpenAI-compatible request/response models ==================
 class Message(BaseModel):
     role: str
     content: str
@@ -275,32 +276,32 @@ class ChatRequest(BaseModel):
     temperature: Optional[float] = 0.7
     top_p: Optional[float] = 0.95
     max_tokens: Optional[int] = 512
-    stream: Optional[bool] = False  # 本示例不做流式
-    # 可选：固定本次请求的随机种子（保证跨运行复现），不传也可耦合
+    stream: Optional[bool] = False  # Streaming is not implemented in this example
+    # Optional: fix the random seed for this request to guarantee reproducibility across runs; coupling is still possible if omitted
     rng_seed: Optional[int] = None
 
-    # 你关心的接口（都为“列表”）——名字需先在注册表里注册好
+    # The processor-name interfaces you care about (all lists); names must be registered beforehand
     internal_processor_names: Optional[List[str]] = None
     external_processor_names: Optional[List[str]] = None
 
-    # 并行开关：True 时返回两路结果（仅内置）与（内置+外置）
+    # Parallel switch: when True, return results for two branches, internal-only and internal-plus-external
     parallel: Optional[bool] = False
-    # 仅对 external 生效：按名称传 builder 参数
+    # Only applies to external processors: pass builder arguments by name
     external_processor_params: Optional[Dict[str, Dict[str, Any]]] = None
     
-    # —— 隐藏开关：不出现在 schema，客户端也传不进来 —— #
+    # Hidden switch: does not appear in schema and cannot be passed in by clients
     _do_sample: bool = PrivateAttr(default=SERVER_DO_SAMPLE)
 
-# 归一处理传入参数
+# Normalize incoming sampling arguments
 def normalize_sampling_args(do_sample: bool,
                             temperature: Optional[float],
                             top_p: Optional[float],
                             mode: str = SAMPLING_MODE):
     """
     mode:
-      - "lenient_openai": do_sample=True 且 temp<=0 → temp=1e-4；do_sample=False → temp=1.0, top_p=1.0
-      - "map_to_greedy":  do_sample=True 且 temp<=0 → do_sample=False（转贪心）
-      - "strict":         do_sample=True 且 temp<=0 → raise ValueError
+      - "lenient_openai": if do_sample=True and temp<=0, use temp=1e-4; if do_sample=False, force temp=1.0 and top_p=1.0
+      - "map_to_greedy":  if do_sample=True and temp<=0, switch do_sample=False (convert to greedy)
+      - "strict":         if do_sample=True and temp<=0, raise ValueError
     """
     if not do_sample:
         return False, 1.0, 1.0
@@ -316,7 +317,7 @@ def normalize_sampling_args(do_sample: bool,
         else:  # "strict"
             raise ValueError("temperature must be > 0 when do_sample=True")
 
-    # 约束 top_p ∈ (0,1]
+    # Constrain top_p to (0, 1]
     if not (0 < p <= 1.0):
         p = 1.0
 
@@ -324,20 +325,20 @@ def normalize_sampling_args(do_sample: bool,
 
 app = FastAPI()
 
-# ====== 简单请求体大小日志中间件（仅在特定路由启用）======
+# ====== Simple request-body size logging middleware, enabled only on selected routes ======
 logger = logging.getLogger("server")
 if not logger.handlers:
     logging.basicConfig(level=logging.INFO)
 
 class LogReqSizeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # 需要统计的路径可按需增减
+        # Adjust the set of tracked paths as needed
         if request.url.path in ("/v1/chat/completions", "/dbg/echo-len"):
             try:
-                body = await request.body()          # Starlette 会缓存，后续可重复读取
+                body = await request.body()          # Starlette caches it, so it can be read again later
                 size = len(body or b"")
                 cl = request.headers.get("content-length")
-                # 尝试解析 parallel 字段，便于并行压测时定位
+                # Try to parse the parallel field to make parallel stress tests easier to inspect
                 parallel = None
                 try:
                     data = json.loads(body.decode("utf-8"))
@@ -346,17 +347,17 @@ class LogReqSizeMiddleware(BaseHTTPMiddleware):
                     pass
                 logger.info("[recv] bytes=%s content-length=%s path=%s parallel=%s",
                             size, cl, request.url.path, parallel)
-                # 可选：打印请求体内容（受限于 LOG_REQ_BODY / LOG_REQ_BODY_BYTES）
+                # Optional: print the request body, limited by LOG_REQ_BODY / LOG_REQ_BODY_BYTES
                 if LOG_REQ_BODY:
                     preview = body[:LOG_REQ_BODY_BYTES]
-                    # 优先尝试 JSON pretty-print；失败则按文本打印
+                    # Prefer JSON pretty-print first; if that fails, fall back to plain text
                     printed = None
                     try:
                         parsed = json.loads(preview.decode("utf-8", "replace"))
                         printed = json.dumps(parsed, ensure_ascii=False, indent=2)
                     except Exception:
                         printed = preview.decode("utf-8", "replace")
-                    # 标注预览与总大小，避免误解为完整 body
+                    # Include preview length and total size so the output is not mistaken for the full body
                     logger.info(
                         "[recv] body_preview(%d/%dB): %s",
                         len(preview), size, printed
@@ -369,19 +370,19 @@ app.add_middleware(LogReqSizeMiddleware)
 
 @app.get("/v1/_processors")
 def list_processors():
-    """调试端点：查看当前已注册的处理器名称。"""
+    """Debug endpoint: inspect the currently registered processor names."""
     return {
         "internal": list(INTERNAL_PROCESSORS.keys()),
-        "external": list(EXTERNAL_PROCESSORS.keys()),     # 保留兼容展示
+        "external": list(EXTERNAL_PROCESSORS.keys()),     # Kept for compatibility display
         "external_builders": list(EXTERNAL_BUILDERS.keys())
     }
     
 @app.get("/v1/models")
 def list_models():
-    """OpenAI 兼容：列出单个可用模型。"""
+    """OpenAI-compatible endpoint: list the single available model."""
     return {"object": "list", "data": [{"id": MODEL_ID, "object": "model"}]}
 
-# ====== 调试端点：返回请求体长度 ======
+# ====== Debug endpoint: return request-body length ======
 @app.post("/dbg/echo-len")
 async def dbg_echo_len(request: Request):
     try:
@@ -393,9 +394,10 @@ async def dbg_echo_len(request: Request):
 
 def _model_ctx_limit() -> Optional[int]:
     """
-    推断模型支持的最大上下文长度（tokens）。不同模型/配置字段命名不同，这里做兼容兜底，
-    若存在 rope_scaling（如 Llama/Qwen 的扩展）则按 factor 估算有效上限。
-    返回 None 表示无法可靠推断。
+    Infer the model's maximum supported context length in tokens.
+    Different models/configs use different field names, so this function applies a compatibility fallback.
+    If rope_scaling exists, as in some Llama/Qwen variants, it estimates the effective limit by factor.
+    Return None when a reliable inference is not possible.
     """
     cfg = getattr(model, "config", None)
     if cfg is None:
@@ -411,7 +413,7 @@ def _model_ctx_limit() -> Optional[int]:
         base = int(v) if isinstance(v, int) and v > 0 else None
     if base is None:
         return None
-    # rope_scaling 推断（若存在）
+    # rope_scaling inference, if present
     try:
         rs = getattr(cfg, "rope_scaling", None)
         if isinstance(rs, dict):
@@ -429,7 +431,7 @@ def _cap_max_new_tokens(prompt_len: int, want_new: Optional[int]) -> int:
 
 @app.get("/healthz")
 def healthz():
-    """简单健康检查：可用于 LB 探活。"""
+    """Simple health check endpoint, useful for load-balancer probing."""
     return {"status": "ok", "model": MODEL_ID}
 
 def _prep_inputs(messages: List[Dict[str, str]]) -> Dict[str, torch.Tensor]:
@@ -440,7 +442,7 @@ def _prep_inputs(messages: List[Dict[str, str]]) -> Dict[str, torch.Tensor]:
 
 def _safe_get_logits_processor(gen_cfg, prompt_len: int) -> LogitsProcessorList:
     """
-    兼容获取 HF 的 logits_processor；若模型无对应私有方法则回退为空列表。
+    Compatibly obtain HF's logits_processor; fall back to an empty list if the model lacks the relevant private method.
     """
     try:
         return model._get_logits_processor(
@@ -455,7 +457,7 @@ def _safe_get_logits_processor(gen_cfg, prompt_len: int) -> LogitsProcessorList:
 
 def _safe_get_stopping_criteria(gen_cfg) -> StoppingCriteriaList:
     """
-    兼容获取 HF 的 stopping_criteria；若模型无对应私有方法则返回空列表。
+    Compatibly obtain HF's stopping_criteria; return an empty list if the model lacks the relevant private method.
     """
     try:
         return model._get_stopping_criteria(gen_cfg, None)
@@ -463,7 +465,7 @@ def _safe_get_stopping_criteria(gen_cfg) -> StoppingCriteriaList:
         return StoppingCriteriaList([])
 
 def _fmt_ms(sec: float) -> str:
-    """格式化秒到毫秒字符串（保留三位小数）。"""
+    """Format seconds as a millisecond string with three decimal places."""
     try:
         return f"{sec * 1000.0:.3f}ms"
     except Exception:
@@ -478,30 +480,30 @@ def _build_hf_components(
     max_new_tokens: int,
 ) -> tuple:
     """
-    复用 HF 生成子模块：根据归一化后的 sampling 配置构造
-    - hf_logits_processor：HF 自带的处理器（如 no_repeat_ngram/repetition_penalty/…）
-    - hf_warpers：HF 自带的 warpers（temperature/top_p/top_k/…）
-    - stopping_criteria：HF 停止准则（补齐 MaxLengthCriteria(prompt_len+max_new_tokens)）
+    Reuse HF generation subcomponents by building them from normalized sampling arguments:
+    - hf_logits_processor: HF's built-in processors, such as no_repeat_ngram/repetition_penalty/...
+    - hf_warpers: HF's built-in warpers, such as temperature/top_p/top_k/...
+    - stopping_criteria: HF stopping criteria, supplemented with MaxLengthCriteria(prompt_len+max_new_tokens)
     """
-    # clone 一份，避免污染全局 config
+    # Clone a copy to avoid mutating the global config
     gen_cfg = copy.deepcopy(model.generation_config)
     gen_cfg.do_sample = bool(do_sample)
     if temperature is not None:
         gen_cfg.temperature = float(temperature)
     if top_p is not None:
         gen_cfg.top_p = float(top_p)
-    # 让 stopping criteria 能拿到 max_length 语义（以 max_new_tokens 推导）
-    # 注：HF 内部通常把 max_new_tokens 与当前长度合成 max_length；此处显式补齐。
+    # Make sure stopping criteria can see max_length semantics, derived from max_new_tokens
+    # Note: HF typically combines max_new_tokens with the current length internally; here it is filled in explicitly
     max_len = int(prompt_len + max_new_tokens) if max_new_tokens and max_new_tokens > 0 else int(prompt_len)
 
-    # 注意：HF 的私有方法在部分模型上可能不存在，这里做安全回退
+    # Note: HF private methods may not exist on some models, so use a safe fallback here
     hf_lp = _safe_get_logits_processor(gen_cfg, prompt_len)
     stopping_criteria = _safe_get_stopping_criteria(gen_cfg)
-    # 若未包含 MaxLengthCriteria，则补齐一条（以 prompt_len+max_new_tokens 为上限）
+    # Add MaxLengthCriteria if it is missing, using prompt_len+max_new_tokens as the cap
     has_maxlen = any(isinstance(c, MaxLengthCriteria) for c in stopping_criteria)
     if not has_maxlen:
         stopping_criteria.append(MaxLengthCriteria(max_length=max_len))
-    return gen_cfg, hf_lp, None, stopping_criteria  # warpers 由 HF 基于 kwargs 内部构建
+    return gen_cfg, hf_lp, None, stopping_criteria  # warpers are built internally by HF from kwargs
 
 def _count_new_and_reason(seqs: torch.LongTensor,
                           prompt_len: int,
@@ -509,38 +511,38 @@ def _count_new_and_reason(seqs: torch.LongTensor,
                           eos_ids: List[int],
                           pad_id: Optional[int]) -> tuple[List[int], List[str]]:
     """
-    逐样本统计生成长度与 finish_reason（'stop' | 'length'）
-    - 'length': 达到 capped 上限
-    - 'stop'  : 未达上限但已生成 EOS（或其它停止条件被 HF 提前触发）
+    Compute generated length and finish_reason ('stop' | 'length') per sample.
+    - 'length': reached the capped upper bound
+    - 'stop'  : stopped before the cap because EOS or another stopping condition was hit
     """
     B, T = seqs.shape
     new_lens, reasons = [], []
     for b in range(B):
         new_part = seqs[b, prompt_len:]
-        # —— 优先以“首个 EOS 的位置（含 EOS）”为准，避免 pad==eos 少算 1 —— #
+        # Prefer the first EOS position, including EOS itself, to avoid undercounting by 1 when pad==eos
         new_len = None
-        if eos_ids:  # 仅在确实有 EOS 定义时才做 isin 搜索
+        if eos_ids:  # Only search with isin when EOS is actually defined
             eos_tensor = torch.tensor(eos_ids, device=new_part.device, dtype=new_part.dtype)
             # torch.isin: [T] vs [K] -> [T]
             eos_mask = torch.isin(new_part, eos_tensor)
             idx = torch.nonzero(eos_mask, as_tuple=False)
             if idx.numel() > 0:
                 first_eos_pos = int(idx[0].item())  # 0-based
-                new_len = first_eos_pos + 1         # 含 EOS
+                new_len = first_eos_pos + 1         # Include EOS
         if new_len is None:
-            # 没遇到 EOS，退回“非 pad 计数”或全长
+            # No EOS found: fall back to non-pad counting or full length
             if pad_id is not None:
                 new_len = int((new_part != pad_id).sum().item())
             else:
                 new_len = int(new_part.numel())
-        # 判定 finish_reason
+        # Determine finish_reason
         if capped > 0 and new_len >= capped:
             reason = "length"
         else:
            reason = "stop"
-        # 若未到上限，进一步看是否包含 EOS（仅用于信息判断，不改变结果）
+        # If the cap was not reached, optionally inspect EOS presence for diagnostics only
         if reason != "length" and eos_ids:
-            # 若确实含有 EOS，保持 'stop'；否则依然 'stop'（可能被其它准则截断）
+            # If EOS is indeed present, keep 'stop'; otherwise it still remains 'stop' because another criterion may have truncated generation
             pass
         new_lens.append(new_len)
         reasons.append(reason)
@@ -564,14 +566,14 @@ def _hf_generate_single(inputs: Dict[str, torch.Tensor],
     prompt_len = int(input_ids.shape[1])
     capped = _cap_max_new_tokens(prompt_len, int(max_new_tokens or 0))
     if capped <= 0:
-        # 若用户请求了正数但被上限裁剪为0，更符合语义的是返回 "length"
+        # If the user requested a positive value but it was clipped to 0 by the context cap, returning "length" is semantically more accurate
         reason = "length" if int(max_new_tokens or 0) > 0 else "stop"
         return "", prompt_len, 0, prompt_len, reason
     do_sample, temperature, top_p = normalize_sampling_args(do_sample, temperature, top_p)
     _, hf_lp, _, stopping_criteria = _build_hf_components(prompt_len, do_sample, temperature, top_p, capped)
     final_lp = LogitsProcessorList(list(hf_lp) + list(lp_internal or []))
-    # 为本次调用创建“私有”随机数发生器；AB 两路用同一个 seed 即可复现且互不干扰
-    # 优先尝试“私有 generator”路径；若目标模型不支持，则回退到全局 RNG + 互斥锁
+    # Create a private RNG for this call; using the same seed for both branches makes them reproducible without cross-interference
+    # Prefer the private-generator path; if the target model does not support it, fall back to the global RNG plus a mutex
     seed_to_use = _pick_seed(rng_seed, input_ids) if do_sample else None
     gen = None
     if do_sample and seed_to_use is not None:
@@ -598,19 +600,19 @@ def _hf_generate_single(inputs: Dict[str, torch.Tensor],
         out = _call_generate_with(gen)
     except Exception as e:
         msg = str(e)
-        # 仅当确认为“generator 未被模型接受”且允许回退时，启用安全回退
+        # Enable the safe fallback only when the error clearly indicates that generator is unsupported and fallback is allowed
         need_fallback = (
             ALLOW_GENERATOR_FALLBACK
             and do_sample
             and seed_to_use is not None
-            # 更严格：必须同时包含两个核心提示词
+            # Stricter check: both core phrases must be present
             and ("not used by the model" in msg)
             and ("generator" in msg)
         )
         if not need_fallback:
             raise
         print("[server] generator not accepted by model; falling back to global RNG seeding")
-        # 回退：全局 RNG 受互斥锁保护，避免并行线程互相干扰
+        # Fallback path: guard the global RNG with a mutex to avoid interference across parallel threads
         with _GLOBAL_RNG_LOCK:
             try:
                 torch.manual_seed(seed_to_use)
@@ -633,12 +635,12 @@ def _hf_generate_single(inputs: Dict[str, torch.Tensor],
 async def chat(req: ChatRequest) -> Dict[str, Any]:
     print(f"[recv] at {time.time():.3f} messages={len(req.messages)} parallel={req.parallel}")
     import sys; sys.stdout.flush()
-    # 基本校验：messages 不可为空
+    # Basic validation: messages must not be empty
     if not req.messages:
         raise HTTPException(status_code=422, detail="messages must not be empty")
     msgs = [m.model_dump() for m in req.messages]
     inputs = _prep_inputs(msgs)
-    # 额外校验：prompt 不应超过上下文上限（超过直接 400）
+    # Extra validation: prompt length must not exceed the context limit; otherwise return 400 immediately
     try:
         prompt_len = int(inputs["input_ids"].shape[1])
     except Exception:
@@ -647,13 +649,13 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
     if isinstance(ctx_lim, int) and prompt_len > ctx_lim:
         raise HTTPException(status_code=400, detail=f"prompt_too_long: {prompt_len}>{ctx_lim}")
 
-    # 并行：两路（仅内置）与（内置+外置）
+    # Parallel mode: two branches, internal-only and internal-plus-external
     if req.parallel:
-        # 可选校验：并行时是否必须提供 external 链（通过环境变量控制）
+        # Optional validation: whether parallel mode must provide an external chain, controlled via environment variable
         if REQUIRE_EXTERNAL_IN_PARALLEL and not req.external_processor_names:
-            raise HTTPException(status_code=400, detail="parallel=True 需要提供 external_processor_names 列表（可通过环境变量 REQUIRE_EXTERNAL_IN_PARALLEL=0 关闭此限制）")
+            raise HTTPException(status_code=400, detail="parallel=True requires an external_processor_names list (this restriction can be disabled with REQUIRE_EXTERNAL_IN_PARALLEL=0)")
 
-        # 组装两套“仅内置链”（相互独立的克隆）与一套“外置链”（可为空）
+        # Assemble two independent clones of the internal-only chain plus one external chain, which may be empty
         lp_internal_for_internal = _resolve_lp_list(
             internal_names=req.internal_processor_names,
             external_names=None,
@@ -671,7 +673,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
             external_params=req.external_processor_params
         )
 
-        # 合成“内置+外置”的处理器链（保持顺序：先内置，后外置）
+        # Build the internal-plus-external processor chain while preserving order: internal first, external second
         if lp_internal_for_both is None and lp_external is None:
             lp_both = None
         elif lp_internal_for_both is None:
@@ -681,9 +683,9 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         else:
             lp_both = LogitsProcessorList(list(lp_internal_for_both) + list(lp_external))
 
-        # 用“同一个 seed”分别做两次独立 generate，确保差异只来自外置处理器
+        # Run two independent generate calls with the same seed so that differences come only from the external processor chain
         try:
-            # ====== 生成耗时统计：第一路（未施加水印 logits processor） ======
+            # ====== Generation timing: first branch (without watermark logits processor) ======
             t_gen0_start = _time.perf_counter()
             text_internal, prompt_tok_0, comp_tok_0, total_tok_0, fr_internal = await asyncio.to_thread(
                 _hf_generate_single,
@@ -697,7 +699,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
             )
             t_gen0_end = _time.perf_counter()
 
-            # ====== 生成耗时统计：第二路（添加水印 logits processor） ======
+            # ====== Generation timing: second branch (with watermark logits processor added) ======
             t_gen1_start = _time.perf_counter()
             text_both, prompt_tok_1, comp_tok_1, total_tok_1, fr_both = await asyncio.to_thread(
                 _hf_generate_single,
@@ -721,7 +723,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"generation_error: {e.__class__.__name__}: {e}") from e
 
-        # ====== 打印生成耗时统计 ======
+        # ====== Log generation timing ======
         gen_internal_s = float(t_gen0_end - t_gen0_start)
         gen_both_s = float(t_gen1_end - t_gen1_start)
         logger.info(
@@ -729,12 +731,12 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
             _fmt_ms(gen_internal_s), _fmt_ms(gen_both_s),
         )
 
-        # ====== 外置链的“零参离线检出”：仅当存在外置链且生成了文本 ======
+        # ====== Offline zero-argument detection for the external chain: only run when an external chain exists and text was generated ======
         wm_detection_result: Dict[str, Any] = {}
         det_elapsed_s: Optional[float] = None
         try:
             if lp_external is not None and comp_tok_1 > 0:
-                # （可选）打印外置 logits_processor 自身累计耗时（更“纯”的开销口径）
+                # Optional: log the accumulated time spent inside external logits processors themselves, which is a purer overhead measure
                 try:
                     for idx, proc in enumerate(list(lp_external)):
                         if hasattr(proc, "timing") and callable(getattr(proc, "timing")):
@@ -750,7 +752,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                     logger.info("[timing] wm_lp timing read failed: %s: %s", _e.__class__.__name__, _e)
 
                 t_det_start = _time.perf_counter()
-                # 遍历外置链上的各个处理器实例；若实现 detect_last() 则直接零参调用
+                # Iterate over processor instances in the external chain; if detect_last() is implemented, call it directly without arguments
                 for idx, proc in enumerate(list(lp_external)):
                     if hasattr(proc, "detect_last") and callable(getattr(proc, "detect_last")):
                         key = f"{proc.__class__.__name__}[{idx}]"
@@ -763,12 +765,12 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         except Exception as _outer_e:
             wm_detection_result = {"__error__": f"{_outer_e.__class__.__name__}: {_outer_e}"}
 
-        # ====== 打印检测耗时统计（detect_last） ======
+        # ====== Log detection timing for detect_last ======
         if det_elapsed_s is not None:
             logger.info("[timing] watermark_detect(detect_last)=%s", _fmt_ms(det_elapsed_s))
 
         if USAGE_PER_CHOICE:
-            # 新口径：每个 choice 自带 usage；并行模式下不再返回顶层 usage
+            # New accounting mode: each choice carries its own usage; no top-level usage is returned in parallel mode
             return {
                 "id": f"chatcmpl-{int(time.time()*1000)}",
                 "object": "chat.completion",
@@ -801,7 +803,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                 ],
             }
         else:
-            # 旧口径：合并统计（与之前行为完全一致）
+            # Legacy accounting mode: merged statistics, fully preserving previous behavior
             prompt_tok = int(prompt_tok_0)
             comp_tok_sum = int(comp_tok_0 + comp_tok_1)
             total_tok = int(prompt_tok + comp_tok_sum)
@@ -832,7 +834,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                 }
             }
 
-    # 非并行：使用纯 generate（batch=1），仅拼接 **你的内置链**（与并行 internal-only 对齐）
+    # Non-parallel mode: use plain generate (batch=1) and apply only your internal chain, aligned with the parallel internal-only path
     lp_internal_only = _resolve_lp_list(
         internal_names=req.internal_processor_names,
         external_names=None,
@@ -859,7 +861,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         raise HTTPException(status_code=503, detail="generation_error: cuda_oom") from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"generation_error: {e.__class__.__name__}: {e}") from e
-    # fr 已在 _hf_generate_single 内部给出
+    # fr is already produced inside _hf_generate_single
     return {
         "id": f"chatcmpl-{int(time.time()*1000)}",
         "object": "chat.completion",
@@ -875,13 +877,13 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         }
     }
 
-# 启动(开启采样): `uvicorn server:app --host 0.0.0.0 --port 8000`
-# 启动(关闭采样): `SERVER_DO_SAMPLE=0 uvicorn server:app --host 0.0.0.0 --port 8000`
-# 前置可选参数：
+# Start with sampling enabled: `uvicorn server:app --host 0.0.0.0 --port 8000`
+# Start with sampling disabled: `SERVER_DO_SAMPLE=0 uvicorn server:app --host 0.0.0.0 --port 8000`
+# Optional environment parameters:
 ##SAMPLING_MODE=lenient_openai | map_to_greedy | strict
-# 详见 normalize_sampling_args() 说明。默认 lenient_openai。
-# 注意：如果你用的是“strict”模式，
-# 那么请求体里传入 temperature<=0 时会报错。  
+# See normalize_sampling_args() for details. Default: lenient_openai.
+# Note: if you use "strict" mode,
+# then passing temperature<=0 in the request body will raise an error.
 ##SERVER_DO_SAMPLE=0 | 1 | false | true
-# 该参数决定默认的采样模式，默认开启采样（true）。
-# 你也可以在请求体里针对每次请求单独指定是否采样。
+# This parameter determines the default sampling mode; sampling is enabled by default (true).
+# You can also specify sampling behavior per request in the request body.

@@ -221,7 +221,7 @@ class WatermarkLogitsProcessor(WatermarkBase, LogitsProcessor):
             return self._calc_greenlist_mask(scores=scores, greenlist_token_ids=batched_greenlist_ids)
             
 
-        # print("调用次数定义：",self.call_count)
+        # print("Call count definition:", self.call_count)
         self._cal_watermark_info()
         watermark_info_len = len(self.watermark_info)
         #teet_1 = teet_1.replace(" ", "")
@@ -1163,7 +1163,7 @@ class WatermarkDetector(WatermarkBase):
         assert (text is not None) ^ (tokenized_text is not None), "Must pass either the raw or tokenized string"
         if return_prediction:
             kwargs["return_p_value"] = True  # to return the "confidence":=1-p of positive detections
-        #print("input_ids是什么",text)
+        # print("What are input_ids?", text)
         # run optional normalizers on text
         #print("self.normalizer:",self.normalizers)
         for normalizer in self.normalizers:

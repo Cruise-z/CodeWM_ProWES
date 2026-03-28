@@ -4,7 +4,7 @@ from cStyleCodeObfuscator.format import *  # preprocess_code, format_func
 import tree_sitter
 
 # -------------------------------
-# 1) Runner（保留你的原始逻辑）
+# 1) Runner (keep your original logic)
 # -------------------------------
 # class AutoFixedPipelineRunner:
 #     """
@@ -37,17 +37,17 @@ import tree_sitter
 #             raise
 
 # --------------------------------------
-# 2) 枚举“当前源码”的可执行变换（提取整合）
-#    - 逻辑来自 collect_feasible_transforms_jsonl.py
+# 2) Enumerate executable transforms for the current source code
+#    - Logic adapted from collect_feasible_transforms_jsonl.py
 # --------------------------------------
 try:
-    # 优先使用 utils 路径（与你的工程一致）
+    # Prefer the utils path first, to stay aligned with your project layout
     from cStyleCodeObfuscator.mutable_tree.stringifiers import JavaScriptStringifier
     import cStyleCodeObfuscator.mutable_tree.transformers as ast_transformers
 except Exception:
-    # 退回裸包名（如果你的路径不是 utils 开头）
+    # Fall back to bare package names if your path does not start with utils
     from mutable_tree.stringifiers import JavaScriptStringifier
-    import mutable_tree.transformers as ast_transformers  # noqa: F401  # 仅用于类型提示/示例
+    import mutable_tree.transformers as ast_transformers  # noqa: F401  # only for type hints/examples
 
 def _collect_tokens(root: tree_sitter.Node) -> List[str]:
     toks: List[str] = []
@@ -60,13 +60,13 @@ def _collect_tokens(root: tree_sitter.Node) -> List[str]:
     return toks
 
 def _wrap_for_lang(code: str, lang: str) -> str:
-    # 与原脚本一致：Java 为了解析/比对加类包装；其它语言原样
+    # Match the original script: wrap Java in a class for parsing/comparison; keep other languages unchanged
     if lang == "java":
         return f"public class Test {{\n{code}\n}}"
     return code
 
 def _normalize_js_wrapped(provider: CodeTransformProvider, code_wrapped: str, lang: str) -> str:
-    # 与原脚本一致：JS 先 stringify 一次，减少无关格式差异
+    # Match the original script: stringify JS once first to reduce irrelevant formatting differences
     if lang != "javascript":
         return code_wrapped
     try:
@@ -83,8 +83,8 @@ def enumerate_feasible_keys_for_code(
     source_code: str,
 ) -> Dict[str, List[str]]:
     """
-    返回: { transformer_name: [feasible_key, ...], ... }
-    - 单 key 可行性：code_transform 成功 + 新旧 token 有变化 + 新代码可再次解析为 mutable_tree
+    Returns: { transformer_name: [feasible_key, ...], ... }
+    - A single key is feasible if code_transform succeeds, the old/new tokens differ, and the new code can be parsed again into mutable_tree
     """
     per_tf_feasible: Dict[str, List[str]] = {}
 
@@ -94,13 +94,13 @@ def enumerate_feasible_keys_for_code(
         keys = t.get_available_transforms()
         for key in keys:
             feasible = False
-            # 1) 单 key 尝试
+            # 1) Try a single key
             try:
                 new_code = provider.code_transform(source_code, [key])
             except Exception:
-                continue  # 此 key 不可用
+                continue  # This key is not usable
 
-            # 2) 语法树 token 对比
+            # 2) Compare syntax-tree tokens
             code_wrapped = _wrap_for_lang(source_code, lang)
             new_code_wrapped = _wrap_for_lang(new_code, lang)
             if lang == "javascript":
@@ -109,7 +109,7 @@ def enumerate_feasible_keys_for_code(
             code_tree = parser.parse(code_wrapped.encode("utf-8"))
             new_code_tree = parser.parse(new_code_wrapped.encode("utf-8"))
 
-            # 3) 新代码可再次解析为 mutable_tree（语法有效）
+            # 3) The new code can be parsed again into mutable_tree (syntactically valid)
             try:
                 provider.to_mutable_tree(new_code)
             except Exception:
@@ -141,30 +141,30 @@ def enumerate_feasible_combos_for_code(
     source_code: str,
 ) -> List[Tuple[str, ...]]:
     """
-    - 基于“当前源码”求每个变换器的可执行 keys；
-    - 若某变换器无可执行 key，按原脚本逻辑补上它的“第一个理论 key”兜底；
-    - 对各变换器 keys 做笛卡尔积，得到可执行组合（近似）。
+    - Compute executable keys for each transformer from the current source code;
+    - If a transformer has no executable key, use its first theoretical key as a fallback, following the original script;
+    - Take the Cartesian product of all transformer keys to get executable combinations (approximately).
     """
     per_tf = enumerate_feasible_keys_for_code(provider, parser, transformers, lang, source_code)
 
-    # 兜底补全
+    # Fallback completion
     idict: Dict[str, List[str]] = {}
     for t in transformers:
         t_name = t.name
         theoreticals = list(t.get_available_transforms())
         feasibles = list(per_tf.get(t_name, []))
         if len(feasibles) < len(theoreticals):
-            # 至少有一个不可行；补一个未出现过的理论 key
+            # At least one key is infeasible; append a theoretical key that has not appeared yet
             for tt in theoreticals:
                 if tt not in feasibles:
                     feasibles.append(tt)
                     break
-        # 若理论 keys 为空（极少见），仍保证字典中有键
+        # Even if theoretical keys are empty (very rare), still keep the dictionary keyed
         if not feasibles and theoreticals:
             feasibles = [theoreticals[0]]
         idict[t_name] = feasibles
 
-    # 笛卡尔积（按 transformers 顺序）
+    # Cartesian product in transformer order
     combos: List[Tuple[str, ...]] = []
     def _dfs(i: int, cur: List[str]):
         if i == len(transformers):
@@ -177,7 +177,7 @@ def enumerate_feasible_combos_for_code(
     return combos
 
 # --------------------------------------
-# 3) Demo：构建 provider → 求可执行组合 → 选择并转换
+# 3) Demo: build the provider -> compute executable combinations -> choose one and transform
 # --------------------------------------
 if __name__ == "__main__":
     # 1) parser
@@ -186,16 +186,16 @@ if __name__ == "__main__":
     parser_lang = tree_sitter.Language("./parser/languages.so", LANG)
     parser.set_language(parser_lang)
 
-    # 2) 选择要用的变换器（示例仅用你的 ReposVarDecl；需要可自行增删）
+    # 2) Select the transformers to use (the example only uses your ReposVarDecl-style set; add or remove as needed)
     code_transformers = [
-        # NL:content 级别
+        # NL: content level
         ast_transformers.IdRenameTransformer(),
         # ast_transformers.VarNameStyleTransformer(),
-        # AL:expr 级别
+        # AL: expression level
         # ast_transformers.ReposVarDeclTransformer(),
         # ast_transformers.UpdateTransformer(),
         # ast_transformers.LoopCondTransformer(),
-        # AL:block 级别
+        # AL: block level
         # ast_transformers.LoopStmtTransformer(),
         # ast_transformers.IfFlatNestTransformer(),
         # ast_transformers.ConditionTransformer(),
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     print("Total theoretical combos (cartesian product over transformers):",
           len(provider.get_transform_keys()))
 
-    # 4) 准备一段源码（你可替换）
+    # 4) Prepare a source snippet (replace it as needed)
     source = r"""
 public class example {
     public void testFunction(int input) {
@@ -237,7 +237,7 @@ public void testFunction(int input) {
 
     source = r"""
 public boolean blockingAwait(long timeout, TimeUnit unit) {
-    // java 代码示例
+    // Java code example
     LinkedList < Cookie > m;
     m = 0;
     LinkedList < Cookie > n = 666;
@@ -305,7 +305,7 @@ public boolean blockingAwait(long timeout, TimeUnit unit) {
 
 #     source = r"""
 # bool blockingAwait(long long timeout, TimeUnit unit) {
-#     // cpp代码示例
+#     // C++ code example
 #     int m;
 #     m = 0;
 #     int n = 666;
@@ -313,9 +313,9 @@ public boolean blockingAwait(long timeout, TimeUnit unit) {
 #     x = 6;
 #     y = 3;
 
-#     std::exception_ptr ex;  // 模拟 Java 的 Throwable ex;
+#     std::exception_ptr ex;  // Simulates Java's Throwable ex;
 
-#     int j = 0; // 未使用，但保留与原结构一致
+#     int j = 0; // Unused, but kept to match the original structure
 
 #     if (getCount() != 0) {
 #     }
@@ -338,15 +338,15 @@ public boolean blockingAwait(long timeout, TimeUnit unit) {
 #     while (1) {
 #         while (true) {
 #             if (z == 5) {
-#                 break; // 仅跳出内层 while(true)
+#                 break; // Only break out of the inner while(true)
 #             }
 #         }
-#         // 外层 while(1) 会无限循环；保持与原逻辑一致
-#         break; // 为避免真正死循环，这里可选择跳出；如需与原版完全一致可移除这行
+#         // The outer while(1) would loop forever; kept consistent with the original logic
+#         break; // To avoid a real infinite loop, you may break here; remove this line if exact original behavior is required
 #     }
 
 #     do {
-#         // 保留原来的“z = z++;”语义（实际不会改变 z 的值）
+#         // Preserve the original "z = z++;" semantics (it does not actually change the value of z)
 #         z = z++;
 #     } while (z != 5);
 
@@ -354,7 +354,7 @@ public boolean blockingAwait(long timeout, TimeUnit unit) {
 # }
 # """
 
-    # 5) 基于“当前源码”计算可执行组合（近似），并选一个组合来执行
+    # 5) Compute executable combinations for the current source (approximately) and choose one to execute
     feasible_combos = enumerate_feasible_combos_for_code(
         provider=provider,
         parser=parser,
@@ -366,15 +366,15 @@ public boolean blockingAwait(long timeout, TimeUnit unit) {
     for i, combo in enumerate(feasible_combos[:5]):
         print(f"[{i}] {combo}")
 
-    # 选第 0 个可执行组合
+    # Select the first executable combination
     selected_keys = feasible_combos[0] if feasible_combos else provider.get_transform_keys()[0]
 
-    # 6) 实际执行转换（直接用 provider；也可以把 Runner 扩展为接受 selected_keys）
-    source_prep = preprocess_code(source)  # 你的预处理
+    # 6) Execute the transformation (directly with provider, or extend Runner to accept selected_keys)
+    source_prep = preprocess_code(source)  # Your preprocessing
     code_out = provider.code_transform(source_prep, selected_keys)
     print(code_out)
 
-    # 7) 可选：格式化/落盘（保留你的接口用法）
+    # 7) Optional: format / write to disk (keep your original interface usage)
     code_trans = format_func("test", code_out, LANG)
     print("\n===== Transformed Code =====\n")
     print(code_trans)

@@ -26,33 +26,33 @@ import torch
 import time as _time
 from torch import Tensor
 
-# 请按你的项目结构调整导入路径：
-# 假设 stone.py 与本文件同目录
+# Adjust the import path according to your project layout:
+# assume stone.py is in the same directory as this file
 from .stone import STONEUtils, STONELogitsProcessor
 
 
 class _ConfigShim:
     """
-    仅提供 STONEUtils / STONELogitsProcessor 运行所需的属性，
-    以替代 STONEConfig；参数由 regWM.py 在构造时传入。
+    Provide only the attributes required by STONEUtils / STONELogitsProcessor
+    to replace STONEConfig; parameters are passed in during construction from regWM.py.
     """
     def __init__(
         self,
         *,
         tokenizer,              # generation_tokenizer
         vocab_size: int,
-        device,                 # torch.device 或 str
+        device,                 # torch.device or str
         gamma: float,
         delta: float,
         hash_key: int,
         z_threshold: float,
         prefix_length: int,
         language: str,
-        # 下方两个仅为保持接口相容性；本包装不使用 generation_model/gen_kwargs
+        # The following two are only kept for interface compatibility; this wrapper does not use generation_model/gen_kwargs
         model: Optional[Any] = None,
         gen_kwargs: Optional[Dict[str, Any]] = None,
     ):
-        # stone.py 里用到的字段名保持一致
+        # Keep field names consistent with those used in stone.py
         self.generation_tokenizer = tokenizer
         self.vocab_size = int(vocab_size)
         self.device = device
@@ -65,17 +65,17 @@ class _ConfigShim:
         self.prefix_length = int(prefix_length)
         self.language = str(language)
 
-        # 仅占位，原始偏置逻辑不需要 model
+        # Placeholder only; the original biasing logic does not need model
         self.model = model
 
 
 class STONEWMLogitsProcessor(STONELogitsProcessor):
     """
-    复用原始 STONELogitsProcessor 的偏置逻辑；
-    仅新增：
-      - 在 __init__ 里用 _ConfigShim 注入参数（无 STONEConfig 依赖）
-      - 在 __call__ 后缓存本轮最新的 full input_ids（逐行）
-      - detect_last(): 基于缓存做零参离线检测（用原 STONEUtils.score_sequence）
+    Reuse the original STONELogitsProcessor biasing logic;
+    only adds:
+      - injecting parameters via _ConfigShim in __init__ (no STONEConfig dependency)
+      - caching the latest full input_ids for the current round after __call__ (per row)
+      - detect_last(): perform offline zero-argument detection from the cache using the original STONEUtils.score_sequence
     """
 
     def __init__(
@@ -93,7 +93,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
         watermark_on_pl: str = "True",
         skipping_rule: Optional[str] = None,
     ):
-        # 1) 构造轻量“配置”并复用原工具类/处理器
+        # 1) Build a lightweight "config" and reuse the original utility class / processor
         cfg = _ConfigShim(
             tokenizer=tokenizer,
             vocab_size=vocab_size,
@@ -111,7 +111,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             watermark_on_pl=watermark_on_pl,
             language=language,
         )
-        # 2) 调父类构造器（保持原行为）
+        # 2) Call the parent constructor to preserve original behavior
         super().__init__(
             config=cfg,
             utils=utils,
@@ -120,7 +120,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             language=language,
         )
 
-        # 3) 仅新增：检出用缓存（不影响偏置逻辑）
+        # 3) Added only: cache for detection, without affecting bias logic
         self._cache_full_ids_rows: Optional[List[Tensor]] = None
         self._prev_len_rows: Optional[List[int]] = None
         self._cache_bsz: Optional[int] = None
@@ -129,13 +129,13 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
         self._lp_time_s: float = 0.0
         self._lp_calls: int = 0
 
-    # —— 不改原偏置逻辑：调用父类 __call__，随后追加缓存 —— #
+    # —— Keep the original bias logic unchanged: call the parent __call__, then append cache updates —— #
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
 
         # Time ONLY the logits-processor path (pure watermark LP overhead)
         t0 = _time.perf_counter()
         try:
-            scores_out = super().__call__(input_ids, scores)  # 原逻辑不变
+            scores_out = super().__call__(input_ids, scores)  # Original logic remains unchanged
         finally:
             # Best-effort timing: must never affect generation behavior
             try:
@@ -144,7 +144,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             except Exception:
                 pass
 
-        # 追加：缓存本轮“完整 input_ids”（逐行），用于零参检测
+        # Additional step: cache the full input_ids for the current round (per row) for zero-argument detection
         try:
             bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
             need_reset = (
@@ -163,19 +163,19 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
                 self._cache_full_ids_rows[i] = input_ids[i].detach().to("cpu").clone()
                 self._prev_len_rows[i] = cur_len
         except Exception:
-            pass  # 缓存失败不影响生成
+            pass  # Cache failures must not affect generation
 
         return scores_out
 
-    # —— 零参离线检测：与原逻辑对齐（decode → re-tokenize(no special tokens) → score） —— #
+    # —— Offline zero-argument detection aligned with the original logic (decode -> re-tokenize without special tokens -> score) —— #
     def detect_last(self) -> Dict[str, Any]:
         """
-        使用生成阶段缓存的 full input_ids 零参检测。
-        与源实现保持一致：先将缓存的 ids 解码为文本，再以
-        add_special_tokens=False 重新分词得到 ids 后再评分。
-        返回：
-          单行：{"is_watermarked": bool, "score": float}
-          多行：{"is_watermarked": List[bool], "score": List[float]}
+        Perform zero-argument detection using the full input_ids cached during generation.
+        To stay consistent with the source implementation, it first decodes the cached ids into text,
+        then re-tokenizes with add_special_tokens=False before scoring.
+        Returns:
+          single row: {"is_watermarked": bool, "score": float}
+          multiple rows: {"is_watermarked": List[bool], "score": List[float]}
         """
         if not self._cache_full_ids_rows:
             return {"error": "no_cached_tokens"}
@@ -190,18 +190,18 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
                 continue
 
             try:
-                # 1) 解码为纯文本（跳过特殊符号）
+                # 1) Decode into plain text (skip special tokens)
                 tok = getattr(self.config, "generation_tokenizer", None)  # type: ignore[attr-defined]
                 if tok is None:
                     raise RuntimeError("no_tokenizer")
                 text = tok.decode(ids_cpu.tolist(), skip_special_tokens=True)
                 if not text:
-                    # 空文本无法检测：给出 -inf
+                    # Empty text cannot be detected: return -inf
                     results_bool.append(False)
                     results_score.append(float("-inf"))
                     continue
 
-                # 2) 以 add_special_tokens=False 重新分词得到 ids
+                # 2) Re-tokenize with add_special_tokens=False to obtain ids
                 enc = tok(text, return_tensors="pt", add_special_tokens=False)
                 new_ids_cpu = enc["input_ids"][0]
                 if new_ids_cpu.numel() == 0:
@@ -211,10 +211,10 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
 
                 ids = new_ids_cpu.to(self.config.device, non_blocking=True)  # type: ignore[attr-defined]
 
-                # 3) 打分（STONEUtils.score_sequence 返回 (z, flags, weights)）
+                # 3) Score the sequence (STONEUtils.score_sequence returns (z, flags, weights))
                 z_score, _, _ = self.utils.score_sequence(ids)
             except Exception:
-                # 与源实现对齐：发生异常（如长度不足）时返回 -inf
+                # Stay aligned with the source implementation: return -inf on exceptions, such as insufficient length
                 z_score = float("-inf")
 
             thr = float(self.config.z_threshold)  # type: ignore[attr-defined]
@@ -245,7 +245,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
         self._lp_calls = 0
 
     def clear_cached(self) -> None:
-        """可选：手动清空缓存（不影响偏置状态）。"""
+        """Optional: manually clear the cache without affecting bias state."""
         self._cache_full_ids_rows = None
         self._prev_len_rows = None
         self._cache_bsz = None

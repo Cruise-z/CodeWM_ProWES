@@ -10,7 +10,7 @@ import libcst as cst
 
 class ForListCompForm(str, Enum):
     """
-    两种形态：
+    Two forms:
     - LOOP_BASED:
         cubes = []
         for i in range(20):
@@ -26,24 +26,24 @@ class ForListCompForm(str, Enum):
 @dataclass
 class ForListCompMatch:
     """
-    for-loop <-> list comprehension 的一次命中信息。
+    Match information for one for-loop <-> list comprehension occurrence.
     """
     form: ForListCompForm
 
-    # 统一信息
+    # Shared information
     target_name: str                 # cubes
     index_name: str                  # i
     iter_expr: cst.BaseExpression    # range(20)
     value_expr: cst.BaseExpression   # i**3
 
-    # 语句上下文（用于重写）
+    # Statement context, used during rewriting
     assign_stmt: cst.SimpleStatementLine
-    for_stmt: Optional[cst.For] = None  # LOOP_BASED 时有，COMPREHENSION_BASED 时可以为 None
+    for_stmt: Optional[cst.For] = None  # Present in LOOP_BASED; may be None in COMPREHENSION_BASED
 
 
 def _extract_single_assign(stmt: cst.BaseStatement) -> Optional[cst.Assign]:
     """
-    只接受形如 "name = ..." 的简单赋值语句。
+    Only accept simple assignments of the form "name = ...".
     """
     if not isinstance(stmt, cst.SimpleStatementLine):
         return None
@@ -64,7 +64,7 @@ def _match_loop_based_pair(
     assign_stmt: cst.BaseStatement, next_stmt: Optional[cst.BaseStatement]
 ) -> Optional[ForListCompMatch]:
     """
-    匹配 LOOP_BASED 形态：
+    Match the LOOP_BASED form:
 
         cubes = []
         for i in range(20):
@@ -85,7 +85,7 @@ def _match_loop_based_pair(
 
     if not isinstance(assign.value, cst.List):
         return None
-    # 这里只接受空列表 []
+    # Only accept the empty list [] here
     if assign.value.elements:
         return None
 
@@ -99,7 +99,7 @@ def _match_loop_based_pair(
 
     iter_expr = for_stmt.iter
 
-    # loop body: 单条语句 "cubes.append(expr)"
+    # Loop body: a single statement "cubes.append(expr)"
     if not isinstance(for_stmt.body, cst.IndentedBlock):
         return None
     body = for_stmt.body.body
@@ -128,7 +128,7 @@ def _match_loop_based_pair(
     if not isinstance(func.attr, cst.Name) or func.attr.value != "append":
         return None
 
-    # 参数：一个 arg，value_expr
+    # Arguments: a single arg, value_expr
     if len(call.args) != 1:
         return None
     value_expr = call.args[0].value
@@ -148,7 +148,7 @@ def _match_comprehension_assign(
     assign_stmt: cst.BaseStatement,
 ) -> Optional[ForListCompMatch]:
     """
-    匹配 COMPREHENSION_BASED 形态：
+    Match the COMPREHENSION_BASED form:
 
         cubes = [i**3 for i in range(20)]
     """
@@ -172,12 +172,12 @@ def _match_comprehension_assign(
     comp_for = value.for_in
     if not isinstance(comp_for, cst.CompFor):
         return None
-    # 不处理多重 for / if
+    # Do not handle multiple for / if clauses
     if comp_for.ifs or comp_for.inner_for_in is not None:
         return None
 
     target_node = comp_for.target
-    # 只接受简单 Name
+    # Only accept simple Name
     if not isinstance(target_node, cst.Name):
         return None
     index_name = target_node.value
@@ -199,7 +199,7 @@ def match_for_list_comprehension_pair(
     next_stmt: Optional[cst.BaseStatement],
 ) -> Optional[ForListCompMatch]:
     """
-    在一对相邻语句 (assign_stmt, next_stmt) 上尝试匹配：
+    Try to match on a pair of adjacent statements (assign_stmt, next_stmt):
 
     - LOOP_BASED:
         cubes = []
@@ -209,14 +209,14 @@ def match_for_list_comprehension_pair(
     - COMPREHENSION_BASED:
         cubes = [ ... for i in range(...) ]
 
-    命中时返回 ForListCompMatch，否则返回 None。
+    Return ForListCompMatch on success, otherwise return None.
     """
-    # 先尝试 loop-based（需要两条语句）
+    # Try the loop-based form first, which requires two statements
     m = _match_loop_based_pair(assign_stmt, next_stmt)
     if m is not None:
         return m
 
-    # 再尝试 comprehension-based（只看 assign_stmt）
+    # Then try the comprehension-based form, which only needs assign_stmt
     m = _match_comprehension_assign(assign_stmt)
     if m is not None:
         return m

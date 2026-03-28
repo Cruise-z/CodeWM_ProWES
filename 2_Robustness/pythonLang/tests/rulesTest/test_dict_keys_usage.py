@@ -21,7 +21,7 @@ def f(d):
     if "Alice" in d.keys():
         return 1
 """
-    # 统一转为 d.keys() 形式
+    # Normalize to the d.keys() form
     assert _apply(original, RuleDirection.to_variant("keys")).strip() == expected.strip()
 
 
@@ -36,7 +36,7 @@ def f(d):
     if "Alice" in d:
         return 1
 """
-    # 统一转为裸 in d 形式
+    # Normalize to the bare in d form
     assert _apply(original, RuleDirection.to_variant("direct")).strip() == expected.strip()
 
 
@@ -49,9 +49,9 @@ def f(d):
         b = 2
     return a + b
 """
-    # AUTO：
-    #   第一处：DIRECT_IN  -> KEYS_API
-    #   第二处：KEYS_API   -> DIRECT_IN
+    # Under AUTO:
+    #   first occurrence: DIRECT_IN -> KEYS_API
+    #   second occurrence: KEYS_API -> DIRECT_IN
     expected = """
 def f(d):
     if "Alice" in d.keys():

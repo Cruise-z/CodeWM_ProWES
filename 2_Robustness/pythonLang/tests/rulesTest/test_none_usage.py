@@ -21,7 +21,7 @@ def f(x):
     if x is not None:
         return 1
 """
-    # 统一转为显式 x is not None
+    # Normalize to explicit x is not None
     assert _apply(original, RuleDirection.to_variant("is_not_none")).strip() == expected.strip()
 
 
@@ -36,7 +36,7 @@ def f(x):
     if x:
         return 1
 """
-    # 统一转为裸 truthy 检查
+    # Normalize to a bare truthy check
     assert _apply(original, RuleDirection.to_variant("bare")).strip() == expected.strip()
 
 
@@ -49,9 +49,9 @@ def f(x, y):
         b = 2
     return a + b
 """
-    # AUTO 下：
-    # - 第一个 if: BARE_TRUTHY -> IS_NOT_NONE
-    # - 第二个 if: IS_NOT_NONE -> BARE_TRUTHY
+    # Under AUTO:
+    # - first if: BARE_TRUTHY -> IS_NOT_NONE
+    # - second if: IS_NOT_NONE -> BARE_TRUTHY
     expected = """
 def f(x, y):
     if x is not None:

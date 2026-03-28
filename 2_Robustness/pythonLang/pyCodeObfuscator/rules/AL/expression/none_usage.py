@@ -27,7 +27,7 @@ def _build_is_not_none_expr(match: NoneUsageMatch) -> cst.Comparison:
         ],
     )
 
-    # 保留原表达式的外层括号（如果有）
+    # Preserve the outer parentheses of the original expression when present
     lpar: Sequence[cst.LeftParen] = getattr(match.expr, "lpar", ())
     rpar: Sequence[cst.RightParen] = getattr(match.expr, "rpar", ())
 
@@ -43,7 +43,7 @@ def _build_bare_expr(match: NoneUsageMatch) -> cst.BaseExpression:
     """
     new_expr = match.var_expr
 
-    # 也尽量保留原比较表达式的外层括号
+    # Also preserve the outer parentheses of the original comparison expression when possible
     lpar: Sequence[cst.LeftParen] = getattr(match.expr, "lpar", ())
     rpar: Sequence[cst.RightParen] = getattr(match.expr, "rpar", ())
 
@@ -53,7 +53,7 @@ def _build_bare_expr(match: NoneUsageMatch) -> cst.BaseExpression:
     return new_expr
 
 
-# 将 variant 字符串映射到目标形态：
+# Map variant strings to target forms:
 #   - "bare"/"truthy"          -> BARE_TRUTHY
 #   - "is_not_none"/"explicit" -> IS_NOT_NONE
 _VARIANT_KEY_TO_FORM: dict[str, NoneUsageForm] = {
@@ -69,7 +69,7 @@ _VARIANT_KEY_TO_FORM: dict[str, NoneUsageForm] = {
 @register_rule
 class NoneUsageRule(BaseRule):
     """
-    条件中使用 None 的两种习惯写法：
+    Two common styles for using None in conditions:
 
         if x:
             ...
@@ -77,29 +77,29 @@ class NoneUsageRule(BaseRule):
         if x is not None:
             ...
 
-    多形态方向约定（基于新的 RuleDirection）：
+    Multi-variant direction rules (based on the new RuleDirection):
 
       - direction.mode == "AUTO":
             BARE_TRUTHY  -> IS_NOT_NONE
             IS_NOT_NONE  -> BARE_TRUTHY
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "bare" / "truthy" / "bare_truthy"
                 "is_not_none" / "explicit"
-            本规则将这些 key 映射到 NoneUsageForm，并在两种形态之间做对应转换。
+            This rule maps those keys to NoneUsageForm and performs the corresponding conversion between the two forms.
     """
 
     rule_id = "refactoring.none_usage"
-    description = "条件中使用 None 关键字：x <-> x is not None"
+    description = "Use of None in conditions: x <-> x is not None"
     variants = ("bare", "is_not_none")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(self, current: NoneUsageForm) -> Optional[NoneUsageForm]:
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if current is NoneUsageForm.BARE_TRUTHY:
                 target = NoneUsageForm.IS_NOT_NONE
@@ -108,28 +108,28 @@ class NoneUsageRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 当前形态已经是目标形态则不改写
+        # Do not rewrite if the current form already matches the target
         if target is current:
             return None
 
         return target
 
-    # 统一改写逻辑：给一个条件表达式，看看要不要改
+    # Unified rewrite logic: check whether a conditional expression should be rewritten
     def _rewrite_cond_expr(
         self,
         test_expr: cst.BaseExpression,
@@ -158,7 +158,7 @@ class NoneUsageRule(BaseRule):
 
         return None
 
-    # ------------ 挂到具体语法节点上 ------------
+    # ------------ Attach the rewrite to concrete syntax nodes ------------
 
     def leave_If(self, original_node: cst.If, updated_node: cst.If) -> cst.If:
         new_test = self._rewrite_cond_expr(updated_node.test)

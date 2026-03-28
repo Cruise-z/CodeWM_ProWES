@@ -322,7 +322,7 @@ def main(args):
             )
             new_test_objs.append(test_obj)
             
-            #!可选参数
+            #! Optional parameters
             # code style adversarial attack
             if args.trans_adv:
                 # sadv_ids = torch.randint(0, transform_capacity, (B, ), device=DEVICE)
@@ -349,7 +349,7 @@ def main(args):
                 ).item()
                 sadv_msg_acc += compute_msg_acc(sadv_preds, wms, n_bits=args.n_bits)
 
-                #!进行评估后的参数
+                #! Parameters recorded after evaluation
                 adv_obj["watermark"] = wms[0].long().tolist()
                 adv_obj["extract"] = sadv_preds[0].tolist()
                 adv_obj["output_original_func"] = False

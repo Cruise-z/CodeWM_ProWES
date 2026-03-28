@@ -15,20 +15,20 @@ def apply_rules_to_module(
     direction: RuleDirection = RuleDirection.AUTO,
 ) -> cst.Module:
     """
-    按顺序把所有规则应用在同一个 Module 上。
+    Apply all rules to the same Module in sequence.
 
-    参数：
-      - module     : 已解析的 libcst.Module
-      - rule_types : 需要应用的一组规则类型（类本身）
-      - direction  : 全局方向（RuleDirection），例如：
+    Parameters:
+      - module     : a parsed libcst.Module
+      - rule_types : the set of rule types to apply (the classes themselves)
+      - direction  : the global direction (RuleDirection), for example:
                         - RuleDirection.AUTO
                         - RuleDirection.to_variant("camel")
                         - RuleDirection.to_variant("snake")
                         - RuleDirection.to_variant("percent")
                         - ...
 
-    每条规则在 __init__ 中接收同一个 direction，
-    然后根据自身定义的多形态语义来解释该 direction。
+    Each rule receives the same direction in __init__,
+    then interprets it according to its own multi-variant semantics.
     """
     for rule_cls in rule_types:
         transformer = rule_cls(direction=direction)
@@ -42,7 +42,7 @@ def obfuscate_source(
     direction: RuleDirection = RuleDirection.AUTO,
 ) -> str:
     """
-    对源码字符串应用一组规则，并返回改写后的源码。
+    Apply a group of rules to a source string and return the rewritten source.
     """
     module = parse_code(source)
     module = apply_rules_to_module(module, rule_types, direction)

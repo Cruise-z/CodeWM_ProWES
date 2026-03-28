@@ -10,9 +10,9 @@ import libcst as cst
 
 class FormatPercentForm(str, Enum):
     """
-    两种形态：
+    Two forms:
     - PERCENT:  "%s,%s" % (h, w)
-    - FORMAT :  "{},{}".format(h, w) 或 "{0},{1}".format(h, w)
+    - FORMAT :  "{},{}".format(h, w) or "{0},{1}".format(h, w)
     """
     PERCENT = "percent"
     FORMAT = "format"
@@ -21,32 +21,32 @@ class FormatPercentForm(str, Enum):
 @dataclass
 class FormatPercentUsageMatch:
     """
-    "%s" % args  <->  "{}".format(args) 的一次命中信息。
+    Match information for one occurrence of "%s" % args  <->  "{}".format(args).
     """
     form: FormatPercentForm
-    expr: cst.BaseExpression               # 整个表达式（BinaryOperation 或 Call）
-    template: cst.SimpleString             # 字符串模板字面量
-    args: List[cst.BaseExpression]         # 参数列表（按顺序）
+    expr: cst.BaseExpression               # Entire expression, either BinaryOperation or Call
+    template: cst.SimpleString             # String template literal
+    args: List[cst.BaseExpression]         # Argument list in order
 
 
-# --------- 字符串内部内容工具函数（去掉引号等） ---------
+# --------- Utility functions for string internals, such as stripping quotes ---------
 
 
 def _extract_string_inner_bounds(text: str) -> Tuple[int, int]:
     """
-    从 SimpleString.value 文本中，找出字符串内容部分的左右边界 [inner_start, inner_end)。
+    Given SimpleString.value, find the left/right bounds of the string content: [inner_start, inner_end).
 
-    支持前缀 (u/r/b/...) + 单引号/双引号 + 可选三引号。
+    Supports prefixes (u/r/b/...) plus single quotes, double quotes, and optional triple quotes.
     """
     n = len(text)
     i = 0
-    # 跳过前缀
+    # Skip the prefix
     while i < n and text[i] not in ("'", '"'):
         i += 1
     if i >= n:
         return 0, n
 
-    # 三引号
+    # Triple quotes
     if text[i:i + 3] in ("'''", '"""'):
         quote = text[i:i + 3]
         inner_start = i + 3
@@ -55,7 +55,7 @@ def _extract_string_inner_bounds(text: str) -> Tuple[int, int]:
             inner_end = n
         return inner_start, inner_end
 
-    # 单/双引号
+    # Single/double quotes
     quote = text[i]
     inner_start = i + 1
     inner_end = text.rfind(quote)
@@ -77,16 +77,16 @@ def _replace_string_inner(s: cst.SimpleString, new_inner: str) -> cst.SimpleStri
     return s.with_changes(value=new_text)
 
 
-# --------- 模板模式检查 ---------
+# --------- Template-pattern checks ---------
 
 
 def _check_percent_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[str]:
     """
-    检查是否是简单的 %s 模板：
-      - 只能出现 %s（不支持 %d、%(name)s、%% 等）
-      - %s 个数 == 参数个数
+    Check whether this is a simple %s template:
+      - only %s is allowed, not %d, %(name)s, %% and similar forms
+      - the number of %s placeholders must equal the number of arguments
 
-    满足时返回 inner 字符串；否则返回 None。
+    Return the inner string on success, otherwise return None.
     """
     inner = _get_string_inner(tmpl)
     i = 0
@@ -99,7 +99,7 @@ def _check_percent_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[
             if i + 1 >= n:
                 return None
             nxt = inner[i + 1]
-            # 只接受 %s
+            # Only accept %s
             if nxt != "s":
                 return None
             count += 1
@@ -115,14 +115,14 @@ def _check_percent_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[
 
 def _check_format_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[str]:
     """
-    检查是否是“简单”的 .format 模板：
+    Check whether this is a simple .format template:
 
-      - 只接受：
-          "{}"         自动位置
-          "{0}", "{1}" 显式下标（必须从 0..n-1 且顺序与参数一致）
-      - 不允许：
-          {name}, {0:.2f}, {0!r}, {{, }}, 嵌套等复杂形式
-      - 占位符个数 == 参数个数
+      - Accepted:
+          "{}"         automatic position
+          "{0}", "{1}" explicit indices, which must run from 0..n-1 in order
+      - Rejected:
+          {name}, {0:.2f}, {0!r}, {{, }}, nested forms, and other complex variants
+      - the number of placeholders must equal the number of arguments
     """
     inner = _get_string_inner(tmpl)
     i = 0
@@ -132,7 +132,7 @@ def _check_format_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[s
     while i < n:
         ch = inner[i]
         if ch == "{":
-            # 找到对应的 '}'
+            # Find the matching '}'
             j = inner.find("}", i + 1)
             if j == -1:
                 return None
@@ -146,12 +146,12 @@ def _check_format_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[s
                 # "{0}" / "{1}" ...
                 placeholders.append(("index", int(content)))
             else:
-                # {name}, {0:.2f}, {0!r}, 等复杂形式：不支持
+                # {name}, {0:.2f}, {0!r}, and other complex forms are not supported
                 return None
 
             i = j + 1
         elif ch == "}":
-            # 孤立的 '}' 视为非法（也排除 "}}"/"{{" 等复杂用法）
+            # A standalone '}' is invalid; this also excludes complex cases such as "}}" / "{{"
             return None
         else:
             i += 1
@@ -160,11 +160,11 @@ def _check_format_template(tmpl: cst.SimpleString, arg_count: int) -> Optional[s
         return None
 
     kinds = {k for (k, _) in placeholders}
-    # 不能混用 "{}" 和 "{0}"
+    # Mixing "{}" and "{0}" is not allowed
     if len(kinds) > 1:
         return None
 
-    # 如果是 "{0}/{1}/..."，要求是 [0,1,...,arg_count-1] 且按顺序出现
+    # If using "{0}/{1}/...", require [0,1,...,arg_count-1] in order
     if kinds == {"index"}:
         indices = [idx for (_, idx) in placeholders if idx is not None]
         if indices != list(range(arg_count)):
@@ -177,25 +177,25 @@ def _extract_args_from_percent_right(
     expr: cst.BaseExpression,
 ) -> Optional[List[cst.BaseExpression]]:
     """
-    从 "%s" % right 中提取参数：
-      - right 为 Tuple -> 每个元素的 .value
-      - 否则视为单个参数
+    Extract arguments from "%s" % right:
+      - if right is a Tuple, use each element's .value
+      - otherwise treat it as a single argument
     """
     if isinstance(expr, cst.Tuple):
         return [elt.value for elt in expr.elements]
     else:
-        # 单个参数
+        # Single argument
         return [expr]
 
 
-# --------- 主匹配函数 ---------
+# --------- Main matching function ---------
 
 
 def match_format_percent_usage(
     expr: cst.BaseExpression,
 ) -> Optional[FormatPercentUsageMatch]:
     """
-    尝试在一个表达式上匹配：
+    Try to match on an expression:
       - "%s,%s" % (h, w)
       - "{},{}".format(h, w)
       - "{0},{1}".format(h, w)
@@ -222,7 +222,7 @@ def match_format_percent_usage(
             args=args,
         )
 
-    # 2) "{}".format(args) 或 "{0}".format(args)
+    # 2) "{}".format(args) or "{0}".format(args)
     if isinstance(expr, cst.Call):
         func = expr.func
         if not isinstance(func, cst.Attribute):
@@ -234,7 +234,7 @@ def match_format_percent_usage(
         if not isinstance(tmpl, cst.SimpleString):
             return None
 
-        # 不接受关键字参数 / *args
+        # Do not accept keyword arguments or *args
         if any(arg.keyword is not None for arg in expr.args):
             return None
         if any(arg.star for arg in expr.args):

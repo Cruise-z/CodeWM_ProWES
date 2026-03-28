@@ -23,7 +23,7 @@ def f(a, b):
     flag = (a > 0 and b < 5)
     return flag
 """
-    # 统一转为“直接布尔表达式”形态
+    # Normalize to the direct boolean-expression form
     assert _apply(original, RuleDirection.to_variant("direct")).strip() == expected.strip()
 
 
@@ -38,19 +38,19 @@ def f(a, b):
     flag = True if a > 0 and b < 5 else False
     return flag
 """
-    # 统一转为“显式 True/False”形态
+    # Normalize to the explicit True/False form
     assert _apply(original, RuleDirection.to_variant("explicit")).strip() == expected.strip()
 
 
 def test_auto_mixed_original_and_transformed():
-    # 同一个函数里既有 original 形式，也有 transformed 形式
+    # The same function contains both original and transformed forms
     src = """
 def f(a, b):
     flag1 = True if a > 0 else False
     flag2 = b < 0
     return flag1, flag2
 """
-    # AUTO 下：
+    # Under AUTO:
     # - flag1: EXPLICIT_TRUE_FALSE  -> DIRECT_EXPR  => flag1 = a > 0
     # - flag2: DIRECT_EXPR          -> EXPLICIT_TRUE_FALSE  => flag2 = True if b < 0 else False
     expected = """

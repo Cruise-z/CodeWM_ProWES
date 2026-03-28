@@ -1,25 +1,25 @@
-# 代码生成指南
+# Code Generation Guide
 
 ------
 
-## ==agent架构设计==
+## ==Agent Architecture==
 
-代码使用`agent:MetaGPT`辅助生成，
+The code generation workflow is assisted by `agent:MetaGPT`.
 
-在`MetaGPT`的`[Action]->[Role]`实现框架中，为不同角色配置不同的模型进行生成：
+Within MetaGPT's `[Action] -> [Role]` framework, different models are assigned to different roles:
 
-- 项目架构设计：由`openai`官方模型`gpt-4`/`gpt-4o`完成
+- Project architecture design: handled by the official `openai` models `gpt-4` / `gpt-4o`
 
-- 代码编写生成：由本地部署的`Qwen/Qwen2.5-Coder-32B-Instruct`完成
+- Code generation: handled by the locally deployed `Qwen/Qwen2.5-Coder-32B-Instruct`
 
-  > `Qwen/Qwen2.5-Coder-32B-Instruct`是当前开源大模型中代码生成表现非常优秀的模型之一
-  > 参考：[`Hugging Face`开源代码模型排行榜](https://huggingface.co/spaces/bigcode/bigcode-models-leaderboard)
+  > `Qwen/Qwen2.5-Coder-32B-Instruct` is currently one of the strongest open-source models for code generation.
+  > Reference: [`Hugging Face` open-source code model leaderboard](https://huggingface.co/spaces/bigcode/bigcode-models-leaderboard)
 
-### `config`配置
+### `config` Setup
 
-两个模型的`config`文件内容如下：
+The `config` files for the two models are shown below:
 
-- `openai`官方模型：
+- Official `openai` model:
 
   ```bash
   (base) zhaorz@rubick:~/.metagpt$ cat openai.yaml 
@@ -35,7 +35,7 @@
     stream: true
   ```
 
-- 本地开源模型(默认配置)：
+- Local open-source model (default configuration):
 
   ```bash
   (base) zhaorz@rubick:~/.metagpt$ cat config2.yaml 
@@ -52,15 +52,15 @@
   repair_llm_output: true
   ```
 
-### `prompt`设计
+### `prompt` Design
 
-针对不同项目的提示词已归类至`./prompts`文件夹内；
+Prompts for different projects have been organized under the `./prompts` directory.
 
-### 配置参数并运行
+### Configure Parameters and Run
 
-为使用方便，一些经常修改的**模型生成参数**以及**水印相关参数**放置在了`xargs`字段中；
+For convenience, frequently adjusted **generation parameters** and **watermark-related parameters** are placed in the `xargs` field.
 
-`xargs`字段如下示例：
+Example `xargs` configuration:
 
 ```python
 xargs = {
@@ -81,20 +81,20 @@ xargs = {
 
 ------
 
-## ==从提示词生成==
+## ==Generate from Prompts==
 
-在`./agent.py`中修改`xargs`参数并运行即可；
+Update the `xargs` parameters in `./agent.py` and run it.
 
 ------
 
-## ==从框架生成==
+## ==Generate from a Framework==
 
-在使用`MetaGPT`的==从提示词生成==模式生成高质量可用的项目架构后，若想复用其架构进行代码生成，可以采取如下方式：
+After generating a high-quality, usable project architecture with MetaGPT in ==Generate from Prompts== mode, you can reuse that architecture for code generation as follows:
 
-- 运行`./agentArchGen.py`：先使用`openai`的模型生成高质量可用的架构仓库
-- 运行`./agentCodeGen.py`：在上述架构仓库的基础上使用开源模型自定义生成代码
+- Run `./agentArchGen.py`: first generate a high-quality reusable architecture repository with the `openai` model
+- Run `./agentCodeGen.py`: then generate customized code on top of that architecture repository using the open-source model
 
-**注意：**
+**Notes:**
 
-- 建议在生成可用的架构仓库后将其备份，方便之后多次生成代码
-- 标准示例架构仓库文件在`./MetaGPT/workspace`中给出
+- It is recommended to back up a usable architecture repository once it has been generated, so it can be reused for multiple code-generation runs later.
+- Standard example architecture repositories are provided under `./MetaGPT/workspace`.

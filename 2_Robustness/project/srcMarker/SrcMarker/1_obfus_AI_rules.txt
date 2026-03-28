@@ -1,14 +1,14 @@
-如下是对java源代码进行源码混淆的规则：
+The following rules are used to obfuscate Java source code:
 
 1. Change linear code execution flow to nonlinear version
-下面是一个示例：
-源码：
+Below is an example:
+Original source:
 ```
 System.out.println("1");
 System.out.println("2");
 System.out.println("3");
 ```
-混淆后的源码：
+Obfuscated source:
 ```
 int JOWCN_FGIWJIGTWJ_JSDAO = 0;
 JOWCN_FGIWJIGTWJ_JSDAO = 1148643996;
@@ -29,11 +29,11 @@ while (JOWCN_FGIWJIGTWJ_JSDAO != 1421874931) {
   }
 }
 ```
-这样的混淆方式本质上是利用循环和switch case以及为条件转换以及跳出循环计算合适的变量值，在不改变执行流实际顺序的情况下改变其复杂度以及可读性
+This obfuscation strategy essentially uses loops, switch cases, and carefully chosen variable values for condition transitions and loop exits to increase complexity and reduce readability without changing the real execution order.
 
 2. Rename variable names to random string values
-下面是一个示例：
-源码：
+Below is an example:
+Original source:
 ```
 int myNum = 5;
 float myFloatNum = 5.99f;
@@ -41,7 +41,7 @@ char myLetter = 'D';
 boolean myBool = true;
 String myText = "Java Obfuscator";
 ```
-混淆后的源码：
+Obfuscated source:
 ```
 int ap9axcpArl_nyapT__QpnQOl_ = 5;
 float var_3897 = 5.99f;
@@ -49,23 +49,23 @@ char aAqktfgaaaqRjhiouqlSwoqgob = 'D';
 boolean nVdbxytrOhipcleakh = true;
 String MUQJO_OGIEHC = "Java Obfuscator";
 ```
-这样的混淆方式本质上是将变量的名称随机化
+This obfuscation strategy essentially randomizes variable names.
 
 3. Rename method names to random string values
-下面是一个示例：
-源码：
+Below is an example:
+Original source:
 ```
 public int calc(double numArray[]) {...}
 ```
-混淆后的源码：
+Obfuscated source:
 ```
 public int SqcFsxe(double[] numArray) {...}
 ```
-这样的混淆方式本质上是将方法的名称随机化
+This obfuscation strategy essentially randomizes method names.
 
 4. Encrypt integer values using floating point math functions
-下面是一个示例：
-源码：
+Below is an example:
+Original source:
 ```
 public static int method(int param) {
   int a = 1;
@@ -76,7 +76,7 @@ public static int method(int param) {
   return 4;
 }
 ```
-混淆后的源码：
+Obfuscated source:
 ```
 public static int method(int param) {
   int a = (int) (681.57415 - Math.cbrt(315229127.95597));
@@ -87,4 +87,4 @@ public static int method(int param) {
   return (int) Math.min(6525.74776, 4.00000);
 }
 ```
-这样的混淆方式本质上是将赋予变量的整数值变成运算表达式
+This obfuscation strategy essentially converts integer values assigned to variables into arithmetic expressions.

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# 任何一个命令失败就立刻停止
+# Stop immediately if any command fails
 # set -euo pipefail
-# 某个方法跑崩了也继续跑后面的
+# Even if one method crashes, continue running the remaining ones
 set -u pipefail
 
-# ====== 统一参数（按需改） ======
+# ====== Shared parameters (adjust as needed) ======
 PROJECT="tiny_snake_game"
 SRCPATH="/home/zhaorz/project/CodeWM/srcRepo"
 WSPATH="/home/zhaorz/project/CodeWM/MetaGPT/workspace"
@@ -14,7 +14,7 @@ SEEDS='range:100:120'
 STRENGTHS='0.0,0.5,1.0,2.0,3.0'
 BASELINE='0.0'
 
-# 可选：每次命令之间加一点提示
+# Optional: print a short separator between commands
 run() {
   echo
   echo "================================================================"

@@ -14,7 +14,7 @@ from ....patterns.AL.block.initialize_ways_pattern import (
 )
 
 
-# variant 名到形态的映射
+# Map variant names to forms
 _VARIANT_KEY_TO_FORM: Dict[str, InitializeWaysForm] = {
     "dict_call": InitializeWaysForm.DICT_CALL,
     "dict": InitializeWaysForm.DICT_CALL,
@@ -37,27 +37,27 @@ def _rewrite_dict_call_to_empty_subscript(
     """
     call = match.call
     if call is None:
-        # 防御性：不该发生，直接保持原样
+        # Defensive fallback: this should not happen, so keep the original form
         return [match.first_stmt]
 
     target = match.target
 
-    # 构造 d = {} 这一行
+    # Build the line d = {}
     empty_assign = cst.Assign(
         targets=[cst.AssignTarget(target=target)],
         value=cst.Dict([]),
     )
     empty_stmt = match.first_stmt.with_changes(body=[empty_assign])
 
-    # 后面每个 keyword 变成一句 d["key"] = value
+    # Then turn each keyword into a statement like d["key"] = value
     subscript_stmts: List[cst.SimpleStatementLine] = []
 
     for arg in call.args:
         if arg.keyword is None:
-            # 有位置参数 / **kwargs，放弃改写，退回原句
+            # If positional arguments or **kwargs exist, abort rewriting and return the original statement
             return [match.first_stmt]
 
-        kw_name = arg.keyword.value  # 例如 "name"
+        kw_name = arg.keyword.value  # for example "name"
         key_expr = cst.SimpleString(repr(kw_name))
 
         subscript = cst.Subscript(
@@ -88,22 +88,22 @@ def _rewrite_empty_subscript_to_dict_call(
     d = dict(name="1")
     """
     if not match.keys or not match.values or match.second_stmt is None:
-        # 不完整，保持原样
+        # Incomplete match, keep the original form
         return [match.first_stmt, match.second_stmt] if match.second_stmt else [match.first_stmt]
 
     target = match.target
     key_expr = match.keys[0]
     value_expr = match.values[0]
 
-    # 只接受 d["name"] 这种简单字面量 key，方便安全地还原成 keyword
+    # Only accept simple literal keys like d["name"], so they can be safely restored as keywords
     if not isinstance(key_expr, cst.SimpleString):
         return [match.first_stmt, match.second_stmt]
 
-    raw = key_expr.value  # 带引号的字符串字面量，比如 "'name'" 或 "\"name\""
+    raw = key_expr.value  # quoted string literal, for example "'name'" or "\"name\""
     if len(raw) < 2 or raw[0] not in ("'", '"') or raw[-1] != raw[0]:
         return [match.first_stmt, match.second_stmt]
 
-    ident = raw[1:-1]  # 去掉首尾引号
+    ident = raw[1:-1]  # strip the leading and trailing quotes
     if not ident.isidentifier():
         return [match.first_stmt, match.second_stmt]
 
@@ -125,11 +125,11 @@ class InitializeWaysRule(BaseRule):
     """
     Refactoring: Initialize ways.
 
-    在下面两种初始化写法之间互转：
+    Convert between the following two initialization styles:
       - d = dict(name="1")
       - d = {}; d["name"] = "1"
 
-    这是一个 block 级规则，会在语句列表中识别并重写相邻两行。
+    This is a block-level rule that recognizes and rewrites adjacent statements inside a statement list.
     """
 
     rule_id = "refactoring.initialize_ways"
@@ -143,13 +143,13 @@ class InitializeWaysRule(BaseRule):
         self, current: InitializeWaysForm
     ) -> Optional[InitializeWaysForm]:
         """
-        根据当前形态 + RuleDirection 决定目标形态。
-        返回 None 表示“不需要改写”。
+        Determine the target form from the current form and RuleDirection.
+        Return None to indicate that no rewrite is needed.
         """
         direction = self.direction
 
         if direction.mode == "AUTO":
-            # AUTO：两种形态互相翻转
+            # AUTO: flip between the two forms
             if current is InitializeWaysForm.DICT_CALL:
                 target = InitializeWaysForm.EMPTY_THEN_SUBSCRIPT
             elif current is InitializeWaysForm.EMPTY_THEN_SUBSCRIPT:
@@ -174,7 +174,7 @@ class InitializeWaysRule(BaseRule):
         return target
 
     # --------------------------
-    # block 重写的通用 helper
+    # Shared helper for block rewriting
     # --------------------------
 
     def _rewrite_block_body(
@@ -182,7 +182,7 @@ class InitializeWaysRule(BaseRule):
         body: List[cst.BaseStatement],
     ) -> List[cst.BaseStatement]:
         """
-        在一个语句列表里扫描并重写 Initialize ways 模式。
+        Scan a statement list and rewrite Initialize ways patterns.
         """
         new_body: List[cst.BaseStatement] = []
         i = 0
@@ -191,9 +191,9 @@ class InitializeWaysRule(BaseRule):
         while i < n:
             stmt = body[i]
 
-            # 只在 SimpleStatementLine 上进行该规则
+            # Apply this rule only on SimpleStatementLine
             if isinstance(stmt, cst.SimpleStatementLine):
-                # 优先尝试两行模式：d = {}; d["name"] = "1"
+                # Prefer trying the two-line pattern first: d = {}; d["name"] = "1"
                 pair_match: Optional[InitializeWaysMatch] = None
                 if i + 1 < n and isinstance(body[i + 1], cst.SimpleStatementLine):
                     pair_match = match_initialize_ways_pair(stmt, body[i + 1])
@@ -209,12 +209,12 @@ class InitializeWaysRule(BaseRule):
                             new_body.extend(replaced)
                             i += 2
                             continue
-                    # 不需要改写，就按原样放入
+                    # No rewrite needed, so keep it unchanged
                     new_body.append(stmt)
                     i += 1
                     continue
 
-                # 单行模式：d = dict(name="1")
+                # Single-line pattern: d = dict(name="1")
                 single_match = match_initialize_ways_single(stmt)
                 if single_match is not None:
                     target_form = self._target_form_for(single_match.form)
@@ -228,14 +228,14 @@ class InitializeWaysRule(BaseRule):
                             i += 1
                             continue
 
-            # 默认情况：不触发规则，直接保留
+            # Default case: rule does not trigger, keep as-is
             new_body.append(stmt)
             i += 1
 
         return new_body
 
     # --------------------------
-    # 针对不同 block 节点的重写
+    # Rewrites for different block node types
     # --------------------------
 
     def leave_Module(

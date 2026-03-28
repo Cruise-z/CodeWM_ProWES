@@ -21,7 +21,7 @@ def f(h, w,x, y):
 def f(h, w,x, y):
     print("{},{},{},{}".format(h, w, x, y))
 """
-    # 统一转为 format 形态
+    # Normalize to the format form
     assert _apply(original, RuleDirection.to_variant("format")).strip() == expected.strip()
 
 
@@ -34,7 +34,7 @@ def f(h, w):
 def f(h, w):
     print("%s,%s" % (h, w))
 """
-    # 统一转为 percent 形态
+    # Normalize to the percent form
     assert _apply(original, RuleDirection.to_variant("percent")).strip() == expected.strip()
 
 
@@ -44,9 +44,9 @@ def f(h, w, x, y):
     print("%s,%s" % (h, w))
     print("{},{}".format(x, y))
 """
-    # AUTO 下：
-    # - 第一行：PERCENT -> FORMAT
-    # - 第二行：FORMAT  -> PERCENT
+    # Under AUTO:
+    # - first line: PERCENT -> FORMAT
+    # - second line: FORMAT -> PERCENT
     expected = """
 def f(h, w, x, y):
     print("{},{}".format(h, w))
@@ -55,7 +55,7 @@ def f(h, w, x, y):
     assert _apply(src, RuleDirection.AUTO).strip() == expected.strip()
 
 
-# ---- 拓展：支持 "{0},{1}".format(...) ----
+# ---- Extension: support "{0},{1}".format(...) ----
 
 def test_indexed_format_to_percent_to_variant():
     original = """

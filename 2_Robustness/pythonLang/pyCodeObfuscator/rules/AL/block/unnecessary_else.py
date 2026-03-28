@@ -13,13 +13,13 @@ from ....patterns.AL.block.unnecessary_else_pattern import (
 )
 
 
-# 为变体字符串提供一个映射：with_else / no_else
+# Provide a mapping from variant strings to forms: with_else / no_else
 _VARIANT_KEY_TO_FORM: dict[str, RemoveElseForm] = {
-    "with_else": RemoveElseForm.ORIGINAL,     # 有 else 的形态
+    "with_else": RemoveElseForm.ORIGINAL,     # Form with else
     "has_else": RemoveElseForm.ORIGINAL,
     "original": RemoveElseForm.ORIGINAL,
 
-    "no_else": RemoveElseForm.TRANSFORMED,    # 去掉 else 的形态
+    "no_else": RemoveElseForm.TRANSFORMED,    # Form with else removed
     "without_else": RemoveElseForm.TRANSFORMED,
     "removed_else": RemoveElseForm.TRANSFORMED,
     "transformed": RemoveElseForm.TRANSFORMED,
@@ -29,43 +29,43 @@ _VARIANT_KEY_TO_FORM: dict[str, RemoveElseForm] = {
 @register_rule
 class RemoveUnnecessaryElseRule(BaseRule):
     """
-    去掉多余 else 的双形态重构：
+    Two-form refactoring for removing unnecessary else:
 
-    形态 A（ORIGINAL / with_else）：
+    Form A (ORIGINAL / with_else):
         if cond:
             return ...
         else:
             # some code
 
-    形态 B（TRANSFORMED / no_else）：
+    Form B (TRANSFORMED / no_else):
         if cond:
             return ...
         # some code
 
-    方向约定（新 RuleDirection 架构）：
+    Direction rules under the new RuleDirection structure:
 
       - direction.mode == "AUTO":
             ORIGINAL     -> TRANSFORMED
             TRANSFORMED  -> ORIGINAL
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "with_else" / "has_else" / "original"
                 "no_else" / "without_else" / "removed_else" / "transformed"
-            本规则将这些 key 映射到 RemoveElseForm，并在两个形态之间做对应转换。
+            This rule maps those keys to RemoveElseForm and performs the corresponding conversion between the two forms.
     """
 
     rule_id = "refactoring.remove_unnecessary_else"
-    description = "Original <-> 去掉多余 else 的重构"
+    description = "Original <-> remove unnecessary else refactor"
     variants = ("with_else", "no_else")
 
-    # ------- 根据 direction 决定目标形态 -------
+    # ------- Determine the target form from direction -------
 
     def _target_form_for(self, match: RemoveElseMatch) -> Optional[RemoveElseForm]:
         cur = match.form
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: swap between the two forms
         if direction.mode == "AUTO":
             if cur is RemoveElseForm.ORIGINAL:
                 target = RemoveElseForm.TRANSFORMED
@@ -74,28 +74,28 @@ class RemoveUnnecessaryElseRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: determine the target form from the variant string
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite
             return None
 
-        # 如果当前形态已经是目标形态，则不改写
+        # Do not rewrite if the current form already matches the target
         if target is cur:
             return None
 
         return target
 
-    # ------- 主重写逻辑：在缩进块中处理 if/else -------
+    # ------- Main rewrite logic: handle if/else inside indented blocks -------
 
     def leave_IndentedBlock(
         self,
@@ -113,7 +113,7 @@ class RemoveUnnecessaryElseRule(BaseRule):
 
             match = match_remove_unnecessary_else(stmt)
 
-            # 未命中 pattern，直接保留
+            # Pattern not matched, keep unchanged
             if match is None:
                 new_body.append(stmt)
                 i += 1
@@ -121,17 +121,17 @@ class RemoveUnnecessaryElseRule(BaseRule):
 
             target_form = self._target_form_for(match)
             if target_form is None:
-                # 当前方向不需要/不允许改写这个 if
+                # The current direction does not require or allow rewriting this if
                 new_body.append(stmt)
                 i += 1
                 continue
 
-            # ---------- ORIGINAL(有 else) -> TRANSFORMED(无 else) ----------
+            # ---------- ORIGINAL (with else) -> TRANSFORMED (without else) ----------
             if (
                 match.form is RemoveElseForm.ORIGINAL
                 and target_form is RemoveElseForm.TRANSFORMED
             ):
-                # 去掉 else，else 体下沉到 if 后面
+                # Remove else and move its body after the if statement
                 assert match.else_block is not None
 
                 if_without_else = match.if_node.with_changes(orelse=None)
@@ -140,12 +140,12 @@ class RemoveUnnecessaryElseRule(BaseRule):
                 i += 1
                 continue
 
-            # ---------- TRANSFORMED(无 else) -> ORIGINAL(有 else) ----------
+            # ---------- TRANSFORMED (without else) -> ORIGINAL (with else) ----------
             if (
                 match.form is RemoveElseForm.TRANSFORMED
                 and target_form is RemoveElseForm.ORIGINAL
             ):
-                # 简化策略：把当前 if 后面的所有语句“吸进” else 块
+                # Simplified strategy: absorb all following statements after the current if into the else block
                 following = body[i + 1 :]
                 else_block = cst.IndentedBlock(body=following or [])
 
@@ -153,11 +153,11 @@ class RemoveUnnecessaryElseRule(BaseRule):
                     orelse=cst.Else(body=else_block)
                 )
                 new_body.append(new_if)
-                # 后续语句已经全部用作 else body，这个 block 结束
+                # All following statements have been used as the else body, so this block ends here
                 i = n
                 continue
 
-            # 其他情况（理论上不会走到），保底不改写
+            # Other cases should not occur in theory; keep unchanged as a fallback
             new_body.append(stmt)
             i += 1
 

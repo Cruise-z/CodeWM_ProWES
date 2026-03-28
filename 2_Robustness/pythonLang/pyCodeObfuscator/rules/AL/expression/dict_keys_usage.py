@@ -11,7 +11,7 @@ from ....patterns.AL.expression.dict_keys_usage_pattern import (
 )
 
 
-# 将 variant 字符串映射到目标形态：
+# Map variant strings to target forms:
 #   - "direct"/"direct_in"  ->  DIRECT_IN
 #   - "keys"/"keys_api"     ->  KEYS_API
 _VARIANT_KEY_TO_FORM: dict[str, DictKeysForm] = {
@@ -28,34 +28,35 @@ _VARIANT_KEY_TO_FORM: dict[str, DictKeysForm] = {
 @register_rule
 class DictKeysUsageRule(BaseRule):
     """
-    多形态规则：
+    Multi-form rule:
 
         'key' in d        (DIRECT_IN)
         'key' in d.keys() (KEYS_API)
 
-    方向约定（基于新的 RuleDirection）：
+    Direction conventions (based on the new RuleDirection):
 
       - direction.mode == "AUTO":
             DIRECT_IN  -> KEYS_API
             KEYS_API   -> DIRECT_IN
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "direct" / "direct_in" / "bare_in"
                 "keys" / "keys_api" / "keys_call"
-            本规则将这些 key 映射到 DictKeysForm，并在两种形态之间做对应转换。
+            This rule maps those keys to DictKeysForm and converts between the
+            two forms accordingly.
     """
 
     rule_id = "refactoring.dict_keys_usage"
     description = "dict membership: 'key in d' <-> 'key in d.keys()'"
     variants = ("direct", "keys")
 
-    # -------- 根据 direction 决定目标形态 --------
+    # -------- Determine the target form from direction --------
 
     def _target_form_for(self, current: DictKeysForm) -> DictKeysForm | None:
         direction = self.direction
 
-        # AUTO：两种形态互换
+        # AUTO: switch between the two forms.
         if direction.mode == "AUTO":
             if current is DictKeysForm.DIRECT_IN:
                 target = DictKeysForm.KEYS_API
@@ -64,28 +65,28 @@ class DictKeysUsageRule(BaseRule):
             else:
                 return None
 
-        # TO_VARIANT：根据 variant 字符串决定目标形态
+        # TO_VARIANT: choose the target form from the variant string.
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             form = _VARIANT_KEY_TO_FORM.get(key.lower())
             if form is None:
-                # 不认识的 key：不改写
+                # Unknown key: do not rewrite.
                 return None
             target = form
 
         else:
-            # 未知 mode：不改写
+            # Unknown mode: do not rewrite.
             return None
 
-        # 当前形态已经是目标形态则不改写
+        # No rewrite is needed if the current form already matches the target.
         if target is current:
             return None
 
         return target
 
-    # -------- 主重写逻辑 --------
+    # -------- Main rewrite logic --------
 
     def leave_Comparison(
         self,
@@ -114,7 +115,7 @@ class DictKeysUsageRule(BaseRule):
         ):
             return _comparison_keys_to_direct(updated_node, match)
 
-        # 理论上不会走到，兜底
+        # Fallback; should not be reached in practice.
         return updated_node
 
 

@@ -10,7 +10,7 @@ import libcst as cst
 
 class LoopIndexForm(str, Enum):
     """
-    这条规则目前有两种形态：
+    This rule currently has two forms:
 
     - INDEX_BASED:
         for i in range(len(currencies)):
@@ -27,23 +27,23 @@ class LoopIndexForm(str, Enum):
 @dataclass
 class LoopIndexDirectReferenceMatch:
     """
-    命中 “index-based <-> element-based” 循环重构 的匹配信息。
+    Match information for the "index-based <-> element-based" loop refactor.
     """
-    form: LoopIndexForm          # 当前是哪种形态
-    for_node: cst.For            # 命中的 for 节点
-    list_name: str               # 列表变量名，如 currencies
-    index_name: Optional[str] = None    # index 变量名，如 i（INDEX_BASED 时使用）
-    element_name: Optional[str] = None  # 元素变量名，如 currency（ELEMENT_BASED 时使用）
+    form: LoopIndexForm          # Current form
+    for_node: cst.For            # Matched for node
+    list_name: str               # List variable name, for example currencies
+    index_name: Optional[str] = None    # Index variable name, for example i (used in INDEX_BASED)
+    element_name: Optional[str] = None  # Element variable name, for example currency (used in ELEMENT_BASED)
 
 
 def _match_range_len_iter(expr: cst.BaseExpression) -> Optional[str]:
     """
-    匹配 range(len(x)) 这种形式，返回 x 的名字；否则返回 None。
+    Match the form range(len(x)) and return the name of x; otherwise return None.
 
-    例如:
+    Example:
         range(len(currencies)) -> "currencies"
     """
-    # 匹配 range(...)
+    # Match range(...)
     if not isinstance(expr, cst.Call):
         return None
     if not isinstance(expr.func, cst.Name) or expr.func.value != "range":
@@ -53,7 +53,7 @@ def _match_range_len_iter(expr: cst.BaseExpression) -> Optional[str]:
 
     arg0 = expr.args[0].value
 
-    # 匹配 len(x)
+    # Match len(x)
     if not isinstance(arg0, cst.Call):
         return None
     if not isinstance(arg0.func, cst.Name) or arg0.func.value != "len":
@@ -65,21 +65,21 @@ def _match_range_len_iter(expr: cst.BaseExpression) -> Optional[str]:
     if not isinstance(inner, cst.Name):
         return None
 
-    return inner.value  # list 变量名
+    return inner.value  # list variable name
 
 
 def match_loop_index_direct_reference(
     node: cst.CSTNode,
 ) -> Optional[LoopIndexDirectReferenceMatch]:
     """
-    在一个节点上尝试匹配 “for i in range(len(xs)) <-> for x in xs” 这种结构。
+    Try to match a structure like "for i in range(len(xs)) <-> for x in xs" on a node.
 
-    命中时返回 LoopIndexDirectReferenceMatch，否则返回 None。
+    Return LoopIndexDirectReferenceMatch on success, otherwise return None.
     """
     if not isinstance(node, cst.For):
         return None
 
-    # ---------- 形态 1：INDEX_BASED ----------
+    # ---------- Form 1: INDEX_BASED ----------
     # for i in range(len(xs)):
     if isinstance(node.target, cst.Name):
         index_name = node.target.value
@@ -93,7 +93,7 @@ def match_loop_index_direct_reference(
                 element_name=None,
             )
 
-    # ---------- 形态 2：ELEMENT_BASED ----------
+    # ---------- Form 2: ELEMENT_BASED ----------
     # for element in xs:
     if isinstance(node.target, cst.Name) and isinstance(node.iter, cst.Name):
         element_name = node.target.value

@@ -1,14 +1,14 @@
-# 脚本使用说明
+# Script Usage Guide
 
-## 移动脚本
+## Move the Scripts
 
-将本目录`2_Robustness/project/srcMarker/SrcMarker/`下的脚本放在源仓库对应目录`SrcMarker/`下即可
+Place the scripts in this directory, `2_Robustness/project/srcMarker/SrcMarker/`, into the corresponding `SrcMarker/` directory in the source repository.
 
-## 操作方法
+## Workflow
 
-### 训练并评估
+### Train and Evaluate
 
-按照原仓库中的方法对模型进行训练，并进行水印提取评估：
+Train the model using the original repository's procedure, then run watermark extraction evaluation:
 
 ```bash
 # --write_output controls whether to write results to ./results directory
@@ -26,12 +26,12 @@ python eval_main.py \
 
 
 
-### 混淆操作
+### Obfuscation
 
-对`SrcMarker/results`下的水印提取后结果进行混淆：
+Obfuscate the post-extraction results under `SrcMarker/results`:
 
 ```bash
-##混淆脚本调用示例
+## Example obfuscation script invocation
 python 1_obfus.py \
 	--sample \
 	--sample_size 10
@@ -39,13 +39,13 @@ python 1_obfus.py \
 
 
 
-### 混淆后水印提取
+### Watermark Extraction After Obfuscation
 
-- 使用前，将混淆后(即json列表中含有"after_obfus"字段的文件)写入：
+- Before use, write the obfuscated file (that is, a JSONL file containing the `"after_obfus"` field) into:
 
-  `SrcMarker/datasets/csn_java/obfus.jsonl`中即可
+  `SrcMarker/datasets/csn_java/obfus.jsonl`
 
-- 默认输出文件夹是：`SrcMarker/results_obfus`
+- The default output directory is: `SrcMarker/results_obfus`
 
 ```bash
 python 2_eval_obfus.py\
@@ -61,9 +61,8 @@ python 2_eval_obfus.py\
 
 
 
-### 混淆统计
+### Obfuscation Statistics
 
 ```bash
 python 3_analysis.py
 ```
-

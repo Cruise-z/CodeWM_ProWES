@@ -1,17 +1,17 @@
-# 操作指南
+# Operation Guide
 
-## 启动模型服务
+## Start the Model Service
 
-模型启动方式：
+Model startup commands:
 
-### 常规
+### Standard
 ```bash
 CUDA_VISIBLE_DEVICES=0 LOG_REQ_BODY=1 LOG_REQ_BODY_BYTES=8192 SERVER_DO_SAMPLE=1 SAMPLING_MODE=lenient_openai uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 
 
 
-### DEBUG启动：
+### DEBUG startup:
 ```bash
 CUDA_VISIBLE_DEVICES=0 LOG_REQ_BODY=1 LOG_REQ_BODY_BYTES=8192 SERVER_DO_SAMPLE=1 SAMPLING_MODE=lenient_openai \
 uvicorn server:app \
@@ -25,7 +25,7 @@ uvicorn server:app \
 
 
 
-### 单 worker，超时都拉长
+### Single worker with extended timeouts
 ```bash
 CUDA_VISIBLE_DEVICES=0 LOG_REQ_BODY=1 LOG_REQ_BODY_BYTES=8192 SERVER_DO_SAMPLE=1 SAMPLING_MODE=lenient_openai \
 gunicorn server:app \
@@ -37,7 +37,7 @@ gunicorn server:app \
 
 
 
-## 模型包装测试：
+## Model wrapper test:
 
 ```bash
 curl --noproxy 127.0.0.1,localhost http://127.0.0.1:8000/v1/_processors
@@ -48,7 +48,7 @@ curl --noproxy 127.0.0.1,localhost http://127.0.0.1:8000/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{
     "model":"Qwen/Qwen2.5-Coder-32B-Instruct",
-    "messages":[{"role":"user","content":"讲讲BFS与DFS差异并举例"}],
+    "messages":[{"role":"user","content":"Explain the differences between BFS and DFS and give examples."}],
     "parallel": true,
     "temperature":0.7,
     "rng_seed": 123456,
@@ -67,7 +67,7 @@ curl --noproxy 127.0.0.1,localhost http://127.0.0.1:8000/v1/chat/completions \
   -H 'Content-Type: application/json' \
   -d '{
     "model":"Qwen/Qwen2.5-Coder-32B-Instruct",
-    "messages":[{"role":"user","content":"讲讲BFS与DFS差异并举例"}],
+    "messages":[{"role":"user","content":"Explain the differences between BFS and DFS and give examples."}],
     "temperature": 0.7,
     "rng_seed": 123456,
     "max_tokens": 2048
@@ -77,37 +77,37 @@ curl --noproxy 127.0.0.1,localhost http://127.0.0.1:8000/v1/chat/completions \
 
 
 
-## 压力测试：
+## Stress Test:
 
-### 常规压测
+### Standard stress test
 
 ```bash
 python3 - <<'PY' | curl --noproxy 127.0.0.1,localhost -sS http://127.0.0.1:8000/v1/chat/completions \
   -H 'Content-Type: application/json' -d @- | jq .
 import json
-N_CHUNKS = 12   # 先小到 50/100 验证，再逐步加到 800/2000/5000
+N_CHUNKS = 12   # Start by validating with 50/100, then gradually increase to 800/2000/5000
 
 header = (
-  "你现在是一个严格的审校器。请阅读下面的超长技术文档片段集合，"
-  "最后仅输出“OK:已读完毕且可解析”。不要复述内容。\n\n"
-  "====== 文档开始 ======\n"
+  "You are now a strict reviewer. Please read the following collection of very long technical document fragments, "
+  "and at the end output only \"OK:fully read and parsable\". Do not restate the content.\n\n"
+  "====== Document Start ======\n"
 )
 def chunk(i:int)->str:
     nums = ",".join(str((i*j)%997) for j in range(96))
     code = f"def f_{i}(x):\\n    return (x**2 + {i}) % 997\\n"
-    kvs  = { "idx": i, "sha": f"{i:04x}{(i*i)%65535:04x}", "tags": ["llm","stress","ctx","中文","混排"], "nums_len": 96 }
+    kvs  = { "idx": i, "sha": f"{i:04x}{(i*i)%65535:04x}", "tags": ["llm","stress","ctx","chinese","mixed-layout"], "nums_len": 96 }
     lines = [
-        f"### 段落 {i:04d} —— 混合中英/符号/代码/CSV",
-        "BFS vs DFS quick note: BFS explores level by level; DFS dives deep; 这句是token化噪声。",
+        f"### Paragraph {i:04d} -- mixed English/symbols/code/CSV",
+        "BFS vs DFS quick note: BFS explores level by level; DFS dives deep; this sentence is tokenization noise.",
         f"CSV::{nums}",
-        "公式: S(n)=n(n+1)/2，附加冗余字符提升token密度——αβγδεζηθκλμνξοπρστυφχψω。",
+        "Formula: S(n)=n(n+1)/2, with extra redundant characters to increase token density -- αβγδεζηθκλμνξοπρστυφχψω.",
         "JSON::" + json.dumps(kvs, ensure_ascii=False),
         "CODE::\\n" + code
     ]
     return "\\n".join(lines) + "\\n"
 
 body = "".join(chunk(i) for i in range(N_CHUNKS))
-tail = "====== 文档结束 ======\\n"
+tail = "====== Document End ======\\n"
 
 payload = {
   "model":"Qwen/Qwen2.5-Coder-32B-Instruct",
@@ -123,15 +123,15 @@ PY
 
 
 
-### 并行压测
+### Parallel stress test
 
 ```bash
 python3 - <<'PY' | curl --max-time 120 --noproxy 127.0.0.1,localhost -sS http://127.0.0.1:8000/v1/chat/completions \
   -H 'Content-Type: application/json' -d @- | jq .
 import json
 N_CHUNKS = 260
-header = "并行压测：请读完整个大段文本后仅回复“OK:parallel:zrz zzzzz”。\\n\\n"
-def chunk(i): return f"[{i:04d}] 压测行 {i} —— tokens*mix —— 0123456789 ABC abc XYZ。\\n"
+header = "Parallel stress test: please read the entire long text and reply only with \"OK:parallel:zrz zzzzz\".\\n\\n"
+def chunk(i): return f"[{i:04d}] Stress line {i} -- tokens*mix -- 0123456789 ABC abc XYZ.\\n"
 body = "".join(chunk(i) for i in range(N_CHUNKS))
 payload = {
   "model":"Qwen/Qwen2.5-Coder-32B-Instruct",

@@ -12,10 +12,10 @@ import os
 from watermark import WatermarkLogitsProcessor
 from sweet import SweetLogitsProcessor
 
-# 1) 初始化引擎（可换任意 HF CausalLM）
+# 1) Initialize the engine (replaceable with any HF CausalLM)
 engine = HFModelEngine(
-    model_name="bigcode/starcoder",   # 换 model 只改这里
-    device_map=None,                  # 单卡最稳；需要分片用 "auto"
+    model_name="bigcode/starcoder",   # Change the model here
+    device_map=None,                  # Single GPU is the safest; use "auto" if sharding is needed
     fp16=True,
 )
 
@@ -28,16 +28,16 @@ sweet_processor = SweetLogitsProcessor(vocab=list(engine.tokenizer.get_vocab().v
                                        delta=1,
                                        entropy_threshold=0.9)
 
-# 2) 适配你的 retriever
+# 2) Adapt your retriever
 retriever = FunctionRetriever(retrieve_reference)
 
-# 3) 编排器
+# 3) Orchestrator
 rag_gen = RagConstrainedGenerator(engine, retriever)
 
 prompt = "Task: Brick breaker game\nPrompt:use java Create a brick breaker game\nrequirements:\n• Game Board:\n⋄ Create a game board with a grid-based layout.\n..."
 prefix = "package correct;\n\nimport javax.swing.*;\nimport java.awt.*;\nimport java.awt.event.ActionEvent;\nimport java.awt.event.ActionListener;\nimport java.awt.event.KeyEvent;\nimport java.awt.event.KeyListener;\nimport java.util.ArrayList;\nimport java.util.Random;\n\npublic class BrickBreakerGame extends JPanel implements ActionListener, KeyListener {\n"
 
-# A) 自适应软约束（推荐，等效硬夹紧但形式“软”）：
+# A) Adaptive soft constraint (recommended; effectively equivalent to hard clamping but expressed as a "soft" form):
 res = rag_gen.generate(
     prompt, prefix,
     top_k=1,
@@ -55,17 +55,17 @@ res = rag_gen.generate(
     gamma_safe = 1e-6,
     fixed_bias = 12.0,
     # watermark_processor = None,
-    watermark_processor=sweet_processor  # 这里可换成你自己的水印 Processor
+    watermark_processor=sweet_processor  # Replace this with your own watermark processor if needed
 )
 print(res["rag_meta"]["rank"], res["rag_meta"]["route"], res["rag_meta"]["task_name"], res["rag_meta"]["score"])
 print(res["rag_meta"]["reference"])
 print(res["route"], res["exact_match"], len(res["text"]))
 print(res["text"])
 
-# B) 固定偏置软约束：
+# B) Fixed-bias soft constraint:
 # res2 = rag_gen.generate(prompt, prefix, constraint="fixed", fixed_bias=16.0)
 # print(res2["route"], res2["exact_match"], len(res2["text"]))
 
-# C) 硬夹紧（100%一致，用于极端对照）：
+# C) Hard clamping (100% consistent, used for extreme control comparisons):
 # res3 = rag_gen.generate(prompt, prefix, constraint="hard")
 # print(res3["route"], res3["exact_match"], len(res3["text"]))

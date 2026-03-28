@@ -139,7 +139,7 @@ class Engineer2(RoleZero):
             md_filepath = matches[0] if matches else ""
             md_content = ""
             if not md_filepath:
-                print("未找到包含 'docs' 的路径。")
+                print("No path containing 'docs' was found.")
             else:
                 docs_path = Path(md_filepath)
                 parts = docs_path.parts
@@ -179,27 +179,27 @@ class Engineer2(RoleZero):
                     target_size=60
                 )
 
-            # 添加详细的调试信息
-            print(f"generate_watermark_code 返回结果类型: {type(result)}")
-            print(f"generate_watermark_code 返回结果内容: {result}")
+            # Add detailed debug information
+            print(f"generate_watermark_code returned type: {type(result)}")
+            print(f"generate_watermark_code returned content: {result}")
             
             # Check if result is an error message
-            if isinstance(result, str) and result.startswith(("请求错误", "生成失败", "解析响应失败", "未知错误", "连接错误")):
-                raise Exception(f"生成带水印的代码失败: {result}")
+            if isinstance(result, str) and result.startswith(("Request error", "Generation failed", "Response parsing failed", "Unknown error", "Connection error")):
+                raise Exception(f"Failed to generate watermarked code: {result}")
 
             # Extract generated code from result
             if isinstance(result, dict) and result.get("success", False):
                 if "res" in result and "code" in result["res"]:
                     code = result["res"]["code"]
                 else:
-                    print(f"警告: result['res'] 结构异常: {result.get('res', 'res键不存在')}")
-                    raise Exception(f"生成带水印的代码失败: 响应中缺少 code 字段，实际结构: {result}")
+                    print(f"Warning: unexpected result['res'] structure: {result.get('res', 'missing res key')}")
+                    raise Exception(f"Failed to generate watermarked code: the response is missing the code field. Actual structure: {result}")
             else:
-                print(f"错误: result 不是字典或 success 不为 True")
-                print(f"result 是否为字典: {isinstance(result, dict)}")
+                print("Error: result is not a dict or success is not True")
+                print(f"Is result a dict: {isinstance(result, dict)}")
                 if isinstance(result, dict):
-                    print(f"success 字段值: {result.get('success', '不存在')}")
-                raise Exception(f"生成带水印的代码失败: 响应格式无效，实际结果: {result}")
+                    print(f"success field value: {result.get('success', 'missing')}")
+                raise Exception(f"Failed to generate watermarked code: invalid response format. Actual result: {result}")
 
         # Handle other file types with standard approach
         else:
@@ -228,7 +228,7 @@ class Engineer2(RoleZero):
                 with open(created_file_path, "a", encoding="utf-8") as f:
                     f.write(f"\n ===== {file_name} =====\n{code}\n")
 
-        return f"文件 {path} 已成功创建，包含内容:\n{code}"
+        return f"File {path} was created successfully with the following content:\n{code}"
 
     async def _deploy_to_public(self, dist_dir):
         """fix the dist_dir path to absolute path before deploying

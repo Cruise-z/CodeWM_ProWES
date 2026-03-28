@@ -10,23 +10,24 @@ import os
 work_space = Path(__file__).resolve().parent
 os.chdir(work_space)
 
-# ========= 可替换：嵌入模型 =========
-# 通用检索强：intfloat/e5-base-v2  （推荐）
-# 代码检索可用：microsoft/codebert-base  或 jinaai/jina-embeddings-v2-base-code
+# ========= Replaceable embedding model =========
+# Strong general retrieval: intfloat/e5-base-v2 (recommended)
+# For code retrieval: microsoft/codebert-base or
+# jinaai/jina-embeddings-v2-base-code
 EMBED_MODEL_NAME = "intfloat/e5-base-v2"
 
 tokenizer = AutoTokenizer.from_pretrained(EMBED_MODEL_NAME)
 encoder = AutoModel.from_pretrained(EMBED_MODEL_NAME)
 
 def _prefix_for_e5(text, is_query: bool):
-    # E5 家族建议加前缀
+    # Prefixes are recommended for the E5 family
     if "intfloat/e5" in EMBED_MODEL_NAME:
         return f"{'query' if is_query else 'passage'}: {text}"
     return text
 
 @torch.no_grad()
 def encode_batch(texts, is_query=False, batch_size=16, max_length=512):
-    """均值池化 + L2 归一化（用于余弦相似度/内积检索）"""
+    """Mean pooling + L2 normalization (for cosine similarity / inner-product retrieval)."""
     out_list = []
     for i in range(0, len(texts), batch_size):
         batch = [_prefix_for_e5(t, is_query) for t in texts[i:i+batch_size]]
@@ -36,7 +37,7 @@ def encode_batch(texts, is_query=False, batch_size=16, max_length=512):
         masked = outputs * mask
         mean_emb = masked.sum(dim=1) / mask.sum(dim=1).clamp(min=1)  # [B, H]
         vecs = mean_emb.cpu().numpy().astype("float32")
-        # 归一化，配合内积=余弦相似度
+        # Normalize so inner product equals cosine similarity
         faiss.normalize_L2(vecs)
         out_list.append(vecs)
     return np.vstack(out_list)
@@ -61,8 +62,8 @@ def load_jsonl(jsonl_path):
     return rows
 
 def make_passage_text(r):
-    """构造入库文本：包含 task_name/prompt/prefix/reference 片段，提升可检索性"""
-    ref_head = r["reference"][:2000]   # 视长度酌情截断
+    """Build the indexed text by including task_name/prompt/prefix/reference snippets to improve retrievability."""
+    ref_head = r["reference"][:2000]   # Truncate according to length as needed
     pre_head = r["prefix"][:1000]
     prm_head = r["prompt"][:1000]
     parts = [
@@ -80,13 +81,13 @@ def build_knowledge_base(
 ):
     data = load_jsonl(jsonl_path)
     if not data:
-        raise ValueError("JSONL 中没有可用记录（缺少 reference 字段）。")
+        raise ValueError("No usable records were found in the JSONL file (missing reference field).")
 
     passages = [make_passage_text(r) for r in data]
-    vecs = encode_batch(passages, is_query=False)  # passage 向量
+    vecs = encode_batch(passages, is_query=False)  # passage vectors
 
     dim = vecs.shape[1]
-    index = faiss.IndexFlatIP(dim)      # 余弦相似度（向量已 L2 归一化）
+    index = faiss.IndexFlatIP(dim)      # cosine similarity (vectors are already L2-normalized)
     index.add(vecs)
     faiss.write_index(index, index_path)
 
@@ -98,9 +99,9 @@ def build_knowledge_base(
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
-    print(f"*索引: {Path(index_path).resolve()}")
-    print(f"*元数据: {Path(meta_path).resolve()}")
-    print(f"*文档数: {len(data)}")
+    print(f"*Index: {Path(index_path).resolve()}")
+    print(f"*Metadata: {Path(meta_path).resolve()}")
+    print(f"*Document count: {len(data)}")
 
 def _load_kb(index_path, meta_path):
     index = faiss.read_index(index_path)
@@ -124,17 +125,17 @@ def retrieve_reference(
     vector_fallback: bool = True
 ):
     """
-    多路检索合并：
-      1) task_name 精确包含命中（优先）
-      2) task_name 模糊匹配（WRatio）
-      3) (prompt + prefix) 模糊匹配（WRatio）
-      4) 以上不足 top_k 时，回退向量检索（余弦）
-    返回：[{rank, score, task_id, task_name, prompt, prefix, reference, route}, ...]
+    Multi-route retrieval merge:
+      1) exact containment match on task_name (highest priority)
+      2) fuzzy match on task_name (WRatio)
+      3) fuzzy match on (prompt + prefix) (WRatio)
+      4) if fewer than top_k are found above, fall back to vector retrieval (cosine)
+    Returns: [{rank, score, task_id, task_name, prompt, prefix, reference, route}, ...]
     """
     index, meta = _load_kb(index_path, meta_path)
     rows = meta["rows"]
 
-    # ---------- 1) task_name 精确包含 ----------
+    # ---------- 1) Exact containment on task_name ----------
     ql = (query_text or "").lower().strip()
     if prefer_exact and ql:
         exact_hits = [i for i, r in enumerate(rows) if ql in (r.get("task_name") or "").lower()]
@@ -152,13 +153,14 @@ def retrieve_reference(
                 "route": "task_name_exact"
             }]
 
-    # 先收集多路候选（去重时保留最高分）
+    # First collect candidates from multiple routes and keep the highest score on dedup
     cand = {}  # fid -> (score, route)
 
-    # ---------- 2) task_name 模糊 ----------
+    # ---------- 2) Fuzzy task_name match ----------
     task_choices = [((r.get("task_name") or ""), i) for i, r in enumerate(rows)]
     if task_choices:
-        # 取前若干名候选，提高召回；你也可把 limit 改成 len(rows) 全量打分
+        # Take the top candidate set to improve recall; you can also change
+        # limit to len(rows) to score everything
         task_top = process.extract(
             query_text, task_choices, scorer=fuzz.WRatio, limit=min(20, len(task_choices))
         )
@@ -168,7 +170,7 @@ def retrieve_reference(
                 if (prev is None) or (score/100.0 > prev[0]):
                     cand[i] = (score/100.0, "task_name_fuzzy")
 
-    # ---------- 3) (prompt + prefix) 模糊 ----------
+    # ---------- 3) Fuzzy (prompt + prefix) match ----------
     pp_choices = []
     for i, r in enumerate(rows):
         pp = _combine_text(r.get("prompt", ""), r.get("prefix", ""))
@@ -183,7 +185,7 @@ def retrieve_reference(
                 if (prev is None) or (score/100.0 > prev[0]):
                     cand[i] = (score/100.0, "pp_fuzzy")
 
-    # 将模糊候选按分数排序，截取 top_k
+    # Sort fuzzy candidates by score and keep top_k
     fuzzy_results = sorted(cand.items(), key=lambda kv: kv[1][0], reverse=True)
     results = []
     for rank, (fid, (sc, route)) in enumerate(fuzzy_results[:top_k], 1):
@@ -199,21 +201,22 @@ def retrieve_reference(
             "route": route
         })
 
-    # ---------- 4) 向量回退 ----------
+    # ---------- 4) Vector fallback ----------
     if vector_fallback and len(results) < top_k:
         need = top_k - len(results)
-        # 直接用 query_text 做向量检索（也可以改为 prompt+prefix 的拼接）
+        # Use query_text directly for vector retrieval
+        # (this can also be changed to prompt+prefix concatenation)
         from numpy import unique
-        q_vec = encode_batch([query_text], is_query=True)  # 复用你前面定义的 encode_batch
-        scores, idx = index.search(q_vec, need * 2)        # 多取一些，避免与 fuzzy 候选重复
-        used_fids = set([rows.index(res) if isinstance(res, dict) else res for res in []])  # 兼容提醒
+        q_vec = encode_batch([query_text], is_query=True)  # Reuse the encode_batch defined above
+        scores, idx = index.search(q_vec, need * 2)        # Over-fetch to avoid overlap with fuzzy candidates
+        used_fids = set([rows.index(res) if isinstance(res, dict) else res for res in []])  # Compatibility reminder
 
-        used = set([int(rows.index(r)) for r in []])  # 无用行，仅防报错说明；可忽略
+        used = set([int(rows.index(r)) for r in []])  # Unused line, only kept to avoid error-report confusion; can be ignored
         picked = 0
         for sc, fid in zip(scores[0], idx[0]):
-            if fid < 0:  # FAISS 可能返回 -1
+            if fid < 0:  # FAISS may return -1
                 continue
-            if int(fid) in cand:  # 避免与模糊候选重复
+            if int(fid) in cand:  # Avoid duplicates with fuzzy candidates
                 continue
             r = rows[int(fid)]
             results.append({
@@ -230,14 +233,14 @@ def retrieve_reference(
             if picked >= need:
                 break
 
-    # 最终仅保留 top_k
+    # Keep only top_k in the final result
     return results[:top_k]
 
-# ===== 使用示例 =====
-# 先构建/重建索引（只需一次）
+# ===== Usage example =====
+# Build/rebuild the index first (only needed once)
 build_knowledge_base("./projectDev_java.jsonl")
 
-# 查询
+# Query
 # query = "snake game"
 # hits = retrieve_reference(query, top_k=1)
 # for h in hits:

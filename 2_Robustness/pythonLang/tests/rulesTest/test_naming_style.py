@@ -19,7 +19,7 @@ def add(UserAddNum):
 def add(user_add_num):
     return 1 + user_add_num
 """
-    # 统一转为 snake_case
+    # Normalize to snake_case
     assert _apply(src, RuleDirection.to_variant("snake")).strip() == expected.strip()
 
 
@@ -32,7 +32,7 @@ def add(user_add_num):
 def add(UserAddNum):
     return 1 + UserAddNum
 """
-    # 统一转为 CamelCase
+    # Normalize to CamelCase
     assert _apply(src, RuleDirection.to_variant("camel")).strip() == expected.strip()
 
 
@@ -42,7 +42,7 @@ def f(UserAddNum, user_add_num, user_Add_Num):
     x = UserAddNum + user_add_num + user_Add_Num
     return x
 """
-    # AUTO 轮转规则：
+    # AUTO rotation rule:
     #   CAMEL(UserAddNum)      -> SNAKE(user_add_num)
     #   SNAKE(user_add_num)    -> PASCAL_UNDERSCORE(user_Add_Num)
     #   PASCAL(user_Add_Num)   -> CAMEL(UserAddNum)

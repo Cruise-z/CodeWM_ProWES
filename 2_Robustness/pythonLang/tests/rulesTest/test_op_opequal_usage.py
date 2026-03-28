@@ -60,7 +60,7 @@ def f():
     c = c * 3
     d /= 4
 """
-    # AUTO：遇到哪种就翻转到另一种
+    # AUTO: flip each occurrence to the other form
     expected = """
 def f():
     a += 1

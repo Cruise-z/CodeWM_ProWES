@@ -16,7 +16,7 @@ from ...patterns.NL.naming_style_pattern import (
 
 def _pick_auto_target_style(current: NamingStyle) -> NamingStyle:
     """
-    AUTO 模式下的“互转”策略（确定性轮转，方便测试）：
+    Rotation strategy in AUTO mode (deterministic for easier testing):
       CAMEL             -> SNAKE
       SNAKE             -> PASCAL_UNDERSCORE
       PASCAL_UNDERSCORE -> CAMEL
@@ -30,20 +30,20 @@ def _pick_auto_target_style(current: NamingStyle) -> NamingStyle:
     return current
 
 
-# 允许的一些别名 -> NamingStyle
+# Allowed aliases -> NamingStyle
 _VARIANT_KEY_TO_STYLE: dict[str, NamingStyle] = {
-    # camel 风格
+    # Camel-style aliases
     "camel": NamingStyle.CAMEL,
     "pascal": NamingStyle.CAMEL,
     "camelcase": NamingStyle.CAMEL,
     "pascalcase": NamingStyle.CAMEL,
 
-    # snake 风格
+    # Snake-style aliases
     "snake": NamingStyle.SNAKE,
     "snake_case": NamingStyle.SNAKE,
     "snakecase": NamingStyle.SNAKE,
 
-    # user_Add_Num 这种
+    # user_Add_Num-style aliases
     "underscore": NamingStyle.PASCAL_UNDERSCORE,
     "pascal_underscore": NamingStyle.PASCAL_UNDERSCORE,
     "user_add_num_style": NamingStyle.PASCAL_UNDERSCORE,
@@ -53,54 +53,54 @@ _VARIANT_KEY_TO_STYLE: dict[str, NamingStyle] = {
 @register_rule
 class NamingStyleRule(BaseRule):
     """
-    三种命名风格互转：
+    Convert among three naming styles:
 
         UserAddNum    # CAMEL
         user_add_num  # SNAKE
         user_Add_Num  # PASCAL_UNDERSCORE
 
-    多形态方向约定（基于 RuleDirection）：
+    Multi-variant direction convention (based on RuleDirection):
 
       - direction.mode == "AUTO":
-            识别当前风格，在三种风格之间轮转：
+            Detect the current style and rotate among the three styles:
                 CAMEL -> SNAKE -> PASCAL_UNDERSCORE -> CAMEL
 
       - direction.mode == "TO_VARIANT":
-            direction.variant 为字符串 key：
+            direction.variant is a string key:
                 "camel" / "snake" / "underscore" / "pascal_underscore" / ...
-            本规则将这些 key 映射到 NamingStyle，并统一改写为目标风格。
+            This rule maps those keys to NamingStyle and rewrites names into the target style.
     """
 
     rule_id = "refactoring.naming_style"
-    description = "变量/参数命名风格互转（Camel / snake / user_Add_Num）"
+    description = "Convert variable/parameter naming styles (Camel / snake / user_Add_Num)"
 
-    # 声明一下本规则支持的变体名称（主要用于 CLI/文档，可选）
+    # Declare the variant names supported by this rule (mainly for CLI/docs, optional)
     variants = ("camel", "snake", "pascal_underscore")
 
     def _target_style_for(self, match: NamingStyleMatch) -> Optional[NamingStyle]:
         cur = match.style
         direction = self.direction
 
-        # ---- AUTO：在三种风格之间轮转 ----
+        # ---- AUTO: rotate among the three styles ----
         if direction.mode == "AUTO":
             target = _pick_auto_target_style(cur)
 
-        # ---- TO_VARIANT：根据字符串 key 选目标风格 ----
+        # ---- TO_VARIANT: choose the target style based on the string key ----
         elif direction.mode == "TO_VARIANT":
             key = direction.variant
             if key is None:
                 return None
             style = _VARIANT_KEY_TO_STYLE.get(key.lower())
             if style is None:
-                # 不认识的变体 key：不改
+                # Unknown variant key: do not rewrite
                 return None
             target = style
 
         else:
-            # 未知 mode：安全起见不做改写
+            # Unknown mode: do not rewrite for safety
             return None
 
-        # 如果本来就是这个风格，就不动
+        # If it is already in the target style, leave it unchanged
         if target is cur:
             return None
         return target
@@ -111,10 +111,11 @@ class NamingStyleRule(BaseRule):
         updated_node: cst.Name,
     ) -> cst.Name:
         """
-        对所有 Name 节点尝试做命名风格转换。
+        Try to convert naming style for every Name node.
 
-        当前简单实现：只根据 name 本身判断风格，不区分变量/参数/函数名等。
-        如果以后你想更细粒度控制，可以结合 metadata 做过滤。
+        Current simple implementation: infer style purely from the name itself,
+        without distinguishing variables, parameters, function names, etc.
+        If you want finer-grained control later, you can filter with metadata.
         """
         match = match_naming_style(updated_node)
         if match is None:

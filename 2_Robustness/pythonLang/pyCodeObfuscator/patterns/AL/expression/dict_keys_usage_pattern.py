@@ -10,7 +10,7 @@ import libcst as cst
 
 class DictKeysForm(str, Enum):
     """
-    两种形态：
+    Two forms:
 
     - DIRECT_IN:  'Alice' in d
     - KEYS_API : 'Alice' in d.keys()
@@ -22,17 +22,17 @@ class DictKeysForm(str, Enum):
 @dataclass
 class DictKeysUsageMatch:
     """
-    'key in d' <-> 'key in d.keys()' 的一次命中信息。
+    Match information for one occurrence of 'key in d' <-> 'key in d.keys()'.
     """
     form: DictKeysForm
     comparison: cst.Comparison
     key_expr: cst.BaseExpression     # 'Alice'
-    dict_expr: cst.BaseExpression    # d 或 obj.dict 等
+    dict_expr: cst.BaseExpression    # d or obj.dict, etc.
 
 
 def _match_direct_in(comp: cst.Comparison) -> Optional[DictKeysUsageMatch]:
     """
-    匹配 'key in d' 形式。
+    Match the form 'key in d'.
     """
     if len(comp.comparisons) != 1:
         return None
@@ -42,7 +42,7 @@ def _match_direct_in(comp: cst.Comparison) -> Optional[DictKeysUsageMatch]:
         return None
 
     comparator = target.comparator
-    # 只接受 Name 或 Attribute 作为容器表达式（d / obj.d）
+    # Only accept Name or Attribute as the container expression (d / obj.d)
     if not isinstance(comparator, (cst.Name, cst.Attribute)):
         return None
 
@@ -56,7 +56,7 @@ def _match_direct_in(comp: cst.Comparison) -> Optional[DictKeysUsageMatch]:
 
 def _match_keys_api(comp: cst.Comparison) -> Optional[DictKeysUsageMatch]:
     """
-    匹配 'key in d.keys()' 形式。
+    Match the form 'key in d.keys()'.
     """
     if len(comp.comparisons) != 1:
         return None
@@ -75,15 +75,15 @@ def _match_keys_api(comp: cst.Comparison) -> Optional[DictKeysUsageMatch]:
     if not isinstance(func, cst.Attribute):
         return None
 
-    # attr 必须是 .keys
+    # attr must be .keys
     if not isinstance(func.attr, cst.Name) or func.attr.value != "keys":
         return None
 
-    # d 或 obj.d
+    # d or obj.d
     if not isinstance(func.value, (cst.Name, cst.Attribute)):
         return None
 
-    # d.keys() 不接受参数
+    # d.keys() must not take arguments
     if comparator.args:
         return None
 
@@ -99,17 +99,17 @@ def match_dict_keys_usage(
     expr: cst.BaseExpression,
 ) -> Optional[DictKeysUsageMatch]:
     """
-    在一个表达式上尝试匹配：
+    Try to match on an expression:
 
       - 'key in d'
       - 'key in d.keys()'
 
-    命中返回 DictKeysUsageMatch，否则返回 None。
+    Return DictKeysUsageMatch on success, otherwise return None.
     """
     if not isinstance(expr, cst.Comparison):
         return None
 
-    # 先判定更具体的 keys() 形式，再判定裸 in
+    # Check the more specific keys() form first, then the bare in form
     m = _match_keys_api(expr)
     if m is not None:
         return m

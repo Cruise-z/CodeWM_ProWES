@@ -95,7 +95,7 @@ class WriteCode(Action):
     #     return code
     
     async def write_code(self, prompt) -> tuple[str, str]:
-        # 默认第一个返回值为原始代码，第二个返回值为水印代码
+        # By default, the first return value is the original code and the second is the watermarked code
         code_rsp0, code_rsp1 = await self._aask_local(prompt)
         code_ori = CodeParser.parse_code(block="", text=code_rsp0)
         code_wm = CodeParser.parse_code(block="", text=code_rsp1)

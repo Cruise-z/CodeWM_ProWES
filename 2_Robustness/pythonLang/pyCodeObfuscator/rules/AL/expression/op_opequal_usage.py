@@ -14,16 +14,17 @@ from ....patterns.AL.expression.op_opequal_usage_pattern import (
 )
 
 
-# variant 名到「风格形态」的映射
-# 为了兼容老配置，这里顺带保留 addequal / add_assign 这些旧名字。
+# Mapping from variant names to style forms.
+# Keep legacy names such as addequal / add_assign for compatibility with older
+# configs.
 _VARIANT_KEY_TO_FORM: Dict[str, OpOrOpEqualUsageForm] = {
-    # 新命名
+    # New names
     "opequal": OpOrOpEqualUsageForm.OP_EQUAL,
     "op_assign": OpOrOpEqualUsageForm.OP_ASSIGN,
     "binary": OpOrOpEqualUsageForm.OP_ASSIGN,
     "explicit": OpOrOpEqualUsageForm.OP_ASSIGN,
     "augassign": OpOrOpEqualUsageForm.OP_EQUAL,
-    # 兼容旧命名
+    # Backward-compatible legacy names
     "addequal": OpOrOpEqualUsageForm.OP_EQUAL,
     "add_assign": OpOrOpEqualUsageForm.OP_ASSIGN,
 }
@@ -31,7 +32,7 @@ _VARIANT_KEY_TO_FORM: Dict[str, OpOrOpEqualUsageForm] = {
 
 def _make_binary_op(op_kind: OpOrOpEqualOpKind) -> cst.BaseBinaryOp:
     """
-    根据 op_kind 构造 BinaryOperation 的 operator。
+    Build the BinaryOperation operator from op_kind.
     """
     if op_kind is OpOrOpEqualOpKind.ADD:
         return cst.Add()
@@ -41,13 +42,13 @@ def _make_binary_op(op_kind: OpOrOpEqualOpKind) -> cst.BaseBinaryOp:
         return cst.Multiply()
     if op_kind is OpOrOpEqualOpKind.DIV:
         return cst.Divide()
-    # 理论上不会走到这里
+    # Should not happen in practice.
     raise ValueError(f"Unsupported op_kind for BinaryOperation: {op_kind!r}")
 
 
 def _make_augassign_op(op_kind: OpOrOpEqualOpKind) -> cst.BaseAugOp:
     """
-    根据 op_kind 构造 AugAssign 的 operator。
+    Build the AugAssign operator from op_kind.
     """
     if op_kind is OpOrOpEqualOpKind.ADD:
         return cst.AddAssign()
@@ -96,7 +97,7 @@ class OpOrOpEqualUsageRule(BaseRule):
     """
     Refactoring: Usage of op / opequal.
 
-    在下面两种风格之间互转：
+    Convert between the following two styles:
       - x += y / x -= y / x *= y / x /= y
       - x = x + y / x = x - y / x = x * y / x = x / y
     """
@@ -106,20 +107,20 @@ class OpOrOpEqualUsageRule(BaseRule):
         "Refactor between `x <op>= y` and `x = x <op> y` styles "
         "for + - * / operators."
     )
-    # 暴露给 CLI / 配置使用的「官方」变体名
+    # Official variant names exposed to the CLI / config layer.
     variants = ("opequal", "op_assign")
 
     def _target_form_for(
         self, current: OpOrOpEqualUsageForm
     ) -> Optional[OpOrOpEqualUsageForm]:
         """
-        根据当前形态 + RuleDirection 决定目标形态。
-        返回 None 表示“不需要改写”。
+        Determine the target form from the current form and RuleDirection.
+        Return None when no rewrite is needed.
         """
         direction = self.direction
 
         if direction.mode == "AUTO":
-            # AUTO：两种形态互相翻转
+            # AUTO: toggle between the two forms.
             if current is OpOrOpEqualUsageForm.OP_EQUAL:
                 target = OpOrOpEqualUsageForm.OP_ASSIGN
             elif current is OpOrOpEqualUsageForm.OP_ASSIGN:
@@ -139,7 +140,7 @@ class OpOrOpEqualUsageRule(BaseRule):
         else:
             return None
 
-        # 目标和当前一样就不用改写
+        # No rewrite is needed if the target already matches the current form.
         if target is current:
             return None
 

@@ -34,7 +34,7 @@ class Action(SerializationMixin, ContextMixin, BaseModel):
     i_context: Union[
         dict, CodingContext, CodeSummarizeContext, TestingContext, RunCodeContext, CodePlanAndChangeContext, str, None
     ] = ""
-    prefix: str = ""  # aask*时会加上prefix，作为system_message
+    prefix: str = ""  # prefix will be added during aask*, as the system_message
     desc: str = ""  # for skill manager
     node: ActionNode = Field(default=None, exclude=True)
     # The model name or API type of LLM of the `models` in the `config2.yaml`;

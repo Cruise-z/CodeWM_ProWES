@@ -19,7 +19,7 @@ from .core.transformer import obfuscate_source
 )
 def main(path: pathlib.Path, direction: str) -> None:
     """
-    对单个文件或目录进行 SPT 混淆。
+    Apply SPT obfuscation to a single file or directory.
     """
     if direction == "auto":
         dir_enum = RuleDirection.AUTO

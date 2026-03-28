@@ -1,13 +1,13 @@
-# 操作指南
+# Usage Guide
 
-## 环境依赖
+## Environment Requirements
 
 ```bash
 conda create -n myMetagpt -c conda-forge python=3.9 pip=24.1.2 -y
 conda create -n myMetagpt python=3.9
 ```
 
-### `Metagpt`版本：
+### `Metagpt` Version:
 
 > version: 0.8.2
 >
@@ -16,43 +16,43 @@ conda create -n myMetagpt python=3.9
 > df9bc185 (HEAD -> metagpt-0.8.2, tag: v0.8.2) Merge pull request #1732 from XiangJinyu/main
 > ```
 
-## 快速使用
+## Quick Start
 
-### 下载`git`仓库：
+### Clone the `git` repository:
 
 ```bash
 git clone https://github.com/FoundationAgents/MetaGPT.git
 ```
 
-### 切换分支：
+### Switch branches:
 
 ```bash
-# 进入仓库根目录
+# Enter the repository root
 cd MetaGPT/
-# 抓全分支和所有 tag
+# Fetch all branches and tags
 git fetch --all --tags
-# 看看 tag 名字是 v0.8.2 还是 0.8.2（仓库常用 v 前缀）
+# Check whether the tag is named v0.8.2 or 0.8.2 (the repo usually uses the v prefix)
 git tag -l | grep -E '^v?0\.8\.2$'
-# 切到该tag
+# Switch to that tag
 git checkout tags/v0.8.2 -b metagpt-0.8.2
 
-# 验证
+# Verify
 git describe --tags --always
 git log -1 --oneline
 ```
 
-### 修改代码：
+### Modify the code:
 
-将本路径下的`./metagpt`文件夹内的相关文件替换到下载的仓库中即可
+Replace the corresponding files in the downloaded repository with those from the `./metagpt` folder under this path.
 
-### 安装：
+### Install:
 
-#### 开发者模式
+#### Developer mode
 
-在`MetaGPT`仓库根目录中执行：
+Run the following in the `MetaGPT` repository root:
 
 ```bash
 pip install -e .
 ```
 
-即可
+That is all.

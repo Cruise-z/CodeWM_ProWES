@@ -64,19 +64,19 @@ if __name__ == "__main__":
 """
 
 def main():
-    # 1. 选择一个要分析的 python 文件
+    # 1. Choose a Python file to analyze
 
-    # 2. 收集所有 SPT pattern 命中
+    # 2. Collect all SPT pattern matches
     collector, module = collect_all_patterns(source)
 
-    # 3. 打印统计信息
-    print("=== SPT pattern 统计 ===")
-    print(f"remove_unnecessary_else 命中数: {len(collector.remove_else_matches)}")
-    print(f"loop_index_direct_reference 命中数: {len(collector.loop_index_matches)}")
-    print(f"boolean_explicit_true_false 命中数: {len(collector.bool_explicit_matches)}")
-    print(f"for_to_list_comprehension 命中数: {len(collector.for_listcomp_matches)}")
+    # 3. Print summary statistics
+    print("=== SPT pattern statistics ===")
+    print(f"remove_unnecessary_else matches: {len(collector.remove_else_matches)}")
+    print(f"loop_index_direct_reference matches: {len(collector.loop_index_matches)}")
+    print(f"boolean_explicit_true_false matches: {len(collector.bool_explicit_matches)}")
+    print(f"for_to_list_comprehension matches: {len(collector.for_listcomp_matches)}")
 
-    # 4. 分别把每一条规则的命中打印出来（带上形态 original / transformed）
+    # 4. Print the matches for each rule individually (including original / transformed form)
     # NL
     print("=== NL ===")
     print("\n--- naming_style ---")
@@ -89,11 +89,11 @@ def main():
     for idx, m in enumerate(collector.bool_explicit_matches, 1):
         print(f"[{idx}] form = {m.form.value}")
         if m.form.name == "EXPLICIT_TRUE_FALSE":
-            # 显式 True/False 形态：两者不同
+            # Explicit True/False form: print both expressions because they differ
             print("  full_expr :", module.code_for_node(m.value))
             print("  inner_expr:", module.code_for_node(m.inner_expr))
         else:
-            # 直接布尔表达式形态：只打印一次就行
+            # Direct boolean-expression form: printing once is enough
             print("  expr      :", module.code_for_node(m.inner_expr))
         print()
 
@@ -125,11 +125,11 @@ def main():
     for idx, m in enumerate(collector.op_opequal_usage_matches, 1):
         print(f"[{idx}] form = {m.form.name}")     # OP_EQUAL / OP_ASSIGN
         print(f"      op   = {m.op_kind.value}")  # add / sub / mul / div
-        # 整条语句
+        # The entire statement
         print("  stmt   :", module.code_for_node(m.stmt))
-        # 目标变量（被更新的那个）
+        # Target variable (the one being updated)
         print("  target :", module.code_for_node(m.target))
-        # 增量/变化量表达式
+        # Delta / change expression
         print("  delta  :", module.code_for_node(m.delta))
         print()
         
@@ -161,10 +161,10 @@ def main():
         print(f"[{idx}] form = {m.form.value}")  # dict_call / empty_then_subscript
 
         if m.form.name == "DICT_CALL":
-            # 单行 d = dict(...) 形态
+            # Single-line d = dict(...) form
             print("  stmt      :", module.code_for_node(m.first_stmt))
         else:
-            # 两行 d = {}; d['name'] = ... 形态
+            # Two-line d = {}; d['name'] = ... form
             print("  first_stmt :", module.code_for_node(m.first_stmt))
             if m.second_stmt is not None:
                 print("  second_stmt:", module.code_for_node(m.second_stmt))
@@ -185,8 +185,8 @@ def main():
     
     print("\n--- remove_unnecessary_else ---")
     for idx, m in enumerate(collector.remove_else_matches, 1):
-        # m.form 是 ORIGINAL / TRANSFORMED
-        # m.if_node 是整个 if 语句，可以用 .code 再渲染成源码片段
+        # m.form is ORIGINAL / TRANSFORMED
+        # m.if_node is the whole if statement, which can be rendered back into source with .code
         print(f"[{idx}] form = {m.form.value}")
         print(module.code_for_node(m.if_node))
         print()
