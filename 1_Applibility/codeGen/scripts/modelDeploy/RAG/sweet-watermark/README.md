@@ -1,6 +1,6 @@
 # Script usage document
 
-> github链接：https://github.com/hongcheki/sweet-watermark
+> GitHub link: https://github.com/hongcheki/sweet-watermark
 
 ## Generate code stage
 

@@ -7,8 +7,8 @@ from pathlib import Path
 
 def dtresults_has_any_target(dtresults_dir: Path) -> bool:
     """
-    判断 DTResults/ 及其子目录中是否存在名为 'target' 的目录（递归）。
-    只要存在任意一个 DTResults/**/target/，返回 True。
+    Check whether DTResults/ or any of its subdirectories contains a directory named 'target'.
+    Return True if any DTResults/**/target/ exists.
     """
     for p in dtresults_dir.rglob("target"):
         if p.is_dir():
@@ -18,8 +18,8 @@ def dtresults_has_any_target(dtresults_dir: Path) -> bool:
 
 def file_contains_keyword(path: Path, keyword: str) -> bool:
     """
-    判断文件内容是否包含关键字（只要出现一次就返回 True）。
-    使用 errors='ignore' 以兼容非 UTF-8/乱码日志。
+    Check whether the file content contains the keyword (return True when it appears once).
+    Use errors='ignore' to tolerate non-UTF-8 or corrupted logs.
     """
     with path.open("r", encoding="utf-8", errors="ignore") as f:
         for line in f:
@@ -30,11 +30,11 @@ def file_contains_keyword(path: Path, keyword: str) -> bool:
 
 def count_error_files(root_dir: Path, keyword: str = "COMPILATION ERROR") -> int:
     """
-    遍历 root_dir 下所有子目录：
-      - 若存在 DTResults/
-      - 且 DTResults/**/target 不存在
-      - 且 DTResults/** 下存在 full_*.log
-    则对这些 full_*.log 中“包含 keyword 的文件”计数（按文件数，不按出现次数）。
+    Iterate over all subdirectories under root_dir:
+      - if DTResults/ exists
+      - and no DTResults/**/target exists
+      - and full_*.log exists under DTResults/**
+    count the number of full_*.log files that contain the keyword (count files, not occurrences).
     """
     total_files = 0
 
@@ -46,16 +46,16 @@ def count_error_files(root_dir: Path, keyword: str = "COMPILATION ERROR") -> int
         if not dtresults_dir.is_dir():
             continue
 
-        # 条件 1：DTResults 子树中不能有任何 target/
+        # Condition 1: no target/ directories under the DTResults subtree
         if dtresults_has_any_target(dtresults_dir):
             continue
 
-        # 条件 2：DTResults 子树中要有 full_*.log
+        # Condition 2: there must be full_*.log files under the DTResults subtree
         log_files = list(dtresults_dir.rglob("full_*.log"))
         if not log_files:
             continue
 
-        # 对满足条件的 log：统计“包含关键字”的文件数
+        # For matching logs: count the files containing the keyword
         for log_path in log_files:
             try:
                 if file_contains_keyword(log_path, keyword):

@@ -1,6 +1,6 @@
 from typing import Final
 
-# 简短描述，可自由修改
+# Short description, feel free to modify
 desc: Final[str] = "Build Java project (Brick breaker game, Maven, Java 11)."
 
 

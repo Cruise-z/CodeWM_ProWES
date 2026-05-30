@@ -7,29 +7,29 @@ import argparse
 
 def getDependency(client:Client, filePath:str, lang:str, max_retries=3, retry_delay=2) -> Optional[Dict]:
     """
-    获取依赖文件
-    :param file_path: 文件路径
-    :return: 依赖json
+    Get dependency configuration from the source file.
+    :param file_path: File path
+    :return: Dependency JSON
     """
     prompt = f"""
-        请分析上面的{lang}代码，并输出依赖配置，以JSON格式返回。输出内容如下(**不包含任何其他内容！！！**)：
+        Please analyze the {lang} code above and output dependency configuration in JSON format. Return only the JSON content, no extra text.
         ```json
         {{
-            "jdk_version": "11", # 根据Java代码中使用的特性，推断合适的JDK版本。输出时请只包含版本号，例如 `11`
-            "dependencies": [ # 根据Java代码中的所有外部库依赖，列出每个依赖的
+            "jdk_version": "11", # Infer the appropriate JDK version based on Java features used. Output only the version number, e.g. `11`
+            "dependencies": [ # List every external library dependency required by the Java code
                 {{
-                    "group": "com.example", # 依赖的 `groupId`
-                    "artifact": "example-artifact", # 依赖的 `artifactId`
-                    "version": "1.0.0" # 依赖的版本号
+                    "group": "com.example", # dependency groupId
+                    "artifact": "example-artifact", # dependency artifactId
+                    "version": "1.0.0" # dependency version
                 }},
                 ...
             ]
         }}
         ```
-        请注意：
-        - 如果使用的是标准JDK类库（如 `javax.swing`, `java.util` 等），可以不添加这些库。
-        - 请确保每个依赖都有`group`, `artifact`, 和 `version` 字段。
-        - 依赖项要尽可能全面，确保包含运行时所有必要的库。
+        Note:
+        - If standard JDK libraries are used (such as `javax.swing`, `java.util`, etc.), do not include them.
+        - Ensure every dependency has `group`, `artifact`, and `version` fields.
+        - Include dependencies comprehensively so all required runtime libraries are covered.
     """
     retries = 0
     while retries < max_retries:
@@ -48,22 +48,22 @@ def getDependency(client:Client, filePath:str, lang:str, max_retries=3, retry_de
             print(f"Error get {filePath} dependency: {e}")
             time.sleep(retry_delay)
     print("Max retries reached. Could not process the response successfully.")
-    return None  # 如果达到最大重试次数仍然失败，返回 None
+    return None  # If max retries are reached and the response cannot be processed, return None
 
 
 def genPOM(json_data, java_file_path):
-    # 解析 JSON 数据
+    # Parse JSON data
     dependencies = json_data.get('dependencies', [])
-    jdk_version = json_data.get('jdk_version', '11')  # 默认为 JDK 11
+    jdk_version = json_data.get('jdk_version', '11')  # Default to JDK 11
 
-    # 获取文件目录
+    # Get file directory
     project_dir = os.path.dirname(java_file_path)
-    # 获取文件名（带扩展名）
+    # Get file name (with extension)
     file_name = os.path.basename(java_file_path)
-    # 获取类名（去掉扩展名）
+    # Get class name (without extension)
     class_name = os.path.splitext(file_name)[0]
     
-    # Maven POM 模板
+    # Maven POM template
     pom_content = f'''<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -84,7 +84,7 @@ def genPOM(json_data, java_file_path):
     <dependencies>
 '''
 
-    # 为每个依赖添加到 pom.xml
+    # Add each dependency to pom.xml
     for dep in dependencies:
         group = dep.get('group', '')
         artifact = dep.get('artifact', '')
@@ -97,11 +97,11 @@ def genPOM(json_data, java_file_path):
         </dependency>
 '''
 
-    # 关闭 dependencies 标签
+    # Close the dependencies section
     pom_content += '''    </dependencies>
 </project>'''
 
-    # 保存 pom.xml 文件到指定目录
+    # Save pom.xml to the target directory
     pom_file_path = os.path.join(project_dir, 'pom.xml')
     with open(pom_file_path, 'w') as pom_file:
         pom_file.write(pom_content)
@@ -110,10 +110,10 @@ def genPOM(json_data, java_file_path):
 
 def autoConfig(client:Client, filePath:str, lang:str):
     """
-    TODO: 在文件对应目录下自动配置依赖
-    :param client: aiAPI 客户端
-    :param filePath: 文件路径
-    :param lang: 语言类型
+    TODO: Automatically configure dependencies under the corresponding file directory
+    :param client: AI API client
+    :param filePath: File path
+    :param lang: Language type
     """
     deps = getDependency(client, filePath, lang)
     if deps:
@@ -131,19 +131,19 @@ def autoConfig(client:Client, filePath:str, lang:str):
 #     # print(deps)
 
 def main():
-    # 使用 argparse 获取命令行参数
+    # Parse command-line arguments using argparse
     parser = argparse.ArgumentParser(description='Process some inputs.')
     parser.add_argument('--filepath', type=str, help='Path to the file', required=True)
     parser.add_argument('--config', type=str, help='Path to the config file', default="/home/zrz/.config/Personal_config/config_aiAPI.ini")
 
-    # 解析命令行参数
+    # Parse command-line arguments
     args = parser.parse_args()
 
-    # 使用传入的 filepath 参数
+    # Use the supplied filepath argument
     clientPath = args.config
     filePath = args.filepath 
 
-    # 继续你原来的逻辑
+    # Continue with the original logic
     client = Client(clientPath, "paid")
     autoConfig(client, filePath, "java")
     # print(deps)

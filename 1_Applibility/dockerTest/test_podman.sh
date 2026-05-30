@@ -7,12 +7,12 @@ WORKDIR="${WORKDIR:-/workspace}"      # Workspace inside container
 TIME_LIMIT="${TIME_LIMIT:-300}"
 KILL_AFTER="${KILL_AFTER:-5}"
 
-# 分阶段超时。未显式指定时，继承 TIME_LIMIT。
+# Per-stage timeouts. Inherit TIME_LIMIT if not explicitly specified.
 INSTALL_TIME_LIMIT="${INSTALL_TIME_LIMIT:-${TIME_LIMIT}}"
 BUILD_TIME_LIMIT="${BUILD_TIME_LIMIT:-${TIME_LIMIT}}"
 TEST_TIME_LIMIT="${TEST_TIME_LIMIT:-${TIME_LIMIT}}"
 
-# 产物运行检查；智能区分正常长运行与输出型死循环。
+# Runtime artifact check; intelligently distinguish normal long-running processes from output-based infinite loops.
 RUN_CHECK_SECONDS="${RUN_CHECK_SECONDS:-5}"
 RUN_CHECK_KILL_AFTER="${RUN_CHECK_KILL_AFTER:-2}"
 RUNTIME_MAX_OUTPUT_BYTES="${RUNTIME_MAX_OUTPUT_BYTES:-262144}"
@@ -23,12 +23,12 @@ RUNTIME_TREAT_OUTPUT_LOOP_AS_ERROR="${RUNTIME_TREAT_OUTPUT_LOOP_AS_ERROR:-1}"
 RUNTIME_LOG_TAIL_LINES="${RUNTIME_LOG_TAIL_LINES:-40}"
 RUNTIME_POLL_INTERVAL="${RUNTIME_POLL_INTERVAL:-0.2}"
 
-# 可选增强：识别无输出 CPU 忙循环。默认关闭，避免误伤游戏渲染主循环。
+# Optional enhancement: detect CPU busy loops without output. Disabled by default to avoid false positives in game render loops.
 RUNTIME_ENABLE_CPU_BUSY_CHECK="${RUNTIME_ENABLE_CPU_BUSY_CHECK:-0}"
 RUNTIME_CPU_BUSY_THRESHOLD="${RUNTIME_CPU_BUSY_THRESHOLD:-95}"
 RUNTIME_CPU_BUSY_MIN_SAMPLES="${RUNTIME_CPU_BUSY_MIN_SAMPLES:-6}"
 
-# 外层硬超时：兜底防止 podman exec / tee 因残留 stdout 不退出。
+# Outer hard timeout: fallback to prevent podman exec / tee from hanging due to leftover stdout.
 EVAL_HARD_TIMEOUT="${EVAL_HARD_TIMEOUT:-420}"
 EVAL_HARD_KILL_AFTER="${EVAL_HARD_KILL_AFTER:-10}"
 

@@ -12,11 +12,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# 启动 Xvfb
+# Start Xvfb
 Xvfb "${DISPLAY}" ${XVFB_ARGS} &
 XVFB_PID=$!
 
-# 等待 Xvfb 就绪
+# Wait for Xvfb to become ready
 ready=0
 for i in {1..50}; do
   if xdpyinfo -display "${DISPLAY}" >/dev/null 2>&1; then
@@ -37,10 +37,10 @@ if [[ "${ready}" -ne 1 ]]; then
   exit 1
 fi
 
-# 刷新字体缓存，避免首次渲染缺字
+# Refresh font cache to avoid missing glyphs on first render
 fc-cache -f >/dev/null 2>&1 || true
 
-# 执行传入命令；否则进入交互 shell
+# Execute the passed command; otherwise enter an interactive shell
 if [[ "$#" -gt 0 ]]; then
   exec "$@"
 else

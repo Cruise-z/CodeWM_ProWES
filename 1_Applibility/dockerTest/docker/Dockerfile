@@ -1,7 +1,7 @@
-# 基础：Maven 3.9.x + Eclipse Temurin JDK 11
+# Base image: Maven 3.9.x + Eclipse Temurin JDK 11
 FROM maven:3.9.6-eclipse-temurin-11
 
-# 工作区与通用环境变量
+# Working directory and common environment variables
 ENV WORKDIR=/workspace \
     MAVEN_OPTS="-Dmaven.repo.local=/workspace/.m2" \
     DEBIAN_FRONTEND=noninteractive \
@@ -17,7 +17,7 @@ ENV WORKDIR=/workspace \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_ROOT_USER_ACTION=ignore
 
-# 基础工具 + Xvfb + Java GUI 常见依赖 + C/C++ 构建链 + SFML + SDL2 + Python
+# Base tools + Xvfb + common Java GUI dependencies + C/C++ build toolchain + SFML + SDL2 + Python
 RUN sed -i 's|http://archive.ubuntu.com/ubuntu|https://mirrors.ustc.edu.cn/ubuntu|g' /etc/apt/sources.list || true && \
     sed -i 's|http://security.ubuntu.com/ubuntu|https://mirrors.ustc.edu.cn/ubuntu|g' /etc/apt/sources.list || true && \
     apt-get -o Acquire::Retries=5 update && \
@@ -41,29 +41,29 @@ RUN sed -i 's|http://archive.ubuntu.com/ubuntu|https://mirrors.ustc.edu.cn/ubunt
             python3 python3-venv python3-pip python3-dev python-is-python3 && \
     rm -rf /var/lib/apt/lists/*
 
-# 设定 UTF-8 本地化
+# Set UTF-8 locale
 RUN sed -i 's/# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
  && locale-gen
 
-# 预装 Python 测试工具，避免项目未声明 pytest 时评测失败
+# Preinstall Python testing tools to avoid failures when a project does not declare pytest
 RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel pytest
 
-# 工作区与 Maven 缓存目录
+# Workspace and Maven cache directories
 RUN mkdir -p "$WORKDIR" "$WORKDIR/.m2"
 WORKDIR $WORKDIR
 
-# 拷入脚本
+# Copy scripts
 COPY xvfb-entrypoint.sh /usr/local/bin/xvfb-entrypoint.sh
 COPY eval_protocol.sh /usr/local/bin/eval_protocol.sh
 
 RUN chmod +x /usr/local/bin/xvfb-entrypoint.sh /usr/local/bin/eval_protocol.sh
 
-# 健康检查：确保虚拟显示可用
+# Healthcheck: ensure the virtual display is available
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s \
   CMD xdpyinfo -display "$DISPLAY" >/dev/null 2>&1 || exit 1
 
-# 入口：先起 Xvfb 并等待就绪，再执行传入命令
+# Entrypoint: start Xvfb and wait until ready, then execute the passed command
 ENTRYPOINT ["/usr/local/bin/xvfb-entrypoint.sh"]
 
-# 默认bash，方便调试和交互式使用；实际评测时会覆盖为 evaluate_project.sh
+# Default to bash for debugging and interactive use; actual evaluation runs may override this with evaluate_project.sh
 CMD ["bash"]

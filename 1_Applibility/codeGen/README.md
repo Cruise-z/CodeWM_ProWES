@@ -2,6 +2,10 @@
 
 ------
 
+
+
+
+
 ## ==Agent Architecture==
 
 The code generation workflow is assisted by `agent:MetaGPT`.
@@ -10,9 +14,11 @@ Within MetaGPT's `[Action] -> [Role]` framework, different models are assigned t
 
 - Project architecture design: handled by the official `openai` models `gpt-4` / `gpt-4o`
 
-- Code generation: handled by the locally deployed `Qwen/Qwen2.5-Coder-32B-Instruct`
-
-  > `Qwen/Qwen2.5-Coder-32B-Instruct` is currently one of the strongest open-source models for code generation.
+- Code generation: handled by the locally deployed `Qwen/Qwen2.5-Coder-32B-Instruct` and `Qwen3-Coder-30B-A3B-
+  Instruct`
+  
+  > `Qwen/Qwen2.5-Coder-32B-Instruct` and `Qwen3-Coder-30B-A3B-
+  > Instruct` is currently one of the strongest open-source models for code generation.
   > Reference: [`Hugging Face` open-source code model leaderboard](https://huggingface.co/spaces/bigcode/bigcode-models-leaderboard)
 
 ### `config` Setup

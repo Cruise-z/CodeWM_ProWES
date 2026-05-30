@@ -1,65 +1,65 @@
 # README
 
-## 操作文档
+## Usage Guide
 
-### `Docker`镜像操作
+### Docker image operations
 
-#### 构建并运行镜像
+#### Build and run the image
 
-##### 进入 Dockerfile 所在目录
+##### Change to the Dockerfile directory
 
 `cd Docker`
 
-##### 构建镜像
+##### Build the image
 
 `docker build -t codewm_dt_docker:11 .`
 
-##### 启动一个长期可复用的容器
+##### Start a long-lived reusable container
 
 `docker run -d --name CodeWM-DT codewm_dt_docker:11`
 
-#### 删除镜像
+#### Remove an image
 
-##### 先停止并删除容器
+##### Stop and remove the container first
 
 `docker ps -a`
 `docker stop 39866e136289`
 `docker rm 39866e136289`
 
-##### 再删除镜像
+##### Then remove the image
 
 `docker images`
 `docker image rm maven-only:11`
 
-#### 容器的打开与关闭
-##### 打开
+#### Opening and closing containers
+##### Start
 
 `docker start 6a308cffe308`
 
-##### 关闭
+##### Stop
 
 `docker stop 6a308cffe308`
 
 
-#### 代码测试
-##### 构建代码依赖
-执行：`python ./1_Availability/DT/dockerTest/autoConfig.py --filepath [CodePath]`命令
-##### 进行`docker`测试
-执行：`./1_Availability/DT/dockerTest/test.sh [CodePath]`命令
-e.g:
+#### Code testing
+##### Build code dependencies
+Run: `python ./1_Availability/DT/dockerTest/autoConfig.py --filepath [CodePath]`
+##### Run docker test
+Run: `./1_Availability/DT/dockerTest/test.sh [CodePath]`
+Example:
 `./1_Availability/DT/dockerTest/test.sh /home/zrz/Projects/GitRepo/Repo/Python_Projects/VSCode/Python/CodeWM_AutoTest/results/stdDemo/SnakeGame/SnakeGame.java`
 
-#### Tips: 
-建议每次关掉docker容器重新进行测试时，将上次使用的容器删除，重新执行如下操作：
+#### Tips
+It is recommended to remove the previous container before rerunning tests. Use:
 `docker ps -a`
-`docker rm [你要删除的容器ID]`
+`docker rm [container ID to remove]`
 `docker run -d --name CodeWM-DT codewm_dt_docker:11`
-然后再进行测试
+Then rerun the test.
 
-### 使用`podman`运行`Docker`镜像
+### Run Docker images with podman
 
-使用`podman`可以在没有root权限和docker用户组的情况下构建并运行镜像
-Podman 专门设计成 Docker CLI 兼容，这些命令都能直接替换使用：
+You can use `podman` to build and run the image without root privileges or the docker user group.
+Podman is designed to be CLI-compatible with Docker, so these commands can be used as direct replacements:
 | Docker 命令                   | Podman 对应命令                 | 是否兼容   |
 | --------------------------- | --------------------------- | ------ |
 | `docker build -t myimg .`   | `podman build -t myimg .`   | ✅ 完全兼容 |
@@ -71,20 +71,20 @@ Podman 专门设计成 Docker CLI 兼容，这些命令都能直接替换使用�
 | `docker exec -it <id> bash` | `podman exec -it <id> bash` | ✅ 完全兼容 |
 | `docker logs <id>`          | `podman logs <id>`          | ✅ 完全兼容 |
 
-在终端中使用时，可以执行：
+When using this in the terminal, you can run:
 `alias docker=podman`
-这样所有 Docker 命令都“变成”了 Podman 命令。
+This way all Docker commands become Podman commands.
 
-##### 构建镜像
+##### Build the image
 
 `podman build --format docker -t codewm_dt_docker:proWES .`
 
-##### 启动一个长期可复用的容器
+##### Start a long-lived reusable container
 
 `podman run -d --network=host --name CodeWM-DT codewm_dt_docker:proWES`
 `podman run -d --network=host --name CodeWM-DT codewm_dt_docker:proWES sleep infinity`
 
-进入容器终端：
+Enter the container shell:
 `podman run -it --rm codewm_dt_docker:proWES /bin/bash`
 
 #### 删除镜像
@@ -100,10 +100,10 @@ Podman 专门设计成 Docker CLI 兼容，这些命令都能直接替换使用�
 `podman images`
 `podman image rm maven-only:11`
 
-#### 代码测试
-##### 构建代码依赖
-执行：`python ./1_Availability/DT/dockerTest/autoConfig.py --filepath [CodePath]`命令
-##### 进行`docker`测试
-执行：`./1_Availability/DT/dockerTest/test_podman.sh [CodePath]`命令
-e.g:
+#### Code testing
+##### Build code dependencies
+Run: `python ./1_Availability/DT/dockerTest/autoConfig.py --filepath [CodePath]`
+##### Run podman test
+Run: `./1_Availability/DT/dockerTest/test_podman.sh [CodePath]`
+Example:
 `./1_Availability/DT/dockerTest/test_podman.sh /home/zrz/Projects/GitRepo/Repo/Python_Projects/VSCode/Python/CodeWM_AutoTest/results/stdDemo/SnakeGame/SnakeGame.java`

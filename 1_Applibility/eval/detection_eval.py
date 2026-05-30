@@ -35,7 +35,7 @@ Notes:
 - It DOES NOT run docker test (as you requested).
 """
 
-# =====================================基础环境配置===================================== #
+# ===================================== Basic environment setup ===================================== #
 import os
 import sys
 import json
@@ -51,17 +51,17 @@ from pathlib import Path
 from typing import List, Any, Optional, Union, Dict, Tuple
 from statistics import mean
 
-# 1) 让官方 OpenAI 走代理（按你的梯子改端口）
+# 1) Route official OpenAI traffic through a proxy (adjust the port to match your proxy)
 os.environ["HTTPS_PROXY"] = os.environ.get("HTTPS_PROXY", "http://127.0.0.1:7890")
 os.environ["HTTP_PROXY"] = os.environ.get("HTTP_PROXY", "http://127.0.0.1:7890")
 os.environ["ALL_PROXY"] = os.environ.get("ALL_PROXY", os.environ["HTTPS_PROXY"])
 
-# 2) 本地回环地址永远直连
+# 2) Always bypass the proxy for local loopback addresses
 no_proxy = set(filter(None, os.environ.get("NO_PROXY", "").split(",")))
 no_proxy.update({"127.0.0.1", "localhost", "::1"})
 os.environ["NO_PROXY"] = ",".join(no_proxy)
 os.environ["no_proxy"] = os.environ["NO_PROXY"]
-# =====================================基础环境配置===================================== #
+# ===================================== Basic environment setup ===================================== #
 
 
 # =======================

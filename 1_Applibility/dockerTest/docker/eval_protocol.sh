@@ -3,21 +3,21 @@ set -euo pipefail
 
 PROJECT_DIR="${1:-/workspace}"
 
-# 可选参数
-# TIME_LIMIT 保留为兼容旧协议；未显式设置分阶段超时时，会作为安装/构建/测试默认值。
+# Optional parameters
+# TIME_LIMIT is kept for backward compatibility; if per-stage timeouts are not explicitly set, it serves as the default for install/build/test.
 TIME_LIMIT="${TIME_LIMIT:-300}"
 KILL_AFTER="${KILL_AFTER:-5}"
 
-# 分阶段超时：测试阶段超时应判失败，运行阶段单独智能判断。
+# Per-stage timeouts: test stage timeout should be treated as failure, runtime stage is handled by a separate smart check.
 INSTALL_TIME_LIMIT="${INSTALL_TIME_LIMIT:-${TIME_LIMIT}}"
 BUILD_TIME_LIMIT="${BUILD_TIME_LIMIT:-${TIME_LIMIT}}"
 TEST_TIME_LIMIT="${TEST_TIME_LIMIT:-${TIME_LIMIT}}"
 
-# 产物运行验证时长（秒）
+# Runtime artifact verification duration in seconds
 RUN_CHECK_SECONDS="${RUN_CHECK_SECONDS:-5}"
 RUN_CHECK_KILL_AFTER="${RUN_CHECK_KILL_AFTER:-2}"
 
-# 智能运行时检查：区分“正常长运行”和“输出型死循环”。
+# Smart runtime checks: distinguish normal long-running processes from output-based infinite loops.
 RUNTIME_MAX_OUTPUT_BYTES="${RUNTIME_MAX_OUTPUT_BYTES:-262144}"          # 256 KiB
 RUNTIME_MAX_OUTPUT_LINES="${RUNTIME_MAX_OUTPUT_LINES:-200}"
 RUNTIME_MAX_SAME_LINE="${RUNTIME_MAX_SAME_LINE:-30}"
@@ -26,10 +26,10 @@ RUNTIME_TREAT_OUTPUT_LOOP_AS_ERROR="${RUNTIME_TREAT_OUTPUT_LOOP_AS_ERROR:-1}"
 RUNTIME_LOG_TAIL_LINES="${RUNTIME_LOG_TAIL_LINES:-40}"
 RUNTIME_POLL_INTERVAL="${RUNTIME_POLL_INTERVAL:-0.2}"
 
-# 可选增强：识别无输出但 CPU 忙循环。默认关闭，避免误伤游戏渲染主循环。
+# Optional enhancement: detect busy CPU loops with no output. Off by default to avoid false positives in game render loops.
 RUNTIME_ENABLE_CPU_BUSY_CHECK="${RUNTIME_ENABLE_CPU_BUSY_CHECK:-0}"
-RUNTIME_CPU_BUSY_THRESHOLD="${RUNTIME_CPU_BUSY_THRESHOLD:-95}"          # 进程组 CPU 百分比阈值
-RUNTIME_CPU_BUSY_MIN_SAMPLES="${RUNTIME_CPU_BUSY_MIN_SAMPLES:-6}"       # 至少多少次采样超过阈值才判定
+RUNTIME_CPU_BUSY_THRESHOLD="${RUNTIME_CPU_BUSY_THRESHOLD:-95}"          # CPU percentage threshold for the process group
+RUNTIME_CPU_BUSY_MIN_SAMPLES="${RUNTIME_CPU_BUSY_MIN_SAMPLES:-6}"       # Number of samples above the threshold required to trigger detection
 
 # Java
 EXTRA_MVN_ARGS="${EXTRA_MVN_ARGS:-}"

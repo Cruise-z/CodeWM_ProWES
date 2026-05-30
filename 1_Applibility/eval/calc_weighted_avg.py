@@ -13,7 +13,7 @@ FOLDER_RE = re.compile(r"^(?P<prefix>.+)_(?P<int>\d+)\.(?P<frac>\d+)$")
 
 
 def parse_strength_from_folder(folder_name: str) -> Optional[float]:
-    """从形如 'tiny_calculator_0.2' 解析出 0.2"""
+    """Parse a value such as 0.2 from a folder name like 'tiny_calculator_0.2'."""
     m = FOLDER_RE.match(folder_name)
     if not m:
         return None
@@ -22,7 +22,7 @@ def parse_strength_from_folder(folder_name: str) -> Optional[float]:
 
 def safe_load_single_line_mapping(line: str) -> dict:
     """
-    文件中往往是单引号 dict（非严格 JSON），因此先 json.loads，失败再 ast.literal_eval。
+    The file often contains a single-line dict with single quotes (not strict JSON), so try json.loads first and fall back to ast.literal_eval.
     """
     line = line.strip()
     if not line:
@@ -44,14 +44,14 @@ def read_first_non_empty_line(path: Path) -> str:
 
 def find_project_dir(child_dir: Path) -> Path:
     """
-    在 xxx_p.q 子目录下，找到项目目录 ./xxx （如 tiny_calculator）。
-    约束：该目录应包含 *_wm_detRes.txt 文件。
+    Find the project directory ./xxx under an xxx_p.q subdirectory (for example, tiny_calculator).
+    Constraint: the directory should contain a *_wm_detRes.txt file.
     """
     candidates = [p for p in child_dir.iterdir() if p.is_dir()]
     if not candidates:
         raise FileNotFoundError(f"No subdirectories found under {child_dir}")
 
-    # 以是否存在 *_wm_detRes.txt 作为判据
+    # Use the existence of *_wm_detRes.txt as the criterion
     scored = []
     for d in candidates:
         wm_files = list(d.glob("*_wm_detRes.txt"))
@@ -67,10 +67,10 @@ def find_project_dir(child_dir: Path) -> Path:
 
 def find_target_detres_file(project_dir: Path, exclude_name: str = "pom_wm_detRes.txt") -> Path:
     """
-    在 ./xxx 下只会有两个 *_wm_detRes.txt：
-      - pom_wm_detRes.txt（排除）
-      - 目标文件（保留）
-    用“排除法”找到目标文件。
+    Under ./xxx there should only be two *_wm_detRes.txt files:
+      - pom_wm_detRes.txt (exclude)
+      - target file (keep)
+    Use elimination to find the target file.
     """
     all_detres = sorted(project_dir.glob("*_wm_detRes.txt"))
     if not all_detres:
@@ -80,7 +80,7 @@ def find_target_detres_file(project_dir: Path, exclude_name: str = "pom_wm_detRe
     if len(kept) == 1:
         return kept[0]
 
-    # 这里将异常情况报清楚，便于你定位目录是否符合预期
+    # Clarify the error case here so you can verify whether the directory matches expectations
     names = [p.name for p in all_detres]
     raise RuntimeError(
         f"Expected exactly 1 target '*_wm_detRes.txt' after excluding '{exclude_name}', "
@@ -90,9 +90,9 @@ def find_target_detres_file(project_dir: Path, exclude_name: str = "pom_wm_detRe
 
 def extract_metric_from_detres(detres_path: Path, field: str, strategy_key: Optional[str] = None) -> float:
     """
-    从 detRes 文件（单行 dict/JSON）中提取指定字段 field（如 z_score）。
-    - strategy_key=None：取外层 dict 的第一个 key
-    - strategy_key=xxx：取指定策略 key
+    Extract the specified field from a detRes file (single-line dict/JSON), such as z_score.
+    - strategy_key=None: take the first key from the outer dict
+    - strategy_key=xxx: take the specified strategy key
     """
     line = read_first_non_empty_line(detres_path)
     obj = safe_load_single_line_mapping(line)
@@ -123,7 +123,7 @@ def extract_metric_from_detres(detres_path: Path, field: str, strategy_key: Opti
 
 def read_baseline_metric(root_dir: Path, baseline_strength: float, field: str, strategy_key: Optional[str]) -> Tuple[Path, float]:
     """
-    读取 p.q=baseline_strength 子目录的目标 detRes 文件中的 field 值（作为基线）。
+    Read the field value from the target detRes file in the p.q=baseline_strength subdirectory (used as baseline).
     """
     baseline_dir = None
     for child in root_dir.iterdir():
@@ -145,11 +145,11 @@ def read_baseline_metric(root_dir: Path, baseline_strength: float, field: str, s
 
 def find_metrics_with_dtresults(root_dir: Path, field: str, strategy_key: Optional[str]) -> Dict[float, float]:
     """
-    遍历 root_dir 下所有 xxx_p.q：
-      - 只取含 DTResults/ 的
-      - 用“排除法”在 ./xxx 下找到目标 *_wm_detRes.txt
-      - 从中提取 field
-    返回 {strength: metric}
+    Iterate over all xxx_p.q subdirectories under root_dir:
+      - only take those containing DTResults/
+      - use elimination to find the target *_wm_detRes.txt under ./xxx
+      - extract the specified field
+    Return {strength: metric}
     """
     out: Dict[float, float] = {}
     for child in root_dir.iterdir():
@@ -172,7 +172,7 @@ def find_metrics_with_dtresults(root_dir: Path, field: str, strategy_key: Option
 
 def weighted_average(values_by_strength: Dict[float, float]) -> float:
     """
-    对 value_{p.q} 按权重 p.q 做加权平均：
+    Compute a weighted average of value_{p.q} by weight p.q:
       sum(p.q * value_{p.q}) / sum(p.q)
     """
     num = 0.0

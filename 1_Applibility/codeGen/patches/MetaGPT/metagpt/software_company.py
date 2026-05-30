@@ -45,15 +45,15 @@ def generate_repo(
 
     config_arch = Config.from_home(archCFG)
     if config_arch is None:
-        raise FileNotFoundError(f"~/.metagpt/{archCFG} 不存在")
+        raise FileNotFoundError(f"~/.metagpt/{archCFG} does not exist")
     config_eng = Config.default()
     if config_arch.agentops_api_key != "":
         agentops.init(config_arch.agentops_api_key, tags=["software_company"])
 
-    # 上下文内容两个配置都需要同步更新
+    # Both configs need to be updated with the same context values
     config_arch.update_via_cli(project_path, project_name, inc, reqa_file, max_auto_summarize_code)
     config_eng.update_via_cli(project_path, project_name, inc, reqa_file, max_auto_summarize_code)
-    # 手动传入 xargs 字段
+    # Pass xargs fields manually
     if xargs is not None:
         config_eng.llm.__dict__.setdefault("xargs", {})
         config_eng.llm.__dict__["xargs"].update(xargs)
@@ -84,19 +84,19 @@ def generate_repo(
 
         company = Team.deserialize(stg_path=stg_path, context=ctx_arch)
         if xargs is not None:
-            #TODO: 通过查找`MetaGPT/metagpt/team.py`的`class Team(BaseModel).hire`方法可知角色信息在`Team.env`中
-            #TODO: 通过查找`MetaGPT/metagpt/environment/base_env.py`的`class Environment(ExtEnv)`可知角色信息为该类中的字段:
+            #TODO: By inspecting `MetaGPT/metagpt/team.py`, the `class Team(BaseModel).hire` method shows role info is stored in `Team.env`
+            #TODO: By inspecting `MetaGPT/metagpt/environment/base_env.py`, the `class Environment(ExtEnv)` method shows role info is stored as fields in that class:
             #TODO: `roles: dict[str, SerializeAsAny["Role"]] = Field(default_factory=dict, validate_default=True)`
             for r in company.env.roles.values():
                 if isinstance(r, Engineer):
-                    # 改它的 config（供后续可能的 LLM 重建/worker 使用）
+                    # Update its config (for later LLM reconstruction/worker use)
                     r.config.llm.__dict__.setdefault("xargs", {})
                     r.config.llm.__dict__["xargs"].update(xargs)
-                    # 也改当前已存在的 llm 对象
+                    # Also update the existing llm object
                     if getattr(r, "llm", None):
                         r.llm.config.__dict__.setdefault("xargs", {})
                         r.llm.config.__dict__["xargs"].update(xargs)
-                    # 如果有 borg/子工程师，也一并覆盖
+                    # Also override any borg/sub-engineers
                     for b in getattr(r, "borgs", []):
                         b.config.llm.__dict__.setdefault("xargs", {})
                         b.config.llm.__dict__["xargs"].update(xargs)
@@ -177,16 +177,16 @@ def copy_config_to():
     """Initialize the configuration file for MetaGPT."""
     target_path = CONFIG_ROOT / "config2.yaml"
 
-    # 创建目标目录（如果不存在）
+    # Create the target directory if it does not exist
     target_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # 如果目标文件已经存在，则重命名为 .bak
+    # If the target file already exists, rename it to .bak
     if target_path.exists():
         backup_path = target_path.with_suffix(".bak")
         target_path.rename(backup_path)
         print(f"Existing configuration file backed up at {backup_path}")
 
-    # 复制文件
+    # Copy the file
     target_path.write_text(DEFAULT_CONFIG, encoding="utf-8")
     print(f"Configuration file initialized at {target_path}")
 
