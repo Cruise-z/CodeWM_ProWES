@@ -75,7 +75,7 @@ When using this in the terminal, you can run:
 `alias docker=podman`
 This way all Docker commands become Podman commands.
 
-##### Build the image
+#### Build the image
 
 `podman build --format docker -t codewm_dt_docker:proWES .`
 
@@ -87,15 +87,15 @@ This way all Docker commands become Podman commands.
 Enter the container shell:
 `podman run -it --rm codewm_dt_docker:proWES /bin/bash`
 
-#### 删除镜像
+#### Delete the image
 
-##### 先停止并删除容器
+##### Stop and delete the container
 
 `podman ps -a`
 `podman stop 39866e136289`
 `podman rm 39866e136289`
 
-##### 再删除镜像
+##### Delete the image 
 
 `podman images`
 `podman image rm maven-only:11`

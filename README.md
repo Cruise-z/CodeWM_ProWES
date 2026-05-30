@@ -18,7 +18,7 @@ It provides:
 
 **ProWES** is a 3-stage pipeline tailored for project-structured code watermark evaluation:
 
-![image-20260130204056144](./README.assets/image-20260130204056144.png)
+![image-20260530120620922](./README.assets/image-20260530120620922.png)
 
 - **Stage 0 — Architecture Synthesis**
   - Generates an “ideal” repository blueprint (file list, data structures, interfaces, call flow) and a self-test suite.
