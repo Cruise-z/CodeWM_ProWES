@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p11_custom_press_releases_python",
+  "action_index": 3,
+  "filename": "press_releases/types.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/python/003__press_releases__types.py/user_prompt.txt",
+  "user_prompt_sha256": "1fed208df105b9f922107d53e530babd0b702d789906e5d8fbdce76eb1a2f107",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/python/003__press_releases__types.py/input_context.json",
+  "input_context_sha256": "56702e39725a2d46629fc582d91eca64d4cb18f990b98ab8ba27d15da18dc170",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "press_releases/errors.py",
+      "generated_code_sha256": "fdbad9d5d6cc1209a67bb23d8415f3c00c8d872bb40127ecf3cda9d60eb93eed",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p11_custom_press_releases/python/architecture/team/team.json",
+  "checkpoint_sha256": "f67bc069acc08232a21476897a035b276f762ab6e664e520d25d4debc7c7ac7b",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/python/attempts/0001_seed_2037595148/generation_report.json",
+  "rng_seed": 2037595148,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789414568075",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 162,
+    "prompt_tokens": 9805,
+    "total_tokens": 9967
+  },
+  "response_content_sha256": "33d21766db095225f4d691d3f2543a047d4fe54c76faa40c0d1431c2fac5eba1",
+  "generated_code_sha256": "082c91eb1c7649304825e3561c11b358c138ec7fc34204cb7c0e59c5fe43ecd3",
+  "accepted_source_restoration": "restored_leading_h2"
+}

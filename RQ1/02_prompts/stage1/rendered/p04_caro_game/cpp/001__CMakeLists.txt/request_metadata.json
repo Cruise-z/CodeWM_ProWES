@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "c62e23d3c3950d57e3c1948bd2e86c31ae76bc750c87590f66423b91568dc5c7",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "4d78be6552f9f4b3b70a5cd84f28c67fc326cd8afda2f521dd2e8c033453201b",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/attempts/0006_seed_1922813371/generation_report.json",
+  "rng_seed": 1922813371,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789303243627",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 208,
+    "prompt_tokens": 4469,
+    "total_tokens": 4677
+  },
+  "response_content_sha256": "9d5c0d39b5e4744a16d7bc5a2831e7d74f6b8de4e507ba89ac0afc3e9020ed35",
+  "generated_code_sha256": "76b5f9a37d36d5c1efb9839e49ff0b7ee642dd0db25aee5c35669a8a59302ca4",
+  "accepted_source_restoration": "accepted_repository_content"
+}

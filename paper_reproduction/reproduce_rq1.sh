@@ -21,6 +21,7 @@ mkdir -p \
   "$FIGURES/applicability"
 mkdir -p "$WORK/matplotlib" "$WORK/cache"
 
+python3 "$ROOT/RQ1/02_prompts/build_prompt_bundle.py" >/dev/null
 python3 "$ROOT/tools/verify_rq1_evidence.py"
 python3 "$ROOT/tools/build_rq1_baseline_ledgers.py" \
   --evidence-root "$BASE" \
@@ -54,4 +55,4 @@ cp "$WORK/Detectability/derived/all_metrics_long.csv" "$TABLES/detectability/"
 cp "$WORK/Detectability/derived/detectability_values.csv" "$TABLES/detectability/"
 cp "$WORK/Detectability/tables/table_per_strength_auroc.tex" "$TABLES/detectability/"
 
-printf 'RQ1 reproduction complete: 3 baseline ledgers, 6 applicability tables, 18 applicability figures, and 3 detectability outputs.\n'
+printf 'RQ1 reproduction complete: 42 Stage-0 prompts, 480 Stage-1 prompts, 3 baseline ledgers, 6 applicability tables, 18 applicability figures, and 3 detectability outputs.\n'

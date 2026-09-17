@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p09_qr_code_gen_det_python",
+  "action_index": 6,
+  "filename": "qr_code/__init__.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/python/006__qr_code____init__.py/user_prompt.txt",
+  "user_prompt_sha256": "4b7a4942ab9b5ff4cba71ce8a19abe7309d6520db894864ce203ce807d1df821",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/python/006__qr_code____init__.py/input_context.json",
+  "input_context_sha256": "1a58c7d73f2707d305996b7175a7568cd3f6999a7b1687aeaa744c7c51f000f2",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "8ac1e40f27df19bacaf77520593306efe880ca33417c4ba285a8f9e158714207",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "qr_code/payload.py",
+      "generated_code_sha256": "fccdf79b38d3de275426a700754ea31968c6eca76f931f99426f6a22ab51234f",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "qr_code/matrix.py",
+      "generated_code_sha256": "1e3399b143b4d051dad724913d01e52a43806cfef68815bd3d8e0b14e7303ebd",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "qr_code/codec.py",
+      "generated_code_sha256": "de0e13d3aeac17a4ab60f9d75e9bb053455162812190d0169d45997a8de892e6",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "qr_code/render.py",
+      "generated_code_sha256": "35fdf2c132cb602ec2d3d177b6e02a64d977a8af97a0fb4c2d6a0dda38269587",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p09_qr_code_gen_det/python/architecture/team/team.json",
+  "checkpoint_sha256": "8a894c2f7908bfb64d4c6459637759a895541fcc8d2fa49a29a5c37d1dd80ec2",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/python/attempts/0001_seed_3206008263/generation_report.json",
+  "rng_seed": 3206008263,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789409740061",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 178,
+    "prompt_tokens": 10195,
+    "total_tokens": 10373
+  },
+  "response_content_sha256": "26c61a7d7f17bb52fd6b7416e17e734b127a0dcebbe114a569ff3d84766f56ba",
+  "generated_code_sha256": "4457e690675cfef5ab693f863aa11d6582333d6b59aa58c1879c723153cca859",
+  "accepted_source_restoration": "restored_leading_h2"
+}

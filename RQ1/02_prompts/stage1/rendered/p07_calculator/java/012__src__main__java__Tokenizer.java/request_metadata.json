@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p07_calculator_java",
+  "action_index": 12,
+  "filename": "src/main/java/Tokenizer.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/java/012__src__main__java__Tokenizer.java/user_prompt.txt",
+  "user_prompt_sha256": "dae11f22c816f1e434d7bd7a552bad83b8d84c8f61d6ce3299bb0f26ef64319c",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/java/012__src__main__java__Tokenizer.java/input_context.json",
+  "input_context_sha256": "33b7c7039c30696eaa2b14b9a94d2591721efce2833c464c1258d1203714c282",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "a4e34e0ef770efb98f1f3644b09770d8941777093682b4c07473d6329b1e7dfc",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/TokenType.java",
+      "generated_code_sha256": "80f3d08c48fc046d403050b9e926ea95de04699b63741cec2988592608440020",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Token.java",
+      "generated_code_sha256": "945a7a5aee82941258c58ab8e3140ff620f8e916895bd3878140a8860f32669d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/CalculatorException.java",
+      "generated_code_sha256": "7f6a70e452f3b963ab436565e65ba93497b4edac8a30bcdf66b06ae3c8237efd",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/TokenizationException.java",
+      "generated_code_sha256": "590d79ee1352d8ad9c1d25c3179a1efa02a00da62386cdab770a93d82fc0c664",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/ParseException.java",
+      "generated_code_sha256": "89fddf4fc57648f5e09e30d017d08525c9ffe84f23b260f7012d9bfee1d2c14b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/EvaluationException.java",
+      "generated_code_sha256": "01acf6deac649ebb90af53b8d4325d624cea70c65ab8d8bb76738896fc939240",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/DivisionByZeroException.java",
+      "generated_code_sha256": "163de218454c264c727ae25a9569c66ad9089884ee89b11aa9dba4e3d2e1c1c3",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/CalculationResult.java",
+      "generated_code_sha256": "246c5ba8db0181a276a40a9c1c6f616dd57cb9c6797c4ca4adfeeffe314f9784",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/HistoryEntry.java",
+      "generated_code_sha256": "972df71bafb0cb83707f2e43cce8d13c8b6edcc7e1b3fa5326f1779a55293f6f",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/CalculationHistory.java",
+      "generated_code_sha256": "e6d5893643b597ab763128f63aad161245530ef1aca6d2d4265c13b7d2d3b91f",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p07_calculator/java/architecture/team/team.json",
+  "checkpoint_sha256": "5ac9209cf64e5f3ee76152de30272816532264cc2344a68cf2de98661dfd6e39",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/java/attempts/0001_seed_1570566783/generation_report.json",
+  "rng_seed": 1570566783,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789392585385",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 714,
+    "prompt_tokens": 9445,
+    "total_tokens": 10159
+  },
+  "response_content_sha256": "97efcb53cb927a4d454d3aef425cacf48e0e6a094241657af57a3112fd209e7d",
+  "generated_code_sha256": "ba4ee782cab89e3da5ec4f2dafd4320d42e81e0856edf393cc0fa83afcf8f643",
+  "accepted_source_restoration": "accepted_repository_content"
+}

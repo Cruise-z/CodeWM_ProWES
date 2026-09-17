@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_cpp",
+  "action_index": 14,
+  "filename": "src/Player/Player.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/014__src__Player__Player.cpp/user_prompt.txt",
+  "user_prompt_sha256": "60bba3e2e491c029c1048c94c448634e983247894d796061ca49b24269dd9892",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/014__src__Player__Player.cpp/input_context.json",
+  "input_context_sha256": "e9f9e9165f6ac87e40b2f6ba7002d16c6edf3776454a94ba73071f1b0ee3cb6a",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "28c81ba05cbb2620754237a88e4751bee81d1a29a55a9bc3bd9fcede927c2568",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Time/IClock.h",
+      "generated_code_sha256": "c6dbfcfe0904d2d2df878c61be2948d3f49b3939f2cf8390e1df50718d0e9192",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Time/ManualClock.h",
+      "generated_code_sha256": "b7fa3883fe139b5b97bb3127c09994eef34ee104c67ed50cd7bdd0407471912b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Time/MonotonicClock.h",
+      "generated_code_sha256": "4cb6d8234e138090511ed49fc15d0155b61a062ed5bbcfc6067a9bef515f6fb6",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Media/MediaMetadata.h",
+      "generated_code_sha256": "092cf2b07ee28263bd14582dab8a78325ccb4e8bb31bb1fbcc89491acebc40cd",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Playlist/Playlist.h",
+      "generated_code_sha256": "978879d8ba8534b95926095b194cf772c8fcb384a12a4de6d1e58c9497f84c1a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Player/PlaybackState.h",
+      "generated_code_sha256": "99006f01cc7894b4b9fc624c0b84c30edb73344ff76618b7b70b6f92f8f92183",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Player/Player.h",
+      "generated_code_sha256": "25298028f6a90456ca7e6a3113ca1b8b77905cca2466224e45e72f3dc78904d4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Runtime/App.h",
+      "generated_code_sha256": "e23dc8450a93913dd0298e12f1ad70baf48c8fb4eaa7f262b9164b7ba4a42b3a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Time/ManualClock.cpp",
+      "generated_code_sha256": "1dc3e059897f8c189480633b1bd711aeda75192c2c05bcae835232a9d38e98ed",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Time/MonotonicClock.cpp",
+      "generated_code_sha256": "1de804eaba3c8d1d18b5e07982e706eb5560c5e3ce2eb4cd1c461e3c35731a6e",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Media/MediaMetadata.cpp",
+      "generated_code_sha256": "9f4f29073aa647ec65bbbbb5e8d8d97039ff9856ffbc31affe78877bb7d6bc0e",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Playlist/Playlist.cpp",
+      "generated_code_sha256": "aa065189709b0822216db47b97225e3619d9a035512fc7eb2face3f99fd5928f",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/attempts/0001_seed_1700920662/generation_report.json",
+  "rng_seed": 1700920662,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789390490755",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 710,
+    "prompt_tokens": 12626,
+    "total_tokens": 13336
+  },
+  "response_content_sha256": "d5a608f7a33168ec5f8e3eaf5dccd261dd114e4c42d4b3643ff0909e2e6cb450",
+  "generated_code_sha256": "ad5aebbbd7f8f8759db1c7a03ff315d77fa968ddb578d4c9a86b8c4ffae05bcf",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -1,0 +1,532 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/User.java",
+    "src/main/java/AuditEvent.java",
+    "src/main/java/UserValidator.java",
+    "src/main/java/SearchService.java",
+    "src/main/java/AuditLogService.java",
+    "src/main/java/UserRepository.java",
+    "src/main/java/InMemoryUserRepository.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class User {\n        -String id\n        -String name\n        -String email\n        +User(id: String, name: String, email: String)\n        +getId(): String\n        +getName(): String\n        +getEmail(): String\n        +equals(Object): boolean\n        +hashCode(): int\n        +toString(): String\n    }\n    class AuditEvent {\n        -long timestamp\n        -String action\n        -String userId\n        +AuditEvent(timestamp: long, action: String, userId: String)\n        +getTimestamp(): long\n        +getAction(): String\n        +getUserId(): String\n        +equals(Object): boolean\n        +hashCode(): int\n        +toString(): String\n    }\n    class UserValidator {\n        +isValid(user: User): boolean\n    }\n    class SearchService {\n        +search(users: List<User>, query: String): List<User>\n    }\n    class AuditLogService {\n        -events: List<AuditEvent>\n        +log(event: AuditEvent): void\n        +getAllEvents(): List<AuditEvent>\n    }\n    class UserRepository {\n        <<interface>>\n        +findById(id: String): User\n        +findAll(): List<User>\n        +save(user: User): User\n        +deleteById(id: String): boolean\n    }\n    class InMemoryUserRepository {\n        -store: LinkedHashMap<String, User>\n        -validator: UserValidator\n        +InMemoryUserRepository()\n        +findById(id: String): User\n        +findAll(): List<User>\n        +save(user: User): User\n        +deleteById(id: String): boolean\n    }\n    class Main {\n        +main(args: String[]): void\n    }\n    InMemoryUserRepository ..|> UserRepository\n    InMemoryUserRepository --> UserValidator\n    SearchService --> User\n    AuditLogService --> AuditEvent",
+  "Domain Decomposition": [
+    [
+      "Build configuration for Java 11 and JUnit 5",
+      "pom.xml",
+      "protocol-required"
+    ],
+    [
+      "Typed stored domain object: User (id, name, email) with value-based equality",
+      "src/main/java/User.java",
+      "domain-entity"
+    ],
+    [
+      "Typed stored domain object: AuditEvent (timestamp, action, userId) with validation and value-based equality",
+      "src/main/java/AuditEvent.java",
+      "domain-entity"
+    ],
+    [
+      "Validation rule: non-null, non-blank fields for User",
+      "src/main/java/UserValidator.java",
+      "pure-rule"
+    ],
+    [
+      "Search rule: exact case-insensitive name token matching, defensive behavior",
+      "src/main/java/SearchService.java",
+      "pure-rule"
+    ],
+    [
+      "Explicit audit log store with defensive retrieval",
+      "src/main/java/AuditLogService.java",
+      "domain-service"
+    ],
+    [
+      "CRUD repository API (findById, findAll, save, deleteById) with strict import rule",
+      "src/main/java/UserRepository.java",
+      "interface"
+    ],
+    [
+      "In-memory repository implementation with deterministic upsert and defensive list returns",
+      "src/main/java/InMemoryUserRepository.java",
+      "domain-service"
+    ],
+    [
+      "Thin runtime demo, no collections, standalone search call",
+      "src/main/java/Main.java",
+      "environment-dependent"
+    ],
+    [
+      "Single deterministic JUnit 5 test suite with exactly three tests",
+      "src/test/java/MainTest.java",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "User typed stored domain object with value semantics (no validation)",
+      "src/main/java/User.java"
+    ],
+    [
+      "AuditEvent typed stored domain object with validating constructor",
+      "src/main/java/AuditEvent.java"
+    ],
+    [
+      "User validation rule (non-null/non-blank id, name, email)",
+      "src/main/java/UserValidator.java"
+    ],
+    [
+      "Search rule: exact case-insensitive whitespace-delimited name-token matching; defensive behavior",
+      "src/main/java/SearchService.java"
+    ],
+    [
+      "Explicit audit log, append-only, defensive retrieval",
+      "src/main/java/AuditLogService.java"
+    ],
+    [
+      "Repository API boundary; strict import rule at file start; CRUD method contracts",
+      "src/main/java/UserRepository.java"
+    ],
+    [
+      "In-memory repository implementation using LinkedHashMap for stable insertion/upsert order, defensive list returns, and validation on save",
+      "src/main/java/InMemoryUserRepository.java"
+    ],
+    [
+      "Thin runtime entry with standalone search call and no collections",
+      "src/main/java/Main.java"
+    ],
+    [
+      "Deterministic JUnit 5 tests in a single file with exactly three @Test methods",
+      "src/test/java/MainTest.java"
+    ]
+  ],
+  "File list": [
+    "pom.xml",
+    "src/main/java/User.java",
+    "src/main/java/AuditEvent.java",
+    "src/main/java/UserValidator.java",
+    "src/main/java/SearchService.java",
+    "src/main/java/AuditLogService.java",
+    "src/main/java/UserRepository.java",
+    "src/main/java/InMemoryUserRepository.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Implementation approach": "Bob's architecture delivers a lightweight, deterministic, in-memory CRUD system in Java 11 using Maven, with exactly the protocol-required files and paths. It uses plain Java collections and JUnit Jupiter (test scope only) for tests; no external runtime dependencies. All classes are in the default package. Java record syntax is forbidden under Java 11; both User and AuditEvent are ordinary public final classes. Main.java is a thin, non-interactive demo with no collection declarations and includes the standalone call searchService.search(repository.findAll(), \"alice\");. User stores constructor arguments unchanged and never validates; separate validation is performed by UserValidator. InMemoryUserRepository.save validates via UserValidator and throws IllegalArgumentException on invalid input; it performs deterministic upsert by id. SearchService is stateless, performs exact case-insensitive whitespace-delimited name-token matching, preserves input order, and never mutates inputs; searching the canonical fixture [Alice Smith, Bob Jones] by \"smith\" returns only Alice Smith. AuditLogService is explicit and independent; repository operations do not implicitly log. Defensive copies are returned by repository.findAll() and AuditLogService.getAllEvents(). Every file that uses List, ArrayList, Map, HashMap, LinkedHashMap, or Objects imports that type directly; UserRepository.java literally begins with import java.util.List;. Tests are headless, deterministic, and contain exactly three @Test methods covering runtime wiring and value objects, validation plus search, and CRUD plus explicit audit with fixed timestamps. Roles: Alice (analyst) benefits from precise token search; Eve (QA) relies on strict validation and deterministic behaviors; Bob (developer) gets clean upsert semantics and explicit audit boundaries.\n\nFile tasks and API spec (ordered by dependency-first):\n- pom.xml: Maven build for Java 11; add org.junit.jupiter:junit-jupiter (test scope) and maven-surefire-plugin version compatible with JUnit 5; no non-test deps; mvn -q test runs JUnit Jupiter.\n- src/main/java/User.java: public final class User with private final String id, name, email; constructor User(String id,String name,String email) stores raw values unchanged; getters getId/getName/getEmail; value-based equals/hashCode/toString. No validation here.\n- src/main/java/AuditEvent.java: public final class AuditEvent with private final long timestamp and private final String action, userId; validating constructor rejects null/blank action or userId via IllegalArgumentException; getters getTimestamp/getAction/getUserId; value-based equals/hashCode/toString; import java.util.Objects directly if used.\n- src/main/java/UserValidator.java: stateless class; boolean isValid(User user) returns false (never throws) for null user or null/blank id/name/email; true otherwise; helper isBlank(String) allowed.\n- src/main/java/SearchService.java: stateless class; import java.util.List and java.util.ArrayList directly; List<User> search(List<User> users,String query): if users == null return new empty list; if query is null/blank return defensive copy of users (non-null); else trim and lower-case query, split each non-null user name by whitespace, include users having a token exactly equal to the query; preserve input order; never mutate input.\n- src/main/java/AuditLogService.java: explicit independent audit log; import java.util.List and java.util.ArrayList directly; void log(AuditEvent event) appends non-null event; List<AuditEvent> getAllEvents() returns a defensive copy; no static/global state.\n- src/main/java/UserRepository.java: Must literally begin with `import java.util.List;` then public interface UserRepository with methods: User findById(String id) returning stored user or null; List<User> findAll() returning a defensive list preserving insertion/upsert order; User save(User user) performing validation and upsert by id and returning stored value; boolean deleteById(String id) returning true if removed. No package declaration. Repeat defensive-copy and upsert contracts.\n- src/main/java/InMemoryUserRepository.java: implements UserRepository; imports java.util.List, java.util.ArrayList, java.util.Map, java.util.LinkedHashMap (for stable insertion order), and optionally java.util.Objects if used; maintains private final LinkedHashMap<String, User> store and private final UserValidator validator; constructor initializes fields; save(User) validates with validator, throws IllegalArgumentException on invalid input, upserts by id (replace prior value) and returns stored value; findById returns stored or null; findAll returns new ArrayList<>(store.values()) preserving insertion/upsert order; deleteById removes by id and returns true if removed; never exposes internal storage.\n- src/main/java/Main.java: thin non-interactive demo in default package; no java.util imports; construct InMemoryUserRepository and SearchService; create a couple of Users; save/delete; must include the standalone call searchService.search(repository.findAll(), \"alice\"); without storing the result; no collection type declaration or result variable anywhere.\n- src/test/java/MainTest.java: single JUnit Jupiter test file with exactly three @Test methods (no more): (1) runtime + value objects: construct User and AuditEvent (timestamp 1640995200000L) and assert getters and equality; also call Main.main(new String[0]) to ensure runtime wiring; (2) validation + search: assert new User(\"\", null, \"\") is invalid via UserValidator; search list [new User(\"1\",\"Alice Smith\",\"alice@example.com\"), new User(\"2\",\"Bob Jones\",\"bob@example.com\")] with query \"smith\" using SearchService and assert result contains only Alice; (3) CRUD + explicit audit: upsert id \"1\" then delete it using InMemoryUserRepository; construct AuditLogService, explicitly log two AuditEvent entries with fixed timestamp 1640995200000L and actions CREATE_USER and DELETE_USER for userId \"1\"; assert getAllEvents returns exactly those two events in order; confirm repository operations did not implicitly log.\n\nImport rules repeated: UserRepository.java must literally begin with `import java.util.List;`. Every file that uses List, ArrayList, Map, HashMap, LinkedHashMap, or Objects must import that type directly and must never rely on transitive imports. Main.java must not declare or reference any collection types and must include the standalone call `searchService.search(repository.findAll(), \"alice\");`.\n\nKey semantics repeated: public final class User and public final class AuditEvent (Java record syntax is forbidden under Java 11). User constructor stores values unchanged; UserValidator alone checks null/blank fields; repository.save validates and throws IllegalArgumentException on invalid input; deterministic upsert by id; findById returns null when absent; findAll returns a defensive list preserving insertion/upsert order; search is exact case-insensitive whitespace-delimited name-token matching (Alice Smith/Bob Jones fixture with query \"smith\" returns only Alice Smith); AuditLogService is explicit and decoupled from repository; tests explicitly log events.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Java 11 repository architecture for: CRUD system.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\n\nProject-specific Java 11 entity and compilation contract:\n- use exactly these files and no substitutes, in dependency order: pom.xml, src/main/java/User.java, src/main/java/AuditEvent.java, src/main/java/UserValidator.java, src/main/java/SearchService.java, src/main/java/AuditLogService.java, src/main/java/UserRepository.java, src/main/java/InMemoryUserRepository.java, src/main/java/Main.java, src/test/java/MainTest.java\n- the phrase \"typed records\" means typed stored domain objects, not the Java record language feature. Java `record` declarations are forbidden because the evaluator compiles with Java 11; sealed classes, pattern matching, text blocks, and every other post-Java-11 syntax are also forbidden\n- User.java defines an ordinary `public final class User`, never `public record User`, with private final String id, name, and email, a constructor User(String id,String name,String email) that stores its three arguments unchanged (including null or blank values) and never validates them, getters getId/getName/getEmail, and value-based equals/hashCode/toString. This deliberately makes invalid candidate values constructible so the separate UserValidator can be tested\n- AuditEvent.java defines an ordinary `public final class AuditEvent`, never `public record AuditEvent`, with private final long timestamp plus private final String action and userId, a validating constructor, getters getTimestamp/getAction/getUserId, and value-based equals/hashCode/toString; deterministic tests pass explicit fixed timestamps and never assert the wall clock\n- UserValidator is stateless and `boolean isValid(User user)` returns false, never throws, for null users or a null/blank id, name, or email; it returns true otherwise. InMemoryUserRepository.save calls this validator and throws IllegalArgumentException for invalid input, while the User constructor itself never validates\n- SearchService is stateless. `List<User> search(List<User> users,String query)` returns a new empty list for a null users list, a defensive copy for a null/blank query, and otherwise returns non-null users whose lower-cased name has a whitespace-delimited token exactly equal to the trimmed lower-cased query. It searches names only, preserves input order, and never mutates the input. The canonical fixture Alice Smith/Bob Jones searched with \"smith\" returns only Alice Smith\n- AuditLogService is an independent explicit log: only `log(AuditEvent event)` changes it. It has no static/global state, and InMemoryUserRepository has no AuditLogService field and never logs implicitly. Tests must explicitly call auditLogService.log for each event before asserting getAllEvents\n- UserRepository.java must literally begin with `import java.util.List;` before its public interface declaration, because it returns `List<User>` and default-package classes do not provide java.util imports. Every other Java file that spells `List`, `ArrayList`, `Map`, `HashMap`, or `Objects` must likewise contain its own direct matching java.util import and must never rely on a transitive import. UserRepository declares findById, findAll, save, and deleteById. InMemoryUserRepository.save is deterministic upsert by id: first save creates, a later save with the same id replaces the value. findById returns null when absent; findAll and AuditLogService.getAllEvents return defensive lists\n- Main.java is a thin non-interactive demo and must contain no collection type declaration: no `List`, `ArrayList`, `Map`, or collection result variable. It may construct SearchService and invoke `searchService.search(repository.findAll(), \"alice\");` as a standalone expression without storing the returned list; consequently Main needs no java.util import. MainTest.java uses JUnit Jupiter and contains exactly three `@Test` methods, no more: (1) runtime plus ordinary User/AuditEvent value-object getters/equality with timestamp 1640995200000L; (2) validation plus search, constructing `new User(\"\", null, \"\")` and asserting validator false, then searching `[new User(\"1\",\"Alice Smith\",\"alice@example.com\"), new User(\"2\",\"Bob Jones\",\"bob@example.com\")]` for `\"smith\"` and asserting only Alice; (3) CRUD plus explicit audit, upserting id 1, deleting it, explicitly logging fixed CREATE_USER and DELETE_USER events into the same local AuditLogService instance, and asserting exactly those two events. Tests never expect repository operations to log implicitly and never use record component syntax or reflection\n- Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task must repeat the direct `import java.util.List;` requirement, Main.java no-collection-declaration rule and standalone search call, non-validating User constructor/separate-validator rule, exact name-token search rule and Alice/Bob fixture, explicit non-coupled audit rule, upsert rule, exactly-three-test rule, and fixed fixtures above, as well as `public final class User`, `public final class AuditEvent`, and \"Java record syntax is forbidden under Java 11\" verbatim; a Logic Analysis description saying \"defines User record\" or \"defines AuditEvent record\" invalidates the architecture\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 11 repository files\n- about 47 functions or methods\n- about 983 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- typed records with stable identifiers\n- create read update and delete operations\n- validation and duplicate handling\n- search filtering and pagination\n- in-memory repository boundary\n- audit events and deterministic tests\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE CRUD JAVA 11 COMPILATION CHECKLIST:\n- Task filenames are exactly: pom.xml; src/main/java/User.java; src/main/java/AuditEvent.java; src/main/java/UserValidator.java; src/main/java/SearchService.java; src/main/java/AuditLogService.java; src/main/java/UserRepository.java; src/main/java/InMemoryUserRepository.java; src/main/java/Main.java; src/test/java/MainTest.java.\n- UserRepository.java literally begins with `import java.util.List;` before `public interface UserRepository`; every source that uses a java.util type imports that type directly and never relies on transitive imports.\n- Main.java contains no collection type declaration or result variable and literally uses the standalone call `searchService.search(repository.findAll(), \"alice\");`; Main.java never spells `List`, `ArrayList`, or `Map` and needs no java.util import.\n- User and AuditEvent are ordinary `public final class` declarations with private final fields and getters. Java record syntax is forbidden under Java 11; never emit `public record User` or `public record AuditEvent`.\n- User stores constructor arguments unchanged and UserValidator alone checks null/blank fields; the repository validates on save. Search is exact case-insensitive whitespace-delimited name-token matching with the Alice Smith/Bob Jones fixture. Audit is explicit and never coupled to repository operations; tests log the two fixed events themselves. MainTest contains exactly three `@Test` methods using the three fixed scopes and no invented semantics.\n- Logic Analysis and implementation tasks must preserve these class declarations and exact contracts and must not call either entity a Java record.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant M as Main\n    participant R as InMemoryUserRepository\n    participant S as SearchService\n    M->>R: new InMemoryUserRepository()\n    M->>R: save(new User(\"1\",\"Alice Smith\",\"alice@example.com\"))\n    M->>R: save(new User(\"2\",\"Bob Jones\",\"bob@example.com\"))\n    M->>S: new SearchService()\n    M->>S: searchService.search(repository.findAll(), \"alice\")\n    Note right of M: Standalone call; no collection variable declared\n    M->>R: deleteById(\"2\")\n    M-->>M: exit without loop",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "java11_specific_contracts": [
+      "Java record syntax is forbidden under Java 11; both User and AuditEvent are public final classes",
+      "UserRepository.java literally begins with `import java.util.List;`",
+      "Every file that uses List, ArrayList, Map, HashMap, LinkedHashMap, or Objects directly imports that type",
+      "Main.java contains no collection type declaration and includes standalone call searchService.search(repository.findAll(), \"alice\");"
+    ],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "mvn -q test",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: pom.xml. Runtime entry: src/main/java/Main.java. Test target: src/test/java/MainTest.java. Test command: mvn -q test. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {},
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "src/main/java/Main.java"
+    ],
+    "pure_logic_modules": [
+      "src/main/java/User.java",
+      "src/main/java/AuditEvent.java",
+      "src/main/java/UserValidator.java",
+      "src/main/java/SearchService.java",
+      "src/main/java/AuditLogService.java",
+      "src/main/java/UserRepository.java",
+      "src/main/java/InMemoryUserRepository.java"
+    ],
+    "test_targets_should_focus_on": [
+      "Runtime wiring and value-object behaviors (getters/equality) with fixed timestamp 1640995200000L",
+      "Validation false for new User(\"\", null, \"\") and exact token search returning only Alice for query \"smith\"",
+      "CRUD upsert/delete with explicit audit logging of CREATE_USER and DELETE_USER; repository does not log implicitly"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/User.java",
+    "src/main/java/AuditEvent.java",
+    "src/main/java/UserValidator.java",
+    "src/main/java/SearchService.java",
+    "src/main/java/AuditLogService.java",
+    "src/main/java/UserRepository.java",
+    "src/main/java/InMemoryUserRepository.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Execution Protocol": "Test command: mvn -q test. Runtime entry: src/main/java/Main.java. Single protocol-level test file: src/test/java/MainTest.java containing exactly three @Test methods. Tests are headless, deterministic, and offline. Additional implementation files do not alter protocol files. No GUI or network is used. All modules compile under Java 11 without preview features.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 10,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 10,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 10,
+    "task_list_count": 10
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Java 11 repository architecture for: CRUD system.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\n\nProject-specific Java 11 entity and compilation contract:\n- use exactly these files and no substitutes, in dependency order: pom.xml, src/main/java/User.java, src/main/java/AuditEvent.java, src/main/java/UserValidator.java, src/main/java/SearchService.java, src/main/java/AuditLogService.java, src/main/java/UserRepository.java, src/main/java/InMemoryUserRepository.java, src/main/java/Main.java, src/test/java/MainTest.java\n- the phrase \"typed records\" means typed stored domain objects, not the Java record language feature. Java `record` declarations are forbidden because the evaluator compiles with Java 11; sealed classes, pattern matching, text blocks, and every other post-Java-11 syntax are also forbidden\n- User.java defines an ordinary `public final class User`, never `public record User`, with private final String id, name, and email, a constructor User(String id,String name,String email) that stores its three arguments unchanged (including null or blank values) and never validates them, getters getId/getName/getEmail, and value-based equals/hashCode/toString. This deliberately makes invalid candidate values constructible so the separate UserValidator can be tested\n- AuditEvent.java defines an ordinary `public final class AuditEvent`, never `public record AuditEvent`, with private final long timestamp plus private final String action and userId, a validating constructor, getters getTimestamp/getAction/getUserId, and value-based equals/hashCode/toString; deterministic tests pass explicit fixed timestamps and never assert the wall clock\n- UserValidator is stateless and `boolean isValid(User user)` returns false, never throws, for null users or a null/blank id, name, or email; it returns true otherwise. InMemoryUserRepository.save calls this validator and throws IllegalArgumentException for invalid input, while the User constructor itself never validates\n- SearchService is stateless. `List<User> search(List<User> users,String query)` returns a new empty list for a null users list, a defensive copy for a null/blank query, and otherwise returns non-null users whose lower-cased name has a whitespace-delimited token exactly equal to the trimmed lower-cased query. It searches names only, preserves input order, and never mutates the input. The canonical fixture Alice Smith/Bob Jones searched with \"smith\" returns only Alice Smith\n- AuditLogService is an independent explicit log: only `log(AuditEvent event)` changes it. It has no static/global state, and InMemoryUserRepository has no AuditLogService field and never logs implicitly. Tests must explicitly call auditLogService.log for each event before asserting getAllEvents\n- UserRepository.java must literally begin with `import java.util.List;` before its public interface declaration, because it returns `List<User>` and default-package classes do not provide java.util imports. Every other Java file that spells `List`, `ArrayList`, `Map`, `HashMap`, or `Objects` must likewise contain its own direct matching java.util import and must never rely on a transitive import. UserRepository declares findById, findAll, save, and deleteById. InMemoryUserRepository.save is deterministic upsert by id: first save creates, a later save with the same id replaces the value. findById returns null when absent; findAll and AuditLogService.getAllEvents return defensive lists\n- Main.java is a thin non-interactive demo and must contain no collection type declaration: no `List`, `ArrayList`, `Map`, or collection result variable. It may construct SearchService and invoke `searchService.search(repository.findAll(), \"alice\");` as a standalone expression without storing the returned list; consequently Main needs no java.util import. MainTest.java uses JUnit Jupiter and contains exactly three `@Test` methods, no more: (1) runtime plus ordinary User/AuditEvent value-object getters/equality with timestamp 1640995200000L; (2) validation plus search, constructing `new User(\"\", null, \"\")` and asserting validator false, then searching `[new User(\"1\",\"Alice Smith\",\"alice@example.com\"), new User(\"2\",\"Bob Jones\",\"bob@example.com\")]` for `\"smith\"` and asserting only Alice; (3) CRUD plus explicit audit, upserting id 1, deleting it, explicitly logging fixed CREATE_USER and DELETE_USER events into the same local AuditLogService instance, and asserting exactly those two events. Tests never expect repository operations to log implicitly and never use record component syntax or reflection\n- Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task must repeat the direct `import java.util.List;` requirement, Main.java no-collection-declaration rule and standalone search call, non-validating User constructor/separate-validator rule, exact name-token search rule and Alice/Bob fixture, explicit non-coupled audit rule, upsert rule, exactly-three-test rule, and fixed fixtures above, as well as `public final class User`, `public final class AuditEvent`, and \"Java record syntax is forbidden under Java 11\" verbatim; a Logic Analysis description saying \"defines User record\" or \"defines AuditEvent record\" invalidates the architecture\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 11 repository files\n- about 47 functions or methods\n- about 983 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- typed records with stable identifiers\n- create read update and delete operations\n- validation and duplicate handling\n- search filtering and pagination\n- in-memory repository boundary\n- audit events and deterministic tests\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE CRUD JAVA 11 COMPILATION CHECKLIST:\n- Task filenames are exactly: pom.xml; src/main/java/User.java; src/main/java/AuditEvent.java; src/main/java/UserValidator.java; src/main/java/SearchService.java; src/main/java/AuditLogService.java; src/main/java/UserRepository.java; src/main/java/InMemoryUserRepository.java; src/main/java/Main.java; src/test/java/MainTest.java.\n- UserRepository.java literally begins with `import java.util.List;` before `public interface UserRepository`; every source that uses a java.util type imports that type directly and never relies on transitive imports.\n- Main.java contains no collection type declaration or result variable and literally uses the standalone call `searchService.search(repository.findAll(), \"alice\");`; Main.java never spells `List`, `ArrayList`, or `Map` and needs no java.util import.\n- User and AuditEvent are ordinary `public final class` declarations with private final fields and getters. Java record syntax is forbidden under Java 11; never emit `public record User` or `public record AuditEvent`.\n- User stores constructor arguments unchanged and UserValidator alone checks null/blank fields; the repository validates on save. Search is exact case-insensitive whitespace-delimited name-token matching with the Alice Smith/Bob Jones fixture. Audit is explicit and never coupled to repository operations; tests log the two fixed events themselves. MainTest contains exactly three `@Test` methods using the three fixed scopes and no invented semantics.\n- Logic Analysis and implementation tasks must preserve these class declarations and exact contracts and must not call either entity a Java record.\n\n",
+  "Logic Analysis": [
+    [
+      "pom.xml",
+      "dependency/build; Maven configuration for Java 11 and JUnit Jupiter with a Surefire version that runs JUnit 5; no runtime dependencies beyond the JDK"
+    ],
+    [
+      "src/main/java/User.java",
+      "domain entity; defines ordinary public final class User with private final fields, non-validating constructor that stores arguments unchanged, getters, and value methods; UserValidator alone checks null/blank fields; Java record syntax is forbidden under Java 11"
+    ],
+    [
+      "src/main/java/AuditEvent.java",
+      "domain entity; defines ordinary public final class AuditEvent with private final fields, constructor, getters, and value methods; Java record syntax is forbidden under Java 11"
+    ],
+    [
+      "src/main/java/UserValidator.java",
+      "pure-rule; stateless validation rule: boolean isValid(User) returns false for null user or null/blank fields, true otherwise"
+    ],
+    [
+      "src/main/java/SearchService.java",
+      "pure-rule; stateless search: List<User> search(List<User>, String) exact case-insensitive name token matching; null users -> empty list; null/blank query -> defensive copy; preserve input order; never mutate input; direct imports for List and ArrayList"
+    ],
+    [
+      "src/main/java/AuditLogService.java",
+      "domain-service; explicit append-only audit log store with defensive retrieval; direct imports for List and ArrayList"
+    ],
+    [
+      "src/main/java/UserRepository.java",
+      "interface; CRUD boundary. Must literally begin with import java.util.List;. Methods: findById, findAll (defensive copy, preserve insertion/upsert order), save (validates and upserts), deleteById"
+    ],
+    [
+      "src/main/java/InMemoryUserRepository.java",
+      "domain-service; in-memory repository using LinkedHashMap for stable insertion/upsert order; validates via UserValidator on save; deterministic upsert; defensive list returns; direct imports for List, ArrayList, Map, LinkedHashMap"
+    ],
+    [
+      "src/main/java/Main.java",
+      "runtime/bootstrap; thin non-interactive demo in default package; no collection type declarations/imports; must include standalone call searchService.search(repository.findAll(), \"alice\");"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "automated-test; single JUnit 5 test file with exactly three @Test methods: runtime+value objects, validation+search, CRUD+explicit audit"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/main/java/User.java",
+      "src/main/java/AuditEvent.java",
+      "src/main/java/UserValidator.java",
+      "src/main/java/SearchService.java",
+      "src/main/java/AuditLogService.java",
+      "src/main/java/UserRepository.java",
+      "src/main/java/InMemoryUserRepository.java"
+    ],
+    "environment_dependent_modules": [
+      "src/main/java/Main.java"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "Java 11 (JDK 11)",
+    "Maven >= 3.6",
+    "org.junit.jupiter:junit-jupiter (test scope, 5.x)",
+    "maven-surefire-plugin >= 2.22.2 (JUnit 5 compatible)"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "All classes reside in the default package under src/main/java with no package declarations to avoid import mismatches. Build uses Maven with Java 11 and JUnit Jupiter via Surefire. Import rules are strict: every file using java.util types must import them directly. src/main/java/UserRepository.java literally begins with `import java.util.List;`. src/main/java/Main.java contains no collection declarations and includes the standalone call to SearchService: `searchService.search(repository.findAll(), \"alice\");`. Tests in src/test/java/MainTest.java (JUnit 5) cover runtime wiring, value object equality/getters, validation + search behavior, and CRUD + explicit audit with fixed timestamps; repository operations never log implicitly.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "pom.xml",
+    "src/main/java/User.java",
+    "src/main/java/AuditEvent.java",
+    "src/main/java/UserValidator.java",
+    "src/main/java/SearchService.java",
+    "src/main/java/AuditLogService.java",
+    "src/main/java/UserRepository.java",
+    "src/main/java/InMemoryUserRepository.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Test Include Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/User.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/AuditEvent.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/UserValidator.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/SearchService.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/AuditLogService.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/InMemoryUserRepository.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/Main.java"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "test 1 runtime/entities: Main.main(new String[0]) returns normally; ordinary User and AuditEvent getters/equality use explicit timestamp 1640995200000L; no Java record syntax"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "test 2 validation/search: new User(\"\", null, \"\") is constructible and UserValidator returns false; exact case-insensitive name-token search of Alice Smith and Bob Jones for \"smith\" returns only Alice Smith"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "test 3 CRUD/explicit audit: deterministic save upsert/read/delete id 1; repository never logs; explicitly log fixed CREATE_USER and DELETE_USER AuditEvent values into the same local AuditLogService and assert exactly those two events"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- pom.xml
+```<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>crud-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>```
+----- src/main/java/User.java
+```/**
+ * Represents a user with an ID, name, and email.
+ * This is a typed stored domain object with value semantics.
+ * The constructor stores arguments unchanged and never validates them.
+ * Validation is performed by UserValidator.
+ */
+public final class User {
+    private final String id;
+    private final String name;
+    private final String email;
+
+    /**
+     * Creates a new User with the specified ID, name, and email.
+     * Values are stored unchanged (including null or blank values).
+     *
+     * @param id    the user's ID
+     * @param name  the user's name
+     * @param email the user's email
+     */
+    public User(String id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
+
+    /**
+     * Gets the user's ID.
+     *
+     * @return the user's ID
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Gets the user's name.
+     *
+     * @return the user's name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the user's email.
+     *
+     * @return the user's email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Checks if this User is equal to another object.
+     * Two Users are equal if they have the same ID, name, and email.
+     *
+     * @param obj the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        User user = (User) obj;
+
+        if (id != null ? !id.equals(user.id) : user.id != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(user.name) : user.name != null) {
+            return false;
+        }
+        return email != null ? email.equals(user.email) : user.email == null;
+    }
+
+    /**
+     * Returns a hash code value for the User.
+     *
+     * @return a hash code value for this User
+     */
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
+    }
+
+    /**
+     * Returns a string representation of the User.
+     *
+     * @return a string representation of the User
+     */
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/main/java/AuditEvent.java
+```python
+## src/main/java/AuditEvent.java
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/main/java/AuditEvent.java. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

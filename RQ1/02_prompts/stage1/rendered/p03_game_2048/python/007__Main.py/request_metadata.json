@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p03_game_2048_python",
+  "action_index": 7,
+  "filename": "Main.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/python/007__Main.py/user_prompt.txt",
+  "user_prompt_sha256": "cd54bacfa2d9f90ee927bbb379324df7bb4e2f837281bbad1b5208e96910e5ed",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/python/007__Main.py/input_context.json",
+  "input_context_sha256": "63e06b6166a12fa9fe1523d0415bf8bcc0a3509923abf65846a78be779f26aeb",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "6c74642dd46209e51ec26fba22a4179eff5cb1acf9ee7f92ebad8b709588ba97",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "twenty48/types.py",
+      "generated_code_sha256": "ee68648a3244f2eb32d84ab044938addf0a254316505c8906d1c5bb91c4f5f34",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "twenty48/move.py",
+      "generated_code_sha256": "efc091fb43335aa270fbb8f5b0067b3c450bf97ede8cc5e3e8e65821759f5941",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "twenty48/board.py",
+      "generated_code_sha256": "40629fa1f01f1520c331c205f69321dcc672ed6c9eb9ec926f7fe89d79a0dc1a",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "twenty48/game.py",
+      "generated_code_sha256": "a53b8922270195dacd58126e2c2a836a0e6edd1cbe6d2823e8a068e091221574",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "twenty48/__init__.py",
+      "generated_code_sha256": "670590484b75705cdbe45a8d18a74090449c795e2de8ba91786b754b94156300",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p03_game_2048/python/architecture/team/team.json",
+  "checkpoint_sha256": "dc0c4677df912f39dc9ab08d5364a3fc7e9f333e50bc4b33b4f3a0ad8589577a",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/python/attempts/0002_seed_100489887/generation_report.json",
+  "rng_seed": 100489887,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789314770387",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 324,
+    "prompt_tokens": 6695,
+    "total_tokens": 7019
+  },
+  "response_content_sha256": "d193743eb009ab23f50dec44b0951c2ff3d4bc1921dbeb114757ce24c1c7d643",
+  "generated_code_sha256": "3c690bbb1148e713d821a8a64abfd719e9f91973f4f3c443dbb05447d1ba596c",
+  "accepted_source_restoration": "restored_leading_h2"
+}

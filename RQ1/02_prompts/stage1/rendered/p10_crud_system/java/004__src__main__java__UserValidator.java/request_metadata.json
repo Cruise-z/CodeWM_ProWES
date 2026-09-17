@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_java",
+  "action_index": 4,
+  "filename": "src/main/java/UserValidator.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/java/004__src__main__java__UserValidator.java/user_prompt.txt",
+  "user_prompt_sha256": "4d187ea9304a0a0337aa10ffb6261638358688ec4e633f5160367b628a6e4c5a",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/java/004__src__main__java__UserValidator.java/input_context.json",
+  "input_context_sha256": "ff258c01d68f072ec4d58f7741ba06ec5573eee7649143729a77349bd112e795",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "ff97f364b836a1825d76b26ae1d8eebfc326af7773018986a41425bbb0583882",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/User.java",
+      "generated_code_sha256": "c0e8f719bb79612c687aa095e8dd6774878a18b32835313964c62ce492b03532",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/AuditEvent.java",
+      "generated_code_sha256": "f7aa29b576d6cb199581cc6c27187a78df41c707937fb343c22138c98b4bf3e3",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/java/architecture/team/team.json",
+  "checkpoint_sha256": "9bef45c1de998cdb31b61c312d416b98b97c5a2a95c5f3aa49a65eab42762003",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/java/attempts/0001_seed_3479630733/generation_report.json",
+  "rng_seed": 3479630733,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789388531725",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 235,
+    "prompt_tokens": 11830,
+    "total_tokens": 12065
+  },
+  "response_content_sha256": "fd11f72da097e0408542aa92094a5c8834b3a1fbcdbd3cb8e96dcd982eebd7a8",
+  "generated_code_sha256": "a81c0c2dc3009d41f841d77125e12b101bb13f149c67e61109d351d03077763f",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_cpp",
+  "action_index": 5,
+  "filename": "include/MoveHistory.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/005__include__MoveHistory.h/user_prompt.txt",
+  "user_prompt_sha256": "a41500cf7b0a7b49f1843a9beaa81f8ab7382cec131d9eadc17e257d24902ac6",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/005__include__MoveHistory.h/input_context.json",
+  "input_context_sha256": "b74204425f032ba9701603f0effb445779ea0e6c5fe1dffe97760151a9c0e4da",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "76b5f9a37d36d5c1efb9839e49ff0b7ee642dd0db25aee5c35669a8a59302ca4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Common.h",
+      "generated_code_sha256": "6a4e12a7b9429f6a1260f614c5b5b4d2479b2715ea813e4be6b68d9fb8935fbe",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Board.h",
+      "generated_code_sha256": "7ee75300fc0acc19fad06de2e83f79992613556b3ee37eea4e21b954f9500906",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Move.h",
+      "generated_code_sha256": "9ed581abb34b6825ce4f155613709728d2c39432ecb01431206a0ff6b1b64198",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/attempts/0006_seed_1922813371/generation_report.json",
+  "rng_seed": 1922813371,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789303340209",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 346,
+    "prompt_tokens": 5805,
+    "total_tokens": 6151
+  },
+  "response_content_sha256": "5bff4e139c5c6c7dd61443ebfed73ff6401d2b813ac4336947dac942c86f176b",
+  "generated_code_sha256": "ffb66efb1c6f8c469180d874a7a13e5dbd9d9e3aa7246295c1194d0b18cc6fe5",
+  "accepted_source_restoration": "accepted_repository_content"
+}

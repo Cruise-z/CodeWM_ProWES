@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_python",
+  "action_index": 5,
+  "filename": "excel_processor/report.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/005__excel_processor__report.py/user_prompt.txt",
+  "user_prompt_sha256": "c6b406dbf15665dd7a0fbbe3fd84e9a6bbe0a02e4c700d4388644f7d35ebe445",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/005__excel_processor__report.py/input_context.json",
+  "input_context_sha256": "f492c585ec459a53ca6e858855f149ddaff86a9854f0f4c4272c0d9e77351715",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/model.py",
+      "generated_code_sha256": "0beea512ff90a550a881dbe3726ad68332e256adf604099051a600875ee946a8",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/operations.py",
+      "generated_code_sha256": "e8f47adc918ad973b69c5bb23a0428373369683580a07b2505a84e12f03cb65f",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/csv_io.py",
+      "generated_code_sha256": "e001277a15055583291a05f95ce1bfdbf258cd6fd319d8489ca3ac8eb5bda35b",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/python/architecture/team/team.json",
+  "checkpoint_sha256": "62f48ba9a7452cff9d1a85d6f40eea424f63c5f74b246b7cabf8db13ec347c24",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/generation_report.json",
+  "rng_seed": 306770503,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789393289647",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 255,
+    "prompt_tokens": 11077,
+    "total_tokens": 11332
+  },
+  "response_content_sha256": "d4ef7046596022db20e85fc07b9eeee36f8ab26ceb0f91388f853eeff047bbcb",
+  "generated_code_sha256": "b93b49aa520211347e9d9e8872a0c55a3d3fb9f0e31219978ae09293a77645fb",
+  "accepted_source_restoration": "restored_leading_h2"
+}

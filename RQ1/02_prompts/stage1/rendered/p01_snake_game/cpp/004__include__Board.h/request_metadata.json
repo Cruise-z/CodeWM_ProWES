@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p01_snake_game_cpp",
+  "action_index": 4,
+  "filename": "include/Board.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p01_snake_game/cpp/004__include__Board.h/user_prompt.txt",
+  "user_prompt_sha256": "690d93720d7eda2f7569d679651a0e7cbadb14af7348f3075848af424afe8509",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p01_snake_game/cpp/004__include__Board.h/input_context.json",
+  "input_context_sha256": "adcca01db49a8cf7442fffa102c5559406419f45a3e38f04daa0395aec580511",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "733dffdf577a6acecf601b3db403310bc93ea08f52857f2177fd600b0ca0b27c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Types.h",
+      "generated_code_sha256": "60f343f2542ce5d2012df65b7b02d88dcc679d82e1a67adf2e1cd942e85cdbee",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/IRandom.h",
+      "generated_code_sha256": "fd8e9772936035683ffee37900be6df4b91eef5f4233f18e9f4efea15d896664",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p01_snake_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "6d38ed734a9368bde06574600fd9c5343731af32998a6c9fca8094daf7c548a3",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p01_snake_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p01_snake_game/cpp/attempts/0001_seed_666643921/generation_report.json",
+  "rng_seed": 666643921,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789300657607",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 259,
+    "prompt_tokens": 5737,
+    "total_tokens": 5996
+  },
+  "response_content_sha256": "52f92a26305b94907f3b09c45323a5bc9cea22988433e1dde49dd2d751dd5e22",
+  "generated_code_sha256": "c0e38515de461c8c65002defa067d6f45ca3fbad82e1c7e77631a638ff76c80c",
+  "accepted_source_restoration": "accepted_repository_content"
+}

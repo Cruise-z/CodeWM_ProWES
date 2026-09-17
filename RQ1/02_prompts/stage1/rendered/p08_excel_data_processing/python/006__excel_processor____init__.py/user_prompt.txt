@@ -1,0 +1,722 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": null,
+  "Canonical File References": [
+    "requirements.txt",
+    "excel_processor/model.py",
+    "excel_processor/operations.py",
+    "excel_processor/csv_io.py",
+    "excel_processor/report.py",
+    "excel_processor/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class Cell {\n        +value: object|None\n        +Cell(value: object|None = None)\n    }\n    class Row {\n        -_cells: list~Cell~\n        +Row(cells: list~Cell~)\n        +values() list~object~\n    }\n    class Sheet {\n        -_rows: list~Row~\n        +Sheet(rows: list~Row~)\n        +from_values(values: list~list~object~~) Sheet\n        +to_values() list~list~object~~\n        +row_count() int\n        +column_count() int\n        +get_cell(row: int, column: int) Cell\n        +set_cell(row: int, column: int, value: object) None\n    }\n    class Operations {\n        <<module>>\n        +filter_rows(sheet: Sheet, predicate: Callable~Row,bool~) Sheet\n        +sort_rows(sheet: Sheet, key: Callable~Row,object~, reverse: bool=False) Sheet\n        +aggregate_column(sheet: Sheet, column: int) dict~str,object~\n    }\n    class CsvIO {\n        <<module>>\n        +loads_csv(text: str) Sheet\n        +dumps_csv(sheet: Sheet) str\n    }\n    class Report {\n        <<module>>\n        +build_report(sheet: Sheet) dict~str,object~\n    }\n    Sheet o--> Row\n    Row o--> Cell\n    Operations ..> Sheet\n    CsvIO ..> Sheet\n    Report ..> Sheet",
+  "Domain Decomposition": [
+    [
+      "Build descriptor listing only pytest for tests",
+      "requirements.txt",
+      "protocol-required"
+    ],
+    [
+      "Workbook entities: Cell (mutable value), Row (defensive copy, values snapshot), Sheet (defensive copy, construction from primitives, index validation, snapshot API)",
+      "excel_processor/model.py",
+      "domain-entity"
+    ],
+    [
+      "Pure functional operations: filter, stable sort, numeric aggregation with missing and type rules; never mutate input",
+      "excel_processor/operations.py",
+      "pure-rule"
+    ],
+    [
+      "CSV in-memory I/O using stdlib csv and io.StringIO; ragged detection; string-preserving",
+      "excel_processor/csv_io.py",
+      "pure-rule"
+    ],
+    [
+      "Reporting: compute row_count, column_count, and missing cell count (None or empty string)",
+      "excel_processor/report.py",
+      "pure-rule"
+    ],
+    [
+      "Canonical package exports for public API; no wildcard; exact re-exports",
+      "excel_processor/__init__.py",
+      "package"
+    ],
+    [
+      "Thin runtime demo wiring: construct sample Sheet, apply filter/sort/aggregate/report deterministically and return a dict",
+      "Main.py",
+      "environment-dependent"
+    ],
+    [
+      "Single concise pytest file with exactly three tests covering demo return type, core operations semantics, CSV round-trip and reporting",
+      "tests/test_main.py",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Foundational Cell/Row/Sheet types and defensive semantics",
+      "excel_processor/model.py"
+    ],
+    [
+      "Filtering, sorting, and column aggregation without mutation",
+      "excel_processor/operations.py"
+    ],
+    [
+      "CSV string-to-Sheet and Sheet-to-string (in-memory only)",
+      "excel_processor/csv_io.py"
+    ],
+    [
+      "High-level report metrics (rows, columns, missing cells)",
+      "excel_processor/report.py"
+    ],
+    [
+      "Public API re-exports (canonical surface)",
+      "excel_processor/__init__.py"
+    ],
+    [
+      "Deterministic runtime demo wiring",
+      "Main.py"
+    ],
+    [
+      "Deterministic tests for demo, operations, CSV, and report",
+      "tests/test_main.py"
+    ]
+  ],
+  "File list": [
+    "requirements.txt",
+    "excel_processor/model.py",
+    "excel_processor/operations.py",
+    "excel_processor/csv_io.py",
+    "excel_processor/report.py",
+    "excel_processor/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Implementation approach": "Deliver a small, clean Python 3.10 repository that cleanly separates workbook domain entities from pure operations and a thin runtime entry. Preserve protocol files exactly: requirements.txt (lists only pytest), Main.py (thin entrypoint exposing run_demo()->dict), and tests/test_main.py (single concise test module with exactly three tests). Use a snake_case package named excel_processor with four modules: model.py (foundational Cell/Row/Sheet types; imports no project modules), operations.py, csv_io.py, and report.py (each may import only from .model). __init__.py re-exports only canonical public symbols. Maintain a strictly acyclic import graph: model <- {operations, csv_io, report} <- __init__ <- {Main, tests}. No reverse edges, no wildcard exports, no old names. Ensure every pure operation returns new Sheet/Row/Cell instances (no mutation of inputs). Aggregate adheres to explicit missing and numeric rules: missing means None or empty string; numeric excludes bool; sum is 0 and min/max are None when there are no numeric values. CSV I/O uses only csv and io.StringIO, works entirely in-memory, keeps all cells as strings, and raises ValueError on ragged rows. The report builder counts missing cells and sheet dimensions deterministically. All files target Python 3.10 exactly, avoid 3.11+ features. Files are kept concise (<150 LOC each). Tests are deterministic and headless and import only the canonical API from excel_processor. Full API specification (canonical signatures, return types, key semantics, and error behavior):\n- excel_processor.model.Cell(value: object | None = None): mutable Cell with attribute value: object | None.\n- excel_processor.model.Row(cells: list[Cell]): defensively copies input list of Cell; values() -> list[object] returns a snapshot list of contained Cell.value in order.\n- excel_processor.model.Sheet(rows: list[Row]): defensively copies; classmethod from_values(values: list[list[object]]) -> Sheet constructs a Sheet by creating new Row/Cell objects; rejects ragged non-empty rows (all non-empty rows must share equal length) with ValueError; to_values() -> list[list[object]] returns a deep snapshot (primitives) of current values; row_count() -> int; column_count() -> int (0 when there are no rows); get_cell(row: int, column: int) -> Cell validates non-negative indices and raises IndexError on out-of-range; set_cell(row: int, column: int, value: object) -> None sets the value after index validation, raising IndexError on out-of-range.\n- excel_processor.operations.filter_rows(sheet: Sheet, predicate: Callable[[Row], bool]) -> Sheet: produces a new Sheet containing only rows where predicate(row) is True; stable order; deep-new Row/Cell objects; does not mutate input.\n- excel_processor.operations.sort_rows(sheet: Sheet, key: Callable[[Row], object], reverse: bool = False) -> Sheet: returns a new Sheet sorted stably by key(row); deep-new Row/Cell objects; input untouched.\n- excel_processor.operations.aggregate_column(sheet: Sheet, column: int) -> dict[str, object]: validates column index in [0, column_count-1] else IndexError; computes: {\"count\": total row count, \"missing\": count of None or \"\" in target column, \"numeric_count\": count of numeric values (int/float, excluding bool), \"sum\": numeric sum or 0 when none, \"min\": numeric min or None, \"max\": numeric max or None}. Values are derived solely from the specified column; bool is excluded from numeric_count and numeric operations.\n- excel_processor.csv_io.loads_csv(text: str) -> Sheet: uses io.StringIO and csv.reader to parse in-memory; all cell values are strings; empty CSV cells remain \"\"; raises ValueError on ragged rows (rows of differing lengths compared to the header/first row); no filesystem access.\n- excel_processor.csv_io.dumps_csv(sheet: Sheet) -> str: uses io.StringIO and csv.writer to serialize Sheet.to_values() to a CSV string; no filesystem; retains string cell semantics.\n- excel_processor.report.build_report(sheet: Sheet) -> dict[str, object]: returns {\"row_count\": sheet.row_count(), \"column_count\": sheet.column_count(), \"missing_cells\": number of cells equal to None or \"\"}.\n- excel_processor.__init__: re-exports exactly: Cell, Row, Sheet, filter_rows, sort_rows, aggregate_column, loads_csv, dumps_csv, build_report.\nMain wiring: Main.py imports exactly from excel_processor import Sheet, filter_rows, sort_rows, aggregate_column, build_report; implements run_demo()->dict that constructs a small deterministic Sheet, runs filter/sort/aggregate/report, and returns a dict result. Under if __name__ == \"__main__\": it prints at most one result and exits. Test scope: tests/test_main.py contains exactly three pytest tests: (1) run_demo returns a dict; (2) given the explicit four-row fixture and the literal predicate lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2, filter keeps [[3, \"c\"], [2, \"b\"]], sorting [[3],[1],[2]] ascending yields [[1],[2],[3]], and aggregate on the four-row sheet yields count=4, missing=1, numeric_count=3, sum=6, min=1, max=3; (3) loads_csv(\"name,value\\nA,1\\nB,\\n\") returns exactly [[\"name\",\"value\"],[\"A\",\"1\"],[\"B\",\"\"]], dumps_csv round-trips via loads_csv, and build_report yields row_count=3, column_count=2, missing_cells=1. Implementation order strictly follows dependencies: requirements.txt, model.py, operations.py/csv_io.py/report.py, __init__.py, Main.py, tests/test_main.py.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Python 3.10 repository architecture for: Excel data processing.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python workbook API and acyclic-import contract:\n- use exactly these files and no substitutes: requirements.txt, excel_processor/model.py, excel_processor/operations.py, excel_processor/csv_io.py, excel_processor/report.py, excel_processor/__init__.py, Main.py, tests/test_main.py\n- the project import graph is strictly one-way: model.py imports no project module; operations.py, csv_io.py, and report.py may import only from .model; __init__.py imports those four modules only to re-export their public names; Main.py and tests import from excel_processor; no lower module imports __init__, Main, or another operation module, and TYPE_CHECKING imports must not create a reverse edge\n- model.py is the sole definition site for Cell, Row, and Sheet. Cell(value:object=None) exposes mutable value. Row(cells:list[Cell]) defensively copies the list and exposes values()->list[object]. Sheet(rows:list[Row]) defensively copies rows and exposes classmethod from_values(values:list[list[object]])->Sheet, to_values()->list[list[object]], row_count()->int, column_count()->int, get_cell(row:int,column:int)->Cell, and set_cell(row:int,column:int,value:object)->None; from_values rejects ragged non-empty rows, and indexed operations reject negative/out-of-range indices\n- operations.py defines only filter_rows(sheet:Sheet,predicate:Callable[[Row],bool])->Sheet, sort_rows(sheet:Sheet,key:Callable[[Row],object],reverse:bool=False)->Sheet, and aggregate_column(sheet:Sheet,column:int)->dict[str,object]; every result is a new Sheet with new Row/Cell objects and never mutates the input\n- aggregate_column reports exactly keys count, missing, numeric_count, sum, min, max; None and the empty string are missing, numeric values exclude bool, sum is 0 when there are no numeric values, and min/max are None when there are no numeric values\n- csv_io.py uses only csv and io.StringIO and defines loads_csv(text:str)->Sheet and dumps_csv(sheet:Sheet)->str; CSV cells remain strings, empty cells remain empty strings, malformed ragged CSV raises ValueError, and neither function accesses the filesystem\n- report.py defines build_report(sheet:Sheet)->dict[str,object] returning exactly row_count, column_count, and missing_cells, where missing means None or the empty string\n- excel_processor/__init__.py explicitly re-exports Cell, Row, Sheet, filter_rows, sort_rows, aggregate_column, loads_csv, dumps_csv, and build_report; wildcard imports and nonexistent aliases such as Filter, Sorter, ReportGenerator, or CSVUtils are forbidden\n- Main.py uses the absolute import `from excel_processor import Sheet, filter_rows, sort_rows, aggregate_column, build_report`, exposes run_demo()->dict, performs a small in-memory deterministic demonstration, and main() prints at most one result under the __name__ guard; no input, filesystem, network, GUI, threads, or loops that wait for input\n- tests/test_main.py contains exactly three concise pytest tests using absolute imports: (1) run_demo returns a dict; (2) Sheet.from_values([[3,\"c\"],[1,\"a\"],[2,\"b\"],[None,\"\"]]) calls the literal `filter_rows(sheet, lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2)` and therefore keeps exactly [[3,\"c\"],[2,\"b\"]], a separate Sheet.from_values([[3],[1],[2]]) sorted ascending yields [[1],[2],[3]], and aggregate_column on the four-row sheet yields count4, missing1, numeric_count3, sum6, min1, max3; (3) loads_csv(\"name,value\\nA,1\\nB,\\n\") yields exactly [[\"name\",\"value\"],[\"A\",\"1\"],[\"B\",\"\"]], dumps_csv round-trips through loads_csv, and build_report reports row_count3, column_count2, missing_cells1\n- tests never import old-module names sheet.py, row.py, cell.py, filter.py, sort.py, csv_utils.py, or classes Filter/Sorter/ReportGenerator/CSVUtils; tests call only the canonical API above and do not inspect private attributes\n- repeat the exact file list, sole model ownership, one-way import graph, canonical signatures, aggregate schema, CSV fixture, three-test limit, and literal deterministic fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 7 repository files\n- about 27 functions or methods\n- about 617 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- workbook-like sheets rows and cells\n- CSV import and export as a portable interchange\n- column selection and filtering\n- sorting and aggregation\n- missing and invalid value handling\n- deterministic processing reports\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE EXCEL-PROCESSING PYTHON IMPORT CHECKLIST:\n- Task filenames are exactly: requirements.txt; excel_processor/model.py; excel_processor/operations.py; excel_processor/csv_io.py; excel_processor/report.py; excel_processor/__init__.py; Main.py; tests/test_main.py.\n- model.py is the sole owner of Cell, Row, and Sheet and imports no project module. operations.py, csv_io.py, and report.py may import only `.model`; model.py must never import those modules. The old split modules sheet.py/row.py/cell.py/filter.py/sort.py and wrapper classes Filter/Sorter/ReportGenerator/CSVUtils are forbidden.\n- Tests contain exactly three cases and preserve the literal four-row operation fixture, the predicate `lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2`, and `loads_csv(\"name,value\\nA,1\\nB,\\n\")` round-trip fixture. Do not summarize or substitute these ownership, import, API, and fixture rules.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant M as Main.run_demo\n    participant S as Sheet\n    participant O1 as operations.filter_rows\n    participant O2 as operations.sort_rows\n    participant O3 as operations.aggregate_column\n    participant R as report.build_report\n    M->>S: Sheet.from_values([[...]] )\n    M->>O1: filter_rows(sheet, predicate)\n    O1-->>M: new Sheet(filtered)\n    M->>O2: sort_rows(other_sheet, key)\n    O2-->>M: new Sheet(sorted)\n    M->>O3: aggregate_column(sheet, column=0)\n    O3-->>M: {count, missing, numeric_count, sum, min, max}\n    M->>R: build_report(sheet)\n    R-->>M: {row_count, column_count, missing_cells}\n    M-->>M: assemble dict and return\n    M-->>Console: print once under __name__ guard",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "python -m pytest -q",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: requirements.txt lists pytest only. Runtime entry: Main.py exposes run_demo() and prints at most once under __name__. Test target: tests/test_main.py is the only test file with exactly three tests. Test command: python -m pytest -q.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "from excel_processor import Sheet, filter_rows, sort_rows, aggregate_column, loads_csv, dumps_csv, build_report",
+      "from Main import run_demo"
+    ],
+    "undeclared_test_imports": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "pure_logic_modules": [
+      "excel_processor/model.py",
+      "excel_processor/operations.py",
+      "excel_processor/csv_io.py",
+      "excel_processor/report.py",
+      "excel_processor/__init__.py"
+    ],
+    "test_targets_should_focus_on": [
+      "Canonical API wiring via excel_processor exports",
+      "Filter/sort/aggregate semantics including missing and numeric exclusion of bool",
+      "CSV loads/dumps round-trip with ragged detection and string preservation",
+      "Report metrics for counts and missing cells",
+      "run_demo returns a dict and is deterministic"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "excel_processor/model.py",
+    "excel_processor/operations.py",
+    "excel_processor/csv_io.py",
+    "excel_processor/report.py",
+    "excel_processor/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.py exposes run_demo() and prints at most once under the __name__ guard. Single protocol-level test file: tests/test_main.py with exactly three deterministic, headless tests focusing on demo wiring, core operations semantics, CSV round-trip, and reporting. No network or filesystem access.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 8,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 8,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 8,
+    "task_list_count": 8
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Python 3.10 repository architecture for: Excel data processing.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python workbook API and acyclic-import contract:\n- use exactly these files and no substitutes: requirements.txt, excel_processor/model.py, excel_processor/operations.py, excel_processor/csv_io.py, excel_processor/report.py, excel_processor/__init__.py, Main.py, tests/test_main.py\n- the project import graph is strictly one-way: model.py imports no project module; operations.py, csv_io.py, and report.py may import only from .model; __init__.py imports those four modules only to re-export their public names; Main.py and tests import from excel_processor; no lower module imports __init__, Main, or another operation module, and TYPE_CHECKING imports must not create a reverse edge\n- model.py is the sole definition site for Cell, Row, and Sheet. Cell(value:object=None) exposes mutable value. Row(cells:list[Cell]) defensively copies the list and exposes values()->list[object]. Sheet(rows:list[Row]) defensively copies rows and exposes classmethod from_values(values:list[list[object]])->Sheet, to_values()->list[list[object]], row_count()->int, column_count()->int, get_cell(row:int,column:int)->Cell, and set_cell(row:int,column:int,value:object)->None; from_values rejects ragged non-empty rows, and indexed operations reject negative/out-of-range indices\n- operations.py defines only filter_rows(sheet:Sheet,predicate:Callable[[Row],bool])->Sheet, sort_rows(sheet:Sheet,key:Callable[[Row],object],reverse:bool=False)->Sheet, and aggregate_column(sheet:Sheet,column:int)->dict[str,object]; every result is a new Sheet with new Row/Cell objects and never mutates the input\n- aggregate_column reports exactly keys count, missing, numeric_count, sum, min, max; None and the empty string are missing, numeric values exclude bool, sum is 0 when there are no numeric values, and min/max are None when there are no numeric values\n- csv_io.py uses only csv and io.StringIO and defines loads_csv(text:str)->Sheet and dumps_csv(sheet:Sheet)->str; CSV cells remain strings, empty cells remain empty strings, malformed ragged CSV raises ValueError, and neither function accesses the filesystem\n- report.py defines build_report(sheet:Sheet)->dict[str,object] returning exactly row_count, column_count, and missing_cells, where missing means None or the empty string\n- excel_processor/__init__.py explicitly re-exports Cell, Row, Sheet, filter_rows, sort_rows, aggregate_column, loads_csv, dumps_csv, and build_report; wildcard imports and nonexistent aliases such as Filter, Sorter, ReportGenerator, or CSVUtils are forbidden\n- Main.py uses the absolute import `from excel_processor import Sheet, filter_rows, sort_rows, aggregate_column, build_report`, exposes run_demo()->dict, performs a small in-memory deterministic demonstration, and main() prints at most one result under the __name__ guard; no input, filesystem, network, GUI, threads, or loops that wait for input\n- tests/test_main.py contains exactly three concise pytest tests using absolute imports: (1) run_demo returns a dict; (2) Sheet.from_values([[3,\"c\"],[1,\"a\"],[2,\"b\"],[None,\"\"]]) calls the literal `filter_rows(sheet, lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2)` and therefore keeps exactly [[3,\"c\"],[2,\"b\"]], a separate Sheet.from_values([[3],[1],[2]]) sorted ascending yields [[1],[2],[3]], and aggregate_column on the four-row sheet yields count4, missing1, numeric_count3, sum6, min1, max3; (3) loads_csv(\"name,value\\nA,1\\nB,\\n\") yields exactly [[\"name\",\"value\"],[\"A\",\"1\"],[\"B\",\"\"]], dumps_csv round-trips through loads_csv, and build_report reports row_count3, column_count2, missing_cells1\n- tests never import old-module names sheet.py, row.py, cell.py, filter.py, sort.py, csv_utils.py, or classes Filter/Sorter/ReportGenerator/CSVUtils; tests call only the canonical API above and do not inspect private attributes\n- repeat the exact file list, sole model ownership, one-way import graph, canonical signatures, aggregate schema, CSV fixture, three-test limit, and literal deterministic fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 7 repository files\n- about 27 functions or methods\n- about 617 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- workbook-like sheets rows and cells\n- CSV import and export as a portable interchange\n- column selection and filtering\n- sorting and aggregation\n- missing and invalid value handling\n- deterministic processing reports\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE EXCEL-PROCESSING PYTHON IMPORT CHECKLIST:\n- Task filenames are exactly: requirements.txt; excel_processor/model.py; excel_processor/operations.py; excel_processor/csv_io.py; excel_processor/report.py; excel_processor/__init__.py; Main.py; tests/test_main.py.\n- model.py is the sole owner of Cell, Row, and Sheet and imports no project module. operations.py, csv_io.py, and report.py may import only `.model`; model.py must never import those modules. The old split modules sheet.py/row.py/cell.py/filter.py/sort.py and wrapper classes Filter/Sorter/ReportGenerator/CSVUtils are forbidden.\n- Tests contain exactly three cases and preserve the literal four-row operation fixture, the predicate `lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2`, and `loads_csv(\"name,value\\nA,1\\nB,\\n\")` round-trip fixture. Do not summarize or substitute these ownership, import, API, and fixture rules.\n\n",
+  "Logic Analysis": [
+    [
+      "requirements.txt",
+      "dependency/build; declares pytest as the only dependency for running tests"
+    ],
+    [
+      "excel_processor/model.py",
+      "domain-entity; defines foundational Cell, Row, Sheet types with defensive copy, index validation, and snapshot APIs; imports no project modules"
+    ],
+    [
+      "excel_processor/operations.py",
+      "pure-rule; implements filter_rows, sort_rows, and aggregate_column that operate without mutating inputs; imports only from .model"
+    ],
+    [
+      "excel_processor/csv_io.py",
+      "pure-rule; in-memory CSV loads/dumps using csv and io.StringIO, string-preserving, ragged detection; imports only from .model"
+    ],
+    [
+      "excel_processor/report.py",
+      "pure-rule; computes report with row_count, column_count, and missing_cells; imports only from .model"
+    ],
+    [
+      "excel_processor/__init__.py",
+      "package; canonical public API re-exports of model, operations, csv_io, and report symbols; no wildcard"
+    ],
+    [
+      "Main.py",
+      "runtime/bootstrap and environment-dependent; thin demo entrypoint wiring canonical API together deterministically"
+    ],
+    [
+      "tests/test_main.py",
+      "automated-test; exactly three pytest tests covering demo return type, core operations semantics, CSV round-trip, and reporting"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "excel_processor/model.py",
+      "excel_processor/operations.py",
+      "excel_processor/csv_io.py",
+      "excel_processor/report.py",
+      "excel_processor/__init__.py"
+    ],
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "environment_test_coupling_risks": [
+      "Main.py is imported only for run_demo; it performs deterministic in-memory operations with no I/O, minimizing coupling risk"
+    ],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "declared_dependencies": [
+      "pytest"
+    ],
+    "headless_test_notes": "Tests are deterministic, headless, offline, and do not access filesystem or network",
+    "not_applicable": false,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": [
+      "Leave pytest unpinned or pin to a version compatible with Python 3.10 if your environment requires reproducibility"
+    ]
+  },
+  "Required Other language third-party packages": [],
+  "Required packages": [
+    "pytest"
+  ],
+  "Shared Knowledge": "The repository contains exactly eight files: requirements.txt; excel_processor/model.py (Cell, Row, Sheet); excel_processor/operations.py (filter_rows, sort_rows, aggregate_column); excel_processor/csv_io.py (loads_csv, dumps_csv); excel_processor/report.py (build_report); excel_processor/__init__.py (canonical re-exports); Main.py (run_demo); tests/test_main.py (exactly three tests). Import graph is strictly one-way: model <- {operations, csv_io, report} <- __init__ <- {Main, tests}. Tests import only the canonical public API from excel_processor and run_demo from Main.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "requirements.txt",
+    "excel_processor/model.py",
+    "excel_processor/operations.py",
+    "excel_processor/csv_io.py",
+    "excel_processor/report.py",
+    "excel_processor/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.py",
+      "excel_processor/__init__.py"
+    ],
+    [
+      "tests/test_main.py",
+      "Main.py"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.py",
+      "runtime: run_demo() returns a dict"
+    ],
+    [
+      "tests/test_main.py",
+      "operations: Sheet.from_values([[3,\"c\"],[1,\"a\"],[2,\"b\"],[None,\"\"]]); filter_rows(sheet, lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2) keeps exactly [[3,\"c\"],[2,\"b\"]]; sort plus aggregate_column exact count4 missing1 numeric_count3 sum6 min1 max3"
+    ],
+    [
+      "tests/test_main.py",
+      "CSV/report: loads_csv(\"name,value\\nA,1\\nB,\\n\") round-trips through dumps_csv; build_report yields row_count3 column_count2 missing_cells1"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- requirements.txt
+```## requirements.txt
+pytest```
+----- excel_processor/model.py
+```## excel_processor/model.py
+"""Model definitions for Excel-like data structures.
+
+This module provides the foundational types for working with spreadsheet data:
+Cell, Row, and Sheet. These types are designed with defensive copying and
+snapshot semantics to ensure data integrity and predictable behavior.
+"""
+
+from typing import List, Optional, Any
+
+
+class Cell:
+    """A mutable cell that holds a value.
+
+    Attributes:
+        value: The value stored in the cell, which can be any object or None.
+    """
+
+    def __init__(self, value: Optional[Any] = None) -> None:
+        """Initialize a Cell with an optional value.
+
+        Args:
+            value: The initial value for the cell. Defaults to None.
+        """
+        self.value = value
+
+
+class Row:
+    """A row of cells with defensive copying and snapshot semantics.
+
+    This class represents a row in a spreadsheet, containing a list of Cell
+    objects. It provides a snapshot view of the values in the row without
+    exposing internal mutable state directly.
+
+    Attributes:
+        _cells: A defensive copy of the list of cells in this row.
+    """
+
+    def __init__(self, cells: List[Cell]) -> None:
+        """Initialize a Row with a list of cells.
+
+        Args:
+            cells: A list of Cell objects representing the contents of the row.
+        """
+        # Defensive copy to prevent external modification
+        self._cells = list(cells)
+
+    def values(self) -> List[Any]:
+        """Get a snapshot list of values from the cells in this row.
+
+        Returns:
+            A list containing the value of each cell in order.
+        """
+        return [cell.value for cell in self._cells]
+
+
+class Sheet:
+    """A sheet containing rows of data with defensive copying and snapshot APIs.
+
+    This class represents a two-dimensional grid of data similar to a spreadsheet.
+    It supports construction from primitive values, indexing operations with
+    validation, and snapshot views of the data.
+
+    Attributes:
+        _rows: A defensive copy of the list of rows in this sheet.
+    """
+
+    def __init__(self, rows: List[Row]) -> None:
+        """Initialize a Sheet with a list of rows.
+
+        Args:
+            rows: A list of Row objects representing the content of the sheet.
+        """
+        # Defensive copy to prevent external modification
+        self._rows = list(rows)
+
+    @classmethod
+    def from_values(cls, values: List[List[Any]]) -> 'Sheet':
+        """Construct a Sheet from a list of lists of values.
+
+        Args:
+            values: A list of lists where each inner list represents a row of
+                values. All non-empty rows must have the same length (ragged check).
+
+        Returns:
+            A new Sheet instance constructed from the provided values.
+
+        Raises:
+            ValueError: If there are non-empty rows with different lengths.
+        """
+        if not values:
+            return cls([])
+
+        # Validate that all non-empty rows have the same length
+        non_empty_rows = [r for r in values if r]
+        if non_empty_rows:
+            first_row_length = len(non_empty_rows[0])
+            if not all(len(r) == first_row_length for r in non_empty_rows):
+                raise ValueError("Ragged rows detected")
+
+        # Create cells and rows
+        rows = []
+        for row_values in values:
+            cells = [Cell(value) for value in row_values]
+            rows.append(Row(cells))
+
+        return cls(rows)
+
+    def to_values(self) -> List[List[Any]]:
+        """Get a deep snapshot of the sheet's data as a list of lists.
+
+        Returns:
+            A list of lists where each inner list is a snapshot of a row's values.
+        """
+        return [row.values() for row in self._rows]
+
+    def row_count(self) -> int:
+        """Get the number of rows in the sheet.
+
+        Returns:
+            The number of rows in the sheet.
+        """
+        return len(self._rows)
+
+    def column_count(self) -> int:
+        """Get the number of columns in the sheet.
+
+        Returns:
+            The number of columns in the sheet, or 0 if there are no rows.
+        """
+        if not self._rows:
+            return 0
+        return len(self._rows[0]._cells)
+
+    def get_cell(self, row: int, column: int) -> Cell:
+        """Get a specific cell from the sheet.
+
+        Args:
+            row: The zero-based index of the row.
+            column: The zero-based index of the column.
+
+        Returns:
+            The Cell object at the specified position.
+
+        Raises:
+            IndexError: If the indices are out of range or negative.
+        """
+        if row < 0 or column < 0:
+            raise IndexError("Indices must be non-negative")
+        if row >= len(self._rows) or column >= len(self._rows[0]._cells):
+            raise IndexError("Index out of range")
+        return self._rows[row]._cells[column]
+
+    def set_cell(self, row: int, column: int, value: Any) -> None:
+        """Set the value of a specific cell in the sheet.
+
+        Args:
+            row: The zero-based index of the row.
+            column: The zero-based index of the column.
+            value: The new value to assign to the cell.
+
+        Raises:
+            IndexError: If the indices are out of range or negative.
+        """
+        if row < 0 or column < 0:
+            raise IndexError("Indices must be non-negative")
+        if row >= len(self._rows) or column >= len(self._rows[0]._cells):
+            raise IndexError("Index out of range")
+        self._rows[row]._cells[column].value = value```
+----- excel_processor/operations.py
+```## excel_processor/operations.py
+"""Pure functional operations for Excel-like data processing.
+
+This module provides immutable operations on Sheet objects including filtering,
+sorting, and column aggregation. All operations return new Sheet instances
+without mutating the input.
+"""
+
+from typing import List, Callable, Dict, Any
+from .model import Sheet, Row
+
+
+def filter_rows(sheet: Sheet, predicate: Callable[[Row], bool]) -> Sheet:
+    """Filter rows from a sheet based on a predicate function.
+
+    Args:
+        sheet: The input sheet to filter.
+        predicate: A function that takes a Row and returns True if the row
+            should be included in the result.
+
+    Returns:
+        A new Sheet containing only the rows for which predicate(row) is True.
+        The order of rows is preserved (stable).
+    """
+    filtered_rows = [row for row in sheet._rows if predicate(row)]
+    return Sheet(filtered_rows)
+
+
+def sort_rows(
+    sheet: Sheet, key: Callable[[Row], Any], reverse: bool = False
+) -> Sheet:
+    """Sort rows from a sheet based on a key function.
+
+    Args:
+        sheet: The input sheet to sort.
+        key: A function that takes a Row and returns a value to sort by.
+        reverse: If True, sort in descending order. Default is False.
+
+    Returns:
+        A new Sheet with rows sorted according to the key function.
+        The order is stable.
+    """
+    sorted_rows = sorted(sheet._rows, key=key, reverse=reverse)
+    return Sheet(sorted_rows)
+
+
+def aggregate_column(sheet: Sheet, column: int) -> Dict[str, Any]:
+    """Aggregate statistics for a specific column in a sheet.
+
+    Args:
+        sheet: The input sheet to aggregate.
+        column: The zero-based index of the column to aggregate.
+
+    Returns:
+        A dictionary containing:
+        - count: Total number of rows in the sheet.
+        - missing: Number of cells that are None or empty string.
+        - numeric_count: Number of numeric values (int/float, excluding bool).
+        - sum: Sum of numeric values, or 0 if none.
+        - min: Minimum numeric value, or None if none.
+        - max: Maximum numeric value, or None if none.
+
+    Raises:
+        IndexError: If column index is out of range.
+    """
+    if column < 0 or column >= sheet.column_count():
+        raise IndexError("Column index out of range")
+
+    count = sheet.row_count()
+    missing = 0
+    numeric_count = 0
+    total_sum = 0
+    min_val = None
+    max_val = None
+
+    for row in sheet._rows:
+        cell_value = row._cells[column].value
+        # Check for missing values (None or empty string)
+        if cell_value is None or cell_value == "":
+            missing += 1
+        elif isinstance(cell_value, (int, float)) and not isinstance(cell_value, bool):
+            # Numeric values (excluding bool)
+            numeric_count += 1
+            total_sum += cell_value
+            if min_val is None or cell_value < min_val:
+                min_val = cell_value
+            if max_val is None or cell_value > max_val:
+                max_val = cell_value
+
+    return {
+        "count": count,
+        "missing": missing,
+        "numeric_count": numeric_count,
+        "sum": total_sum,
+        "min": min_val,
+        "max": max_val,
+    }```
+----- excel_processor/csv_io.py
+```## excel_processor/csv_io.py
+"""CSV I/O operations for Excel-like data processing.
+
+This module provides functions to load and dump Excel-like data from/to CSV
+strings. All cell values are preserved as strings, and ragged rows are
+detected and rejected.
+"""
+
+import csv
+import io
+from typing import List, Any
+from .model import Sheet, Cell, Row
+
+
+def loads_csv(text: str) -> Sheet:
+    """Load a Sheet from a CSV-formatted string.
+
+    Args:
+        text: A string containing CSV data with a header row.
+
+    Returns:
+        A Sheet instance constructed from the CSV data.
+
+    Raises:
+        ValueError: If the CSV contains ragged rows (inconsistent column counts).
+    """
+    # Use StringIO to treat the string as a file-like object
+    reader = csv.reader(io.StringIO(text))
+    
+    # Read all rows
+    rows = list(reader)
+    
+    # Handle empty CSV
+    if not rows:
+        return Sheet([])
+    
+    # Validate that all non-empty rows have the same length as the first row
+    first_row_length = len(rows[0])
+    for i, row in enumerate(rows):
+        if row and len(row) != first_row_length:
+            raise ValueError(f"Ragged rows detected: row {i} has {len(row)} columns, "
+                           f"expected {first_row_length}")
+    
+    # Convert to Sheet format
+    sheet_rows = []
+    for row_data in rows:
+        cells = [Cell(value) for value in row_data]
+        sheet_rows.append(Row(cells))
+    
+    return Sheet(sheet_rows)
+
+
+def dumps_csv(sheet: Sheet) -> str:
+    """Dump a Sheet to a CSV-formatted string.
+
+    Args:
+        sheet: The Sheet to serialize to CSV format.
+
+    Returns:
+        A string containing the CSV representation of the sheet.
+    """
+    # Get the values from the sheet
+    values = sheet.to_values()
+    
+    # Use StringIO to capture the CSV output
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Write all rows
+    writer.writerows(values)
+    
+    # Get the CSV string and return it
+    return output.getvalue()```
+----- excel_processor/report.py
+```## excel_processor/report.py
+"""Reporting functionality for Excel-like data processing.
+
+This module provides functions to generate reports about Sheet objects,
+including dimension information and missing cell counts.
+"""
+
+from typing import Dict, Any
+from .model import Sheet
+
+
+def build_report(sheet: Sheet) -> Dict[str, Any]:
+    """Build a report with metadata about a sheet's structure and content.
+
+    Args:
+        sheet: The sheet to analyze and generate a report for.
+
+    Returns:
+        A dictionary containing:
+        - row_count: The number of rows in the sheet.
+        - column_count: The number of columns in the sheet.
+        - missing_cells: The count of cells that are None or empty string.
+    """
+    row_count = sheet.row_count()
+    column_count = sheet.column_count()
+    
+    missing_cells = 0
+    
+    # Count missing cells (None or empty string)
+    for row in sheet._rows:
+        for cell in row._cells:
+            if cell.value is None or cell.value == "":
+                missing_cells += 1
+                
+    return {
+        "row_count": row_count,
+        "column_count": column_count,
+        "missing_cells": missing_cells,
+    }```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: excel_processor/__init__.py
+```python
+## excel_processor/__init__.py
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: excel_processor/__init__.py. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

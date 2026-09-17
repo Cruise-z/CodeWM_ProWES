@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p07_calculator_cpp",
+  "action_index": 15,
+  "filename": "tests/test_main.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/cpp/015__tests__test_main.cpp/user_prompt.txt",
+  "user_prompt_sha256": "7ca56b247d9eccfe10e8afa8a7389e32f0331a9ead36d2c55148d8c60f75b2df",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/cpp/015__tests__test_main.cpp/input_context.json",
+  "input_context_sha256": "7795f83a354d8657219043003335fb3a23c6bb4c6e9cb180391a9ed32a56895e",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "d6f7129dcacf1f8a6dcde36bcc4b5961cdd301a99e0b1aa90368de9d2a43ea57",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "include/Tokens.h",
+      "generated_code_sha256": "8c60b6feaa0db420267dbc4d7e53af00ad9709a60f5e205295b841492af2df55",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Lexer.h",
+      "generated_code_sha256": "0cd7f91dac34386dd942d0c2ce365dec62fb1ffba05cab2540f12d7741239cc9",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Parser.h",
+      "generated_code_sha256": "bc057e51291705ed1064ce5f2694448521f27705e0bcb8bc49cd00a14396be8d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Evaluator.h",
+      "generated_code_sha256": "f6a9cf4c891f0e01e378b6400eefc9bf3f742d4535b76b77755ce658b5ee36ed",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/History.h",
+      "generated_code_sha256": "f476888c080375595169350e69eddfc11da1906f5cf10cfc704fff23b3c83d4c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Calculator.h",
+      "generated_code_sha256": "ddf5ab4fa3f194c6d3b2dbfa4116511f60065a3e0f557ad504b61f6213e12941",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Tokens.cpp",
+      "generated_code_sha256": "906273ec7e1258231422a002d99311f12a5a1e49eb5c83c11710070256fbc319",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Lexer.cpp",
+      "generated_code_sha256": "d3e958b77ae68a2570da8f3e08c74f1b1c5b88aa308719b7c99b79367c4b42ce",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Parser.cpp",
+      "generated_code_sha256": "dc4440e762fe7024f873fb8d2116b02e4bfa92e6b8c41446c39891cc9587fbcf",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Evaluator.cpp",
+      "generated_code_sha256": "6de0c9a6ac49bda293aa6cfea9cd0f95b4dcc6012fb79064a704dbafd31c46d2",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/History.cpp",
+      "generated_code_sha256": "3f4630e63f952d72231cee8703857b24c1d2d94a2b3edde6fc10859675118ab3",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Calculator.cpp",
+      "generated_code_sha256": "0ac90e680961f243471b12c8275adec35ca593a292dc2f87fc1a7ac36e6e0c0a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Main.cpp",
+      "generated_code_sha256": "79fbb9fa02229b3709d858bba509f12ae4edcb5dbfc36fd93ad0327998ebf4a4",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p07_calculator/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "6f7e137031b1f55acf336cea35297407e6ab234e3faac823f7b26911d2ea96ef",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/cpp/attempts/0001_seed_3978176900/generation_report.json",
+  "rng_seed": 3978176900,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789395497968",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 379,
+    "prompt_tokens": 8972,
+    "total_tokens": 9351
+  },
+  "response_content_sha256": "aa38a2a1af33f72e1efd5cceb086d69419774feb48b13e98f6057b94acf7a19f",
+  "generated_code_sha256": "9acec9da599b138b7cf933378f3eb0e352a157ae5d1c7ff4b1391a651dbd209f",
+  "accepted_source_restoration": "accepted_repository_content"
+}

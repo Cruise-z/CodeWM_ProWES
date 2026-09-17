@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p03_game_2048_java",
+  "action_index": 3,
+  "filename": "src/main/java/GameStatus.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/java/003__src__main__java__GameStatus.java/user_prompt.txt",
+  "user_prompt_sha256": "668b22a1c96b3270ab077b25e3647d27c24439d3908c41c656dd9ad63abaf2db",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/java/003__src__main__java__GameStatus.java/input_context.json",
+  "input_context_sha256": "5feb4b1e726f18dbcd6cadcec529983f8567df30c234774bfbc0ea305fcc4cab",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "75e1fedfa79c244a0fdb7f59da8589725667b8df41bae51147d56a51aa068476",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Direction.java",
+      "generated_code_sha256": "3759ce81d49cb4cdffaf05739c9abc7e01db7fcbbb357d01cf397a1858986a78",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p03_game_2048/java/architecture/team/team.json",
+  "checkpoint_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/java/attempts/0001_seed_887850646/generation_report.json",
+  "rng_seed": 887850646,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789300707327",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 107,
+    "prompt_tokens": 6230,
+    "total_tokens": 6337
+  },
+  "response_content_sha256": "a601f89ba4e9c5889469493224092053cc8a513b6b8578dfc9be8eef566a9f20",
+  "generated_code_sha256": "488e2bba79eb04a34ceae2008db7f105651fb8ba16f129656d6176bc5c1d5881",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_cpp",
+  "action_index": 4,
+  "filename": "include/Move.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/004__include__Move.h/user_prompt.txt",
+  "user_prompt_sha256": "1c16f0174fa9f4d1ec75b8303b170fb144a0e6b3293f66add3cd844bef0b450d",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/004__include__Move.h/input_context.json",
+  "input_context_sha256": "cdebe0ec759d3aa4d58f033bf5a7807e2f7b20fef8e7f4945fa9e492c65d4de7",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "76b5f9a37d36d5c1efb9839e49ff0b7ee642dd0db25aee5c35669a8a59302ca4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Common.h",
+      "generated_code_sha256": "6a4e12a7b9429f6a1260f614c5b5b4d2479b2715ea813e4be6b68d9fb8935fbe",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Board.h",
+      "generated_code_sha256": "7ee75300fc0acc19fad06de2e83f79992613556b3ee37eea4e21b954f9500906",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/attempts/0006_seed_1922813371/generation_report.json",
+  "rng_seed": 1922813371,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789303317104",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 253,
+    "prompt_tokens": 5553,
+    "total_tokens": 5806
+  },
+  "response_content_sha256": "e1ca263513d3ef0a3235f3a48e6e6297a5a654431bb59ec42ec928b9197e44b3",
+  "generated_code_sha256": "9ed581abb34b6825ce4f155613709728d2c39432ecb01431206a0ff6b1b64198",
+  "accepted_source_restoration": "accepted_repository_content"
+}

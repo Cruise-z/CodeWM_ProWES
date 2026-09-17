@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_python",
+  "action_index": 8,
+  "filename": "crud_system/audit.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/008__crud_system__audit.py/user_prompt.txt",
+  "user_prompt_sha256": "6f1f1cd6fd4e01eb38f41e5f79f0eb4e8fee4474e64fa98ef7fc7afd9c700c23",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/008__crud_system__audit.py/input_context.json",
+  "input_context_sha256": "8788504c817bf3d422e45d9bb18143f8fe44ba8115e1182d00ba0fbf96506030",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/errors.py",
+      "generated_code_sha256": "8f30c3d4590bc3fd9e6fba8095a46fbbf75f7deacf54eb1ec654be72a88a29ff",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/types.py",
+      "generated_code_sha256": "e470fbc7f298402fca7c33e45938c4ae20cb2e9bdae1b5f9c46e06cccb5098a2",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/clock.py",
+      "generated_code_sha256": "17736c8fac393a6ab3a2357e81e4fa8f7490909d250255d9e701cd9e252de110",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/validation.py",
+      "generated_code_sha256": "55b2eb257852371238ce25adf4075b8dd94b8ac9690083e3426f611ec79cbf6d",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/repository.py",
+      "generated_code_sha256": "4540ae6e774be6c063ad311d3364fb1b559f59c2e15f58d9e980357cae1280d6",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/search.py",
+      "generated_code_sha256": "6800359dd5ffc7e046470c5158f008af1a75da1bed945dbcdf0e3ffb79ccd108",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/python/architecture/team/team.json",
+  "checkpoint_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/attempts/0001_seed_1014069831/generation_report.json",
+  "rng_seed": 1014069831,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789408903712",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 261,
+    "prompt_tokens": 11015,
+    "total_tokens": 11276
+  },
+  "response_content_sha256": "765e768b91f33d265441f4e792ac3cfdd4105f32e9fb6f8888096363587e03bf",
+  "generated_code_sha256": "dc5df2953ed554bcd3f878b95587fad2c1e784b8518299af4f2181a69f330658",
+  "accepted_source_restoration": "restored_leading_h2"
+}

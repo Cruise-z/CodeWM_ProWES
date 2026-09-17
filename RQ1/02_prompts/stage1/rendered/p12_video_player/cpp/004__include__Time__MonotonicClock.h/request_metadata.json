@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_cpp",
+  "action_index": 4,
+  "filename": "include/Time/MonotonicClock.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/004__include__Time__MonotonicClock.h/user_prompt.txt",
+  "user_prompt_sha256": "64e1af72e87d4a00752ff160e60c2f1dfede202064964bcd40eba3049128ec71",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/004__include__Time__MonotonicClock.h/input_context.json",
+  "input_context_sha256": "70cfe4fbd221116a825121bcfed5a65c517a509e50667bcae13dcfd9a45b2274",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "28c81ba05cbb2620754237a88e4751bee81d1a29a55a9bc3bd9fcede927c2568",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Time/IClock.h",
+      "generated_code_sha256": "c6dbfcfe0904d2d2df878c61be2948d3f49b3939f2cf8390e1df50718d0e9192",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Time/ManualClock.h",
+      "generated_code_sha256": "b7fa3883fe139b5b97bb3127c09994eef34ee104c67ed50cd7bdd0407471912b",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/attempts/0001_seed_1700920662/generation_report.json",
+  "rng_seed": 1700920662,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789390249457",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 168,
+    "prompt_tokens": 10196,
+    "total_tokens": 10364
+  },
+  "response_content_sha256": "a8bb584b45cc8e99a9fda92610c3964708ca6d35a16da0692f2996de73a25ab8",
+  "generated_code_sha256": "4cb6d8234e138090511ed49fc15d0155b61a062ed5bbcfc6067a9bef515f6fb6",
+  "accepted_source_restoration": "accepted_repository_content"
+}

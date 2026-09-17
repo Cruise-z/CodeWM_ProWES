@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p03_game_2048_cpp",
+  "action_index": 11,
+  "filename": "tests/test_main.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/cpp/011__tests__test_main.cpp/user_prompt.txt",
+  "user_prompt_sha256": "c78b17b5d8c384e34f3963b1f30f3a7a452655280bed169cc21a9ca91951a092",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/cpp/011__tests__test_main.cpp/input_context.json",
+  "input_context_sha256": "5b11e34213da84ff32bc00df9e1e69a50ce0cc3ffc7880aa5e6cff8f85e06411",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "493ebefbddd468802c25a8e0bf0343848309d0b0456b0b3dfab12c015b5900df",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Board.h",
+      "generated_code_sha256": "ac27774b55a03dfd9b9ac5ead906e4ab69b5aafbe46f98792ee0e9b2b8c926e5",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Move.h",
+      "generated_code_sha256": "1e227a588968de9e2a24792b7b952dc554889c44f61dc384b0646bd9260b4b50",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Spawner.h",
+      "generated_code_sha256": "10a0add90bb1ff4ffaed8c59599f0e9a9d05a010390bdb8efe652636a986ecff",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Game.h",
+      "generated_code_sha256": "9dcd9069e141f5ab5dd8abd7813b6ad7c166000e9a390f6ce359bdda515d52f4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Board.cpp",
+      "generated_code_sha256": "f235ea4c227c3fd550b4db0bf17a11405f6f71b87e0c3c84b2fa1f292d83392f",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Move.cpp",
+      "generated_code_sha256": "b44cb5e4849557b7b7cbd1a2158243cf5d2ad50c74a8d7a3650e06dac49f96b9",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Spawner.cpp",
+      "generated_code_sha256": "9a4abe025c35ed3815fab3552dc4fc11cf207fd9ed73ff4930331fbfa2f5fa27",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Game.cpp",
+      "generated_code_sha256": "2064efe40937295f090c1138a5a1075b0b5a852adfd90e7175f708909634f3b7",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Main.cpp",
+      "generated_code_sha256": "0de3864f509068fb309d7d3c8743bb1302426009c3337e100ffa2dd6d01bd8eb",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p03_game_2048/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "f822e69d7c5c07a133e0431d9c1d70eb643f8378b2cc9e3a3ffda2ad39cb3f1b",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/cpp/attempts/0001_seed_1673168053/generation_report.json",
+  "rng_seed": 1673168053,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789282698118",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1194,
+    "prompt_tokens": 8926,
+    "total_tokens": 10120
+  },
+  "response_content_sha256": "f380b850bb0d69c31a2ccbbbdd5b5acd9453290e0a041662a2c896980b5e0cea",
+  "generated_code_sha256": "67ffdd27a60bc981b94be009a7ba2a810d84790c0866e5b930bfd3e487d0f004",
+  "accepted_source_restoration": "accepted_repository_content"
+}

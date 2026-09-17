@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_python",
+  "action_index": 5,
+  "filename": "brick_breaker/brick.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/python/005__brick_breaker__brick.py/user_prompt.txt",
+  "user_prompt_sha256": "4ba6b5cd5d4b5d0a9b974028bebbe387d084322d88c33ea6f8829d4cce259cf9",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/python/005__brick_breaker__brick.py/input_context.json",
+  "input_context_sha256": "22a8cf03bd6137f9a9dcf1d6b1f18ad09e8f44c3952e995969cd1ba9e0f40ed9",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "brick_breaker/config.py",
+      "generated_code_sha256": "27fa4479c85ed5f752e8a79b48381b7bdde6d3ce519b52066b387666b66f0fb7",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "brick_breaker/ball.py",
+      "generated_code_sha256": "5a7f139dfadb62b5f88ab67f9a644c53925533c3174c381e0953f01f7d070532",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "brick_breaker/paddle.py",
+      "generated_code_sha256": "0aba9d5576764f2d1716acf83097cc5034044d1c406b4073da4a3661ac355542",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "a4cefc0c1231e6b901c0ac7efe530e1ef103e3dc4a7a104cf50bfa87d77ddf18",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/python/attempts/0013_seed_432197098/generation_report.json",
+  "rng_seed": 432197098,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789329617158",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 335,
+    "prompt_tokens": 6192,
+    "total_tokens": 6527
+  },
+  "response_content_sha256": "7ef8a35212893193bb06721bb79e11c4d90543f6df8247730f2c0c048c6569c9",
+  "generated_code_sha256": "8583b9a6a4b2f28fbd4c58f4cbf92311c5a1f8d548e66a92baf1673e4e5438de",
+  "accepted_source_restoration": "restored_leading_h2"
+}

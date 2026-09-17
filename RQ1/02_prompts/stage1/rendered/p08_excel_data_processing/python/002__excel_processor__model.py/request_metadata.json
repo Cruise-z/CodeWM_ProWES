@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_python",
+  "action_index": 2,
+  "filename": "excel_processor/model.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/002__excel_processor__model.py/user_prompt.txt",
+  "user_prompt_sha256": "5aaf9edbeb3a3fde8320cb1f41d5dd1cc9f01208f919028a1a94f4a584b2c7c4",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/002__excel_processor__model.py/input_context.json",
+  "input_context_sha256": "2621e1a12b686419cbb1c35fcf357b2b8dba2db3134234fbbbb73e4cd95545a7",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/python/architecture/team/team.json",
+  "checkpoint_sha256": "62f48ba9a7452cff9d1a85d6f40eea424f63c5f74b246b7cabf8db13ec347c24",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/generation_report.json",
+  "rng_seed": 306770503,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789393194783",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 1193,
+    "prompt_tokens": 8701,
+    "total_tokens": 9894
+  },
+  "response_content_sha256": "2a70483209272fba63183bfd2b2b74eebed6a8a033f548eae5ddd683cbd0d2b9",
+  "generated_code_sha256": "0beea512ff90a550a881dbe3726ad68332e256adf604099051a600875ee946a8",
+  "accepted_source_restoration": "restored_leading_h2"
+}

@@ -41,7 +41,7 @@ experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 | Path | Purpose |
 |---|---|
 | `00_common/` | Environment, hardware, revisions, upstream repositories, and disclosure of known gaps. |
-| `RQ1/` | Latest logits-bias implementation, task specifications, rendered Stage-0 prompts, serialized architecture checkpoints, initial repositories, and evaluator. |
+| `RQ1/` | Latest logits-bias implementation, task specifications, 42 Stage-0 prompts, 480 accepted-run Stage-1 prompts/contexts, serialized architecture checkpoints, initial repositories, and evaluator. |
 | `RQ2/` | Fresh-training, rule attack, MBXP, LLM+RAG, detector, and statistics source code. |
 | `RQ3/` | Synchronized timing harnesses, raw per-run records, shared-tokenizer counts, training logs, normalization, and Table X reproduction. |
 | `results/RQ1/` | Complete baseline qualification evidence plus expanded applicability and detectability evidence. |
@@ -90,6 +90,8 @@ LFS objects.
 
 RQ1:
 
+- 42 exact Stage-0 architecture payloads (14 per language) and 480 exact
+  accepted-run Stage-1 file-generation prompts with checkpoint/source hashes.
 - 88 baseline generation attempts: 42 accepted and 46 failed attempts.
 - 42 accepted canonical repositories and 42 successful same-seed/hash replays.
 - 9,141 applicability points: 9,068 evaluated and 73 explicitly excluded,

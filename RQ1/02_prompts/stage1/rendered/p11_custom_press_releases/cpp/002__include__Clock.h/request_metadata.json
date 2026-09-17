@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p11_custom_press_releases_cpp",
+  "action_index": 2,
+  "filename": "include/Clock.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/cpp/002__include__Clock.h/user_prompt.txt",
+  "user_prompt_sha256": "7e4703897f980182494ac52e78d51ade38acac14047c4e2cbe3c80bb7be38545",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/cpp/002__include__Clock.h/input_context.json",
+  "input_context_sha256": "b25e3fb080bf837a56a034e7b31d2bf6756897a656d9d3d658d726647ee64f07",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "a9b25708f9d03f7977e0965617fce268b1efebc1fb72b201a215619141456935",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p11_custom_press_releases/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/generation_report.json",
+  "rng_seed": 1221104095,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789410311013",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 194,
+    "prompt_tokens": 7477,
+    "total_tokens": 7671
+  },
+  "response_content_sha256": "1c8568f67aec919772e42b2998100a597606da3c3e8b336e6339c69894bd403d",
+  "generated_code_sha256": "5130a820d4bbe5e121e7dd0c2cca56e37d276d26a0c3ceb56d1def934aa6aa79",
+  "accepted_source_restoration": "accepted_repository_content"
+}

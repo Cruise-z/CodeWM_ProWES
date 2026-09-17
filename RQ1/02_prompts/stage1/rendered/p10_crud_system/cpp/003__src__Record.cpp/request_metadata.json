@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_cpp",
+  "action_index": 3,
+  "filename": "src/Record.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/003__src__Record.cpp/user_prompt.txt",
+  "user_prompt_sha256": "62baf983229dc09ec00d77207f85f7b749ec7556fbed859c142044f0955b1728",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/003__src__Record.cpp/input_context.json",
+  "input_context_sha256": "28d7c933108cef0b334f3c8cdc675e535afda9bebdc2a8a8e39d2cf936332a3a",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "05febd8cce44b4038f38874463d8612f01e55c0a5f74cfdbe00d6a99612f7337",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Record.h",
+      "generated_code_sha256": "b88476b2361c50c417eb21dcc93f594ef59d92d84935f6997201f1def8cd0335",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/attempts/0001_seed_252729447/generation_report.json",
+  "rng_seed": 252729447,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789406093200",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 99,
+    "prompt_tokens": 9492,
+    "total_tokens": 9591
+  },
+  "response_content_sha256": "c6d759e939b55157d82e89a17e126e1aec837c259ec96160526244bfb9c3ab9c",
+  "generated_code_sha256": "c09e28bc760459efaea0cd465b8fc1cd1d25d20a11c0369fcae23b05a86529ab",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_python",
+  "action_index": 10,
+  "filename": "tests/test_main.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/python/010__tests__test_main.py/user_prompt.txt",
+  "user_prompt_sha256": "01a86abbbc23125e8a34d7b4e35b1129b0251fc9c7f9046c929ccecf12f137fe",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/python/010__tests__test_main.py/input_context.json",
+  "input_context_sha256": "efba21c88c98ede46e9b11f2e95dcd005767e36c41b4f0917de2063dd16a9362",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "8b88dfb271ffc4996fce09911dabb86d9d82a4fda0f3615be1cf6c6ee9cb5935",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/errors.py",
+      "generated_code_sha256": "f70cec6bed7c17b32fb8277e49facfbec73bb30fb4d172728aa0cfec69689a41",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/types.py",
+      "generated_code_sha256": "9fee686d1694a9f463f7b87866cb58b370ab5f54782fec97e9110093bbc4adab",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/move.py",
+      "generated_code_sha256": "797108e8854b67cadf73d79eb95463a87d3e48c7cf7b8009b9129b9fbe5d4259",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/board.py",
+      "generated_code_sha256": "1da099112a280515f53c27cdc8653860477d232f54d91828682a7908e2ab6e29",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/rules.py",
+      "generated_code_sha256": "cedb375c5859a4672ee9e0ee1fff07437f7b92165228bca6ec5bdf59d8f138a0",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/game.py",
+      "generated_code_sha256": "a60e17a4c1186f1230823e40f97bea8edb427660c6a334f707ed042e0f053eb2",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/__init__.py",
+      "generated_code_sha256": "5d0c9f89165bbfb0e74f0e1ddeedfe0bb98409915b295361181b2c123151d090",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "Main.py",
+      "generated_code_sha256": "ee282535bbe84bca04e5d39afc2ae4606af128077f334f4ad585f166fe471b86",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "8ab8042fa8dc789cad1d74394df431bf9753d27f1d6d5d91c944f6e183c699fe",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/python/attempts/0001_seed_812711061/generation_report.json",
+  "rng_seed": 812711061,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789304768609",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 945,
+    "prompt_tokens": 7295,
+    "total_tokens": 8240
+  },
+  "response_content_sha256": "d067748d02362f730555e038bae63f4c9c3c97eb930c75845bc6d53871bdd6ea",
+  "generated_code_sha256": "b79c282722bd20ef632e336a20667a331677674798da909fd1b1b1b1f2257b54",
+  "accepted_source_restoration": "restored_leading_h2"
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p07_calculator_python",
+  "action_index": 6,
+  "filename": "calculator/api.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/python/006__calculator__api.py/user_prompt.txt",
+  "user_prompt_sha256": "7882aa7ca5495100c52a696b74ebefa98b248a7b7e1c2a7e126caae47c45ca44",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p07_calculator/python/006__calculator__api.py/input_context.json",
+  "input_context_sha256": "2e322d8f17ab670ed953dfb5390aa04fb488482b386d33dcf74c159d3679563d",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "calculator/errors.py",
+      "generated_code_sha256": "30ee1333d61b596feac7bf7141ba0371154fb382bf4ae3084c89d30a1546d5c2",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "calculator/history.py",
+      "generated_code_sha256": "4299a6839565a0bc349d404fd91c0f25eb3b4a0489a04ff71d1081aa5b3b1c9d",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "calculator/tokenizer.py",
+      "generated_code_sha256": "830d6271a7993a2f5312b61040c1dca3d182fb031efbf40ee979c1a4b717ec88",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "calculator/engine.py",
+      "generated_code_sha256": "3731488de3cf3808598abe6b1ca501823dc27b7da4a04922276304914b2eb8a7",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p07_calculator/python/architecture/team/team.json",
+  "checkpoint_sha256": "e96b5fb247b1c963b6cd998968bb38bd2f670e05ea6f2dba13cff27268a0060d",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p07_calculator/python/attempts/0002_seed_2109135578/generation_report.json",
+  "rng_seed": 2109135578,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789397319599",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 301,
+    "prompt_tokens": 10423,
+    "total_tokens": 10724
+  },
+  "response_content_sha256": "a772e59d9c41715f448136e89a1a29f98a9f667667de87c30316582f7d2a2ccc",
+  "generated_code_sha256": "2a2d39eccea041e5749a831bcd56e50aa2e65a3f4da6bdd42784fed0bab36b91",
+  "accepted_source_restoration": "restored_leading_h2"
+}

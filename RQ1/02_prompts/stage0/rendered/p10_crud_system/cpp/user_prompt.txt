@@ -1,0 +1,71 @@
+Generate a complete medium-size C++17 repository architecture for: CRUD system.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+
+Project-specific C++17 deterministic in-memory CRUD contract:
+- replace the over-split Query/Audit/interface architecture with exactly these files in dependency order: CMakeLists.txt, include/Record.h, src/Record.cpp, include/ManualClock.h, src/ManualClock.cpp, include/Repository.h, src/Repository.cpp, include/CrudService.h, src/CrudService.cpp, src/Main.cpp, tests/test_main.cpp. Do not create Id, Clock, Query, Audit, MemoryRepository, abstract interfaces, namespaces, or additional source/test files
+- CMakeLists.txt sets C++17 with extensions off, builds crud_core from Record.cpp, ManualClock.cpp, Repository.cpp, and CrudService.cpp, publishes `${CMAKE_CURRENT_SOURCE_DIR}/include`, builds crud_app and crud_tests, links both to crud_core, calls enable_testing(), and registers crud_tests. No external package, FetchContent, network, filesystem, database, GUI, threads, randomness, or wall clock is allowed
+- every header is self-contained and uses `#pragma once`: Record.h directly includes <cstdint> and <string>; ManualClock.h directly includes <cstdint>; Repository.h directly includes <map>, <optional>, <string>, <vector>, and "Record.h"; CrudService.h directly includes <optional>, <string>, <vector>, "ManualClock.h", "Record.h", and "Repository.h". Every source/test includes headers by basename, never `include/...`, and no source relies on a transitive standard-library include
+- Record is exactly `struct Record` with public fields `std::string id`, name, email; `std::uint64_t revision`, updated_at; constructor Record(std::string id,std::string name,std::string email,std::uint64_t revision,std::uint64_t updated_at); and value-based `bool operator==(const Record&) const`. There is no default constructor and no field spelling variant such as createdAt or updatedAt
+- ManualClock has explicit ManualClock(std::uint64_t initial), std::uint64_t now() const noexcept, and void advance(std::uint64_t delta) noexcept. It stores one counter and never reads the system clock
+- Repository is one concrete in-memory class backed by `std::map<std::string, Record> records_`. It exposes bool insert(const Record&), std::optional<Record> find(const std::string&) const, bool replace(const Record&), bool erase(const std::string&), and std::vector<Record> list() const. insert returns false for duplicate id; replace returns false when absent; list follows deterministic map key order. Repository.h directly includes Record.h, so Record is visible in every declaration
+- CrudService owns references `Repository& repository_` and `ManualClock& clock_`, with constructor CrudService(Repository&,ManualClock&). It exposes Record create(const std::string& id,const std::string& name,const std::string& email), std::optional<Record> get(const std::string& id) const, Record update(const std::string& id,const std::string& name,const std::string& email), bool remove(const std::string& id), and std::vector<Record> list() const. create/update reject blank id/name and email lacking one non-edge @ with std::invalid_argument; duplicate create and absent update throw std::runtime_error. create stores revision=1 and updated_at=clock.now(); update preserves id, increments revision by one, and takes a fresh clock.now()
+- src/Main.cpp constructs Repository, ManualClock(100), CrudService, creates id "1", prints at most one concise value, and returns 0. tests/test_main.cpp directly includes <cassert>, <stdexcept>, <string>, "CrudService.h" and defines exactly one self-contained int main(), no test framework
+- tests/test_main.cpp contains exactly three short blocks: (1) Repository repo; ManualClock clock(100); CrudService service(repo,clock); create("1","Alice","alice@example.com") has revision1/updated_at100, get returns it, advance(5), update to Alice Smith has revision2/updated_at105, remove returns true and get is empty; (2) blank name, malformed email, and duplicate id each throw the specified exception; (3) create id "b" then "a" and assert list size2 with ids "a" then "b". Each block uses fresh Repository/ManualClock/CrudService objects
+- constructor declarations appear only in headers and definitions only in matching .cpp files; never write both `ManualClock(...) = default` in the header and an out-of-line definition. Repeat the exact eleven-file list, direct includes, field spellings, signatures, exceptions, deterministic fixtures, single-main test, and three scopes in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 11 repository files
+- about 47 functions or methods
+- about 983 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- typed records with stable identifiers
+- create read update and delete operations
+- validation and duplicate handling
+- search filtering and pagination
+- in-memory repository boundary
+- audit events and deterministic tests
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE CRUD C++17 CHECKLIST:
+- Task filenames are exactly: CMakeLists.txt; include/Record.h; src/Record.cpp; include/ManualClock.h; src/ManualClock.cpp; include/Repository.h; src/Repository.cpp; include/CrudService.h; src/CrudService.cpp; src/Main.cpp; tests/test_main.cpp. Id/Clock/Query/Audit/MemoryRepository and abstract interface files are forbidden.
+- Every header includes its own standard/project dependencies. In particular Repository.h directly includes <map>, <optional>, <string>, <vector>, and "Record.h"; CrudService.h directly includes <optional>, <string>, <vector>, "ManualClock.h", "Record.h", and "Repository.h". Sources use basename header includes.
+- Record fields are exactly id/name/email/revision/updated_at; ManualClock is deterministic; Repository is a concrete std::map store; CrudService create/update/remove/get/list uses the specified exceptions, revision, and timestamps.
+- tests/test_main.cpp contains exactly one int main with exactly three fresh-object blocks: CRUD at times 100/105, invalid/duplicate rejection, and deterministic id order a then b. No default-constructor duplication, transitive includes, wall clock, external test framework, or invented field spelling is allowed. Do not summarize or substitute these rules.
+

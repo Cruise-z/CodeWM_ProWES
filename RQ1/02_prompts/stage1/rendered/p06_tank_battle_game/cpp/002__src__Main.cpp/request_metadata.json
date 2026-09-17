@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p06_tank_battle_game_cpp",
+  "action_index": 2,
+  "filename": "src/Main.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/cpp/002__src__Main.cpp/user_prompt.txt",
+  "user_prompt_sha256": "ebf65b9e2a4aca5e2f0ee58e295994d87fa3700cb539b125d8a4ad2d98c9fe62",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/cpp/002__src__Main.cpp/input_context.json",
+  "input_context_sha256": "1a8308feed8f15d1cd8d8bd1cebd3ae2d3db24894ac4850df036f56c089b9b60",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "e34570ce8b2f54267729eedc37179d045a3eada754bbced797b2d0e85b1fea5e",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p06_tank_battle_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "1dee866f73858b8d671c2bdd6385f3832d968dcab058184d0338e3cffda421d7",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/cpp/attempts/0003_seed_1423652811/generation_report.json",
+  "rng_seed": 1423652811,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789262476525",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 582,
+    "prompt_tokens": 3454,
+    "total_tokens": 4036
+  },
+  "response_content_sha256": "41b22150e31691ec300d2ef7d47463f2e1f7c5f156eafc59cf4261b22cc7c109",
+  "generated_code_sha256": "35c4e129b6dc6f758a8f786ae29c796bfd702c430fb36810b53484cfb4bfe30c",
+  "accepted_source_restoration": "accepted_repository_content"
+}

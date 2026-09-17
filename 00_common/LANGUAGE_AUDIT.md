@@ -11,8 +11,9 @@ The check deliberately excludes these immutable evidence classes:
 
 - raw RQ1/RQ2 observations and execution logs, including the immutable RQ1
   baseline attempt/accepted/replay trees;
-- Stage-0 prompts, model responses, generated architecture documents, and
-  generated initial repositories;
+- Stage-0 prompts, generated architecture documents, generated initial
+  repositories, and the Stage-1 rendered prompts/input contexts reconstructed
+  byte-faithfully from those documents and accepted-run sources;
 - the frozen MetaGPT tree under `RQ1/source/reproduct/framework/metagpt/` and
   its experiment-time patched copy under `RQ1/source/DT/codeGen/MetaGPT/`;
 - frozen watermark implementation/model-runtime snapshots under

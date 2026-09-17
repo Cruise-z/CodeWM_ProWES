@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_java",
+  "action_index": 5,
+  "filename": "src/main/java/Sorters.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/java/005__src__main__java__Sorters.java/user_prompt.txt",
+  "user_prompt_sha256": "abda9f4edbc919edaebfef66db78b5f6ef713937fc8cf0067692b58362b10e62",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/java/005__src__main__java__Sorters.java/input_context.json",
+  "input_context_sha256": "02b6c24b4d6bf9e9dab63fe0b08f77d7ede34e25607dfd4a741b39708741fe3d",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "944004ed47c708b1fc1c905e342fc2a54e27ed67fd5aeb1be86c5ed9cc7005f4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/ProcessingReport.java",
+      "generated_code_sha256": "48995c447a5c74e68b89d6e2b3ba25143b5e1f898bc8fa4348194adca4118654",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Cell.java",
+      "generated_code_sha256": "2f510d101b4192a799b9ecef135251dd82639d96af58390f1495f0c7b56cc5ff",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Row.java",
+      "generated_code_sha256": "faf6d649e7f84540b51673f2206a7e3bb310c141d501b1b3cb7fbfeff0003127",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/java/architecture/team/team.json",
+  "checkpoint_sha256": "306fbfbd9341437f7f9047d8a21c3b01a199fa95a267f35e2c149a2b60e96ee9",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/java/attempts/0001_seed_290543147/generation_report.json",
+  "rng_seed": 290543147,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789401910625",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 390,
+    "prompt_tokens": 11629,
+    "total_tokens": 12019
+  },
+  "response_content_sha256": "1fb5d67bc3f6130d7dd9efc17bc4d3032b3e07d0a27fc18595a76900b819bd5e",
+  "generated_code_sha256": "96035493f632a7ea876af65c4fe60e23c315260b9ca57b917a8fe0e7cdfd7efe",
+  "accepted_source_restoration": "accepted_repository_content"
+}

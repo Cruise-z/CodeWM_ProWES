@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p11_custom_press_releases_cpp",
+  "action_index": 7,
+  "filename": "include/Renderer.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/cpp/007__include__Renderer.h/user_prompt.txt",
+  "user_prompt_sha256": "d08b9b2c40bce4256539dfb8e09139445e435e3f44efeadfb8bfa30573d0d90f",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/cpp/007__include__Renderer.h/input_context.json",
+  "input_context_sha256": "0d269c1e5040c50b43e70bda8c25f7762b9811a9dd2767effa548ddfde5d657b",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "a9b25708f9d03f7977e0965617fce268b1efebc1fb72b201a215619141456935",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "include/Clock.h",
+      "generated_code_sha256": "5130a820d4bbe5e121e7dd0c2cca56e37d276d26a0c3ceb56d1def934aa6aa79",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/VersionHistory.h",
+      "generated_code_sha256": "6b12b32c9c33481daaa7f672d0d655c71baca07898ce55f56345db10e7c499a8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/TemplateEngine.h",
+      "generated_code_sha256": "b62005ab647f84abbd35b514a3ef9941cad6955bf3fd1e9cfcf9f8811448f742",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Validator.h",
+      "generated_code_sha256": "00e60b32dafb5634aadd924920e58ce31d239e8e8bcdaa94b3133b0fffe0ed5a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/PressRelease.h",
+      "generated_code_sha256": "738040a7e4bae3ecb78386705765bc306d56e9ef2f9608294104e6bf9626b03b",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p11_custom_press_releases/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/generation_report.json",
+  "rng_seed": 1221104095,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789410439715",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 151,
+    "prompt_tokens": 9475,
+    "total_tokens": 9626
+  },
+  "response_content_sha256": "4cafda9ef115092904bb0e348d79848b59e10eb454754e60d79f31bd419b67ca",
+  "generated_code_sha256": "d1f0cc85b3d58524827958e764b018485ff62fead5b8eedc10c0c5deb69b224d",
+  "accepted_source_restoration": "accepted_repository_content"
+}

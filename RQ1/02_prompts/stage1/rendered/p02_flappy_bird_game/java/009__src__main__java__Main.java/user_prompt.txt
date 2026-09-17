@@ -1,0 +1,642 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Architect Bob designs a minimal, deterministic Java 11 Maven repository for a headless Flappy Bird core. Protocol-required files are preserved exactly: pom.xml, src/main/java/Main.java, and a single test at src/test/java/MainTest.java. All classes are in the default package with no package declarations and live directly under src/main/java. The runtime entry Main.java remains thin: it constructs Game, performs one standalone game.tick() call (ignoring its boolean result), then prints getters (birdY, birdVy, ticks, score, pipe count). The core domain is split into concrete files: Bird (physics), RNG (seeded randomness), PipePair (obstacles), CollisionDetector (pure collision rules), ScoreSystem (pure scoring rule), Game (orchestration). There is no GUI, no frameworks, and no external dependencies beyond JUnit Jupiter for tests. Physics, RNG, scoring, tick order, spawn timing, and Main invocation strictly follow the provided fixtures.\n\nFull API specification (repeated):\n- Coordinates: x increases rightward; y increases downward. Gravity is +0.5 per tick; flap sets vy to -8.0; clamp velocity to [-10.0,10.0].\n- Bird(double startY): y=startY, vy=0.0; applyGravity(): vy=clamp(vy+0.5, -10.0, 10.0); integrate(): y+=vy; flap(): replace vy with -8.0.\n- Game(long seed) delegates to Game(seed, 400.0, 600.0, 100); starts RUNNING with bird y=worldHeight/2.0 and vy=0.0; pipes list initially empty until spawn at completed tick 100.\n- Tick order: one running tick calls Bird.applyGravity() then Bird.integrate(); collision is tested on resulting unclamped position. Game.tick first calls hitBounds(bird, 30.0, worldHeight), then per pipe calls hitPipe(bird, 30.0, 30.0, pipe, worldHeight). Tick increments ticks exactly once; spawn occurs when ticks % spawnInterval == 0 (first spawn on completed tick 100). Game must not clamp the bird before CollisionDetector reports bounds hit.\n- Game API: boolean tick(), void reset(long seed), void flapBird(), double birdY(), double birdVy(), long ticks(), int score(), java.util.List<PipePair> pipes(). No aliases.\n- RNG: stores constructor seed in final long originalSeed; seed() returns originalSeed without consuming RNG; nextDouble()/nextInt(int bound) delegate directly to stored java.util.Random; Game has private RNG rng (mutable by reset).\n- Scoring: ScoreSystem.passedPipe(double birdX, PipePair pipe) returns true exactly once when pipe.x()+pipe.width()<birdX; marks pipe scored via pipe.markScored(); Game checks scoring before removing off-screen pipes.\n- Collision: hitBounds(Bird bird, double birdHeight, double worldHeight) and hitPipe(Bird bird, double birdWidth, double birdHeight, PipePair pipe, double worldHeight). Top overlap: bird.y()<pipe.gapY() && bird.y()+birdHeight>0.0. Bottom overlap: bird.y()<worldHeight && bird.y()+birdHeight>pipe.gapY()+pipe.gapHeight(). Never compare any y with pipe.x(). Game.tick calls these exact signatures per the described order.\n- Main: must call game.tick() as a standalone statement, ignore its boolean result, then print getters; no embedding in any value expression.\n\nLogic Analysis (repeated fixtures enforcement):\n- Gravity increases vy by +0.5 (downward) and y increases after integrate() when vy>0. Flap overwrites vy=-8.0 regardless of previous value; clamp is applied in applyGravity only.\n- Tick sequence correctness ensures physics applied before collision detection; no clamping is allowed before collision checks. Bound collision uses unclamped y and y+birdHeight.\n- Spawn timing: ticks start at 0; after each successful tick increment ticks once; a pipe is spawned when ticks % 100 == 0; default game has no pipes for ticks 0..99; first spawn occurs on completed tick 100.\n- Scoring strictness: ScoreSystem triggers only when trailing edge (pipe.x()+pipe.width()) is strictly less than birdX; only once per pipe via markScored; Game increments score based on this check before any off-screen removal.\n- RNG paired streams: seed() is non-consuming; calling a.seed() multiple times does not move the random stream; paired instances produce same nextDouble and nextInt(bound) if their consumption is identical.\n\nTest Scope Plan (repeated fixtures enforcement):\n- Provide exactly 2–4 short deterministic JUnit 5 tests in src/test/java/MainTest.java.\n- Tests cover: physics fixture (Game(12345L) initial state; after one tick vy=0.5, y=300.5); reset and flap fixture (after reset(12345L), flapBird(), then one tick vy=-7.5, y=292.5); RNG paired stream fixture with seed 98765L; scoring fixture using handcrafted PipePair(100.0,50.0,100.0,150.0,3.0) verifying strict trailing-edge comparison. Tests never index the initial empty pipes list and do not wait for spawn.\n\nShared Knowledge (repeated rules in tasks):\n- Maintain coordinate convention and numeric constants: gravity=+0.5, flap=-8.0, speed clamp=[-10.0,10.0], bird size 30x30, world size 400x600, spawnInterval=100, birdX constant used by Game for scoring and collision.\n- Tick order, collision calls signatures and per-pipe loop, RNG contract with non-consuming seed, mutable Game.rng replaced by reset, strict scoring before off-screen removal, first spawn after completed tick 100.\n\nRoles:\n- Alice: physics and collisions (Bird.java, CollisionDetector.java).\n- Eve: randomness and obstacles (RNG.java, PipePair.java).\n- Alex: orchestration and scoring (Game.java, ScoreSystem.java, Main.java, MainTest.java).","Domain Decomposition":[["Build and test configuration with JUnit 5; declare org.junit.jupiter:junit-jupiter (test scope) and Maven Surefire that supports JUnit Jupiter; Java 11 source/target","pom.xml","protocol-required"],["Runtime bootstrap: construct Game with a seed, perform one standalone tick(), then print birdY, birdVy, ticks, score, and pipe count","src/main/java/Main.java","protocol-required"],["Game orchestration: state machine RUNNING/GAME_OVER; tick order applyGravity(), integrate(), hitBounds(), per-pipe hitPipe(); scoring before off-screen removal; spawn at completed tick 100; canonical API methods","src/main/java/Game.java","orchestration"],["Bird physics: y and vy; applyGravity() with clamp [-10,10]; integrate(); flap() replaces vy with -8.0","src/main/java/Bird.java","domain-entity"],["Seeded RNG: final originalSeed field; non-consuming seed(); delegate nextDouble()/nextInt(bound) to internal java.util.Random; used by Game for pipe parameters","src/main/java/RNG.java","domain-entity"],["Pipe pair obstacle: x, width, gapY, gapHeight, speed; move() shifting x left by speed; scored flag; getters; markScored(); off-screen detection via x+width<0","src/main/java/PipePair.java","domain-entity"],["Pure collision rules: hitBounds(Bird, birdHeight, worldHeight) and hitPipe(Bird, birdWidth, birdHeight, PipePair, worldHeight); vertical overlap rules per spec; horizontal overlap uses a fixed birdX inside Game; no y compared with pipe.x(); tested on post-integrate positions","src/main/java/CollisionDetector.java","pure-rule"],["Pure scoring rule: passedPipe(birdX, PipePair) returns true exactly once when trailing edge < birdX, marks pipe scored","src/main/java/ScoreSystem.java","pure-rule"],["Game state enum for clarity of RUNNING/GAME_OVER transitions; no packages","src/main/java/GameState.java","domain-entity"],["Protocol-level tests: exactly 2–4 deterministic JUnit 5 tests covering physics fixture, RNG paired streams, and scoring fixture with handcrafted PipePair; avoid indexing empty pipes list; use mvn -q test","src/test/java/MainTest.java","automated-test"]],"File list":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/GameState.java","src/test/java/MainTest.java"],"Canonical File References":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/GameState.java","src/test/java/MainTest.java"],"Data structures and interfaces":"classDiagram\n    class Bird {\n        - double y\n        - double vy\n        + Bird(double startY)\n        + double y()\n        + double vy()\n        + void applyGravity()\n        + void integrate()\n        + void flap()\n    }\n    class RNG {\n        - java.util.Random random\n        + final long originalSeed\n        + RNG(long seed)\n        + long seed()\n        + double nextDouble()\n        + int nextInt(int bound)\n    }\n    class PipePair {\n        - double x\n        - double width\n        - double gapY\n        - double gapHeight\n        - double speed\n        - boolean scored\n        + PipePair(double x, double width, double gapY, double gapHeight, double speed)\n        + double x()\n        + double width()\n        + double gapY()\n        + double gapHeight()\n        + double speed()\n        + boolean scored()\n        + void markScored()\n        + void move()\n    }\n    class CollisionDetector {\n        + static boolean hitBounds(Bird bird, double birdHeight, double worldHeight)\n        + static boolean hitPipe(Bird bird, double birdWidth, double birdHeight, PipePair pipe, double worldHeight)\n    }\n    class ScoreSystem {\n        + static boolean passedPipe(double birdX, PipePair pipe)\n    }\n    class Game {\n        - final double worldWidth\n        - final double worldHeight\n        - final int spawnInterval\n        - double birdX\n        - Bird bird\n        - java.util.List<PipePair> pipes\n        - long tickCount\n        - int score\n        - GameState state\n        - RNG rng\n        + Game(long seed)\n        + Game(long seed, double worldWidth, double worldHeight, int spawnInterval)\n        + boolean tick()\n        + void reset(long seed)\n        + void flapBird()\n        + double birdY()\n        + double birdVy()\n        + long ticks()\n        + int score()\n        + java.util.List<PipePair> pipes()\n    }\n    class GameState {\n        <<enum>> RUNNING, GAME_OVER\n    }\n    Main --> Game\n    Game --> Bird\n    Game --> RNG\n    Game --> PipePair\n    Game --> CollisionDetector\n    Game --> ScoreSystem","Program call flow":"sequenceDiagram\n    participant Main\n    participant G as Game\n    participant B as Bird\n    participant C as CollisionDetector\n    participant S as ScoreSystem\n    Main->>G: new Game(seed)\n    Main->>G: tick()\n    G->>B: applyGravity()\n    G->>B: integrate()\n    G->>C: hitBounds(bird, 30.0, worldHeight)\n    loop for each pipe\n        G->>C: hitPipe(bird, 30.0, 30.0, pipe, worldHeight)\n        G->>S: passedPipe(birdX, pipe)\n    end\n    G->>G: ticks++ and spawn if ticks % 100 == 0\n    Main->>G: birdY(), birdVy(), ticks(), score(), pipes().size()","Domain Mapping":[["Build and test configuration; ensure JUnit Jupiter and Surefire for JUnit 5; Java 11; deterministic tests","pom.xml"],["Thin runtime entry; print-only demo; enforce standalone game.tick() call before printing getters","src/main/java/Main.java"],["Game lifecycle orchestration; maintains mutable RNG rng; tick order; spawn logic; scoring before off-screen removal; provides canonical API","src/main/java/Game.java"],["Deterministic physics entity implementing gravity (+0.5), flap (-8.0), clamp [-10,10], integrate y+=vy","src/main/java/Bird.java"],["Randomness wrapper preserving originalSeed; non-consuming seed(); delegates nextDouble()/nextInt(bound)","src/main/java/RNG.java"],["Obstacle pair with properties and movement; scored-once tracking; trailing edge x+width for scoring and off-screen removal","src/main/java/PipePair.java"],["Pure collision rules with exact signatures; bounds and pipe vertical overlap per spec; horizontal overlap handled without comparing y with x; used by Game.tick() after integrate","src/main/java/CollisionDetector.java"],["Pure scoring rule: strict trailing-edge comparison; marks pipe scored exactly once; used by Game before removal","src/main/java/ScoreSystem.java"],["Simple enum states: RUNNING or GAME_OVER; used by Game to control tick and flap behavior","src/main/java/GameState.java"],["Protocol-level deterministic tests covering physics, RNG paired streams, strict scoring with handcrafted PipePair; JUnit 5 only","src/test/java/MainTest.java"]],"Testable Core Boundary":{"pure_logic_modules":["src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/Game.java","src/main/java/GameState.java"],"environment_dependent_modules":["src/main/java/Main.java"],"test_targets_should_focus_on":["Physics fixture: Game(12345L) initial state and one tick vy=0.5, y=300.5","Reset+flap fixture: after reset(12345L), flapBird() then one tick vy=-7.5, y=292.5","RNG paired streams fixture: identical nextDouble and nextInt(100) after double seed() call","Scoring fixture: strict trailing-edge rule with handcrafted PipePair; markScored once"]},"C++ Interface Plan":{},"Test Include Audit":{},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: pom.xml. Runtime entry: src/main/java/Main.java. Test target: src/test/java/MainTest.java. Test command: mvn -q test. Exactly one protocol-level test file is used.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["Java 11","Apache Maven >=3.8","JUnit Jupiter (JUnit 5) for tests","Maven Surefire Plugin compatible with JUnit 5"],"Canonical File References":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/GameState.java","src/test/java/MainTest.java"],"Logic Analysis":[["pom.xml","dependency/build; Maven project descriptor: Java 11 source/target, declares org.junit.jupiter:junit-jupiter (test scope) and Maven Surefire configuration that enables JUnit 5"],["src/main/java/Main.java","runtime/bootstrap; thin entrypoint that constructs Game, performs one standalone game.tick() ignoring its boolean result, then prints getters in order: birdY, birdVy, ticks, score, pipes().size()"],["src/main/java/Game.java","orchestration; central game loop and state machine (RUNNING/GAME_OVER), tick order gravity->integrate->collision->per-pipe scoring->ticks++->spawn at completed tick 100, manages RNG, pipes list, scoring, and exposes canonical API"],["src/main/java/Bird.java","domain-entity; physics state y and vy; applyGravity() adds +0.5 and clamps to [-10,10]; integrate() adds vy to y; flap() sets vy to -8.0"],["src/main/java/RNG.java","domain-entity; seeded randomness wrapper with final originalSeed; seed() is non-consuming; nextDouble()/nextInt(int) delegate directly to internal java.util.Random"],["src/main/java/PipePair.java","domain-entity; obstacle pair with x, width, gapY, gapHeight, speed, and scored flag; move() shifts x left by speed; markScored(); basic getters; off-screen when x+width<0"],["src/main/java/CollisionDetector.java","pure-rule; static hitBounds(Bird, birdHeight, worldHeight) and hitPipe(Bird, birdWidth, birdHeight, PipePair, worldHeight) implementing exact vertical overlap rules; called after integrate() using unclamped positions"],["src/main/java/ScoreSystem.java","pure-rule; static passedPipe(birdX, PipePair) returns true exactly once when pipe trailing edge (x+width) is strictly less than birdX; marks pipe scored"],["src/main/java/GameState.java","domain-entity; enum with RUNNING and GAME_OVER"],["src/test/java/MainTest.java","automated-test; JUnit 5 tests (2–4) verifying physics fixture, reset+flap fixture, RNG paired streams, and scoring strictness with handcrafted PipePair"]],"Task list":["pom.xml","src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/GameState.java","src/main/java/Game.java","src/main/java/Main.java","src/test/java/MainTest.java"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"exactly_one_protocol_test_file":true},"File Coverage Audit":{"design_file_list_count":10,"pm_canonical_count":10,"logic_analysis_count":10,"task_list_count":10,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["src/test/java/MainTest.java","Physics fixture: new Game(12345L) initial state; after one tick vy=0.5 and y=worldHeight/2+0.5=300.5"],["src/test/java/MainTest.java","Reset and flap fixture: after reset(12345L), flapBird(), then one tick gives vy=-7.5 and y=292.5"],["src/test/java/MainTest.java","RNG paired streams fixture: RNG a=RNG(98765L), b=RNG(98765L); verify a.seed()==b.seed()==98765L and a.nextDouble()==b.nextDouble() and a.nextInt(100)==b.nextInt(100)"],["src/test/java/MainTest.java","Scoring strictness: with handcrafted PipePair(100.0,50.0,100.0,150.0,3.0), verify ScoreSystem.passedPipe(birdX, pipe) triggers only when pipe.x()+pipe.width() < birdX and marks scored exactly once"]],"Test Include Plan":null,"Module Boundary Audit":{"core_domain_logic_modules":["src/main/java/Bird.java","src/main/java/RNG.java","src/main/java/PipePair.java","src/main/java/CollisionDetector.java","src/main/java/ScoreSystem.java","src/main/java/Game.java","src/main/java/GameState.java"],"environment_dependent_modules":["src/main/java/Main.java"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"All classes are declared in the default package (no package statement) and live directly under src/main/java. Public API and semantics:\n- src/main/java/Bird.java:\n  class Bird { Bird(double startY); double y(); double vy(); void applyGravity(); void integrate(); void flap(); }\n  Semantics: y increases downward. Gravity adds +0.5 to vy and clamps vy to [-10.0, 10.0]. integrate() does y += vy. flap() overwrites vy = -8.0 regardless of current vy.\n- src/main/java/RNG.java:\n  class RNG { public final long originalSeed; RNG(long seed); long seed(); double nextDouble(); int nextInt(int bound); }\n  Semantics: originalSeed stores constructor seed. seed() returns originalSeed without advancing internal java.util.Random. nextDouble()/nextInt(bound) delegate directly to the internal Random instance seeded in constructor.\n- src/main/java/PipePair.java:\n  class PipePair { PipePair(double x,double width,double gapY,double gapHeight,double speed); double x(); double width(); double gapY(); double gapHeight(); double speed(); boolean scored(); void markScored(); void move(); }\n  Semantics: move() performs x -= speed each call. scored flag initially false; markScored() sets it true. Off-screen detection (x+width<0) is performed by Game, not exposed as API here.\n- src/main/java/CollisionDetector.java:\n  final class CollisionDetector { static boolean hitBounds(Bird bird, double birdHeight, double worldHeight); static boolean hitPipe(Bird bird, double birdWidth, double birdHeight, PipePair pipe, double worldHeight); }\n  Semantics: hitBounds returns true if bird is outside vertical bounds using unclamped y and y+birdHeight. hitPipe determines collision against pipe using vertical overlap rules: top overlap when bird.y() < pipe.gapY() && bird.y()+birdHeight > 0.0; bottom overlap when bird.y() < worldHeight && bird.y()+birdHeight > pipe.gapY() + pipe.gapHeight(). Horizontal considerations (birdX vs pipe rectangle) are handled in Game; no comparisons of any y against pipe.x().\n- src/main/java/ScoreSystem.java:\n  final class ScoreSystem { static boolean passedPipe(double birdX, PipePair pipe); }\n  Semantics: returns true exactly once when pipe.x() + pipe.width() < birdX and pipe is not yet scored; it calls pipe.markScored() to mark it. Subsequent calls for the same pipe return false.\n- src/main/java/GameState.java:\n  enum GameState { RUNNING, GAME_OVER }\n- src/main/java/Game.java:\n  class Game { Game(long seed); Game(long seed, double worldWidth, double worldHeight, int spawnInterval); boolean tick(); void reset(long seed); void flapBird(); double birdY(); double birdVy(); long ticks(); int score(); java.util.List<PipePair> pipes(); }\n  Semantics: Game(seed) delegates to Game(seed, 400.0, 600.0, 100). Initializes state RUNNING, bird at y = worldHeight/2.0 with vy = 0.0, pipes empty, score 0, tickCount 0, and rng = new RNG(seed). Tick order while RUNNING: bird.applyGravity(); bird.integrate(); collision checks on resulting position without any additional clamping: first hitBounds(bird, 30.0, worldHeight), then for each pipe call hitPipe(bird, 30.0, 30.0, pipe, worldHeight). Per-pipe loop also checks scoring via ScoreSystem.passedPipe(birdX, pipe) before any off-screen removal. tick() increments internal tick counter exactly once per call; spawning occurs after increment when ticks % spawnInterval == 0. Default birdX and bird dimensions are constant inside Game; gravity/flap constants as specified. If any collision occurs, state transitions to GAME_OVER for that tick; tick() returns false thereafter. Otherwise tick() returns true when remaining in RUNNING; false when the state is GAME_OVER after applying the tick. reset(seed) restores RUNNING state, replaces rng with new RNG(seed), clears pipes, resets tickCount=0, score=0, bird at worldHeight/2.0 and vy=0.0; world dimensions and spawnInterval unchanged. flapBird() sets bird.flap() only if state is RUNNING; ignored if GAME_OVER. Accessors return current state values: birdY() returns bird.y(), birdVy() returns bird.vy(), ticks() returns tickCount, score() returns score, pipes() returns the current mutable list (non-null) managed by Game.\n- src/main/java/Main.java:\n  class Main { public static void main(String[] args); }\n  Semantics: Constructs a Game with a seed (any deterministic long), performs one standalone call game.tick(); ignores its boolean result; then prints in order: birdY(), birdVy(), ticks(), score(), and pipes().size(). No GUI. No external dependencies beyond JUnit Jupiter in tests.\nImport/usage rules: Tests and Main instantiate and use only the APIs declared above. All classes reside in the default package and are referenced by simple class names. Callers must not invent aliases or alternate signatures. Tick order, gravity, flap, velocity clamp, scoring, collision rules, and spawn timing must strictly follow the stated fixtures.","Shared Knowledge":"Build with Maven using pom.xml configured for Java 11 and JUnit 5. Runtime entry is src/main/java/Main.java and is intentionally thin. Core logic lives in Bird, RNG, PipePair, CollisionDetector, ScoreSystem, and Game, all in the default package under src/main/java. Tests are in exactly one file: src/test/java/MainTest.java, and cover the physics fixture, reset+flap behavior, RNG paired streams contract, and scoring strict trailing-edge rule with a handcrafted PipePair. There is no GUI and no frameworks; only JUnit Jupiter is used for tests. Roles: Alice handles physics and collisions (Bird.java, CollisionDetector.java). Eve handles randomness and obstacles (RNG.java, PipePair.java). Alex handles orchestration, scoring, runtime, and tests (Game.java, ScoreSystem.java, Main.java, MainTest.java).","Execution Protocol":"Run tests with mvn -q test. There is exactly one protocol-level test file at src/test/java/MainTest.java. Runtime entry is src/main/java/Main.java, which constructs a Game, performs one tick(), ignores its boolean result, and prints getters in order as specified. No manual interaction or GUI. No additional files alter protocol-required files.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- pom.xml
+```<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.flappybird</groupId>
+    <artifactId>flappy-bird-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>```
+----- src/main/java/Bird.java
+```/**
+ * Represents the bird in the Flappy Bird game with physics properties and behaviors.
+ */
+public class Bird {
+    /** The vertical position of the bird. */
+    private double y;
+    
+    /** The vertical velocity of the bird. */
+    private double vy;
+
+    /**
+     * Creates a new bird at the specified starting Y position.
+     *
+     * @param startY the initial Y position of the bird
+     */
+    public Bird(double startY) {
+        this.y = startY;
+        this.vy = 0.0;
+    }
+
+    /**
+     * Gets the current Y position of the bird.
+     *
+     * @return the Y position
+     */
+    public double y() {
+        return this.y;
+    }
+
+    /**
+     * Gets the current Y velocity of the bird.
+     *
+     * @return the Y velocity
+     */
+    public double vy() {
+        return this.vy;
+    }
+
+    /**
+     * Applies gravity to the bird's velocity.
+     * Gravity increases velocity by +0.5 per tick, clamped to [-10.0, 10.0].
+     */
+    public void applyGravity() {
+        this.vy = Math.max(-10.0, Math.min(10.0, this.vy + 0.5));
+    }
+
+    /**
+     * Updates the bird's position based on its current velocity.
+     * This should be called after applyGravity().
+     */
+    public void integrate() {
+        this.y += this.vy;
+    }
+
+    /**
+     * Makes the bird flap, setting its vertical velocity to -8.0.
+     * This overrides any existing vertical velocity.
+     */
+    public void flap() {
+        this.vy = -8.0;
+    }
+}```
+----- src/main/java/RNG.java
+```/**
+ * Seeded random number generator wrapper that preserves the original seed
+ * and provides non-consuming seed() method.
+ */
+public class RNG {
+    /** The internal random number generator */
+    private final java.util.Random random;
+    
+    /** The original seed passed to the constructor */
+    public final long originalSeed;
+
+    /**
+     * Creates a new RNG with the specified seed.
+     *
+     * @param seed the seed for the random number generator
+     */
+    public RNG(long seed) {
+        this.originalSeed = seed;
+        this.random = new java.util.Random(seed);
+    }
+
+    /**
+     * Returns the original seed without consuming from the random stream.
+     *
+     * @return the original seed
+     */
+    public long seed() {
+        return this.originalSeed;
+    }
+
+    /**
+     * Returns the next pseudorandom, uniformly distributed double value
+     * between 0.0 (inclusive) and 1.0 (exclusive).
+     *
+     * @return the next pseudorandom, uniformly distributed double value
+     */
+    public double nextDouble() {
+        return this.random.nextDouble();
+    }
+
+    /**
+     * Returns the next pseudorandom, uniformly distributed int value
+     * between 0 (inclusive) and the specified bound (exclusive).
+     *
+     * @param bound the upper bound (exclusive)
+     * @return the next pseudorandom, uniformly distributed int value
+     */
+    public int nextInt(int bound) {
+        return this.random.nextInt(bound);
+    }
+}```
+----- src/main/java/PipePair.java
+```/**
+ * Represents a pair of pipes (top and bottom) in the Flappy Bird game.
+ */
+public class PipePair {
+    /** The x-coordinate of the pipe pair */
+    private double x;
+    
+    /** The width of the pipe */
+    private double width;
+    
+    /** The y-coordinate of the top pipe's bottom edge */
+    private double gapY;
+    
+    /** The height of the gap between pipes */
+    private double gapHeight;
+    
+    /** The speed at which the pipes move */
+    private double speed;
+    
+    /** Flag indicating whether the bird has passed this pipe */
+    private boolean scored;
+
+    /**
+     * Creates a new pipe pair with the specified properties.
+     *
+     * @param x the x-coordinate of the pipe pair
+     * @param width the width of the pipe
+     * @param gapY the y-coordinate of the top pipe's bottom edge
+     * @param gapHeight the height of the gap between pipes
+     * @param speed the speed at which the pipes move
+     */
+    public PipePair(double x, double width, double gapY, double gapHeight, double speed) {
+        this.x = x;
+        this.width = width;
+        this.gapY = gapY;
+        this.gapHeight = gapHeight;
+        this.speed = speed;
+        this.scored = false;
+    }
+
+    /**
+     * Gets the x-coordinate of the pipe pair.
+     *
+     * @return the x-coordinate
+     */
+    public double x() {
+        return this.x;
+    }
+
+    /**
+     * Gets the width of the pipe.
+     *
+     * @return the width
+     */
+    public double width() {
+        return this.width;
+    }
+
+    /**
+     * Gets the y-coordinate of the top pipe's bottom edge.
+     *
+     * @return the gapY
+     */
+    public double gapY() {
+        return this.gapY;
+    }
+
+    /**
+     * Gets the height of the gap between pipes.
+     *
+     * @return the gapHeight
+     */
+    public double gapHeight() {
+        return this.gapHeight;
+    }
+
+    /**
+     * Gets the speed at which the pipes move.
+     *
+     * @return the speed
+     */
+    public double speed() {
+        return this.speed;
+    }
+
+    /**
+     * Checks if the bird has passed this pipe.
+     *
+     * @return true if the bird has passed this pipe, false otherwise
+     */
+    public boolean scored() {
+        return this.scored;
+    }
+
+    /**
+     * Marks this pipe as scored.
+     * This should be called once when the bird passes the pipe.
+     */
+    public void markScored() {
+        this.scored = true;
+    }
+
+    /**
+     * Moves the pipe pair to the left by the speed amount.
+     * This should be called each tick to update the pipe position.
+     */
+    public void move() {
+        this.x -= this.speed;
+    }
+}```
+----- src/main/java/CollisionDetector.java
+```/**
+ * Provides pure collision detection logic for the Flappy Bird game.
+ * Contains static methods for checking bounds and pipe collisions.
+ */
+public final class CollisionDetector {
+    
+    /**
+     * Checks if the bird has hit the world boundaries.
+     * 
+     * @param bird the bird to check
+     * @param birdHeight the height of the bird
+     * @param worldHeight the height of the world
+     * @return true if the bird has hit the top or bottom boundary, false otherwise
+     */
+    public static boolean hitBounds(Bird bird, double birdHeight, double worldHeight) {
+        double birdY = bird.y();
+        // Check if bird hits top boundary
+        if (birdY < 0.0) {
+            return true;
+        }
+        // Check if bird hits bottom boundary
+        if (birdY + birdHeight > worldHeight) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Checks if the bird has collided with a pipe.
+     * 
+     * @param bird the bird to check
+     * @param birdWidth the width of the bird
+     * @param birdHeight the height of the bird
+     * @param pipe the pipe to check
+     * @param worldHeight the height of the world
+     * @return true if the bird has collided with the pipe, false otherwise
+     */
+    public static boolean hitPipe(Bird bird, double birdWidth, double birdHeight, PipePair pipe, double worldHeight) {
+        double birdY = bird.y();
+        double pipeX = pipe.x();
+        double pipeWidth = pipe.width();
+        double pipeGapY = pipe.gapY();
+        double pipeGapHeight = pipe.gapHeight();
+        
+        // Check if bird is within the horizontal range of the pipe
+        // Note: We don't compare y with pipe.x() as per specification
+        if (birdY + birdHeight > 0.0 && birdY < worldHeight) {
+            // Check top pipe collision
+            if (birdY < pipeGapY && birdY + birdHeight > 0.0) {
+                // Bird's right edge is to the right of pipe's left edge
+                // Bird's left edge is to the left of pipe's right edge
+                if (birdY + birdHeight > 0.0 && birdY < pipeGapY) {
+                    // Bird's right edge is to the right of pipe's left edge
+                    // Bird's left edge is to the left of pipe's right edge
+                    if (birdY + birdWidth > pipeX && birdY < pipeX + pipeWidth) {
+                        return true;
+                    }
+                }
+            }
+            
+            // Check bottom pipe collision
+            if (birdY < worldHeight && birdY + birdHeight > pipeGapY + pipeGapHeight) {
+                // Bird's right edge is to the right of pipe's left edge
+                // Bird's left edge is to the left of pipe's right edge
+                if (birdY + birdWidth > pipeX && birdY < pipeX + pipeWidth) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+}```
+----- src/main/java/ScoreSystem.java
+```/**
+ * Provides pure scoring logic for the Flappy Bird game.
+ * Contains static methods for determining if a pipe has been passed.
+ */
+public final class ScoreSystem {
+    
+    /**
+     * Determines if the bird has passed a pipe.
+     * Returns true exactly once when the trailing edge of the pipe
+     * (pipe.x() + pipe.width()) is strictly less than the bird's X position.
+     * Marks the pipe as scored to prevent future scoring.
+     * 
+     * @param birdX the X position of the bird
+     * @param pipe the pipe to check
+     * @return true if the bird has passed the pipe for the first time, false otherwise
+     */
+    public static boolean passedPipe(double birdX, PipePair pipe) {
+        // Check if pipe is already scored
+        if (pipe.scored()) {
+            return false;
+        }
+        
+        // Check if bird has passed the pipe (trailing edge of pipe is to the left of bird)
+        if (pipe.x() + pipe.width() < birdX) {
+            // Mark pipe as scored
+            pipe.markScored();
+            return true;
+        }
+        
+        return false;
+    }
+}```
+----- src/main/java/GameState.java
+```/**
+ * Represents the game state with two possible values: RUNNING and GAME_OVER.
+ */
+public enum GameState {
+    /** The game is currently running. */
+    RUNNING,
+    
+    /** The game has ended due to a collision. */
+    GAME_OVER
+}```
+----- src/main/java/Game.java
+```/**
+ * Orchestrates the Flappy Bird game state, managing the bird, pipes, scoring,
+ * and game loop logic according to the specified rules.
+ */
+public class Game {
+    /** The width of the game world */
+    private final double worldWidth;
+    
+    /** The height of the game world */
+    private final double worldHeight;
+    
+    /** The interval at which pipes are spawned */
+    private final int spawnInterval;
+    
+    /** The fixed X position of the bird for collision and scoring */
+    private final double birdX;
+    
+    /** The bird object representing the player */
+    private Bird bird;
+    
+    /** List of active pipes in the game */
+    private java.util.List<PipePair> pipes;
+    
+    /** Counter for the number of ticks elapsed */
+    private long tickCount;
+    
+    /** Current score of the player */
+    private int score;
+    
+    /** Current state of the game (RUNNING or GAME_OVER) */
+    private GameState state;
+    
+    /** Random number generator for pipe placement */
+    private RNG rng;
+
+    /**
+     * Creates a new game with the specified seed.
+     * Delegates to Game(seed, 400.0, 600.0, 100).
+     *
+     * @param seed the seed for random number generation
+     */
+    public Game(long seed) {
+        this(seed, 400.0, 600.0, 100);
+    }
+
+    /**
+     * Creates a new game with the specified parameters.
+     *
+     * @param seed the seed for random number generation
+     * @param worldWidth the width of the game world
+     * @param worldHeight the height of the game world
+     * @param spawnInterval the interval at which pipes are spawned
+     */
+    public Game(long seed, double worldWidth, double worldHeight, int spawnInterval) {
+        this.worldWidth = worldWidth;
+        this.worldHeight = worldHeight;
+        this.spawnInterval = spawnInterval;
+        this.birdX = 100.0; // Fixed bird X position as per specification
+        
+        reset(seed);
+    }
+
+    /**
+     * Executes one tick of the game logic.
+     * Returns false if the game is over, true otherwise.
+     *
+     * @return true if the game is still running, false if game over
+     */
+    public boolean tick() {
+        // If game is over, do nothing
+        if (state == GameState.GAME_OVER) {
+            return false;
+        }
+        
+        // Apply physics to the bird
+        bird.applyGravity();
+        bird.integrate();
+        
+        // Check for collisions with boundaries
+        if (CollisionDetector.hitBounds(bird, 30.0, worldHeight)) {
+            state = GameState.GAME_OVER;
+            return false;
+        }
+        
+        // Check for collisions with pipes
+        for (PipePair pipe : pipes) {
+            if (CollisionDetector.hitPipe(bird, 30.0, 30.0, pipe, worldHeight)) {
+                state = GameState.GAME_OVER;
+                return false;
+            }
+        }
+        
+        // Check for scoring
+        for (PipePair pipe : pipes) {
+            if (ScoreSystem.passedPipe(birdX, pipe)) {
+                score++;
+            }
+        }
+        
+        // Increment tick count
+        tickCount++;
+        
+        // Spawn new pipes if needed
+        if (tickCount % spawnInterval == 0) {
+            spawnPipe();
+        }
+        
+        // Move all pipes
+        for (PipePair pipe : pipes) {
+            pipe.move();
+        }
+        
+        // Remove off-screen pipes
+        pipes.removeIf(pipe -> pipe.x() + pipe.width() < 0);
+        
+        return true;
+    }
+
+    /**
+     * Resets the game state with a new seed.
+     *
+     * @param seed the new seed for random number generation
+     */
+    public void reset(long seed) {
+        // Reset game state
+        state = GameState.RUNNING;
+        
+        // Initialize RNG with new seed
+        rng = new RNG(seed);
+        
+        // Reset game elements
+        tickCount = 0;
+        score = 0;
+        pipes = new java.util.ArrayList<>();
+        
+        // Initialize bird at center of screen with zero velocity
+        bird = new Bird(worldHeight / 2.0);
+    }
+
+    /**
+     * Makes the bird flap if the game is running.
+     */
+    public void flapBird() {
+        if (state == GameState.RUNNING) {
+            bird.flap();
+        }
+    }
+
+    /**
+     * Gets the current Y position of the bird.
+     *
+     * @return the Y position of the bird
+     */
+    public double birdY() {
+        return bird.y();
+    }
+
+    /**
+     * Gets the current Y velocity of the bird.
+     *
+     * @return the Y velocity of the bird
+     */
+    public double birdVy() {
+        return bird.vy();
+    }
+
+    /**
+     * Gets the current tick count.
+     *
+     * @return the number of ticks elapsed
+     */
+    public long ticks() {
+        return tickCount;
+    }
+
+    /**
+     * Gets the current score.
+     *
+     * @return the current score
+     */
+    public int score() {
+        return score;
+    }
+
+    /**
+     * Gets the list of pipes.
+     *
+     * @return the list of active pipes
+     */
+    public java.util.List<PipePair> pipes() {
+        return pipes;
+    }
+    
+    /**
+     * Spawns a new pipe at the right side of the screen.
+     */
+    private void spawnPipe() {
+        // Generate random gap position
+        double gapY = rng.nextDouble() * (worldHeight - 100) + 50;
+        double gapHeight = 150.0; // Fixed gap height
+        
+        // Create new pipe pair
+        PipePair pipe = new PipePair(
+            worldWidth,   // Start at right edge of screen
+            50.0,         // Fixed pipe width
+            gapY,         // Gap top position
+            gapHeight,    // Gap height
+            3.0           // Fixed speed
+        );
+        
+        pipes.add(pipe);
+    }
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/main/java/Main.java
+```python
+## src/main/java/Main.java
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/main/java/Main.java. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

@@ -1,0 +1,312 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve protocol files exactly: CMakeLists.txt, src/Main.cpp, tests/test_main.cpp. Use a thin runtime entry that demonstrates the engine deterministically and exits. Separate pure domain logic into cohesive headers under include/ with matching implementations in src/. Build a core library from domain sources, link the demo and tests to it. Tests remain headless-friendly: they include headers only, construct the engine in-memory, and validate moves, alternation, win/draw detection, and reset/history without any I/O, GUI, or network. Keep modules small and domain-specific: Board (grid and cells), Move/MoveHistory (value and auditing), WinDetector (pure rule scanning), and GameEngine (orchestration applying validated moves). Use C++17 only and CMake with add_test. Roles: Alice as Player X, Eve as Player O, and Alex as reviewer via tests.","Domain Decomposition":[["Runtime bootstrap demo of a small deterministic game","src/Main.cpp","protocol-required"],["CMake build: library + demo executable + tests + registration","CMakeLists.txt","protocol-required"],["Protocol-level automated test file","tests/test_main.cpp","automated-test"],["Common domain types: Player, CellState, GameStatus, MoveError","include/Common.h","interface"],["Board entity: dimensions, cells, safe get/set, bounds, fullness, clear","include/Board.h","domain-entity"],["Board implementation","src/Board.cpp","domain-entity"],["Move value: row, col, player","include/Move.h","domain-entity"],["Move value implementation (operators, validation helpers)","src/Move.cpp","domain-entity"],["Move history: push/pop, audit, clear","include/MoveHistory.h","domain-entity"],["Move history implementation","src/MoveHistory.cpp","domain-entity"],["Win detection: horizontal, vertical, and both diagonals scanning for five","include/WinDetector.h","pure-rule"],["Win detection implementation","src/WinDetector.cpp","pure-rule"],["Game engine: apply validated moves, alternate turns, update status, reset","include/GameEngine.h","orchestration"],["Game engine implementation","src/GameEngine.cpp","orchestration"]],"File list":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h","src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h","src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp"],"Data structures and interfaces":"classDiagram\n    class Common {\n        <<enum>> Player\n        <<enum>> CellState\n        <<enum>> GameStatus\n        <<enum>> MoveError\n    }\n    class Board {\n        -size_t width\n        -size_t height\n        -std::vector<CellState> cells\n        +Board(size_t w=15, size_t h=15)\n        +size_t getWidth() const\n        +size_t getHeight() const\n        +bool inBounds(size_t r, size_t c) const\n        +CellState get(size_t r, size_t c) const\n        +bool set(size_t r, size_t c, CellState s)\n        +bool isFull() const\n        +void clear()\n    }\n    class Move {\n        +size_t row\n        +size_t col\n        +Player player\n        +Move(size_t r, size_t c, Player p)\n        +bool operator==(const Move& other) const\n    }\n    class MoveHistory {\n        -std::vector<Move> history\n        +void push(const Move& m)\n        +bool undo(Move& out)\n        +const std::vector<Move>& all() const\n        +void clear()\n        +size_t size() const\n    }\n    class WinDetector {\n        +static std::optional<Player> checkWin(const Board& b)\n        +static bool hasFiveFrom(const Board& b, size_t r, size_t c, int dr, int dc)\n    }\n    class GameEngine {\n        -Board board\n        -Player current\n        -GameStatus status\n        -MoveHistory history\n        +GameEngine(size_t w=15, size_t h=15)\n        +const Board& getBoard() const\n        +Player getCurrentPlayer() const\n        +GameStatus getStatus() const\n        +const MoveHistory& getHistory() const\n        +MoveError applyMove(size_t r, size_t c)\n        +void reset()\n    }\n    GameEngine --> Board\n    GameEngine --> MoveHistory\n    WinDetector ..> Board\n    MoveHistory --> Move\n    Board ..> Common\n    Move ..> Common\n    GameEngine ..> WinDetector\n    GameEngine ..> Common","Program call flow":"sequenceDiagram\n    participant M as Main\n    participant GE as GameEngine\n    participant B as Board\n    participant WD as WinDetector\n    M->>GE: construct GameEngine(15,15)\n    M->>GE: applyMove(r,c) by Alice (Player X)\n    GE->>B: validate inBounds & cell empty\n    GE->>B: set(r,c,CellState::X)\n    GE->>WD: checkWin(Board)\n    WD-->>GE: none\n    GE-->>M: MoveError::None, status InProgress\n    M->>GE: applyMove(r,c) by Eve (Player O)\n    GE->>B: validate & set\n    GE->>WD: checkWin\n    GE-->>M: MoveError::None\n    M->>GE: repeat deterministic sequence\n    WD-->>GE: winner found (Player X)\n    GE-->>M: status WonX\n    M-->>M: print summary and exit","Domain Mapping":[["Core types used across modules: Player, CellState, GameStatus, MoveError","include/Common.h"],["Grid management: dimensions, cells, safe get/set, clear/fullness","include/Board.h"],["Grid implementation","src/Board.cpp"],["Move value: row, col, player","include/Move.h"],["Move value implementation details","src/Move.cpp"],["Move auditing: record, undo, list, clear","include/MoveHistory.h"],["Move auditing implementation","src/MoveHistory.cpp"],["Winning rule scanning: horizontal/vertical/diagonals","include/WinDetector.h"],["Winning rule implementation","src/WinDetector.cpp"],["Game lifecycle and orchestration: apply validated moves, alternate turns, update status, reset","include/GameEngine.h"],["Game lifecycle implementation","src/GameEngine.cpp"],["Runtime demo wiring","src/Main.cpp"],["Protocol-level tests (Alex's review)","tests/test_main.cpp"]],"Testable Core Boundary":{"pure_logic_modules":["include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h"],"environment_dependent_modules":["src/Main.cpp"],"test_targets_should_focus_on":["basic runtime wiring via GameEngine API","move validation (occupied cell rejection)","strict alternation of turns","win detection for five-in-a-row","draw detection on full board without winner","reset restores initial state and clears history"]},"C++ Interface Plan":{"uses_header_files":true,"header_files":["include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h"],"source_files":["src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp"],"test_includes_must_reference_declared_headers_only":true},"Test Include Audit":{"declared_test_includes":["include/GameEngine.h","include/Common.h","include/Board.h"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"test_command":"ctest","required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest. Exactly one protocol-level test file is used.","Anything UNCLEAR":"Default board size is assumed to be 15x15; overline or renju restrictions are not applied (simple five-in-a-row wins). If a different size or variant rules are desired, please specify."}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["CMake>=3.10","C++17","No third-party dependencies required"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h","src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp"],"Logic Analysis":[["CMakeLists.txt","dependency/build; declares reusable core library from src/*.cpp (excluding src/Main.cpp), builds runtime demo executable from src/Main.cpp linked to core, builds single test executable from tests/test_main.cpp linked to core; calls enable_testing() and registers add_test()"],["src/Main.cpp","runtime/bootstrap; thin deterministic demo wiring that constructs GameEngine, applies a fixed sequence of moves (Alice=X first, Eve=O next), prints a concise summary, and exits; no interactive I/O"],["tests/test_main.cpp","automated-test; headless test exercising GameEngine via headers only; validates basic wiring plus one core rule (e.g., win detection or alternation); no GUI, network, or filesystem"],["include/Common.h","interface; declares core enums/types used across modules: Player, CellState, GameStatus, MoveError; no implementation"],["include/Board.h","interface; declares Board grid entity: dimensions, storage for cells, safe get/set, bounds checks, fullness, clear"],["include/Move.h","interface; declares Move value type (row, col, player) with equality operators; may include lightweight validation helpers"],["include/MoveHistory.h","interface; declares MoveHistory for auditing: push, undo, list, clear, size"],["include/WinDetector.h","interface; declares WinDetector pure rules: scan horizontal, vertical, and both diagonals for five-in-a-row; helper to scan from a start in a direction"],["include/GameEngine.h","interface; declares GameEngine orchestrator: apply validated moves, enforce alternation, update status (win/draw), expose board and history, reset"],["src/Board.cpp","domain-entity implementation; implements Board storage, bounds-safe get/set, fullness and clear"],["src/Move.cpp","domain-entity implementation; implements Move operators and any lightweight helpers"],["src/MoveHistory.cpp","domain-entity implementation; maintains sequence of moves, supports undo and clear"],["src/WinDetector.cpp","pure-rule implementation; scans Board for five aligned cells belonging to a player; no side effects"],["src/GameEngine.cpp","orchestration implementation; coordinates Board, WinDetector, and MoveHistory; applies moves for current player, enforces alternation and game-over rules, updates GameStatus, supports reset"]],"Task list":["CMakeLists.txt","include/Common.h","include/Board.h","include/Move.h","include/MoveHistory.h","include/WinDetector.h","include/GameEngine.h","src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp","src/Main.cpp","tests/test_main.cpp"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"exactly_one_protocol_test_file":true,"cpp_tests_include_headers_only":true},"File Coverage Audit":{"design_file_list_count":14,"pm_canonical_count":14,"logic_analysis_count":14,"task_list_count":14,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.cpp","basic runtime wiring via GameEngine API: construct engine, ensure initial status InProgress and current player is Player::X (Alice)"],["tests/test_main.cpp","core rule: win detection for five-in-a-row (horizontal or vertical) using alternating valid moves; assert status transitions to WonX or WonO appropriately"]],"Test Include Plan":[["tests/test_main.cpp","include/GameEngine.h"],["tests/test_main.cpp","include/Common.h"],["tests/test_main.cpp","include/Board.h"]],"Module Boundary Audit":{"core_domain_logic_modules":["src/Board.cpp","src/Move.cpp","src/MoveHistory.cpp","src/WinDetector.cpp","src/GameEngine.cpp"],"environment_dependent_modules":["src/Main.cpp"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{"declared_headers_match_declared_sources":true,"tests_include_headers_only":true,"core_library_declared":true,"runtime_links_core_library":true,"test_links_core_library":true,"enable_testing_declared":true,"add_test_declared":true,"missing_interface_files":[],"undeclared_test_includes":[],"suspected_build_breakers":[],"notes":"Core library should compile from src/Board.cpp, src/Move.cpp, src/MoveHistory.cpp, src/WinDetector.cpp, src/GameEngine.cpp. src/Main.cpp must not be part of the core library. tests/test_main.cpp must not include or compile any src/*.cpp directly."},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"include/Common.h: enum class Player { X, O }; enum class CellState { Empty, X, O }; enum class GameStatus { InProgress, WonX, WonO, Draw }; enum class MoveError { None, OutOfBounds, Occupied, NotYourTurn, GameOver }.\ninclude/Board.h: class Board { public: explicit Board(size_t w = 15, size_t h = 15); size_t getWidth() const noexcept; size_t getHeight() const noexcept; bool inBounds(size_t r, size_t c) const noexcept; CellState get(size_t r, size_t c) const; // Pre: inBounds(r,c); returns CellState::Empty/X/O. bool set(size_t r, size_t c, CellState s); // Sets cell if in-bounds and returns true; returns false if out-of-bounds. bool isFull() const noexcept; void clear(); }.\ninclude/Move.h: struct Move { size_t row; size_t col; Player player; Move(size_t r, size_t c, Player p); bool operator==(const Move& other) const noexcept; }.\ninclude/MoveHistory.h: class MoveHistory { public: void push(const Move& m); bool undo(Move& out); // Pops last move into out; returns false if empty. const std::vector<Move>& all() const noexcept; void clear() noexcept; size_t size() const noexcept; }.\ninclude/WinDetector.h: class WinDetector { public: static std::optional<Player> checkWin(const Board& b); // Returns Player when a five-in-a-row is present, otherwise std::nullopt. static bool hasFiveFrom(const Board& b, size_t r, size_t c, int dr, int dc); // Helper: scans contiguous cells starting at (r,c) inclusive in direction (dr,dc). }.\ninclude/GameEngine.h: class GameEngine { public: explicit GameEngine(size_t w = 15, size_t h = 15); const Board& getBoard() const noexcept; Player getCurrentPlayer() const noexcept; GameStatus getStatus() const noexcept; const MoveHistory& getHistory() const noexcept; MoveError applyMove(size_t r, size_t c); // Applies a move for current player at (r,c). Returns OutOfBounds if invalid coordinates; Occupied if cell not empty; NotYourTurn only if an external caller attempts to bypass alternation (tests will call only via this method which handles alternation); GameOver if status is not InProgress; None on success. void reset(); }.\nSemantics: - Game starts with current player Player::X (Alice). After a successful move, alternates to Player::O (Eve). - Board cells reflect CellState::X or CellState::O based on moves. - After every successful move, WinDetector::checkWin is invoked; status becomes WonX or WonO if a five-in-a-row is found; on a full board without winner, status becomes Draw; otherwise InProgress. - MoveHistory records every successful move in order; reset() clears board, history, status, and sets current to Player::X. - No I/O, timing, or environment dependencies exist in core modules. - Include direction rules: src/*.cpp include their corresponding include/*.h and other headers as needed; tests/test_main.cpp includes declared headers only and never src/*.cpp.","Shared Knowledge":"Project builds a reusable core library from src/Board.cpp, src/Move.cpp, src/MoveHistory.cpp, src/WinDetector.cpp, src/GameEngine.cpp. Runtime entry is src/Main.cpp and is linked against the core library. tests/test_main.cpp is the only protocol test file; it includes include/GameEngine.h (and optionally include/Common.h, include/Board.h) only and links to the core library. No GUI or network is present; tests are headless-friendly and operate purely in-memory.","Execution Protocol":"Run ctest. The CMake project defines: a core library built from non-Main sources, a demo executable from src/Main.cpp linked to the core library, and a test executable from tests/test_main.cpp linked to the core library. enable_testing() and add_test() register the single protocol test. Runtime entry: src/Main.cpp. The test is non-interactive and includes declared headers only.","Anything UNCLEAR":"Default board size is assumed to be 15x15; overline or renju restrictions are not applied (simple five-in-a-row wins). If a different size or variant rules are desired, please specify."}
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```cmake_minimum_required(VERSION 3.10)
+project(GomokuEngine)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Create the core library from domain source files
+add_library(gomoku_core
+    src/Board.cpp
+    src/Move.cpp
+    src/MoveHistory.cpp
+    src/WinDetector.cpp
+    src/GameEngine.cpp
+)
+
+# Set include directories for the core library
+target_include_directories(gomoku_core PUBLIC include)
+
+# Create the runtime demo executable
+add_executable(gomoku_demo src/Main.cpp)
+target_link_libraries(gomoku_demo gomoku_core)
+
+# Enable testing
+enable_testing()
+
+# Create the test executable
+add_executable(gomoku_tests tests/test_main.cpp)
+target_link_libraries(gomoku_tests gomoku_core)
+
+# Register the test
+add_test(NAME gomoku_test COMMAND gomoku_tests)```
+----- include/Common.h
+```#ifndef GOMOKU_COMMON_H
+#define GOMOKU_COMMON_H
+
+namespace gomoku {
+
+/// Represents a player in the game
+enum class Player {
+    X,  ///< Player X (Alice)
+    O   ///< Player O (Eve)
+};
+
+/// Represents the state of a cell on the board
+enum class CellState {
+    Empty,  ///< Empty cell
+    X,      ///< Cell occupied by Player X
+    O       ///< Cell occupied by Player O
+};
+
+/// Represents the current status of the game
+enum class GameStatus {
+    InProgress,  ///< Game is ongoing
+    WonX,        ///< Player X has won
+    WonO,        ///< Player O has won
+    Draw         ///< Game ended in a draw
+};
+
+/// Represents possible errors when applying a move
+enum class MoveError {
+    None,          ///< No error, move was successful
+    OutOfBounds,   ///< Move coordinates are outside the board
+    Occupied,      ///< Cell at move coordinates is already occupied
+    NotYourTurn,   ///< Attempted to make a move out of turn
+    GameOver       ///< Game has already ended
+};
+
+} // namespace gomoku
+
+#endif // GOMOKU_COMMON_H```
+----- include/Board.h
+```#ifndef GOMOKU_BOARD_H
+#define GOMOKU_BOARD_H
+
+#include <cstddef>
+#include <vector>
+#include "Common.h"
+
+namespace gomoku {
+
+/**
+ * @brief Represents the game board for Gomoku
+ * 
+ * The Board class manages a grid of cells where players place their stones.
+ * It provides methods for accessing and modifying cell states, checking
+ * boundaries, and determining if the board is full.
+ */
+class Board {
+private:
+    size_t width_;     ///< Width of the board
+    size_t height_;    ///< Height of the board
+    std::vector<CellState> cells_;  ///< Storage for all cells in row-major order
+
+public:
+    /**
+     * @brief Construct a new Board object
+     * 
+     * @param w Width of the board (default: 15)
+     * @param h Height of the board (default: 15)
+     */
+    explicit Board(size_t w = 15, size_t h = 15);
+
+    /**
+     * @brief Get the width of the board
+     * 
+     * @return size_t Width of the board
+     */
+    size_t getWidth() const noexcept;
+
+    /**
+     * @brief Get the height of the board
+     * 
+     * @return size_t Height of the board
+     */
+    size_t getHeight() const noexcept;
+
+    /**
+     * @brief Check if given coordinates are within board boundaries
+     * 
+     * @param r Row index
+     * @param c Column index
+     * @return true if coordinates are valid
+     * @return false if coordinates are outside the board
+     */
+    bool inBounds(size_t r, size_t c) const noexcept;
+
+    /**
+     * @brief Get the state of a cell at given coordinates
+     * 
+     * @pre inBounds(r, c) is true
+     * @param r Row index
+     * @param c Column index
+     * @return CellState State of the cell at (r, c)
+     */
+    CellState get(size_t r, size_t c) const;
+
+    /**
+     * @brief Set the state of a cell at given coordinates
+     * 
+     * @param r Row index
+     * @param c Column index
+     * @param s New state to set
+     * @return true if cell was successfully set
+     * @return false if coordinates were out of bounds
+     */
+    bool set(size_t r, size_t c, CellState s);
+
+    /**
+     * @brief Check if the board is completely filled
+     * 
+     * @return true if all cells are occupied
+     * @return false if there are empty cells
+     */
+    bool isFull() const noexcept;
+
+    /**
+     * @brief Clear the board by setting all cells to empty
+     */
+    void clear();
+};
+
+} // namespace gomoku
+
+#endif // GOMOKU_BOARD_H```
+----- include/Move.h
+```#ifndef GOMOKU_MOVE_H
+#define GOMOKU_MOVE_H
+
+#include <cstddef>
+#include "Common.h"
+
+namespace gomoku {
+
+/**
+ * @brief Represents a move in the game
+ * 
+ * A move consists of a row, column, and the player making the move.
+ */
+struct Move {
+    size_t row;     ///< Row index of the move
+    size_t col;     ///< Column index of the move
+    Player player;  ///< Player who made the move
+
+    /**
+     * @brief Construct a new Move object
+     * 
+     * @param r Row index
+     * @param c Column index
+     * @param p Player who made the move
+     */
+    Move(size_t r, size_t c, Player p);
+
+    /**
+     * @brief Check if two moves are equal
+     * 
+     * @param other The other move to compare with
+     * @return true if moves are equal
+     * @return false if moves are not equal
+     */
+    bool operator==(const Move& other) const noexcept;
+};
+
+} // namespace gomoku
+
+#endif // GOMOKU_MOVE_H```
+----- include/MoveHistory.h
+```#ifndef GOMOKU_MOVE_HISTORY_H
+#define GOMOKU_MOVE_HISTORY_H
+
+#include <vector>
+#include "Move.h"
+
+namespace gomoku {
+
+/**
+ * @brief Manages the history of moves in a game
+ * 
+ * The MoveHistory class stores all moves made during a game session,
+ * allowing for move undoing, querying the move list, and clearing history.
+ */
+class MoveHistory {
+private:
+    std::vector<Move> history_;  ///< Storage for all moves in chronological order
+
+public:
+    /**
+     * @brief Push a new move to the history
+     * 
+     * @param m The move to add to the history
+     */
+    void push(const Move& m);
+
+    /**
+     * @brief Undo the last move, returning it
+     * 
+     * @param out Reference to store the undone move
+     * @return true if a move was successfully undone
+     * @return false if history is empty
+     */
+    bool undo(Move& out);
+
+    /**
+     * @brief Get reference to all moves in history
+     * 
+     * @return const std::vector<Move>& Reference to the move history
+     */
+    const std::vector<Move>& all() const noexcept;
+
+    /**
+     * @brief Clear all moves from history
+     */
+    void clear() noexcept;
+
+    /**
+     * @brief Get the number of moves in history
+     * 
+     * @return size_t Number of moves recorded
+     */
+    size_t size() const noexcept;
+};
+
+} // namespace gomoku
+
+#endif // GOMOKU_MOVE_HISTORY_H```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: include/WinDetector.h
+```python
+## include/WinDetector.h
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: include/WinDetector.h. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

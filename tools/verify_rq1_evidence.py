@@ -17,6 +17,7 @@ from build_rq1_baseline_ledgers import build_ledgers
 ROOT = Path(__file__).resolve().parents[1]
 RQ1_RESULTS = ROOT / "results" / "RQ1"
 BASELINE = RQ1_RESULTS / "05_baseline_qualification"
+PROMPTS = ROOT / "RQ1" / "02_prompts"
 IGNORED_TREE_PARTS = {
     ".git",
     # Nested repositories are renamed on artifact import so Git does not treat
@@ -64,6 +65,81 @@ def tree_hash(root: Path) -> str:
 def csv_rows(path: Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+def verify_prompts() -> dict[str, object]:
+    summary = json.loads((PROMPTS / "bundle_summary.json").read_text(encoding="utf-8"))
+    stage0 = csv_rows(PROMPTS / "stage0" / "prompt_manifest.csv")
+    stage1 = csv_rows(PROMPTS / "stage1" / "prompt_manifest.csv")
+    stage0_json = json.loads(
+        (PROMPTS / "stage0" / "prompt_manifest.json").read_text(encoding="utf-8")
+    )["rows"]
+    stage1_json = json.loads(
+        (PROMPTS / "stage1" / "prompt_manifest.json").read_text(encoding="utf-8")
+    )["rows"]
+
+    assert len(stage0) == len(stage0_json) == summary["stage0_prompt_count"] == 42
+    assert len(stage1) == len(stage1_json) == summary["stage1_prompt_count"] == 480
+    assert Counter(row["language"] for row in stage0) == {
+        "cpp": 14,
+        "java": 14,
+        "python": 14,
+    }
+    assert Counter(row["language"] for row in stage1) == {
+        "cpp": 181,
+        "java": 156,
+        "python": 143,
+    }
+    assert summary["stage1_source_restoration_counts"] == {
+        "accepted_repository_content": 316,
+        "restored_leading_h2": 164,
+    }
+
+    checked_stage0 = 0
+    for row in stage0:
+        prompt = ROOT / row["prompt_path"]
+        source = ROOT / row["source_prompt_path"]
+        checkpoint = ROOT / row["checkpoint_path"]
+        assert sha256(prompt) == sha256(source) == row["prompt_sha256"]
+        assert sha256(checkpoint) == row["checkpoint_sha256"]
+        checked_stage0 += 1
+
+    system_prompt = PROMPTS / "stage1" / "system_prompt.txt"
+    system_prompt_sha256 = sha256(system_prompt)
+    checked_stage1 = 0
+    stage1_keys: set[tuple[str, str]] = set()
+    for row in stage1:
+        key = (row["unit_id"], row["action_index"])
+        assert key not in stage1_keys
+        stage1_keys.add(key)
+        user_prompt = ROOT / row["user_prompt_path"]
+        input_context = ROOT / row["input_context_path"]
+        request_metadata = ROOT / row["request_metadata_path"]
+        assert sha256(user_prompt) == row["user_prompt_sha256"]
+        assert sha256(input_context) == row["input_context_sha256"]
+        assert row["system_prompt_sha256"] == system_prompt_sha256
+        metadata = json.loads(request_metadata.read_text(encoding="utf-8"))
+        assert metadata["status"] == "exact_reconstruction_from_immutable_run_state"
+        assert metadata["unit_id"] == row["unit_id"]
+        assert str(metadata["action_index"]) == row["action_index"]
+        assert metadata["filename"] == row["filename"]
+        assert metadata["user_prompt_sha256"] == row["user_prompt_sha256"]
+        assert metadata["input_context_sha256"] == row["input_context_sha256"]
+        assert metadata["checkpoint_sha256"] == row["checkpoint_sha256"]
+        assert str(metadata["rng_seed"]) == row["rng_seed"]
+        assert metadata["generated_code_sha256"] == row["generated_code_sha256"]
+        checked_stage1 += 1
+
+    for source_key in ("write_code_source", "role_source", "engineer_source", "task_manifest"):
+        assert sha256(ROOT / summary[source_key]) == summary[f"{source_key}_sha256"]
+
+    return {
+        "stage0_prompts": checked_stage0,
+        "stage1_prompts": checked_stage1,
+        "stage0_language_matrix": "14 x 3",
+        "stage1_source_hash_restoration": summary["stage1_source_restoration_counts"],
+        "status": "PASS",
+    }
 
 
 def verify_baseline() -> dict[str, object]:
@@ -410,6 +486,7 @@ def main() -> None:
 
     report = {
         "status": "PASS",
+        "prompts": verify_prompts(),
         "baseline_qualification": verify_baseline(),
         "applicability": verify_applicability(),
         "detectability": verify_detectability(),

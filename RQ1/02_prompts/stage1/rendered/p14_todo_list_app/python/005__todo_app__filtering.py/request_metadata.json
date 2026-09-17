@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p14_todo_list_app_python",
+  "action_index": 5,
+  "filename": "todo_app/filtering.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/python/005__todo_app__filtering.py/user_prompt.txt",
+  "user_prompt_sha256": "09a87c5958981f9be46da7d2b5448b8dabc8fd51e65209a3a726e03df29d10b9",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/python/005__todo_app__filtering.py/input_context.json",
+  "input_context_sha256": "4c43e0ea56887b0d7424f569eea3634b9ab9def80553580ad2d46b388fb11b21",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "8b88dfb271ffc4996fce09911dabb86d9d82a4fda0f3615be1cf6c6ee9cb5935",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/errors.py",
+      "generated_code_sha256": "e79b44e8618fd71d9f613ae9268cf7a33dd572948f665d951e54a46c0189ed07",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/priority.py",
+      "generated_code_sha256": "029ef6c04ef9f903cdd20cce3c1056df4cc58c905e3cfa4130bfce3973f7f254",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/entities.py",
+      "generated_code_sha256": "59006d5e0f43d6b724e040eaf8a6492205388fc50c3ab782180b9ba0af5c00cf",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p14_todo_list_app/python/architecture/team/team.json",
+  "checkpoint_sha256": "da4a37654887038ce7dc3fc4b83f333bfff1d56348a47628b99f2956a8136b40",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/python/attempts/0001_seed_4207199519/generation_report.json",
+  "rng_seed": 4207199519,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789416833470",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 456,
+    "prompt_tokens": 9654,
+    "total_tokens": 10110
+  },
+  "response_content_sha256": "c7eaca69ac68198c4d8f2d18324c4b93149c8fc43776772272576226f144fa99",
+  "generated_code_sha256": "12ab24f27c69e74998ca7eec353287ac9004a9473e2f6353becda556debedcda",
+  "accepted_source_restoration": "restored_leading_h2"
+}

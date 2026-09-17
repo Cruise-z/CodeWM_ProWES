@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p03_game_2048_java",
+  "action_index": 5,
+  "filename": "src/main/java/Spawner.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/java/005__src__main__java__Spawner.java/user_prompt.txt",
+  "user_prompt_sha256": "fe3e7292a7ab6675020981578ce2a39d3b51ea3e53e78117d28140f235fb3977",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p03_game_2048/java/005__src__main__java__Spawner.java/input_context.json",
+  "input_context_sha256": "632f7726e6203d2973b017474d1ef7310ab269ebb0c318849475f8fc5ed5c14b",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "75e1fedfa79c244a0fdb7f59da8589725667b8df41bae51147d56a51aa068476",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Direction.java",
+      "generated_code_sha256": "3759ce81d49cb4cdffaf05739c9abc7e01db7fcbbb357d01cf397a1858986a78",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/GameStatus.java",
+      "generated_code_sha256": "488e2bba79eb04a34ceae2008db7f105651fb8ba16f129656d6176bc5c1d5881",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/MoveResult.java",
+      "generated_code_sha256": "2255b54a398151a863c9acc7c2116fa81fe8091da1222181d6c83253e8cc327c",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p03_game_2048/java/architecture/team/team.json",
+  "checkpoint_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p03_game_2048/java/attempts/0001_seed_887850646/generation_report.json",
+  "rng_seed": 887850646,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789300734488",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 100,
+    "prompt_tokens": 6584,
+    "total_tokens": 6684
+  },
+  "response_content_sha256": "044bf3ce0e5ee463a9367e008d97ddf88b6f50d38c0bd04e63d8ed7e59db15eb",
+  "generated_code_sha256": "f1756a9c8830aa35971c427e7768054c9afafd45f6f41b3ca0ad0ac5db528a87",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -1,0 +1,562 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Bob here. We'll preserve C++ protocol files exactly: CMakeLists.txt, src/Main.cpp as the runtime entry, and tests/test_main.cpp as the single test file. The core domain is split into small, concrete, reusable modules with 1:1 include/*.h and src/*.cpp pairs: Geometry (grid and direction utilities), Entities (Arena, Tank, Projectile), and Game (orchestration of ticks, commands, collisions, scoring). The runtime demo remains thin and non-interactive. All domain logic is pure and deterministic: no IO, no OS-specific behavior, no randomness, and no timing. Tests include headers only, link against the core library, and remain headless/offline. The architecture targets 9 files to meet the 8–10 file goal while keeping responsibilities clear and minimal.","Domain Decomposition":[["Build configuration and test registration (CMake/CTest)","CMakeLists.txt","protocol-required"],["Non-interactive runtime demo bootstrap","src/Main.cpp","environment-dependent"],["Protocol-level headless deterministic tests (movement, projectile damage, winner, reset)","tests/test_main.cpp","automated-test"],["Grid primitives and direction enum with rotation and movement helpers","include/Geometry.h","interface"],["Geometry implementations: inBounds, advance, rotation helpers, comparisons","src/Geometry.cpp","pure-rule"],["Domain entities headers: Arena, Obstacle, Tank, Projectile interfaces and simple behaviors","include/Entities.h","interface"],["Entities implementations: Arena obstacle checks, Tank rotations, Projectile stepping","src/Entities.cpp","domain-entity"],["Game orchestration header: Game API, Command queueing, tick ordering, scoring/winner, reset","include/Game.h","interface"],["Game implementations: deterministic tick loop, command application, projectile motion, collision resolution","src/Game.cpp","orchestration"]],"File list":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Geometry.h","src/Geometry.cpp","include/Entities.h","src/Entities.cpp","include/Game.h","src/Game.cpp"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Geometry.h","src/Geometry.cpp","include/Entities.h","src/Entities.cpp","include/Game.h","src/Game.cpp"],"Data structures and interfaces":"classDiagram\n    class Direction {\n    }\n    class Point {\n        +int x\n        +int y\n        +Point(int,int)\n        +bool operator<(const Point&) const\n    }\n    class Size {\n        +int width\n        +int height\n        +Size(int,int)\n    }\n    class Geometry {\n        +bool inBounds(Point, Size)\n        +Point advance(Point, Direction)\n        +Direction rotateLeft(Direction)\n        +Direction rotateRight(Direction)\n    }\n    class Obstacle {\n        +Point pos\n        +Obstacle(Point)\n    }\n    class Arena {\n        +Size size\n        +vector~Obstacle~ obstacles\n        +Arena(int width,int height)\n        +bool inBounds(Point) const\n        +bool isObstacle(Point) const\n        +void clearObstacles()\n        +bool addObstacle(Point)\n    }\n    class Tank {\n        +int id\n        +Point pos\n        +Direction dir\n        +int health\n        +bool alive\n        +Tank(int, Point, Direction, int)\n        +void rotateLeft()\n        +void rotateRight()\n    }\n    class Projectile {\n        +int ownerId\n        +Point pos\n        +Direction dir\n        +bool alive\n        +Projectile(int, Point, Direction)\n        +void step()\n    }\n    class Command {\n        <<enum>> None\n        <<enum>> Move\n        <<enum>> RotateLeft\n        <<enum>> RotateRight\n        <<enum>> Fire\n    }\n    class Game {\n        -Arena arena_\n        -vector~Tank~ tanks_\n        -vector~Projectile~ projectiles_\n        -vector~Command~ pending_\n        -vector~int~ scores_\n        -int tickCount_\n        -int winnerId_ // -1 if none\n        +Game(int width,int height)\n        +void reset()\n        +Arena& arena()\n        +const Arena& arena() const\n        +bool queueCommand(int tankId, Command cmd)\n        +void tick()\n        +const Tank* getTank(int id) const\n        +int getScore(int id) const\n        +int getWinner() const\n        +bool isOver() const\n        +const vector~Projectile~& getProjectiles() const\n    }\n    Geometry ..> Direction\n    Arena o--> Obstacle\n    Game o--> Arena\n    Game o--> Tank\n    Game o--> Projectile\n    Game ..> Command\n    Tank ..> Direction\n    Projectile ..> Direction","Program call flow":"sequenceDiagram\n    participant M as Main (src/Main.cpp)\n    participant G as Game (include/Game.h)\n    participant A as Arena (include/Entities.h)\n    participant T as Tanks (include/Entities.h)\n    participant P as Projectiles (include/Entities.h)\n    M->>G: Game(width,height)\n    M->>G: reset()\n    M->>G: arena().addObstacle(...)\n    M->>G: queueCommand(tank0, Fire/Move/...)\n    loop fixed ticks\n        M->>G: tick()\n        G->>T: apply commands (rotate/move/fire)\n        G->>P: move projectiles\n        G->>T: resolve collisions and apply damage\n        G->>G: update scores/winner\n    end\n    M-->>M: exit deterministically","Domain Mapping":[["Grid, direction, and movement helpers","include/Geometry.h"],["Geometry helper implementations","src/Geometry.cpp"],["Arena bounds, obstacles, and validation","include/Entities.h"],["Arena behavior implementation","src/Entities.cpp"],["Tank properties and orientation behavior","include/Entities.h"],["Tank behavior implementation","src/Entities.cpp"],["Projectile lifecycle representation","include/Entities.h"],["Projectile step implementation","src/Entities.cpp"],["Game orchestration API (commands, tick, scoring, reset, winner)","include/Game.h"],["Game orchestration implementation (deterministic tick order and collision resolution)","src/Game.cpp"],["Non-interactive demo wiring and scenario","src/Main.cpp"],["Protocol-level tests for movement block and projectile damage/winner/reset","tests/test_main.cpp"]],"Testable Core Boundary":{"pure_logic_modules":["include/Geometry.h","src/Geometry.cpp","include/Entities.h","src/Entities.cpp","include/Game.h","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"test_targets_should_focus_on":["Basic construction and tick wiring","Movement blocked by obstacle and arena bounds","Projectile creation/movement and collision causing damage","Winner declaration and reset restoring initial state"]},"C++ Interface Plan":{"uses_header_files":true,"header_files":["include/Geometry.h","include/Entities.h","include/Game.h"],"source_files":["src/Geometry.cpp","src/Entities.cpp","src/Game.cpp"],"test_includes_must_reference_declared_headers_only":true},"Test Include Audit":{"declared_test_includes":["include/Geometry.h","include/Entities.h","include/Game.h"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest --test-dir build --output-on-failure. Exactly one protocol-level test file is used.","Anything UNCLEAR":"Assumptions made for determinism: origin at (0,0) top-left with x increasing right and y increasing down; default tank health=3; damage per hit=1; one projectile spawned per Fire command if muzzle cell is in-bounds and free of obstacles/tanks; no fire rate limiting beyond cell occupancy; winner is set to the opponent when one tank reaches 0 health; if both die in the same tick, winner remains unset."}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["CMake>=3.10","C++17","No third-party dependencies required"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Geometry.h","src/Geometry.cpp","include/Entities.h","src/Entities.cpp","include/Game.h","src/Game.cpp"],"Logic Analysis":[["CMakeLists.txt","dependency/build; declares core library from src/*.cpp (excluding src/Main.cpp), runtime executable from src/Main.cpp, and single test executable from tests/test_main.cpp; enables testing and registers the test with CTest"],["src/Main.cpp","runtime/bootstrap; thin, deterministic demo wiring that constructs Game, sets up a simple scenario, queues a few commands, and runs a fixed number of ticks; no IO beyond minimal entrypoint"],["tests/test_main.cpp","automated-test; headless deterministic checks for construction/tick wiring and one core rule; includes only declared headers and links against the core library"],["include/Geometry.h","interface; declares Direction enum, Point, Size, and Geometry helpers (inBounds, advance, rotateLeft, rotateRight)"],["src/Geometry.cpp","pure-rule; implements grid math and direction utilities (bounds checks, advancing points, rotations, comparisons)"],["include/Entities.h","interface; declares Obstacle, Arena, Tank, Projectile, and Command enum; exposes minimal behavior signatures (e.g., Arena::inBounds/isObstacle/addObstacle, Tank rotations, Projectile step)"],["src/Entities.cpp","domain-entity; implements Arena obstacle checks and management, Tank orientation changes, Projectile stepping; no IO or timing"],["include/Game.h","interface; declares Game orchestration API: construction, reset, queueCommand, tick, accessors for arena/tanks/projectiles/scores/winner"],["src/Game.cpp","orchestration; implements deterministic tick loop: apply commands (move/rotate/fire), move projectiles, resolve collisions/damage, update scores/winner, maintain pure state transitions"]],"Task list":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Geometry.h","src/Geometry.cpp","include/Entities.h","src/Entities.cpp","include/Game.h","src/Game.cpp"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[]},"File Coverage Audit":{"design_file_list_count":9,"pm_canonical_count":9,"logic_analysis_count":9,"task_list_count":9,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.cpp","basic construction and tick wiring: create Game, reset, run a few ticks deterministically without side effects"],["tests/test_main.cpp","one core rule: projectile fired by a tank advances and reduces opponent tank health on collision (or declares winner if health reaches 0)"]],"Test Include Plan":[["tests/test_main.cpp","include/Geometry.h"],["tests/test_main.cpp","include/Entities.h"],["tests/test_main.cpp","include/Game.h"]],"Module Boundary Audit":{"core_domain_logic_modules":["src/Geometry.cpp","src/Entities.cpp","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{"declared_headers_match_declared_sources":true,"tests_include_headers_only":true,"core_library_declared":true,"runtime_links_core_library":true,"test_links_core_library":true,"enable_testing_declared":true,"add_test_declared":true,"missing_interface_files":[],"undeclared_test_includes":[],"suspected_build_breakers":[]},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"","Shared Knowledge":"Core logic is split into Geometry (grid/direction helpers), Entities (Arena, Tank, Projectile, Command), and Game (deterministic orchestration). Tests include only headers: include/Geometry.h, include/Entities.h, include/Game.h. CMake builds a reusable core library from src/Geometry.cpp, src/Entities.cpp, src/Game.cpp; links src/Main.cpp runtime and tests/test_main.cpp test target against that core. No randomness, IO, or OS/timing dependencies.","Execution Protocol":"Run ctest --test-dir build --output-on-failure. Runtime entry is src/Main.cpp. Single protocol-level test file is tests/test_main.cpp, which includes declared headers only and links to the core library. Both runtime and test targets link against the core library. No manual interaction; tests are headless and deterministic.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```cmake_minimum_required(VERSION 3.10)
+project(TankBattle)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Create the core library
+add_library(tankbattle_core
+    src/Geometry.cpp
+    src/Entities.cpp
+    src/Game.cpp
+)
+
+target_include_directories(tankbattle_core PUBLIC include)
+
+# Create the runtime executable
+add_executable(tankbattle_runtime src/Main.cpp)
+target_link_libraries(tankbattle_runtime tankbattle_core)
+
+# Create the test executable
+add_executable(tankbattle_test tests/test_main.cpp)
+target_link_libraries(tankbattle_test tankbattle_core)
+
+# Enable testing
+enable_testing()
+
+# Add the test to CTest
+add_test(NAME tankbattle_test COMMAND tankbattle_test)```
+----- src/Main.cpp
+```#include <iostream>
+#include "Game.h"
+
+int main() {
+    // Create a game with a 10x10 arena
+    Game game(10, 10);
+    
+    // Reset the game to initialize tanks and other entities
+    game.reset();
+    
+    // Add some obstacles to the arena
+    game.arena().addObstacle({3, 3});
+    game.arena().addObstacle({7, 7});
+    
+    // Queue commands for tank 0: rotate left, move forward, fire
+    game.queueCommand(0, Command::RotateLeft);
+    game.queueCommand(0, Command::Move);
+    game.queueCommand(0, Command::Fire);
+    
+    // Queue commands for tank 1: rotate right, move forward
+    game.queueCommand(1, Command::RotateRight);
+    game.queueCommand(1, Command::Move);
+    
+    // Run the game for 5 ticks
+    for (int i = 0; i < 5; ++i) {
+        game.tick();
+        
+        // Print game state after each tick
+        std::cout << "Tick " << i << ":\n";
+        std::cout << "  Winner: " << game.getWinner() << "\n";
+        std::cout << "  Scores - Tank 0: " << game.getScore(0) 
+                  << ", Tank 1: " << game.getScore(1) << "\n";
+        
+        // Print the positions of tanks and projectiles
+        const auto* tank0 = game.getTank(0);
+        const auto* tank1 = game.getTank(1);
+        if (tank0 && tank0->alive) {
+            std::cout << "  Tank 0: (" << tank0->pos.x << "," << tank0->pos.y 
+                      << ") facing " << static_cast<int>(tank0->dir) << "\n";
+        }
+        if (tank1 && tank1->alive) {
+            std::cout << "  Tank 1: (" << tank1->pos.x << "," << tank1->pos.y 
+                      << ") facing " << static_cast<int>(tank1->dir) << "\n";
+        }
+        
+        const auto& projectiles = game.getProjectiles();
+        for (size_t j = 0; j < projectiles.size(); ++j) {
+            const auto& proj = projectiles[j];
+            if (proj.alive) {
+                std::cout << "  Projectile " << j << ": (" << proj.pos.x << "," << proj.pos.y 
+                          << ") facing " << static_cast<int>(proj.dir) << "\n";
+            }
+        }
+        std::cout << "\n";
+    }
+    
+    return 0;
+}```
+----- tests/test_main.cpp
+```#include <cassert>
+#include <vector>
+#include "Geometry.h"
+#include "Entities.h"
+#include "Game.h"
+
+// Test basic construction and tick wiring
+void test_basic_construction_and_tick_wiring() {
+    Game game(10, 10);
+    game.reset();
+    
+    // Verify initial state
+    assert(game.getWinner() == -1); // No winner yet
+    assert(game.getScore(0) == 0);  // Initial score
+    assert(game.getScore(1) == 0);  // Initial score
+    
+    // Run a few ticks
+    for (int i = 0; i < 3; ++i) {
+        game.tick();
+        assert(game.getWinner() == -1); // Still no winner
+    }
+    
+    // Verify tanks are alive and in initial positions
+    const auto* tank0 = game.getTank(0);
+    const auto* tank1 = game.getTank(1);
+    assert(tank0 != nullptr);
+    assert(tank1 != nullptr);
+    assert(tank0->alive);
+    assert(tank1->alive);
+    
+    // Verify projectiles are empty initially
+    const auto& projectiles = game.getProjectiles();
+    assert(projectiles.empty());
+}
+
+// Test one core rule: projectile fired by a tank advances and reduces opponent tank health
+void test_projectile_fired_collision_damage() {
+    Game game(10, 10);
+    game.reset();
+    
+    // Add an obstacle to prevent direct movement
+    game.arena().addObstacle({5, 5});
+    
+    // Position tanks opposite each other
+    // Tank 0 at (1,1) facing right
+    // Tank 1 at (8,1) facing left
+    // This setup allows tank 0 to fire toward tank 1
+    
+    // Queue commands to fire from tank 0
+    game.queueCommand(0, Command::Fire);
+    
+    // Run one tick to process the fire command
+    game.tick();
+    
+    // Verify a projectile was created
+    const auto& projectiles = game.getProjectiles();
+    assert(!projectiles.empty());
+    assert(projectiles[0].alive);
+    
+    // Run a few more ticks to move projectile towards tank 1
+    for (int i = 0; i < 5; ++i) {
+        game.tick();
+    }
+    
+    // Check if the projectile hit tank 1
+    const auto* tank1 = game.getTank(1);
+    assert(tank1 != nullptr);
+    assert(tank1->alive);
+    
+    // If projectile hit, tank 1's health should be reduced
+    // Since default health is 3 and damage per hit is 1,
+    // tank 1 should have health = 2 now
+    assert(tank1->health == 2);
+    
+    // If tank 1 was hit once and has health 2, but we don't want to 
+    // check exact health values as they might vary depending on timing
+    // Let's just verify that tank 1 is still alive (health > 0)
+    assert(tank1->health > 0);
+    
+    // If tank 1 has health 0, then it should be dead and winner should be tank 0
+    // If it has health > 0, then it should still be alive
+    // We can test multiple hits to ensure collision works correctly
+    // But for simplicity, just verifying that damage occurred is sufficient
+    // Let's queue another fire command from tank 1 to tank 0 to make sure it also works
+    game.queueCommand(1, Command::Fire);
+    
+    // Run another tick to process the second fire command
+    game.tick();
+    
+    // Check that tank 0 also took damage
+    const auto* tank0 = game.getTank(0);
+    assert(tank0 != nullptr);
+    assert(tank0->alive);
+    assert(tank0->health > 0);
+}
+
+// Test winner declaration and reset
+void test_winner_declaration_and_reset() {
+    Game game(10, 10);
+    game.reset();
+    
+    // Set up a scenario where tank 1 dies
+    game.queueCommand(0, Command::Fire);
+    game.queueCommand(1, Command::Fire); // Fire at tank 0
+    
+    // Run enough ticks to cause death
+    for (int i = 0; i < 10; ++i) {
+        game.tick();
+        if (game.getWinner() != -1) {
+            break;
+        }
+    }
+    
+    // Verify winner is set (either tank 0 or tank 1)
+    assert(game.getWinner() != -1);
+    
+    // Reset the game
+    game.reset();
+    
+    // After reset, winner should be -1 again
+    assert(game.getWinner() == -1);
+    
+    // Scores should be reset
+    assert(game.getScore(0) == 0);
+    assert(game.getScore(1) == 0);
+    
+    // Tanks should be alive
+    const auto* tank0 = game.getTank(0);
+    const auto* tank1 = game.getTank(1);
+    assert(tank0 != nullptr);
+    assert(tank1 != nullptr);
+    assert(tank0->alive);
+    assert(tank1->alive);
+    
+    // No projectiles
+    const auto& projectiles = game.getProjectiles();
+    assert(projectiles.empty());
+}
+
+int main() {
+    test_basic_construction_and_tick_wiring();
+    test_projectile_fired_collision_damage();
+    test_winner_declaration_and_reset();
+    
+    return 0;
+}```
+----- include/Geometry.h
+```#ifndef GEOMETRY_H
+#define GEOMETRY_H
+
+#include <cstdint>
+
+// Forward declarations
+struct Point;
+struct Size;
+
+/**
+ * @brief Enum representing directions in the grid.
+ */
+enum class Direction : int8_t {
+    Up = 0,
+    Right = 1,
+    Down = 2,
+    Left = 3
+};
+
+/**
+ * @brief Represents a point in 2D space.
+ */
+struct Point {
+    int32_t x;
+    int32_t y;
+
+    /**
+     * @brief Constructs a Point with given coordinates.
+     * @param x X coordinate
+     * @param y Y coordinate
+     */
+    Point(int32_t x, int32_t y) : x(x), y(y) {}
+
+    /**
+     * @brief Comparison operator for sorting Points.
+     * @param other Other Point to compare with
+     * @return True if this Point is less than other Point
+     */
+    bool operator<(const Point& other) const {
+        if (x != other.x) {
+            return x < other.x;
+        }
+        return y < other.y;
+    }
+};
+
+/**
+ * @brief Represents the size of a rectangle.
+ */
+struct Size {
+    int32_t width;
+    int32_t height;
+
+    /**
+     * @brief Constructs a Size with given dimensions.
+     * @param width Width dimension
+     * @param height Height dimension
+     */
+    Size(int32_t width, int32_t height) : width(width), height(height) {}
+};
+
+/**
+ * @brief Provides geometric utilities for grid-based operations.
+ */
+class Geometry {
+public:
+    /**
+     * @brief Checks if a point is within the bounds of a size.
+     * @param point The point to check
+     * @param size The size defining the bounds
+     * @return True if point is within bounds, false otherwise
+     */
+    static bool inBounds(const Point& point, const Size& size);
+
+    /**
+     * @brief Advances a point in the given direction.
+     * @param point The starting point
+     * @param direction The direction to advance
+     * @return The new point after advancement
+     */
+    static Point advance(const Point& point, Direction direction);
+
+    /**
+     * @brief Rotates a direction 90 degrees to the left.
+     * @param direction The direction to rotate
+     * @return The rotated direction
+     */
+    static Direction rotateLeft(Direction direction);
+
+    /**
+     * @brief Rotates a direction 90 degrees to the right.
+     * @param direction The direction to rotate
+     * @return The rotated direction
+     */
+    static Direction rotateRight(Direction direction);
+};
+
+#endif // GEOMETRY_H```
+----- src/Geometry.cpp
+```#include "Geometry.h"
+
+bool Geometry::inBounds(const Point& point, const Size& size) {
+    return point.x >= 0 && point.x < size.width && point.y >= 0 && point.y < size.height;
+}
+
+Point Geometry::advance(const Point& point, Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return Point(point.x, point.y - 1);
+        case Direction::Right:
+            return Point(point.x + 1, point.y);
+        case Direction::Down:
+            return Point(point.x, point.y + 1);
+        case Direction::Left:
+            return Point(point.x - 1, point.y);
+    }
+    // This should never be reached, but added to satisfy compiler
+    return point;
+}
+
+Direction Geometry::rotateLeft(Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return Direction::Left;
+        case Direction::Right:
+            return Direction::Up;
+        case Direction::Down:
+            return Direction::Right;
+        case Direction::Left:
+            return Direction::Down;
+    }
+    // This should never be reached, but added to satisfy compiler
+    return direction;
+}
+
+Direction Geometry::rotateRight(Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return Direction::Right;
+        case Direction::Right:
+            return Direction::Down;
+        case Direction::Down:
+            return Direction::Left;
+        case Direction::Left:
+            return Direction::Up;
+    }
+    // This should never be reached, but added to satisfy compiler
+    return direction;
+}```
+----- include/Entities.h
+```#ifndef ENTITIES_H
+#define ENTITIES_H
+
+#include <vector>
+#include "Geometry.h"
+
+/**
+ * @brief Represents an obstacle in the arena.
+ */
+struct Obstacle {
+    Point pos;
+
+    /**
+     * @brief Constructs an obstacle at the given position.
+     * @param pos Position of the obstacle
+     */
+    explicit Obstacle(const Point& pos) : pos(pos) {}
+};
+
+/**
+ * @brief Represents the game arena with boundaries and obstacles.
+ */
+class Arena {
+private:
+    Size size_;
+    std::vector<Obstacle> obstacles_;
+
+public:
+    /**
+     * @brief Constructs an arena with given dimensions.
+     * @param width Width of the arena
+     * @param height Height of the arena
+     */
+    Arena(int width, int height) : size_(width, height) {}
+
+    /**
+     * @brief Checks if a point is within the bounds of the arena.
+     * @param point The point to check
+     * @return True if point is within bounds, false otherwise
+     */
+    bool inBounds(const Point& point) const;
+
+    /**
+     * @brief Checks if a point contains an obstacle.
+     * @param point The point to check
+     * @return True if point contains an obstacle, false otherwise
+     */
+    bool isObstacle(const Point& point) const;
+
+    /**
+     * @brief Clears all obstacles from the arena.
+     */
+    void clearObstacles();
+
+    /**
+     * @brief Adds an obstacle to the arena.
+     * @param pos Position where to add the obstacle
+     * @return True if obstacle was added successfully, false otherwise
+     */
+    bool addObstacle(const Point& pos);
+};
+
+/**
+ * @brief Represents a tank in the game.
+ */
+class Tank {
+public:
+    int id;
+    Point pos;
+    Direction dir;
+    int health;
+    bool alive;
+
+    /**
+     * @brief Constructs a tank with given parameters.
+     * @param id Unique identifier for the tank
+     * @param pos Initial position of the tank
+     * @param dir Initial direction of the tank
+     * @param health Initial health of the tank
+     */
+    Tank(int id, const Point& pos, Direction dir, int health);
+
+    /**
+     * @brief Rotates the tank 90 degrees to the left.
+     */
+    void rotateLeft();
+
+    /**
+     * @brief Rotates the tank 90 degrees to the right.
+     */
+    void rotateRight();
+};
+
+/**
+ * @brief Represents a projectile in the game.
+ */
+class Projectile {
+public:
+    int ownerId;
+    Point pos;
+    Direction dir;
+    bool alive;
+
+    /**
+     * @brief Constructs a projectile with given parameters.
+     * @param ownerId ID of the tank that fired this projectile
+     * @param pos Initial position of the projectile
+     * @param dir Initial direction of the projectile
+     */
+    Projectile(int ownerId, const Point& pos, Direction dir);
+
+    /**
+     * @brief Moves the projectile one step forward.
+     */
+    void step();
+};
+
+/**
+ * @brief Enum representing possible commands for tanks.
+ */
+enum class Command {
+    None,
+    Move,
+    RotateLeft,
+    RotateRight,
+    Fire
+};
+
+#endif // ENTITIES_H```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/Entities.cpp
+```python
+## src/Entities.cpp
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/Entities.cpp. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

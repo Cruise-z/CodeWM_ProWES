@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p09_qr_code_gen_det_cpp",
+  "action_index": 9,
+  "filename": "tests/test_main.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/cpp/009__tests__test_main.cpp/user_prompt.txt",
+  "user_prompt_sha256": "51ab84f4df827908867ba857e540b7384a82df70f07377657c35dabf4ced55ef",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/cpp/009__tests__test_main.cpp/input_context.json",
+  "input_context_sha256": "1b225156d4da48a176e73f924bfd752f50881d3129d907646437f25432a2ec0d",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "4264882b9caa1cf0eb3ba35cb3a73a8d9bfc043530e5b25dfeb32938c0dd8fbe",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/QRMatrix.h",
+      "generated_code_sha256": "1748e80315ee86e67bf0a6e88d5eb1c198c06b45efc6cbbc912c00b3815655e7",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/QRMatrix.cpp",
+      "generated_code_sha256": "669c3053cf79f12c6985ff7af78dd981d724cc82fd5e5f9337834d5a5c47128e",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/QRCodec.h",
+      "generated_code_sha256": "c4fcb22774f6c91e79602cf70c384b2e4fccb5c72b76449cf65e1954fbea81d8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/QRCodec.cpp",
+      "generated_code_sha256": "9a342aa1e2626ce7cccc80168787c4972a0d86331ca6c2d923bc3ead223fd829",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/QRRenderer.h",
+      "generated_code_sha256": "c720a11a4c49c07ed2e7695cfbb318e3228492e5e6c273aa9fbf2112ba227b5d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/QRRenderer.cpp",
+      "generated_code_sha256": "cead4cf62b5efd9a9e4e2420ff7e60bba5ce84b39d90773c5533feaaec5d139f",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Main.cpp",
+      "generated_code_sha256": "bf1408684e8b5a12f2dcda5189bfc01f3114361e2d39f46ec376bce6cfc02f29",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p09_qr_code_gen_det/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "e45b9a7c66533f526b9dd5fbad1980d56e48f6e2a9e19381edc6ecf107c46fcc",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/cpp/attempts/0003_seed_779839335/generation_report.json",
+  "rng_seed": 779839335,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789409265635",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 376,
+    "prompt_tokens": 12176,
+    "total_tokens": 12552
+  },
+  "response_content_sha256": "7d28821ab6035b8ebf45c14af8b64626dfa320cc1aacacae266712dbd40cc874",
+  "generated_code_sha256": "00e39a4e11584cf794c194d839b8ea54f5ca6cbeeb3200c20f7c53cd9859b541",
+  "accepted_source_restoration": "accepted_repository_content"
+}

@@ -3,6 +3,9 @@ results/RQ2/02_training/checkpoints/**/*.pt filter=lfs diff=lfs merge=lfs -text
 # snapshots from style-only whitespace checks.
 *.csv -whitespace
 RQ1/03_architecture_checkpoints/** -whitespace
+RQ1/02_prompts/stage0/rendered/** -whitespace
+RQ1/02_prompts/stage1/rendered/** -whitespace
+RQ1/02_prompts/stage1/system_prompt.txt -whitespace
 RQ1/source/DT/codeGen/MetaGPT/** -whitespace
 RQ1/source/DT/codeGen/modelDeploy/** -whitespace
 RQ1/source/reproduct/framework/** -whitespace

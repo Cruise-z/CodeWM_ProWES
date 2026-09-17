@@ -56,6 +56,11 @@ def classify(relative: str) -> tuple[str, str, str, str]:
             "RQ1 baseline qualification; 88 attempts, 42 accepted repositories, "
             "42 verified replays"
         )
+    elif "RQ1/02_prompts" in relative:
+        mapping = (
+            "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 "
+            "accepted-run Stage-1 file-generation prompts"
+        )
     elif (
         "results/RQ1/Applicability" in relative
         or "tables/rq1/applicability" in relative

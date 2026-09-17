@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_python",
+  "action_index": 4,
+  "filename": "caro/move.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/python/004__caro__move.py/user_prompt.txt",
+  "user_prompt_sha256": "5970fe4499777712dbed301843434ed824bb58438818c4fe6146800b93139103",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/python/004__caro__move.py/input_context.json",
+  "input_context_sha256": "eebaf444f12546942004caadd19fee2306cdd2d6144dd53e0bc373bd72297119",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "8b88dfb271ffc4996fce09911dabb86d9d82a4fda0f3615be1cf6c6ee9cb5935",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/errors.py",
+      "generated_code_sha256": "f70cec6bed7c17b32fb8277e49facfbec73bb30fb4d172728aa0cfec69689a41",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "caro/types.py",
+      "generated_code_sha256": "9fee686d1694a9f463f7b87866cb58b370ab5f54782fec97e9110093bbc4adab",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "8ab8042fa8dc789cad1d74394df431bf9753d27f1d6d5d91c944f6e183c699fe",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/python/attempts/0001_seed_812711061/generation_report.json",
+  "rng_seed": 812711061,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789304538351",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 112,
+    "prompt_tokens": 4652,
+    "total_tokens": 4764
+  },
+  "response_content_sha256": "ac45975f71a945e460f6d46a0742c61fd07f6b029b7454642052cd20708b0403",
+  "generated_code_sha256": "797108e8854b67cadf73d79eb95463a87d3e48c7cf7b8009b9129b9fbe5d4259",
+  "accepted_source_restoration": "restored_leading_h2"
+}

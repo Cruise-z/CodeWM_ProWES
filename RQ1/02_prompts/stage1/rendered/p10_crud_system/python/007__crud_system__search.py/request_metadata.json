@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_python",
+  "action_index": 7,
+  "filename": "crud_system/search.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/007__crud_system__search.py/user_prompt.txt",
+  "user_prompt_sha256": "88770043a4c06de4fc03aef9738560d179552892a72893088562dc47f81d7d79",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/007__crud_system__search.py/input_context.json",
+  "input_context_sha256": "75e03de59bda5c9add1950fa3979021b5e30904a28a0cb318df50afcc6716af8",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/errors.py",
+      "generated_code_sha256": "8f30c3d4590bc3fd9e6fba8095a46fbbf75f7deacf54eb1ec654be72a88a29ff",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/types.py",
+      "generated_code_sha256": "e470fbc7f298402fca7c33e45938c4ae20cb2e9bdae1b5f9c46e06cccb5098a2",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/clock.py",
+      "generated_code_sha256": "17736c8fac393a6ab3a2357e81e4fa8f7490909d250255d9e701cd9e252de110",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/validation.py",
+      "generated_code_sha256": "55b2eb257852371238ce25adf4075b8dd94b8ac9690083e3426f611ec79cbf6d",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/repository.py",
+      "generated_code_sha256": "4540ae6e774be6c063ad311d3364fb1b559f59c2e15f58d9e980357cae1280d6",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/python/architecture/team/team.json",
+  "checkpoint_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/attempts/0001_seed_1014069831/generation_report.json",
+  "rng_seed": 1014069831,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789408886325",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 301,
+    "prompt_tokens": 10715,
+    "total_tokens": 11016
+  },
+  "response_content_sha256": "6ce36f9d8af4bb4c3ff2276cc215f12757bc12c69ca7f0dea735c459529d0fc8",
+  "generated_code_sha256": "6800359dd5ffc7e046470c5158f008af1a75da1bed945dbcdf0e3ffb79ccd108",
+  "accepted_source_restoration": "restored_leading_h2"
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p01_snake_game_java",
+  "action_index": 5,
+  "filename": "src/main/java/MoveOutcome.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p01_snake_game/java/005__src__main__java__MoveOutcome.java/user_prompt.txt",
+  "user_prompt_sha256": "a91ea2435e7f5531e74486fe0a7095f51c951a670e6dcc7f62bda8d5a5f9ddd7",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p01_snake_game/java/005__src__main__java__MoveOutcome.java/input_context.json",
+  "input_context_sha256": "19706476b47edd6314b64a0621dcaa31ca738f1cce01899e2178ac93ee467a60",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "03416c461d6b3e0efec2b5229b8de040d70249b086ddcd2e4ba8fbbbe8eae4ad",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Position.java",
+      "generated_code_sha256": "a6f0190a33224818ca95a4337e873f30952c57f7735d7773a288cd5e9db6673a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Direction.java",
+      "generated_code_sha256": "d241161b099abb3ea9228ea277fc72294bb770f4904fb29bba536804ee88e91a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/RandomSource.java",
+      "generated_code_sha256": "ad112333261ff0cc1a743ee1c6b09196ac87c9ef4a59b8dbd60d3e4d70aa2b9f",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p01_snake_game/java/architecture/team/team.json",
+  "checkpoint_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p01_snake_game/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p01_snake_game/java/attempts/0004_seed_1082638472/generation_report.json",
+  "rng_seed": 1082638472,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789277762553",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 97,
+    "prompt_tokens": 7170,
+    "total_tokens": 7267
+  },
+  "response_content_sha256": "3ffda9fe20f523c3982c2d4ee70fbd829aeaad4aadf3298946689b13c167732d",
+  "generated_code_sha256": "94ad9ef031156057c00db5ed28192112d148158379e83d724145c560a1c87178",
+  "accepted_source_restoration": "accepted_repository_content"
+}

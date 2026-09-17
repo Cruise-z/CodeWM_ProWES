@@ -11,7 +11,7 @@ three supplied inputs and was not fabricated.
 | Software/hardware records | Present | `00_common/environment/`, `00_common/hardware/` |
 | Root project license | Missing | Choose an umbrella license before public release; third-party notices are retained. |
 | RQ1 14-task specification | Present | `RQ1/01_task_specs/manifest.json` |
-| RQ1 prompt templates and 42 rendered Stage-0 prompts | Present | `RQ1/02_prompts/`, `RQ1/03_architecture_checkpoints/` |
+| RQ1 formal prompts | Present | `RQ1/02_prompts/` contains 42 exact Stage-0 payloads plus 480 exact accepted-run Stage-1 system/user prompts, contexts, hashes, model/response metadata, and a deterministic builder. |
 | RQ1 42 serialized architecture checkpoints | Present | Each unit has `architecture/team/team.json` and provenance evidence. |
 | RQ1 current initial repositories | Present | Beside each architecture checkpoint. |
 | RQ1 frozen generator/framework/evaluator | Present | `RQ1/source/`, `RQ1/04_docker/` |

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_cpp",
+  "action_index": 13,
+  "filename": "src/Main.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/013__src__Main.cpp/user_prompt.txt",
+  "user_prompt_sha256": "59d7a7d99042cfecdf153c0343c54189fd4a76742da189aa57e1ba1702998feb",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/cpp/013__src__Main.cpp/input_context.json",
+  "input_context_sha256": "dd71d8b9666e39e44245e536bcf70adbe54cb5d110f5023472eb753647a3d193",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "76b5f9a37d36d5c1efb9839e49ff0b7ee642dd0db25aee5c35669a8a59302ca4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Common.h",
+      "generated_code_sha256": "6a4e12a7b9429f6a1260f614c5b5b4d2479b2715ea813e4be6b68d9fb8935fbe",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Board.h",
+      "generated_code_sha256": "7ee75300fc0acc19fad06de2e83f79992613556b3ee37eea4e21b954f9500906",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Move.h",
+      "generated_code_sha256": "9ed581abb34b6825ce4f155613709728d2c39432ecb01431206a0ff6b1b64198",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/MoveHistory.h",
+      "generated_code_sha256": "ffb66efb1c6f8c469180d874a7a13e5dbd9d9e3aa7246295c1194d0b18cc6fe5",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/WinDetector.h",
+      "generated_code_sha256": "735c893af14587ad9c310550157cd106013fc9b5f3cf63c77205cee4ccaa8363",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/GameEngine.h",
+      "generated_code_sha256": "b418613a039b8353a7e4ebdb15a246e23dd7b7b22557c3e03714b0c5317b7063",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Board.cpp",
+      "generated_code_sha256": "47c967cae6fd54808079c240266b7198b200f7077b3372fe690cafa913c97fe7",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Move.cpp",
+      "generated_code_sha256": "9c3663fd89c3f6bed84bc5187091258c33f51fa046c7788c0f2b04b2a14b004b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/MoveHistory.cpp",
+      "generated_code_sha256": "1da27413a0717198c52dd38f034d67ae9b70cfffc4bf1ed78eed670b069fe026",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/WinDetector.cpp",
+      "generated_code_sha256": "01acaa7c5dd177f30585f5b6c558e18688e917cc5b465c7ad745e28f51d7b7b8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/GameEngine.cpp",
+      "generated_code_sha256": "42e0996e3fb5b7527d4f0d9986491cabc16313c9e327cea9d3c7036d25abe043",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/cpp/attempts/0006_seed_1922813371/generation_report.json",
+  "rng_seed": 1922813371,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789303564161",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 837,
+    "prompt_tokens": 8703,
+    "total_tokens": 9540
+  },
+  "response_content_sha256": "a250ac2428fd7c5989b5973a2de1d334b00fa47622762a133ac75184373ac9cb",
+  "generated_code_sha256": "60a09138b63c544ef127263ddd8f9f874feb5d05c10763bf63c8554122a63f08",
+  "accepted_source_restoration": "restored_leading_h2"
+}

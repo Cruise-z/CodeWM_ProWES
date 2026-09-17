@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p11_custom_press_releases_java",
+  "action_index": 10,
+  "filename": "src/test/java/MainTest.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/java/010__src__test__java__MainTest.java/user_prompt.txt",
+  "user_prompt_sha256": "e73f1471468bfc9e15afca962bca4c4bb782ca74b55d2dc57758c94ba0bbd7e3",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p11_custom_press_releases/java/010__src__test__java__MainTest.java/input_context.json",
+  "input_context_sha256": "fe8691e215f2573f08e12e30d1594d2b4f7dc98a0edb2ca4054329f51b1a4db0",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "6821e4dda2d52c43ec0a7b580ad571f22e00640ed789cbf0200d724c23b98dee",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/ReleaseState.java",
+      "generated_code_sha256": "6293088521ccbe43fbe956d74ff1d3e1f5a5d2803d070c287674e1bfeb38f10d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Version.java",
+      "generated_code_sha256": "262bc3b404e6202cf0c4327d3a49c7bcf300b4acd494457b32fea5c4562406f7",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Template.java",
+      "generated_code_sha256": "2af75c0a8ac23d522964156b7f6b693c07e3f91a7435db10b67bf0643d6a516e",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Validator.java",
+      "generated_code_sha256": "42f2be2557ca26b4406fb53ff8e13cfb1e7bb42b5787f45d1d9896047f77206c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/PressRelease.java",
+      "generated_code_sha256": "0813510d5beb82be1cde26bf7da3da66323fdfbf1b14fe3b38ae5a3c9b6bf76d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/TaggingSystem.java",
+      "generated_code_sha256": "b41086b6257f4c3158c3deda21c2c67c0d476e1ae04d66c0b338fa95f141d44c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/RenderService.java",
+      "generated_code_sha256": "c7278478309d6313cc3ace43c56907b3d7dbbaaaeaf4820123eaed0c15c82e08",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Main.java",
+      "generated_code_sha256": "d478a09fba4817144429fd0e835adc6021e14961d97144eb09e4ba53aab4b0c7",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p11_custom_press_releases/java/architecture/team/team.json",
+  "checkpoint_sha256": "cbde9d424f9c118bb034209266d1e48c24bde1a1daaad08aa8cffe7986a22e13",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p11_custom_press_releases/java/attempts/0001_seed_2810241787/generation_report.json",
+  "rng_seed": 2810241787,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789386490928",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 588,
+    "prompt_tokens": 13099,
+    "total_tokens": 13687
+  },
+  "response_content_sha256": "cdf49ba34d262168b3d6619c892291d0ad5118701d7275dfd5492b7c1561011b",
+  "generated_code_sha256": "23a185a45c39b66de1105c90f8183c6c5ec632749e09c7f64a9aa56aa493df9a",
+  "accepted_source_restoration": "accepted_repository_content"
+}

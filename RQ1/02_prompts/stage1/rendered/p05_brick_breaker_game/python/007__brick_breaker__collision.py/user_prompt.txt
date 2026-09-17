@@ -1,0 +1,315 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve protocol files exactly: requirements.txt, Main.py, tests/test_main.py. Keep Main.py thin and headless, running a single deterministic demo step and exiting. Place reusable logic in a snake_case package brick_breaker with an acyclic import graph. Ownership: config.py owns GameConfig and imports no project modules. level.py and game.py literally import GameConfig via 'from .config import GameConfig'. level.py must not import game.py. game.py may import make_grid_level from level.py. Separate domain entities (ball, paddle, brick) from pure rules (collision) and orchestration (game). No GUI or external frameworks; tests exercise pure logic deterministically with discrete ticks and abstracted input (left/right/none). Only pytest is listed in requirements.txt. Target Python 3.10 and avoid 3.11+ APIs. The single protocol test verifies runtime wiring via Main.run_demo and covers representative rules: a brick hit increments score and brick removal; a bottom-out decrements lives and resets level.","Domain Decomposition":[["Runtime bootstrap with a one-step deterministic demo and no I/O loops","Main.py","protocol-required"],["Package initialization and public re-exports (GameConfig, Game)","brick_breaker/__init__.py","package"],["Configuration owner: field size, speeds, layout parameters, scoring, lives","brick_breaker/config.py","package"],["Ball entity: position, velocity, radius, step and simple bounces","brick_breaker/ball.py","domain-entity"],["Paddle entity: horizontal movement within bounds","brick_breaker/paddle.py","domain-entity"],["Brick entity: AABB, durability, alive/removal","brick_breaker/brick.py","domain-entity"],["Level aggregate and grid layout builder for bricks","brick_breaker/level.py","domain-entity"],["Pure collision rules: walls, paddle reflection angle, brick circle-AABB","brick_breaker/collision.py","pure-rule"],["Game orchestration: tick-based updates, state transitions, score/lives","brick_breaker/game.py","orchestration"],["Protocol-level deterministic tests for runtime wiring and core rules","tests/test_main.py","automated-test"]],"File list":["requirements.txt","Main.py","brick_breaker/__init__.py","brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py","tests/test_main.py"],"Canonical File References":["requirements.txt","Main.py","brick_breaker/__init__.py","brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py","tests/test_main.py"],"Data structures and interfaces":"classDiagram\n    class GameConfig {\n        +int width\n        +int height\n        +int lives\n        +float ball_speed\n        +float ball_radius\n        +float paddle_width\n        +float paddle_speed\n        +int brick_rows\n        +int brick_cols\n        +float brick_width\n        +float brick_height\n        +float brick_padding\n        +float top_margin\n        +int points_per_brick\n    }\n    class Ball {\n        +float x\n        +float y\n        +float vx\n        +float vy\n        +float radius\n        +step()\n        +bounce_x()\n        +bounce_y()\n    }\n    class Paddle {\n        +float x\n        +float y\n        +float width\n        +float speed\n        +move(direction: str, min_x: float, max_x: float)\n    }\n    class Brick {\n        +float x\n        +float y\n        +float width\n        +float height\n        +int durability\n        +alive() bool\n        +hit() int\n    }\n    class Level {\n        +list~Brick~ bricks\n        +remaining() int\n    }\n    class Game {\n        -GameConfig config\n        -Ball ball\n        -Paddle paddle\n        -Level level\n        -int score\n        -int lives\n        -str status\n        +tick(input_action: str) dict\n        +reset_for_life_loss()\n    }\n    class Collision {\n        <<module>>\n        +reflect_off_walls(ball: Ball, width: int, height: int)\n        +collide_ball_with_paddle(ball: Ball, paddle: Paddle)\n        +collide_ball_with_rect(ball: Ball, rx: float, ry: float, rw: float, rh: float) str?\n    }\n    Game --> GameConfig\n    Game --> Ball\n    Game --> Paddle\n    Game --> Level\n    Level --> Brick\n    Level ..> GameConfig\n    Collision ..> Ball\n    Collision ..> Paddle\n    Collision ..> Brick","Program call flow":"sequenceDiagram\n    participant M as Main\n    participant G as Game\n    participant C as Collision\n    participant L as Level\n    M->>G: construct(GameConfig())\n    G->>L: make_grid_level(config)\n    M->>G: tick(input_action='none')\n    G->>G: move paddle per input\n    G->>G: ball.step()\n    G->>C: reflect_off_walls(ball, width, height)\n    G->>C: collide_ball_with_paddle(ball, paddle)\n    G->>L: iterate bricks\n    G->>C: collide_ball_with_rect(ball, brick.x, brick.y, brick.w, brick.h)\n    C-->>G: axis of reflection or none\n    G->>G: update score/lives/status\n    G-->>M: return snapshot dict","Domain Mapping":[["Startup and demo wiring","Main.py"],["Package init and API exposure","brick_breaker/__init__.py"],["Configuration boundary and defaults","brick_breaker/config.py"],["Ball motion and bounces","brick_breaker/ball.py"],["Paddle movement and bounds clamping","brick_breaker/paddle.py"],["Brick durability and removal","brick_breaker/brick.py"],["Level layout (grid) and brick aggregation","brick_breaker/level.py"],["Collision detection and response (walls/paddle/brick)","brick_breaker/collision.py"],["Game orchestration: tick loop, collisions, scoring, lives, transitions","brick_breaker/game.py"],["Headless tests for wiring, brick breaking, and life loss","tests/test_main.py"]],"Testable Core Boundary":{"pure_logic_modules":["brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py"],"environment_dependent_modules":["Main.py"],"test_targets_should_focus_on":["Main.run_demo returns a stable snapshot without side effects","A ball-brick collision decrements durability, removes brick at zero, and increases score","Bottom-out decrements lives and resets level when lives remain"]},"C++ Interface Plan":{},"Test Include Audit":{"declared_test_imports":["Main","brick_breaker","brick_breaker.game","brick_breaker.level","brick_breaker.config"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"test_command":"pytest -q","required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: requirements.txt. Runtime entry: Main.py. Test target: tests/test_main.py. Test command: pytest -q. Exactly one protocol-level test file is present.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":["pytest"],"Required Other language third-party packages":[],"Canonical File References":["requirements.txt","Main.py","brick_breaker/__init__.py","brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py","tests/test_main.py"],"Logic Analysis":[["requirements.txt","dependency/build; declares pytest as the only test dependency and preserves protocol"],["Main.py","runtime/bootstrap; thin, headless entry that exposes run_demo(), performs one deterministic tick, and exits"],["brick_breaker/__init__.py","package; initializes package namespace and re-exports GameConfig and Game for public API"],["brick_breaker/config.py","package; configuration owner defining GameConfig with defaults; imports no project modules"],["brick_breaker/ball.py","domain-entity; Ball data and movement with step() and axis bounces"],["brick_breaker/paddle.py","domain-entity; Paddle horizontal motion and bounds clamping"],["brick_breaker/brick.py","domain-entity; Brick AABB, durability, alive/removal, and hit()"],["brick_breaker/level.py","domain-entity; Level aggregation of bricks and grid layout builder make_grid_level(config)"],["brick_breaker/collision.py","pure-rule; collision responses: walls, paddle reflection, and circle-AABB brick collisions"],["brick_breaker/game.py","orchestration; tick loop, input application, collision sequencing, scoring, lives, and state transitions"],["tests/test_main.py","automated-test; protocol-level wiring and representative rule checks using deterministic ticks"]],"Task list":["requirements.txt","brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py","brick_breaker/__init__.py","Main.py","tests/test_main.py"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"exactly_one_protocol_test_file":true,"unexpected_additional_test_files":[]},"File Coverage Audit":{"design_file_list_count":11,"pm_canonical_count":11,"logic_analysis_count":11,"task_list_count":11,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.py","basic runtime wiring via Main.run_demo returns a stable snapshot without side effects"],["tests/test_main.py","representative rules: (a) a ball-brick collision increments score and removes the brick at zero durability; (b) a bottom-out decrements lives and resets the level when lives remain"]],"Test Include Plan":[["tests/test_main.py","Main"],["tests/test_main.py","brick_breaker"],["tests/test_main.py","brick_breaker.game"],["tests/test_main.py","brick_breaker.level"],["tests/test_main.py","brick_breaker.config"]],"Module Boundary Audit":{"core_domain_logic_modules":["brick_breaker/__init__.py","brick_breaker/config.py","brick_breaker/ball.py","brick_breaker/paddle.py","brick_breaker/brick.py","brick_breaker/level.py","brick_breaker/collision.py","brick_breaker/game.py"],"environment_dependent_modules":["Main.py"],"environment_test_coupling_risks":["Tests import Main for run_demo only; core tests target pure logic in brick_breaker.* to avoid environment coupling."],"headless_testing_risks":["Floating-point reflections can introduce nondeterminism if not clamped; ensure deterministic ordering and stable reflection math.","No GUI or real-time loop is present; ticks are discrete and deterministic."]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{},"Python Dependency Compatibility Audit":{"not_applicable":false,"uses_outdated_pins":false,"version_range_recommendations":["pytest>=7,<9 ensures compatibility with Python 3.10; keep runtime code free of 3.11+ APIs"],"headless_test_notes":"No GUI or network; tests run deterministically with discrete ticks and abstracted input"},"Full API spec":"Public API and import rules:\n- Module ownership and import boundaries:\n  - brick_breaker/config.py owns GameConfig and imports no project modules.\n  - brick_breaker/level.py and brick_breaker/game.py must import GameConfig via: from .config import GameConfig.\n  - brick_breaker/level.py must not import brick_breaker/game.py.\n  - brick_breaker/game.py may import make_grid_level from brick_breaker/level.py.\n  - No cyclic imports; brick_breaker/collision.py contains pure functions only.\n\n- brick_breaker/config.py:\n  class GameConfig:\n    def __init__(self, width: int = 300, height: int = 400, lives: int = 3,\n                 ball_speed: float = 120.0, ball_radius: float = 4.0,\n                 paddle_width: float = 60.0, paddle_speed: float = 180.0,\n                 brick_rows: int = 3, brick_cols: int = 5,\n                 brick_width: float | None = None, brick_height: float = 14.0,\n                 brick_padding: float = 2.0, top_margin: float = 40.0,\n                 points_per_brick: int = 100): ...\n  - Semantics: Provides default gameplay parameters. If brick_width is None, compute from width, cols, and padding.\n\n- brick_breaker/ball.py:\n  class Ball:\n    x: float; y: float; vx: float; vy: float; radius: float\n    def __init__(self, x: float, y: float, vx: float, vy: float, radius: float): ...\n    def step(self, dt: float) -> None: updates x += vx*dt; y += vy*dt\n    def bounce_x(self) -> None: invert vx\n    def bounce_y(self) -> None: invert vy\n\n- brick_breaker/paddle.py:\n  class Paddle:\n    x: float; y: float; width: float; speed: float\n    def __init__(self, x: float, y: float, width: float, speed: float): ...\n    def move(self, direction: str, min_x: float, max_x: float, dt: float) -> None:\n      - direction in {'left','right','none'}; move horizontally by speed*dt or 0; clamp so [x - width/2, x + width/2] stays within [min_x, max_x]\n\n- brick_breaker/brick.py:\n  class Brick:\n    x: float; y: float; width: float; height: float; durability: int\n    def __init__(self, x: float, y: float, width: float, height: float, durability: int = 1): ...\n    def alive(self) -> bool: return durability > 0\n    def hit(self) -> int: decrement durability to a minimum of 0; return current durability\n\n- brick_breaker/level.py:\n  from .config import GameConfig\n  class Level:\n    bricks: list[Brick]\n    def __init__(self, bricks: list[Brick]): ...\n    def remaining(self) -> int: returns count of bricks where alive() is True\n  def make_grid_level(config: GameConfig) -> Level:\n    - Build a grid of Brick instances based on brick_rows, brick_cols, brick_width/height, brick_padding, and top_margin.\n\n- brick_breaker/collision.py:\n  def reflect_off_walls(ball: Ball, width: int, height: int) -> None:\n    - If ball hits left/right walls (x - r <= 0 or x + r >= width): invert vx and clamp inside bounds\n    - If ball hits top wall (y - r <= 0): invert vy and clamp inside bounds\n    - No handling for bottom-out here; Game orchestrates life loss when y - r > height\n  def collide_ball_with_paddle(ball: Ball, paddle: Paddle) -> None:\n    - If ball overlaps paddle rectangle, reflect on Y and adjust vx by contact offset to create angle; clamp min upward vy\n  def collide_ball_with_rect(ball: Ball, rx: float, ry: float, rw: float, rh: float) -> str | None:\n    - Detect circle-AABB overlap; on collision, compute minimal penetration axis; reflect on 'x' or 'y' accordingly, adjust ball position to resolve; return 'x', 'y', or None if no collision\n\n- brick_breaker/game.py:\n  from .config import GameConfig\n  from .level import make_grid_level, Level\n  class Game:\n    def __init__(self, config: GameConfig | None = None): ...\n      - Initializes config (default if None), score=0, lives=config.lives, status='running'\n      - Creates a Level via make_grid_level\n      - Positions Paddle at bottom center and Ball slightly above paddle with upward vy and initial vx deterministic from config\n    def tick(self, input_action: str) -> dict:\n      - input_action in {'left','right','none'} else raise ValueError\n      - Applies paddle movement for a fixed dt (e.g., 1/60s)\n      - Steps ball by dt; applies wall reflection; paddle collision; iterates bricks to collide (first collision per tick resolves and updates)\n      - On brick collision: brick.hit(); if durability==0, remove from level and add config.points_per_brick to score\n      - On bottom-out (ball.y - ball.radius > config.height): decrement lives; if lives>0 call reset_for_life_loss(), else status='gameover'\n      - Returns a snapshot dict with at least: {'score': int, 'lives': int, 'status': str, 'bricks_remaining': int, 'ball': {'x': float, 'y': float, 'vx': float, 'vy': float}, 'paddle': {'x': float, 'y': float}}\n    def reset_for_life_loss(self) -> None:\n      - Recenter paddle and reset ball above paddle with upward velocity; level layout remains unless game over\n\n- brick_breaker/__init__.py:\n  Exposes: from .config import GameConfig; from .game import Game\n\n- Main.py:\n  class Main:\n    @staticmethod\n    def run_demo() -> dict:\n      - Construct Game(GameConfig())\n      - Execute exactly one Game.tick('none') with deterministic starting state\n      - Return the snapshot dict; no side effects beyond returned data\n\n- Error behavior and determinism:\n  - Game.tick raises ValueError on invalid input_action\n  - All math uses Python 3.10-compatible floats; ordering of collision checks is stable: walls -> paddle -> bricks in layout order\n  - No randomness; initial velocities and positions are deterministic from config\n\n- Tests may import only: Main, brick_breaker, brick_breaker.game, brick_breaker.level, brick_breaker.config.","Shared Knowledge":"Protocol files preserved exactly: requirements.txt, Main.py, tests/test_main.py. Main.py contains a thin Main.run_demo that constructs Game(GameConfig()), performs one deterministic tick with input_action='none', returns a snapshot, and exits. All reusable logic resides in the snake_case package brick_breaker with an acyclic import graph. brick_breaker/config.py owns GameConfig and imports no project modules. brick_breaker/level.py and brick_breaker/game.py import GameConfig via 'from .config import GameConfig'; level.py does not import game.py; game.py may import make_grid_level from level.py. Domain entities (ball, paddle, brick) are separated from pure rules (collision) and orchestration (game). No GUI or external frameworks; tests use pytest to exercise pure logic deterministically with discrete ticks and abstracted input. The single test file tests/test_main.py imports exactly: Main, brick_breaker, brick_breaker.game, brick_breaker.level, brick_breaker.config.","Execution Protocol":"Run tests with: pytest -q. Exactly one protocol-level test file is present: tests/test_main.py. Runtime entry is Main.py exposing Main.run_demo, which performs one deterministic step and exits. Additional files do not alter protocol files. Tests avoid GUI, network, or OS-dependent behavior, focusing on core logic deterministically.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- requirements.txt
+```## requirements.txt
+pytest>=7,<9```
+----- brick_breaker/config.py
+```## brick_breaker/config.py
+"""Configuration module for the brick breaker game.
+
+This module defines the GameConfig class which holds all the configurable
+parameters for the game such as dimensions, speeds, layout, scoring, etc.
+"""
+
+from typing import Optional
+
+
+class GameConfig:
+    """Configuration parameters for the brick breaker game."""
+
+    def __init__(
+        self,
+        width: int = 300,
+        height: int = 400,
+        lives: int = 3,
+        ball_speed: float = 120.0,
+        ball_radius: float = 4.0,
+        paddle_width: float = 60.0,
+        paddle_speed: float = 180.0,
+        brick_rows: int = 3,
+        brick_cols: int = 5,
+        brick_width: Optional[float] = None,
+        brick_height: float = 14.0,
+        brick_padding: float = 2.0,
+        top_margin: float = 40.0,
+        points_per_brick: int = 100,
+    ):
+        """Initialize game configuration with default values.
+
+        Args:
+            width: Game window width in pixels.
+            height: Game window height in pixels.
+            lives: Number of lives the player starts with.
+            ball_speed: Initial ball speed in pixels per second.
+            ball_radius: Radius of the ball in pixels.
+            paddle_width: Width of the paddle in pixels.
+            paddle_speed: Paddle movement speed in pixels per second.
+            brick_rows: Number of rows of bricks.
+            brick_cols: Number of columns of bricks.
+            brick_width: Width of each brick in pixels. If None, computed from
+                other parameters.
+            brick_height: Height of each brick in pixels.
+            brick_padding: Space between bricks in pixels.
+            top_margin: Distance from top of screen to first row of bricks.
+            points_per_brick: Points awarded for destroying a brick.
+        """
+        self.width = width
+        self.height = height
+        self.lives = lives
+        self.ball_speed = ball_speed
+        self.ball_radius = ball_radius
+        self.paddle_width = paddle_width
+        self.paddle_speed = paddle_speed
+        self.brick_rows = brick_rows
+        self.brick_cols = brick_cols
+        self.brick_width = brick_width
+        self.brick_height = brick_height
+        self.brick_padding = brick_padding
+        self.top_margin = top_margin
+        self.points_per_brick = points_per_brick
+
+        # Compute brick_width if not provided
+        if self.brick_width is None:
+            total_width = self.width - 2 * self.brick_padding
+            available_width = total_width - (self.brick_cols - 1) * self.brick_padding
+            self.brick_width = available_width / self.brick_cols```
+----- brick_breaker/ball.py
+```## brick_breaker/ball.py
+"""Ball entity for the brick breaker game.
+
+This module defines the Ball class which represents the game ball with
+position, velocity, and movement capabilities.
+"""
+
+class Ball:
+    """Represents a ball in the brick breaker game."""
+
+    def __init__(self, x: float, y: float, vx: float, vy: float, radius: float):
+        """Initialize a ball with position, velocity, and radius.
+
+        Args:
+            x: Initial x-coordinate of the ball center.
+            y: Initial y-coordinate of the ball center.
+            vx: Initial velocity in x-direction (pixels per second).
+            vy: Initial velocity in y-direction (pixels per second).
+            radius: Radius of the ball in pixels.
+        """
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.radius = radius
+
+    def step(self, dt: float) -> None:
+        """Update the ball's position based on its velocity and time delta.
+
+        Args:
+            dt: Time delta in seconds.
+        """
+        self.x += self.vx * dt
+        self.y += self.vy * dt
+
+    def bounce_x(self) -> None:
+        """Reverse the horizontal velocity of the ball."""
+        self.vx = -self.vx
+
+    def bounce_y(self) -> None:
+        """Reverse the vertical velocity of the ball."""
+        self.vy = -self.vy```
+----- brick_breaker/paddle.py
+```## brick_breaker/paddle.py
+"""Paddle entity for the brick breaker game.
+
+This module defines the Paddle class which represents the player-controlled
+paddle that moves horizontally to bounce the ball.
+"""
+
+class Paddle:
+    """Represents a paddle in the brick breaker game."""
+
+    def __init__(self, x: float, y: float, width: float, speed: float):
+        """Initialize a paddle with position, width, and speed.
+
+        Args:
+            x: Initial x-coordinate of the paddle center.
+            y: Initial y-coordinate of the paddle center.
+            width: Width of the paddle in pixels.
+            speed: Paddle movement speed in pixels per second.
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.speed = speed
+
+    def move(self, direction: str, min_x: float, max_x: float, dt: float) -> None:
+        """Move the paddle horizontally based on direction and time delta.
+
+        Args:
+            direction: Movement direction, one of 'left', 'right', or 'none'.
+            min_x: Minimum x-coordinate the paddle can reach.
+            max_x: Maximum x-coordinate the paddle can reach.
+            dt: Time delta in seconds.
+        """
+        if direction == "left":
+            self.x -= self.speed * dt
+        elif direction == "right":
+            self.x += self.speed * dt
+        elif direction != "none":
+            raise ValueError(f"Invalid direction '{direction}'. Must be 'left', 'right', or 'none'.")
+
+        # Clamp the paddle position to stay within bounds
+        half_width = self.width / 2
+        self.x = max(min_x + half_width, min(max_x - half_width, self.x))```
+----- brick_breaker/brick.py
+```## brick_breaker/brick.py
+"""Brick entity for the brick breaker game.
+
+This module defines the Brick class which represents individual bricks
+in the game that can be destroyed by the ball.
+"""
+
+class Brick:
+    """Represents a brick in the brick breaker game."""
+
+    def __init__(self, x: float, y: float, width: float, height: float, durability: int = 1):
+        """Initialize a brick with position, size, and durability.
+
+        Args:
+            x: X-coordinate of the brick's top-left corner.
+            y: Y-coordinate of the brick's top-left corner.
+            width: Width of the brick in pixels.
+            height: Height of the brick in pixels.
+            durability: Number of hits required to destroy the brick.
+        """
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.durability = durability
+
+    def alive(self) -> bool:
+        """Check if the brick is still alive (not destroyed).
+
+        Returns:
+            True if the brick has durability greater than 0, False otherwise.
+        """
+        return self.durability > 0
+
+    def hit(self) -> int:
+        """Apply damage to the brick.
+
+        Reduces the brick's durability by 1, with a minimum of 0.
+
+        Returns:
+            The remaining durability of the brick after being hit.
+        """
+        self.durability = max(0, self.durability - 1)
+        return self.durability```
+----- brick_breaker/level.py
+```## brick_breaker/level.py
+"""Level module for the brick breaker game.
+
+This module defines the Level class and the make_grid_level function
+which creates a grid of bricks based on game configuration.
+"""
+
+from .config import GameConfig
+from .brick import Brick
+
+
+class Level:
+    """Represents a level containing a collection of bricks."""
+
+    def __init__(self, bricks: list[Brick]):
+        """Initialize a level with a list of bricks.
+
+        Args:
+            bricks: List of Brick objects in the level.
+        """
+        self.bricks = bricks
+
+    def remaining(self) -> int:
+        """Count the number of alive bricks in the level.
+
+        Returns:
+            The number of bricks that are still alive (durability > 0).
+        """
+        return sum(1 for brick in self.bricks if brick.alive())
+
+
+def make_grid_level(config: GameConfig) -> Level:
+    """Create a grid of bricks based on the game configuration.
+
+    Args:
+        config: Game configuration object containing brick layout parameters.
+
+    Returns:
+        A Level object containing the created bricks.
+    """
+    bricks = []
+    
+    # Calculate brick width if not explicitly provided
+    if config.brick_width is None:
+        total_width = config.width - 2 * config.brick_padding
+        available_width = total_width - (config.brick_cols - 1) * config.brick_padding
+        brick_width = available_width / config.brick_cols
+    else:
+        brick_width = config.brick_width
+    
+    # Create bricks in a grid pattern
+    for row in range(config.brick_rows):
+        for col in range(config.brick_cols):
+            # Calculate brick position
+            x = config.brick_padding + col * (brick_width + config.brick_padding)
+            y = config.top_margin + row * (config.brick_height + config.brick_padding)
+            
+            # Create brick with default durability of 1
+            brick = Brick(x, y, brick_width, config.brick_height)
+            bricks.append(brick)
+    
+    return Level(bricks)```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: brick_breaker/collision.py
+```python
+## brick_breaker/collision.py
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: brick_breaker/collision.py. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

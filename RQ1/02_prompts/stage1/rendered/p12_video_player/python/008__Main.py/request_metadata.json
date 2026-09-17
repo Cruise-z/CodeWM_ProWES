@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_python",
+  "action_index": 8,
+  "filename": "Main.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/python/008__Main.py/user_prompt.txt",
+  "user_prompt_sha256": "50b244d051ea248ec35c04851b4790bf0b36c3ea4933eb5c5060c257dbfa1b58",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/python/008__Main.py/input_context.json",
+  "input_context_sha256": "3cfcf2ae0f1b39b01347627036c713837286dffc3e85428d4d124b46b2465f42",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/__init__.py",
+      "generated_code_sha256": "6573e89aded6d01e503cb20a650c8fa0e307705d9765cf7fb8320611d9d9c39a",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/errors.py",
+      "generated_code_sha256": "b100ab50133544bcae372683652bcde8bf67b946d996db47f6023b3a8947047c",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/media.py",
+      "generated_code_sha256": "81ce506f68dbdcfa5df4fadd5cf4342336e7095906d02dd0507042673017091f",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/clock.py",
+      "generated_code_sha256": "b20522b483d1eabc9c9d9167e1ce1388482bc5718284ef86151c14a2cb8ae6dc",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/playlist.py",
+      "generated_code_sha256": "4827e4c7527e593a065c3f4030359b5d76918f34198b7c89d8ba20b21a4d461e",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_player/player.py",
+      "generated_code_sha256": "88da68d43b6cdf21cdb688598031b1e4a275328090e9c899bbf8237c3fdcbad4",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/python/architecture/team/team.json",
+  "checkpoint_sha256": "5689fda1678c63d031d808493ff4ab224d6ef87f515fcfeca55df4cf7112d5bb",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/python/attempts/0001_seed_769100576/generation_report.json",
+  "rng_seed": 769100576,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789264495593",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 855,
+    "prompt_tokens": 9002,
+    "total_tokens": 9857
+  },
+  "response_content_sha256": "d94ef168b5b611d05267aeccb0b01f13099bfea63a0c044da868bedd49deb64b",
+  "generated_code_sha256": "b71189731d78541023752b7351e6f8ff06fee12621af33bee9c4813916dd1e4c",
+  "accepted_source_restoration": "restored_leading_h2"
+}

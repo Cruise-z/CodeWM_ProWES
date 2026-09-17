@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_cpp",
+  "action_index": 6,
+  "filename": "include/Repository.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/006__include__Repository.h/user_prompt.txt",
+  "user_prompt_sha256": "697f9fb4b7044020afddbc24c73c90137523ef315c3b3017b6dc96fe65a606f8",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/006__include__Repository.h/input_context.json",
+  "input_context_sha256": "094a132e8ce34446592a00791954d7e7bc16298f969912f7a8f950926a7eb012",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "05febd8cce44b4038f38874463d8612f01e55c0a5f74cfdbe00d6a99612f7337",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Record.h",
+      "generated_code_sha256": "b88476b2361c50c417eb21dcc93f594ef59d92d84935f6997201f1def8cd0335",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Record.cpp",
+      "generated_code_sha256": "c09e28bc760459efaea0cd465b8fc1cd1d25d20a11c0369fcae23b05a86529ab",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/ManualClock.h",
+      "generated_code_sha256": "45100ceeeb6dccf18b1e16c4a509f8cc8e6843e9bd38d697b44c5383ec43bfc8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/ManualClock.cpp",
+      "generated_code_sha256": "d6f63162fdc14da3f8b6ed3966f00fe29defe4c94cb7106489705c5a5604d8f0",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/attempts/0001_seed_252729447/generation_report.json",
+  "rng_seed": 252729447,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789406113205",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 111,
+    "prompt_tokens": 9737,
+    "total_tokens": 9848
+  },
+  "response_content_sha256": "c2ca46028ae5497811cd52742dfebdd6325ef37ba7428ec4eecab8e520359b67",
+  "generated_code_sha256": "66316bf222d3b245bfd66380b9683670412b00f577d1098289f30646192e656d",
+  "accepted_source_restoration": "accepted_repository_content"
+}

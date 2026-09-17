@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p02_flappy_bird_game_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "1000a6daa3d1ef700ea22e3de25b33765337f8d633a9ad97e53a44ca42267478",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "5677c92d89c6b0c6a635acbd0ef03950c88ca12878e54820d8e0150e8b90305b",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p02_flappy_bird_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "ced24fb585f3f7def95b013caeedb1913a630242951b199cdc7445e7491d6193",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353/generation_report.json",
+  "rng_seed": 1192725353,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789279019321",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 203,
+    "prompt_tokens": 5789,
+    "total_tokens": 5992
+  },
+  "response_content_sha256": "0d32ff08b14af77981b66b8a1cc2d703b28dd8ed42549e6a9ad036e734a6e8e9",
+  "generated_code_sha256": "4a8c47c7db170562057c8e24d439c5219a034bab9aa24bb6c87b23fe14338921",
+  "accepted_source_restoration": "accepted_repository_content"
+}

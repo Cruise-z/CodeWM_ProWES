@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_cpp",
+  "action_index": 2,
+  "filename": "include/Record.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/002__include__Record.h/user_prompt.txt",
+  "user_prompt_sha256": "a79207132d1db68eb661d4a2a82d879bbb43ee370bc8ed44f0c4fd62a635cba6",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/002__include__Record.h/input_context.json",
+  "input_context_sha256": "fd0effd51fd418200a26dd3f89ea30416fe6c1187bae8b22288996df80ac6889",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "05febd8cce44b4038f38874463d8612f01e55c0a5f74cfdbe00d6a99612f7337",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/attempts/0001_seed_252729447/generation_report.json",
+  "rng_seed": 252729447,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789406085751",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 177,
+    "prompt_tokens": 9318,
+    "total_tokens": 9495
+  },
+  "response_content_sha256": "0f40cad872416fb14c3a1d3d511d51d577a327ee0d0fee15dfe8636b4e517f0d",
+  "generated_code_sha256": "b88476b2361c50c417eb21dcc93f594ef59d92d84935f6997201f1def8cd0335",
+  "accepted_source_restoration": "accepted_repository_content"
+}

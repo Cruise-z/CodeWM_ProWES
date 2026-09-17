@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p13_video_downloader_java",
+  "action_index": 2,
+  "filename": "src/main/java/DownloadFormat.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/java/002__src__main__java__DownloadFormat.java/user_prompt.txt",
+  "user_prompt_sha256": "38494cdb508cfacd570a593a82f62662592a4cbb09b830f88417010d7341e5d0",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/java/002__src__main__java__DownloadFormat.java/input_context.json",
+  "input_context_sha256": "8f5746042b6a65bcec2370578c2f4efee96d912d62c0a23a59d316f4431e0b7e",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "31cebb63aaaa399566f56d3ea99cef832c44f106e3c1689e4a063f6271b11759",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p13_video_downloader/java/architecture/team/team.json",
+  "checkpoint_sha256": "a1cc46f1bed3edcf7b1c191c98cc1e1827bebbeccfa6a9e04418faff60eaba09",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/java/attempts/0001_seed_2020452492/generation_report.json",
+  "rng_seed": 2020452492,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789409603876",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 280,
+    "prompt_tokens": 7261,
+    "total_tokens": 7541
+  },
+  "response_content_sha256": "3eafc6502b4acff77df84800bb3737819805a8b210cb1a3f5148206c7d548650",
+  "generated_code_sha256": "1d6986220a008a1ce87e20db2fdac0279e198e0544b07794df0bd30a90acc573",
+  "accepted_source_restoration": "accepted_repository_content"
+}

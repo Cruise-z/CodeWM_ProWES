@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p14_todo_list_app_cpp",
+  "action_index": 3,
+  "filename": "include/Date.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/cpp/003__include__Date.h/user_prompt.txt",
+  "user_prompt_sha256": "ffa7ee8d95549a98c997f453290a3e0a13c8a2601375388ecc3afc2f909ea7d5",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/cpp/003__include__Date.h/input_context.json",
+  "input_context_sha256": "12d3a3f5420fe41f4e588523858e949da33820fa07478775e3bafdea9e314430",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "24d0595252e0538af0a647432b496ebf71c9cecf3954c3ce92b392205526ce6c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Task.h",
+      "generated_code_sha256": "c9b188b279a59f014903b1c22121110d1b0fba9b140678fbacf8db9154cf2740",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p14_todo_list_app/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "548032ccdd5e62f7eef36843eb8b953472418a862cdd5bab39b62d17b66eb4a6",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/cpp/attempts/0001_seed_3861770267/generation_report.json",
+  "rng_seed": 3861770267,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789414798553",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 206,
+    "prompt_tokens": 11457,
+    "total_tokens": 11663
+  },
+  "response_content_sha256": "a7fdd214e1a949d9c739da51b38a5a77b4f5d2e4d67b9aac523e261cbfde5ec6",
+  "generated_code_sha256": "e6a53cb3a26a7536ac6a6179213181d8f669dd8955eb1b5d98789f26aea6d2ca",
+  "accepted_source_restoration": "accepted_repository_content"
+}

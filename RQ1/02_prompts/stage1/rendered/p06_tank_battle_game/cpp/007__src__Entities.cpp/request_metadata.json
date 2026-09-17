@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p06_tank_battle_game_cpp",
+  "action_index": 7,
+  "filename": "src/Entities.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/cpp/007__src__Entities.cpp/user_prompt.txt",
+  "user_prompt_sha256": "b91c9c896bca08784171c823d5fe6a3576722a0a6dda9720af000147b7325bf7",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/cpp/007__src__Entities.cpp/input_context.json",
+  "input_context_sha256": "d620c4d8f6f11e3f84bbe17f4d184a80e19d427415e771746a9f2811b6c1d335",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "e34570ce8b2f54267729eedc37179d045a3eada754bbced797b2d0e85b1fea5e",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Main.cpp",
+      "generated_code_sha256": "35c4e129b6dc6f758a8f786ae29c796bfd702c430fb36810b53484cfb4bfe30c",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "tests/test_main.cpp",
+      "generated_code_sha256": "16b727e89f289fa129fcd008b5db15519fbd3b389e75e0494e076e4c8c784ca3",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Geometry.h",
+      "generated_code_sha256": "c3f53dc6e5b05b91efde6b7b85f61a892df8dcaa1b0b24856eb69b4d03d63df8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Geometry.cpp",
+      "generated_code_sha256": "7792fe0c6acdd74b69d623c20cd31a1d35d1a480f004d55bba945a68139b8a9f",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Entities.h",
+      "generated_code_sha256": "2d2a0599de41d51fed49d5d45d25c801f41d35cfcd1f51b702a139770cd9cce6",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p06_tank_battle_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "1dee866f73858b8d671c2bdd6385f3832d968dcab058184d0338e3cffda421d7",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/cpp/attempts/0003_seed_1423652811/generation_report.json",
+  "rng_seed": 1423652811,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789262696574",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 345,
+    "prompt_tokens": 6790,
+    "total_tokens": 7135
+  },
+  "response_content_sha256": "1a5d616021ef962091e9101fcf0f45e9f86aca77ffd55f35f9bc5dd82cc54de5",
+  "generated_code_sha256": "192ffaabc3ba35d3c9f0f5e74893e46764d52d2b1b351859bf7c7fd59c892499",
+  "accepted_source_restoration": "restored_leading_h2"
+}

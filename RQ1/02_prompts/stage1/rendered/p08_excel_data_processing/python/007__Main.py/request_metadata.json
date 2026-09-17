@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_python",
+  "action_index": 7,
+  "filename": "Main.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/007__Main.py/user_prompt.txt",
+  "user_prompt_sha256": "3a2f13de8f60f1bbe3f186cecd694e9b6df73390f8c1de82e564d8cb401da72e",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/007__Main.py/input_context.json",
+  "input_context_sha256": "c7f79ccaa64dd5b971b6565a2bd74b93e2cf2e7136b741227671f31057ac6a4a",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/model.py",
+      "generated_code_sha256": "0beea512ff90a550a881dbe3726ad68332e256adf604099051a600875ee946a8",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/operations.py",
+      "generated_code_sha256": "e8f47adc918ad973b69c5bb23a0428373369683580a07b2505a84e12f03cb65f",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/csv_io.py",
+      "generated_code_sha256": "e001277a15055583291a05f95ce1bfdbf258cd6fd319d8489ca3ac8eb5bda35b",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/report.py",
+      "generated_code_sha256": "b93b49aa520211347e9d9e8872a0c55a3d3fb9f0e31219978ae09293a77645fb",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/__init__.py",
+      "generated_code_sha256": "2fcc8d255b95a987d54734bfd31ddc1924c2bc3a144ff3cc460a8df3a61370b5",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/python/architecture/team/team.json",
+  "checkpoint_sha256": "62f48ba9a7452cff9d1a85d6f40eea424f63c5f74b246b7cabf8db13ec347c24",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/generation_report.json",
+  "rng_seed": 306770503,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789393325617",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 383,
+    "prompt_tokens": 11468,
+    "total_tokens": 11851
+  },
+  "response_content_sha256": "17f555191feed9530c38ed5d1228b4a7255ee1085f6520b4b9036b773219bbcb",
+  "generated_code_sha256": "11ccc7413fab1639bc67174ce8eb5b9a7be149c62f34395fb90dc8f818728863",
+  "accepted_source_restoration": "restored_leading_h2"
+}

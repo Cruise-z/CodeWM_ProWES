@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_python",
+  "action_index": 3,
+  "filename": "brick_breaker/ball.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/python/003__brick_breaker__ball.py/user_prompt.txt",
+  "user_prompt_sha256": "bdf3f21790b8bd8670a45b257640c1c9d3168623358922fd10e823f3d28994a1",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/python/003__brick_breaker__ball.py/input_context.json",
+  "input_context_sha256": "ab8717d0a4b0c3e5f7e700d75a3591f25029263ea700887240a27a9779a86a91",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "brick_breaker/config.py",
+      "generated_code_sha256": "27fa4479c85ed5f752e8a79b48381b7bdde6d3ce519b52066b387666b66f0fb7",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "a4cefc0c1231e6b901c0ac7efe530e1ef103e3dc4a7a104cf50bfa87d77ddf18",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/python/attempts/0013_seed_432197098/generation_report.json",
+  "rng_seed": 432197098,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789329568223",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 318,
+    "prompt_tokens": 5503,
+    "total_tokens": 5821
+  },
+  "response_content_sha256": "e3b1313445e4c056d6dbee8246b6df614e38b569c0ddb9b118477d50f2aeea83",
+  "generated_code_sha256": "5a7f139dfadb62b5f88ab67f9a644c53925533c3174c381e0953f01f7d070532",
+  "accepted_source_restoration": "restored_leading_h2"
+}

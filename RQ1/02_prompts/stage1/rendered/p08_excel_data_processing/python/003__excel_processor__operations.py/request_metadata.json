@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_python",
+  "action_index": 3,
+  "filename": "excel_processor/operations.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/003__excel_processor__operations.py/user_prompt.txt",
+  "user_prompt_sha256": "6d8f36ae047d1d5353b42422bf87c6d47b681a8b33bfd7e82c18f071d09b430a",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/python/003__excel_processor__operations.py/input_context.json",
+  "input_context_sha256": "7b06ade9ccf2ffa1866da27abdafa4a69fe5afcef54bf0619f1589c5b11b3636",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "excel_processor/model.py",
+      "generated_code_sha256": "0beea512ff90a550a881dbe3726ad68332e256adf604099051a600875ee946a8",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/python/architecture/team/team.json",
+  "checkpoint_sha256": "62f48ba9a7452cff9d1a85d6f40eea424f63c5f74b246b7cabf8db13ec347c24",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/generation_report.json",
+  "rng_seed": 306770503,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789393241914",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 729,
+    "prompt_tokens": 9892,
+    "total_tokens": 10621
+  },
+  "response_content_sha256": "c21adf7bf7d583cd37bb48492ed58cf7192c202ecf431bcbc188e482b9b9cbed",
+  "generated_code_sha256": "e8f47adc918ad973b69c5bb23a0428373369683580a07b2505a84e12f03cb65f",
+  "accepted_source_restoration": "restored_leading_h2"
+}

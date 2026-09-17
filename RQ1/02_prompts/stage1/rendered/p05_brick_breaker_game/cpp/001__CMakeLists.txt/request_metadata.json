@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "ac1b41c0a690fe63a0b6f7cfe064e8c8e40bbd0aa5721dff41a6d9708c83fb27",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "6d15bb6a807c1f89a6c54236d560c87729a6a7a3f1ea20fa18ac231b42a54be1",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/generation_report.json",
+  "rng_seed": 1300987923,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789322600064",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 214,
+    "prompt_tokens": 5851,
+    "total_tokens": 6065
+  },
+  "response_content_sha256": "00deb6054ef12958f7d83b27b70863ff2e8b69861a02a4fe3d080379b17bbec9",
+  "generated_code_sha256": "7834c58de6bce8d6baa2e86dab975777e6650ff314009aa9ec428f985be1e33f",
+  "accepted_source_restoration": "accepted_repository_content"
+}

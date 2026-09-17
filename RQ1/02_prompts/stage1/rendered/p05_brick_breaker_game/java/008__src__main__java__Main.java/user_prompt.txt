@@ -1,0 +1,761 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve Maven protocol files exactly: pom.xml, src/main/java/Main.java as runtime entry, and exactly one test file at src/test/java/MainTest.java. Use Java 11 source/target with no preview features. Keep Main.java thin, headless, and non-interactive. Place all domain classes in the default package under src/main/java with no package declarations, enabling tests in the default package to access package-private methods. Model concrete domain entities (Ball, Paddle, Brick, Rect) and a Game orchestrator. Keep collision math in a small pure rule class (Collision). Game.tick(dt) validates finite dt>0, integrates once, and processes collisions in order: walls, paddle, then bricks, using inclusive circle-rectangle detection and min-penetration axis reflection. Handle bottom-out by decrementing lives exactly once, setting lifeLost, resetting ball position to the paddle center and just above the paddle with negative vy per the specified formula. Use a defensive copy for the bricks list while retaining object identities, and return an unmodifiable view from getBricks(). Expose Ball.setPosition and Ball.setVelocity as package-private for tests. No GUI or external dependencies beyond JUnit Jupiter with a Surefire version that runs JUnit 5. Tests are deterministic and headless-friendly.","Domain Decomposition":[["Runtime bootstrap: create a tiny demo state and print a status line","src/main/java/Main.java","protocol-required"],["Game orchestration: world bounds, tick integration, collision ordering, lives/score/level state","src/main/java/Game.java","orchestration"],["Ball entity: position, velocity, radius, package-private mutators for tests","src/main/java/Ball.java","domain-entity"],["Paddle entity: center semantics, width/height, clamped setX and rectangle view","src/main/java/Paddle.java","domain-entity"],["Brick entity: rectangle bounds, durability, breakable flag, hit() rule","src/main/java/Brick.java","domain-entity"],["Axis-aligned rectangle geometry helper","src/main/java/Rect.java","domain-entity"],["Pure collision rules: inclusive circle-rect test and min-penetration resolution helpers","src/main/java/Collision.java","pure-rule"],["Protocol-level smoke and two exact domain fixtures in JUnit 5","src/test/java/MainTest.java","automated-test"],["Maven build configuration with JUnit Jupiter and Surefire for JUnit 5","pom.xml","protocol-required"],["Walls handling helper inside Game: left/right/top reflection and exact bottom-out rule","src/main/java/Game.java","orchestration"]],"File list":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Rect.java","src/main/java/Collision.java","src/test/java/MainTest.java"],"Canonical File References":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Rect.java","src/main/java/Collision.java","src/test/java/MainTest.java"],"Data structures and interfaces":"classDiagram\n    class Game {\n      -double width\n      -double height\n      -Paddle paddle\n      -Ball ball\n      -java.util.List~Brick~ bricks\n      -private int lives\n      -int score\n      -boolean levelCompleted\n      -boolean lifeLost\n      +Game(double width, double height, Paddle paddle, Ball ball, java.util.List~Brick~ bricks, int lives)\n      +int getLives()\n      +boolean isLifeLost()\n      +boolean isLevelCompleted()\n      +int getScore()\n      +java.util.List~Brick~ getBricks()\n      +Paddle getPaddle()\n      +Ball getBall()\n      +void tick(double dt)\n    }\n    class Ball {\n      -double x\n      -double y\n      -double vx\n      -double vy\n      -double radius\n      +Ball(double x, double y, double vx, double vy, double radius)\n      +double getX()\n      +double getY()\n      +double getVx()\n      +double getVy()\n      +double getRadius()\n      ~void setPosition(double x, double y)\n      ~void setVelocity(double vx, double vy)\n    }\n    class Paddle {\n      -double x\n      -double y\n      -double width\n      -double height\n      -double maxX\n      +Paddle(double x, double y, double width, double height, double maxX)\n      +double getX()\n      +double getY()\n      +double getWidth()\n      +double getHeight()\n      +void setX(double x)\n      +Rect asRect()\n    }\n    class Brick {\n      -Rect rect\n      -int hitPoints\n      -boolean breakable\n      +Brick(Rect rect, int hitPoints, boolean breakable)\n      +Rect getRect()\n      +int getHitPoints()\n      +boolean isBreakable()\n      +void hit()\n      +boolean isDestroyed()\n    }\n    class Rect {\n      +double x\n      +double y\n      +double width\n      +double height\n      +Rect(double x, double y, double width, double height)\n      +double left()\n      +double top()\n      +double right()\n      +double bottom()\n    }\n    class Collision {\n      <<static>>\n      +boolean circleIntersectsRect(double cx, double cy, double r, Rect rect)\n      +double[] penetration(double cx, double cy, double r, Rect rect)%% returns {penX, penY} magnitudes\n    }\n    Game --> Paddle\n    Game --> Ball\n    Game --> Brick\n    Brick --> Rect\n    Paddle --> Rect\n    Game ..> Collision : uses","Program call flow":"sequenceDiagram\n    participant M as Main\n    participant G as Game\n    participant P as Paddle\n    participant B as Ball\n    participant C as Collision\n    M->>P: new Paddle(...)\n    M->>B: new Ball(...)\n    M->>G: new Game(width,height,P,B,bricks,lives)\n    M->>G: tick(dt)\n    activate G\n    G->>B: integrate position (x+=vx*dt, y+=vy*dt)\n    G->>G: handle walls (left/right/top reflect; bottom-out life reset)\n    G->>P: asRect() for paddle collision\n    G->>C: circleIntersectsRect(B, P.asRect())\n    C-->>G: boolean + penetration axes\n    G->>B: reflect velocity on min-penetration axis if collided\n    loop for each brick (stop after first hit)\n        G->>C: circleIntersectsRect(B, brick.rect)\n        C-->>G: boolean + penetration axes\n        alt hit\n            G->>B: reflect velocity on min axis\n            G->>brick: hit()\n            G->>G: if brick destroyed & breakable -> remove, score+=100\n        end\n    end\n    G-->>M: state updated (score/lives/flags)\n    deactivate G","Domain Mapping":[["World orchestration, ticking, score/lives, level completion","src/main/java/Game.java"],["Ball movement state and test hooks for position/velocity","src/main/java/Ball.java"],["Paddle center semantics, clamped movement, rectangle bounds","src/main/java/Paddle.java"],["Brick durability, breakable flag, and removal predicate","src/main/java/Brick.java"],["Axis-aligned rectangle geometry utilities","src/main/java/Rect.java"],["Inclusive circle-rectangle collision and penetration axis computation","src/main/java/Collision.java"],["Runtime bootstrap for smoke","src/main/java/Main.java"],["Protocol tests: smoke, one-brick fixture, life-loss fixture","src/test/java/MainTest.java"]],"Testable Core Boundary":{"pure_logic_modules":["src/main/java/Game.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Rect.java","src/main/java/Collision.java"],"environment_dependent_modules":["src/main/java/Main.java"],"test_targets_should_focus_on":["Runtime smoke: Main.main executes without error","One-brick fixture: inclusive collision, hit points to zero, removal, score +100, levelCompleted true","Life-loss fixture: bottom-out decrements lives once, sets lifeLost, exact reset formula and negative vy"]},"C++ Interface Plan":{},"Test Include Audit":{"declared_test_includes":[],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: pom.xml. Runtime entry: src/main/java/Main.java. Test target: src/test/java/MainTest.java. Test command: mvn -q test. Exactly one protocol-level test file is included.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["Maven>=3.6","Java 11 (source/target without preview features)","JUnit Jupiter (JUnit 5)","Maven Surefire Plugin compatible with JUnit 5"],"Canonical File References":["pom.xml","src/main/java/Main.java","src/main/java/Game.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Rect.java","src/main/java/Collision.java","src/test/java/MainTest.java"],"Logic Analysis":[["pom.xml","dependency/build; Maven build descriptor declaring Java 11, JUnit Jupiter, and Surefire for JUnit 5"],["src/main/java/Main.java","runtime/bootstrap; thin, headless entry that constructs a minimal Game and prints a single status line"],["src/main/java/Game.java","orchestration; owns world bounds, entities, tick(dt) integration, collision ordering (walls, paddle, bricks), lives/score flags, level completion, lifeLost handling; uses Collision pure rules"],["src/main/java/Ball.java","domain-entity; ball position/velocity/radius with getters; package-private setPosition and setVelocity for tests"],["src/main/java/Paddle.java","domain-entity; center-based paddle with width/height, clamped setX within world maxX, exposes Rect via asRect()"],["src/main/java/Brick.java","domain-entity; rectangular brick with hitPoints, breakable flag, hit() rule, destroyed predicate"],["src/main/java/Rect.java","domain-entity helper; axis-aligned rectangle geometry with left/top/right/bottom helpers"],["src/main/java/Collision.java","pure-rule; inclusive circle-rectangle intersection test and penetration depth magnitudes for min-axis reflection"],["src/test/java/MainTest.java","automated-test; protocol-level smoke test and two exact domain fixtures (one-brick removal/score and life-loss/reset)"]],"Task list":["pom.xml","src/main/java/Rect.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Collision.java","src/main/java/Game.java","src/main/java/Main.java","src/test/java/MainTest.java"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"exactly_one_protocol_test_file":true},"File Coverage Audit":{"design_file_list_count":9,"pm_canonical_count":9,"logic_analysis_count":9,"task_list_count":9,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["src/test/java/MainTest.java","Runtime smoke: Main.main executes without error (headless, non-interactive)"],["src/test/java/MainTest.java","One-brick fixture: inclusive circle-rect collision with a single breakable brick (hp=1) reflects ball, hit reduces hp to 0, brick removed, score += 100, levelCompleted becomes true"],["src/test/java/MainTest.java","Life-loss fixture: bottom-out decrements lives exactly once, sets lifeLost=true, resets ball x to paddle center, y to paddle top minus ball radius, sets vx=0 and vy to negative absolute of prior vy"]],"Test Include Plan":[["src/test/java/MainTest.java","src/main/java/Main.java"],["src/test/java/MainTest.java","src/main/java/Game.java"],["src/test/java/MainTest.java","src/main/java/Ball.java"],["src/test/java/MainTest.java","src/main/java/Paddle.java"],["src/test/java/MainTest.java","src/main/java/Brick.java"],["src/test/java/MainTest.java","src/main/java/Rect.java"],["src/test/java/MainTest.java","src/main/java/Collision.java"]],"Module Boundary Audit":{"core_domain_logic_modules":["src/main/java/Game.java","src/main/java/Ball.java","src/main/java/Paddle.java","src/main/java/Brick.java","src/main/java/Rect.java","src/main/java/Collision.java"],"environment_dependent_modules":["src/main/java/Main.java"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"pom.xml: Maven descriptor sets Java source/target 11, encodings to UTF-8, adds junit-jupiter-api and junit-jupiter-engine test dependencies, and configures maven-surefire-plugin to run JUnit 5 tests. No external runtime dependencies.\n\nsrc/main/java/Rect.java: public final class Rect { public final double x; public final double y; public final double width; public final double height; public Rect(double x, double y, double width, double height); public double left(); public double top(); public double right(); public double bottom(); Semantics: immutable AABB defined by top-left x,y and size. left()=x, top()=y, right()=x+width, bottom()=y+height.\n\nsrc/main/java/Ball.java: public final class Ball { private double x,y,vx,vy,radius; public Ball(double x, double y, double vx, double vy, double radius); public double getX(); public double getY(); public double getVx(); public double getVy(); public double getRadius(); void setPosition(double x, double y); void setVelocity(double vx, double vy); Semantics: setPosition and setVelocity are package-private (no access modifier) for tests; getters return current state; radius>0 invariant is assumed. No internal clamping.\n\nsrc/main/java/Paddle.java: public final class Paddle { private double x,y,width,height,maxX; public Paddle(double x, double y, double width, double height, double maxX); public double getX(); public double getY(); public double getWidth(); public double getHeight(); public void setX(double x); public Rect asRect(); Semantics: paddle uses center semantics (x,y at center). setX clamps the center x to [width/2, maxX - width/2]. asRect() returns Rect with top-left at (x - width/2, y - height/2) and same width/height.\n\nsrc/main/java/Brick.java: public final class Brick { private final Rect rect; private int hitPoints; private final boolean breakable; public Brick(Rect rect, int hitPoints, boolean breakable); public Rect getRect(); public int getHitPoints(); public boolean isBreakable(); public void hit(); public boolean isDestroyed(); Semantics: hit() decrements hitPoints by 1 if hitPoints>0 and always leaves hitPoints >= 0. isDestroyed() returns hitPoints == 0. Non-breakable bricks can be destroyed logically (hitPoints can reach 0) but are not removed nor scored by Game.\n\nsrc/main/java/Collision.java: public final class Collision { public static boolean circleIntersectsRect(double cx, double cy, double r, Rect rect); public static double[] penetration(double cx, double cy, double r, Rect rect); Semantics: Inclusive intersection: returns true if the distance from (cx,cy) to the rect is <= r. Implementation uses nearest-point-on-rect clamping and squared distance check. penetration() requires that an intersection exists; it returns new double[]{penX, penY} where penX = max(0, r - abs(cx - clamp(cx, rect.left(), rect.right()))), penY = max(0, r - abs(cy - clamp(cy, rect.top(), rect.bottom()))). These are magnitudes only. Callers choose the axis with the smaller magnitude to reflect velocity. In exact ties, callers may prefer Y-axis reflection for determinism.\n\nsrc/main/java/Game.java: public final class Game { private final double width,height; private final Paddle paddle; private final Ball ball; private final java.util.List<Brick> bricks; private int lives; int score; boolean levelCompleted; boolean lifeLost; public Game(double width, double height, Paddle paddle, Ball ball, java.util.List<Brick> bricks, int lives); public int getLives(); public boolean isLifeLost(); public boolean isLevelCompleted(); public int getScore(); public java.util.List<Brick> getBricks(); public Paddle getPaddle(); public Ball getBall(); public void tick(double dt); Semantics and rules: - Constructor: stores width/height; keeps references to the given paddle and ball; makes a defensive copy of the provided bricks list while retaining object identities, in insertion order; lives>=0. getBricks() returns an unmodifiable view of the internal list. - tick(dt): Validates dt is finite and > 0; otherwise throws IllegalArgumentException. On each call, resets lifeLost=false. Integrates the ball exactly once: ball.x += ball.vx * dt; ball.y += ball.vy * dt. Collision processing order: (1) walls (left/right/top reflection, bottom-out life loss), (2) paddle, (3) bricks (first-hit only). Walls: inclusive checks against bounds [0,width]x[0,height]. Left/right: if ball.x - r <= 0 reflect vx = -vx and clamp ball.x = r; if ball.x + r >= width reflect vx and clamp ball.x = width - r. Top: if ball.y - r <= 0 reflect vy and clamp ball.y = r. Bottom-out: if ball.y - r >= height then a life is lost: decrement lives exactly by 1 (but not below 0), set lifeLost=true, and reset ball state as follows: position x := paddle.getX(), y := paddle.getY() - paddle.getHeight()/2 - ball.getRadius() (exactly tangent above the paddle); velocity vx := 0; vy := -Math.abs(previous vy). No further collisions are processed in this tick when bottom-out occurs. Paddle collision: compute paddleRect = paddle.asRect(); if Collision.circleIntersectsRect(ball.x,ball.y,r,paddleRect) reflect along min-penetration axis. Resolution: obtain {penX,penY} = Collision.penetration(...). If penY <= penX reflect vertical (vy = -vy) and translate ball out along Y by penY in the sign away from the paddle; else reflect horizontal (vx = -vx) and translate along X accordingly. Bricks collision: iterate over a snapshot copy of the bricks list and handle the first brick for which there is an intersection similarly: reflect along min-penetration axis, call brick.hit(), and if brick.isBreakable() and brick.isDestroyed() then remove the brick from the internal list and increase score by exactly 100. Stop after handling the first colliding brick this tick. Level completion: levelCompleted is true iff all remaining bricks in the list are either non-breakable or destroyed (i.e., there are no remaining breakable and non-destroyed bricks). Flags and getters: getBricks() returns an unmodifiable list; lifeLost reflects only the outcome of the most recent tick; score is cumulative; getLives() returns current lives.\n\nsrc/main/java/Main.java: public final class Main { public static void main(String[] args); Semantics: constructs a tiny deterministic demo (e.g., a small world with a paddle, a ball, and zero or one brick), runs a single Game.tick with a fixed dt, and prints a single status line summarizing lives and score. No input reading, no GUI, and deterministic output.\n\nsrc/test/java/MainTest.java: JUnit 5 tests only. Tests import classes from the default package (no package declarations). Must not rely on GUI or timing. Covers: (1) Main.main runs without throwing; (2) one-brick fixture leads to brick removal, +100 score, and levelCompleted true; (3) life-loss fixture triggers at bottom-out, decrements lives once, sets lifeLost true, centers and positions ball exactly above paddle, and sets vx=0 and vy negative absolute of prior vy. Tests may access package-private Ball.setPosition and Ball.setVelocity to set up fixtures.\n\nImport/include rules: tests reference only the declared classes; core modules must not depend on Main; Game may depend on Collision; entities may be used by Game; no other cross-module cycles.","Shared Knowledge":"Build with Maven; runtime entry is src/main/java/Main.java. All domain classes reside in the default package under src/main/java with no package declarations, allowing tests in the default package to access package-private methods. Core logic lives in Game, Ball, Paddle, Brick, Rect, Collision. Game.tick(dt) performs deterministic single-step integration and collision handling (walls, then paddle, then bricks), and enforces exact bottom-out life-loss/reset rules. Collision stays pure and stateless. Tests are headless and deterministic, use only JUnit Jupiter, and interact with default-package classes directly. getBricks() returns an unmodifiable view; Game holds a defensive copy of the bricks list.","Execution Protocol":"Build and run tests with: mvn -q test. There is exactly one protocol-level test file at src/test/java/MainTest.java. Tests are headless and non-interactive. Runtime entry is Main.main in src/main/java/Main.java; tests ensure it executes without error. No additional files alter protocol-prescribed files.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- pom.xml
+```<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>arkanoid-game</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>```
+----- src/main/java/Rect.java
+```## src/main/java/Rect.java
+/**
+ * An immutable axis-aligned bounding box (AABB) rectangle.
+ */
+public final class Rect {
+    /** The x-coordinate of the top-left corner. */
+    public final double x;
+    
+    /** The y-coordinate of the top-left corner. */
+    public final double y;
+    
+    /** The width of the rectangle. */
+    public final double width;
+    
+    /** The height of the rectangle. */
+    public final double height;
+
+    /**
+     * Constructs a new rectangle with the specified properties.
+     *
+     * @param x      the x-coordinate of the top-left corner
+     * @param y      the y-coordinate of the top-left corner
+     * @param width  the width of the rectangle (must be non-negative)
+     * @param height the height of the rectangle (must be non-negative)
+     */
+    public Rect(double x, double y, double width, double height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Returns the x-coordinate of the left edge of the rectangle.
+     *
+     * @return the left edge x-coordinate
+     */
+    public double left() {
+        return x;
+    }
+
+    /**
+     * Returns the y-coordinate of the top edge of the rectangle.
+     *
+     * @return the top edge y-coordinate
+     */
+    public double top() {
+        return y;
+    }
+
+    /**
+     * Returns the x-coordinate of the right edge of the rectangle.
+     *
+     * @return the right edge x-coordinate
+     */
+    public double right() {
+        return x + width;
+    }
+
+    /**
+     * Returns the y-coordinate of the bottom edge of the rectangle.
+     *
+     * @return the bottom edge y-coordinate
+     */
+    public double bottom() {
+        return y + height;
+    }
+}```
+----- src/main/java/Ball.java
+```/**
+ * Represents a ball in the game with position, velocity, and radius.
+ */
+public final class Ball {
+    /** The x-coordinate of the ball's center. */
+    private double x;
+    
+    /** The y-coordinate of the ball's center. */
+    private double y;
+    
+    /** The velocity in the x-direction. */
+    private double vx;
+    
+    /** The velocity in the y-direction. */
+    private double vy;
+    
+    /** The radius of the ball. */
+    private final double radius;
+
+    /**
+     * Constructs a new ball with the specified properties.
+     *
+     * @param x      the x-coordinate of the ball's center
+     * @param y      the y-coordinate of the ball's center
+     * @param vx     the velocity in the x-direction
+     * @param vy     the velocity in the y-direction
+     * @param radius the radius of the ball (must be positive)
+     */
+    public Ball(double x, double y, double vx, double vy, double radius) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.radius = radius;
+    }
+
+    /**
+     * Returns the x-coordinate of the ball's center.
+     *
+     * @return the x-coordinate
+     */
+    public double getX() {
+        return x;
+    }
+
+    /**
+     * Returns the y-coordinate of the ball's center.
+     *
+     * @return the y-coordinate
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Returns the velocity in the x-direction.
+     *
+     * @return the x-velocity
+     */
+    public double getVx() {
+        return vx;
+    }
+
+    /**
+     * Returns the velocity in the y-direction.
+     *
+     * @return the y-velocity
+     */
+    public double getVy() {
+        return vy;
+    }
+
+    /**
+     * Returns the radius of the ball.
+     *
+     * @return the radius
+     */
+    public double getRadius() {
+        return radius;
+    }
+
+    /**
+     * Sets the position of the ball.
+     * This method is package-private to allow tests to set the ball's position.
+     *
+     * @param x the new x-coordinate of the ball's center
+     * @param y the new y-coordinate of the ball's center
+     */
+    void setPosition(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Sets the velocity of the ball.
+     * This method is package-private to allow tests to set the ball's velocity.
+     *
+     * @param vx the new x-velocity
+     * @param vy the new y-velocity
+     */
+    void setVelocity(double vx, double vy) {
+        this.vx = vx;
+        this.vy = vy;
+    }
+}```
+----- src/main/java/Paddle.java
+```/**
+ * Represents a paddle in the game with center position, dimensions, and movement constraints.
+ */
+public final class Paddle {
+    /** The x-coordinate of the paddle's center. */
+    private double x;
+    
+    /** The y-coordinate of the paddle's center. */
+    private double y;
+    
+    /** The width of the paddle. */
+    private final double width;
+    
+    /** The height of the paddle. */
+    private final double height;
+    
+    /** The maximum x-coordinate the paddle center can reach. */
+    private final double maxX;
+
+    /**
+     * Constructs a new paddle with the specified properties.
+     *
+     * @param x      the x-coordinate of the paddle's center
+     * @param y      the y-coordinate of the paddle's center
+     * @param width  the width of the paddle (must be positive)
+     * @param height the height of the paddle (must be positive)
+     * @param maxX   the maximum x-coordinate the paddle center can reach
+     */
+    public Paddle(double x, double y, double width, double height, double maxX) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.maxX = maxX;
+        // Ensure the paddle is initially within bounds
+        setX(x);
+    }
+
+    /**
+     * Returns the x-coordinate of the paddle's center.
+     *
+     * @return the x-coordinate
+     */
+    public double getX() {
+        return x;
+    }
+
+    /**
+     * Returns the y-coordinate of the paddle's center.
+     *
+     * @return the y-coordinate
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Returns the width of the paddle.
+     *
+     * @return the width
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Returns the height of the paddle.
+     *
+     * @return the height
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * Sets the x-coordinate of the paddle's center, clamping it within valid bounds.
+     * The paddle's center is constrained to be within [width/2, maxX - width/2].
+     *
+     * @param x the new x-coordinate of the paddle's center
+     */
+    public void setX(double x) {
+        // Clamp the x-coordinate to ensure the paddle stays within the world bounds
+        this.x = Math.max(width / 2, Math.min(maxX - width / 2, x));
+    }
+
+    /**
+     * Returns the rectangle representation of the paddle.
+     * The returned rectangle has its top-left corner at (x - width/2, y - height/2).
+     *
+     * @return the rectangle representation of the paddle
+     */
+    public Rect asRect() {
+        return new Rect(x - width / 2, y - height / 2, width, height);
+    }
+}```
+----- src/main/java/Brick.java
+```/**
+ * Represents a brick in the game with rectangular bounds, hit points, and breakability.
+ */
+public final class Brick {
+    /** The rectangular bounds of the brick. */
+    private final Rect rect;
+    
+    /** The number of hit points the brick has before being destroyed. */
+    private int hitPoints;
+    
+    /** Indicates whether the brick can be broken (removed) when hit. */
+    private final boolean breakable;
+
+    /**
+     * Constructs a new brick with the specified properties.
+     *
+     * @param rect      the rectangular bounds of the brick
+     * @param hitPoints the number of hit points the brick has (must be non-negative)
+     * @param breakable indicates whether the brick can be broken (removed) when hit
+     */
+    public Brick(Rect rect, int hitPoints, boolean breakable) {
+        this.rect = rect;
+        this.hitPoints = hitPoints;
+        this.breakable = breakable;
+    }
+
+    /**
+     * Returns the rectangular bounds of the brick.
+     *
+     * @return the rectangle representing the brick's bounds
+     */
+    public Rect getRect() {
+        return rect;
+    }
+
+    /**
+     * Returns the number of hit points the brick has.
+     *
+     * @return the hit points
+     */
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    /**
+     * Checks if the brick is breakable (can be removed when hit).
+     *
+     * @return true if the brick is breakable, false otherwise
+     */
+    public boolean isBreakable() {
+        return breakable;
+    }
+
+    /**
+     * Processes a hit on the brick, reducing its hit points by 1.
+     * If hitPoints was greater than 0, it is decremented by 1.
+     * Hit points are never allowed to go below 0.
+     * This method has no effect if hitPoints is already 0.
+     */
+    public void hit() {
+        if (hitPoints > 0) {
+            hitPoints--;
+        }
+    }
+
+    /**
+     * Checks if the brick is destroyed (has 0 hit points).
+     *
+     * @return true if the brick is destroyed, false otherwise
+     */
+    public boolean isDestroyed() {
+        return hitPoints == 0;
+    }
+}```
+----- src/main/java/Collision.java
+```/**
+ * Provides collision detection and response utilities for circular objects
+ * and axis-aligned rectangles.
+ */
+public final class Collision {
+    
+    /**
+     * Determines if a circle intersects with an axis-aligned rectangle.
+     * The intersection is inclusive - if the circle touches the rectangle's
+     * boundary, it is considered intersecting.
+     *
+     * @param cx     the x-coordinate of the circle's center
+     * @param cy     the y-coordinate of the circle's center
+     * @param r      the radius of the circle (must be non-negative)
+     * @param rect   the rectangle to test intersection with
+     * @return true if the circle and rectangle intersect, false otherwise
+     */
+    public static boolean circleIntersectsRect(double cx, double cy, double r, Rect rect) {
+        // Find the closest point on the rectangle to the circle's center
+        double closestX = Math.max(rect.left(), Math.min(cx, rect.right()));
+        double closestY = Math.max(rect.top(), Math.min(cy, rect.bottom()));
+        
+        // Calculate the distance between the circle's center and this closest point
+        double distanceX = cx - closestX;
+        double distanceY = cy - closestY;
+        
+        // If the distance is less than or equal to the radius, they intersect
+        return (distanceX * distanceX + distanceY * distanceY) <= (r * r);
+    }
+    
+    /**
+     * Calculates the penetration depth of a circle into a rectangle along both axes.
+     * This method assumes that an intersection exists (i.e., circleIntersectsRect returned true).
+     * The penetration values indicate how far the circle needs to be moved along each axis
+     * to resolve the collision.
+     *
+     * @param cx     the x-coordinate of the circle's center
+     * @param cy     the y-coordinate of the circle's center
+     * @param r      the radius of the circle (must be non-negative)
+     * @param rect   the rectangle the circle is penetrating
+     * @return an array of two doubles: {penX, penY} where penX is the horizontal
+     *         penetration depth and penY is the vertical penetration depth.
+     *         Both values are non-negative.
+     */
+    public static double[] penetration(double cx, double cy, double r, Rect rect) {
+        // Find the closest point on the rectangle to the circle's center
+        double closestX = Math.max(rect.left(), Math.min(cx, rect.right()));
+        double closestY = Math.max(rect.top(), Math.min(cy, rect.bottom()));
+        
+        // Calculate the penetration depths along each axis
+        double penX = r - Math.abs(cx - closestX);
+        double penY = r - Math.abs(cy - closestY);
+        
+        // Ensure non-negative values
+        penX = Math.max(0, penX);
+        penY = Math.max(0, penY);
+        
+        return new double[]{penX, penY};
+    }
+}```
+----- src/main/java/Game.java
+```/**
+ * Orchestrates the game state, including world bounds, entity management,
+ * physics integration, and collision handling.
+ */
+public final class Game {
+    /** The width of the game world. */
+    private final double width;
+    
+    /** The height of the game world. */
+    private final double height;
+    
+    /** The paddle in the game. */
+    private final Paddle paddle;
+    
+    /** The ball in the game. */
+    private final Ball ball;
+    
+    /** The list of bricks in the game. */
+    private final java.util.List<Brick> bricks;
+    
+    /** The number of lives remaining. */
+    private int lives;
+    
+    /** The current score. */
+    int score;
+    
+    /** Indicates whether the level has been completed. */
+    boolean levelCompleted;
+    
+    /** Indicates whether a life was lost in the last tick. */
+    boolean lifeLost;
+
+    /**
+     * Constructs a new game with the specified parameters.
+     *
+     * @param width    the width of the game world
+     * @param height   the height of the game world
+     * @param paddle   the paddle in the game
+     * @param ball     the ball in the game
+     * @param bricks   the list of bricks in the game
+     * @param lives    the initial number of lives
+     */
+    public Game(double width, double height, Paddle paddle, Ball ball, java.util.List<Brick> bricks, int lives) {
+        this.width = width;
+        this.height = height;
+        this.paddle = paddle;
+        this.ball = ball;
+        // Make a defensive copy while preserving object identities
+        this.bricks = new java.util.ArrayList<>(bricks);
+        this.lives = lives;
+        this.score = 0;
+        this.levelCompleted = false;
+        this.lifeLost = false;
+    }
+
+    /**
+     * Returns the number of lives remaining.
+     *
+     * @return the number of lives
+     */
+    public int getLives() {
+        return lives;
+    }
+
+    /**
+     * Checks if a life was lost in the last tick.
+     *
+     * @return true if a life was lost, false otherwise
+     */
+    public boolean isLifeLost() {
+        return lifeLost;
+    }
+
+    /**
+     * Checks if the level has been completed.
+     *
+     * @return true if the level is completed, false otherwise
+     */
+    public boolean isLevelCompleted() {
+        return levelCompleted;
+    }
+
+    /**
+     * Returns the current score.
+     *
+     * @return the score
+     */
+    public int getScore() {
+        return score;
+    }
+
+    /**
+     * Returns an unmodifiable view of the bricks list.
+     *
+     * @return the bricks list
+     */
+    public java.util.List<Brick> getBricks() {
+        return java.util.Collections.unmodifiableList(bricks);
+    }
+
+    /**
+     * Returns the paddle in the game.
+     *
+     * @return the paddle
+     */
+    public Paddle getPaddle() {
+        return paddle;
+    }
+
+    /**
+     * Returns the ball in the game.
+     *
+     * @return the ball
+     */
+    public Ball getBall() {
+        return ball;
+    }
+
+    /**
+     * Updates the game state by integrating physics and processing collisions.
+     *
+     * @param dt the time step to advance the simulation
+     * @throws IllegalArgumentException if dt is not finite or not greater than 0
+     */
+    public void tick(double dt) {
+        if (!Double.isFinite(dt) || dt <= 0) {
+            throw new IllegalArgumentException("dt must be finite and greater than 0");
+        }
+        
+        // Reset the lifeLost flag for this tick
+        lifeLost = false;
+        
+        // Integrate the ball's position
+        ball.setPosition(ball.getX() + ball.getVx() * dt, ball.getY() + ball.getVy() * dt);
+        
+        // Handle wall collisions
+        handleWallCollisions();
+        
+        // If we lost a life due to bottom-out, skip further collision processing
+        if (lifeLost) {
+            return;
+        }
+        
+        // Handle paddle collision
+        handlePaddleCollision();
+        
+        // Handle brick collisions
+        handleBrickCollisions();
+        
+        // Check if the level is completed
+        updateLevelCompletion();
+    }
+    
+    /**
+     * Handles collisions with the walls of the game world.
+     */
+    private void handleWallCollisions() {
+        double r = ball.getRadius();
+        
+        // Left wall collision
+        if (ball.getX() - r <= 0) {
+            ball.setVelocity(-ball.getVx(), ball.getVy());
+            ball.setPosition(r, ball.getY());
+        }
+        // Right wall collision
+        else if (ball.getX() + r >= width) {
+            ball.setVelocity(-ball.getVx(), ball.getVy());
+            ball.setPosition(width - r, ball.getY());
+        }
+        // Top wall collision
+        else if (ball.getY() - r <= 0) {
+            ball.setVelocity(ball.getVx(), -ball.getVy());
+            ball.setPosition(ball.getX(), r);
+        }
+        // Bottom-out collision
+        else if (ball.getY() - r >= height) {
+            lives--;
+            lifeLost = true;
+            
+            // Reset the ball to the paddle position
+            ball.setPosition(paddle.getX(), 
+                            paddle.getY() - paddle.getHeight() / 2 - r);
+            ball.setVelocity(0, -Math.abs(ball.getVy()));
+        }
+    }
+    
+    /**
+     * Handles collisions with the paddle.
+     */
+    private void handlePaddleCollision() {
+        Rect paddleRect = paddle.asRect();
+        
+        if (Collision.circleIntersectsRect(ball.getX(), ball.getY(), ball.getRadius(), paddleRect)) {
+            double[] penetration = Collision.penetration(ball.getX(), ball.getY(), ball.getRadius(), paddleRect);
+            
+            // Reflect along the axis with minimum penetration
+            if (penetration[1] <= penetration[0]) {
+                // Reflect vertically
+                ball.setVelocity(ball.getVx(), -ball.getVy());
+                // Move the ball out of the paddle along the Y axis
+                ball.setPosition(ball.getX(), ball.getY() + penetration[1] * (ball.getY() < paddle.getY() ? 1 : -1));
+            } else {
+                // Reflect horizontally
+                ball.setVelocity(-ball.getVx(), ball.getVy());
+                // Move the ball out of the paddle along the X axis
+                ball.setPosition(ball.getX() + penetration[0] * (ball.getX() < paddle.getX() ? 1 : -1), ball.getY());
+            }
+        }
+    }
+    
+    /**
+     * Handles collisions with bricks.
+     */
+    private void handleBrickCollisions() {
+        // Create a copy of the bricks list to avoid concurrent modification issues
+        java.util.List<Brick> bricksCopy = new java.util.ArrayList<>(bricks);
+        
+        for (Brick brick : bricksCopy) {
+            if (Collision.circleIntersectsRect(ball.getX(), ball.getY(), ball.getRadius(), brick.getRect())) {
+                double[] penetration = Collision.penetration(ball.getX(), ball.getY(), ball.getRadius(), brick.getRect());
+                
+                // Reflect along the axis with minimum penetration
+                if (penetration[1] <= penetration[0]) {
+                    // Reflect vertically
+                    ball.setVelocity(ball.getVx(), -ball.getVy());
+                    // Move the ball out of the brick along the Y axis
+                    ball.setPosition(ball.getX(), ball.getY() + penetration[1] * (ball.getY() < brick.getRect().top() ? 1 : -1));
+                } else {
+                    // Reflect horizontally
+                    ball.setVelocity(-ball.getVx(), ball.getVy());
+                    // Move the ball out of the brick along the X axis
+                    ball.setPosition(ball.getX() + penetration[0] * (ball.getX() < brick.getRect().left() ? 1 : -1), ball.getY());
+                }
+                
+                // Process the hit
+                brick.hit();
+                
+                // Remove the brick if it's breakable and destroyed
+                if (brick.isBreakable() && brick.isDestroyed()) {
+                    bricks.remove(brick);
+                    score += 100;
+                }
+                
+                // Only process the first collision in this tick
+                break;
+            }
+        }
+    }
+    
+    /**
+     * Updates the level completion status based on remaining bricks.
+     */
+    private void updateLevelCompletion() {
+        // Check if there are any breakable bricks that haven't been destroyed
+        for (Brick brick : bricks) {
+            if (brick.isBreakable() && !brick.isDestroyed()) {
+                levelCompleted = false;
+                return;
+            }
+        }
+        // If we reach here, all breakable bricks are destroyed or non-breakable
+        levelCompleted = true;
+    }
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/main/java/Main.java
+```python
+## src/main/java/Main.java
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/main/java/Main.java. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

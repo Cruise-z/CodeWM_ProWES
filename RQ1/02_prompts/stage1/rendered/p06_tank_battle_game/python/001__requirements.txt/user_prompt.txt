@@ -1,0 +1,456 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": null,
+  "Canonical File References": [
+    "requirements.txt",
+    "tank_battle/directions.py",
+    "tank_battle/geometry.py",
+    "tank_battle/obstacle.py",
+    "tank_battle/arena.py",
+    "tank_battle/tank.py",
+    "tank_battle/projectile.py",
+    "tank_battle/commands.py",
+    "tank_battle/scoring.py",
+    "tank_battle/game.py",
+    "tank_battle/configs.py",
+    "tank_battle/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class Direction {\n        <<Enum>>\n        N=(0,-1)\n        E=(1,0)\n        S=(0,1)\n        W=(-1,0)\n        +delta() tuple[int,int]\n        +left() Direction\n        +right() Direction\n    }\n    class Rect {\n        +x:int\n        +y:int\n        +w:int\n        +h:int\n        +contains(px:int, py:int) bool\n    }\n    class Obstacle {\n        +rect: Rect\n    }\n    class Arena {\n        +width:int\n        +height:int\n        +obstacles:list[Obstacle]\n        +in_bounds(x:int,y:int) bool\n        +is_blocked(x:int,y:int) bool\n    }\n    class Tank {\n        +id:str\n        +name:str\n        +x:int\n        +y:int\n        +direction:Direction\n        +health:int\n        +speed:int\n        +barrel_ahead() tuple[int,int]\n        +alive() bool\n        +clone() Tank\n    }\n    class Projectile {\n        +pid:int\n        +owner_id:str\n        +x:int\n        +y:int\n        +direction:Direction\n        +speed:int\n        +move() None\n        +clone() Projectile\n    }\n    class Command {\n        <<marker>>\n    }\n    class MoveForward {\n        +steps:int\n    }\n    class RotateLeft\n    class RotateRight\n    class RotateTo {\n        +direction:Direction\n    }\n    class Fire\n    Command <|-- MoveForward\n    Command <|-- RotateLeft\n    Command <|-- RotateRight\n    Command <|-- RotateTo\n    Command <|-- Fire\n    class ScoreBoard {\n        +hits:dict[str,int]\n        +kills:dict[str,int]\n        +record_hit(player_id:str) None\n        +record_kill(player_id:str) None\n        +score(player_id:str) int\n    }\n    class Game {\n        +arena:Arena\n        +tanks:dict[str,Tank]\n        +projectiles:list[Projectile]\n        +scores:ScoreBoard\n        +command_queue:list[tuple[str,Command]]\n        +next_projectile_id:int\n        +queue_command(player_id:str, command:Command) None\n        +tick() None\n        +reset() None\n        +winner() str|None\n        +snapshot() dict\n    }\n    Arena --> Obstacle\n    Obstacle --> Rect\n    Tank --> Direction\n    Projectile --> Direction\n    Game --> Arena\n    Game --> Tank\n    Game --> Projectile\n    Game --> ScoreBoard\n    Game --> Command\n    RotateTo --> Direction",
+  "Domain Decomposition": [
+    [
+      "Direction enum and turning/delta",
+      "tank_battle/directions.py",
+      "domain-entity"
+    ],
+    [
+      "Immutable rectangle geometry",
+      "tank_battle/geometry.py",
+      "domain-entity"
+    ],
+    [
+      "Obstacle wrapper over Rect",
+      "tank_battle/obstacle.py",
+      "domain-entity"
+    ],
+    [
+      "Arena bounds and blocking rules",
+      "tank_battle/arena.py",
+      "pure-rule"
+    ],
+    [
+      "Tank entity with position, facing, health, speed",
+      "tank_battle/tank.py",
+      "domain-entity"
+    ],
+    [
+      "Projectile entity movement and cloning",
+      "tank_battle/projectile.py",
+      "domain-entity"
+    ],
+    [
+      "Command marker and concrete commands",
+      "tank_battle/commands.py",
+      "interface"
+    ],
+    [
+      "ScoreBoard tracking hits and kills",
+      "tank_battle/scoring.py",
+      "domain-entity"
+    ],
+    [
+      "Game orchestration: validation, tick, reset, snapshot, winner",
+      "tank_battle/game.py",
+      "orchestration"
+    ],
+    [
+      "Default demo configuration",
+      "tank_battle/configs.py",
+      "package"
+    ],
+    [
+      "Public API re-exports",
+      "tank_battle/__init__.py",
+      "package"
+    ],
+    [
+      "Runtime bootstrap, headless demo",
+      "Main.py",
+      "environment-dependent"
+    ],
+    [
+      "Protocol-level tests",
+      "tests/test_main.py",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Direction turning and movement delta",
+      "tank_battle/directions.py",
+      "Defines enum and turning helpers used by Tank and Projectile"
+    ],
+    [
+      "Rect geometry and containment",
+      "tank_battle/geometry.py",
+      "Validates dimensions; half-open contains used by Arena obstacles"
+    ],
+    [
+      "Obstacle encapsulation",
+      "tank_battle/obstacle.py",
+      "Wraps Rect to represent blocking cells"
+    ],
+    [
+      "Arena bounds and blocking",
+      "tank_battle/arena.py",
+      "in_bounds and is_blocked; obstacles block; OOB blocks"
+    ],
+    [
+      "Tank entity",
+      "tank_battle/tank.py",
+      "barrel_ahead using direction.delta; alive; clone"
+    ],
+    [
+      "Projectile entity",
+      "tank_battle/projectile.py",
+      "move per direction.delta; clone"
+    ],
+    [
+      "Command classes",
+      "tank_battle/commands.py",
+      "Command marker; MoveForward rejects steps<1; RotateLeft/Right; RotateTo; Fire; no execute method"
+    ],
+    [
+      "Score tracking",
+      "tank_battle/scoring.py",
+      "ScoreBoard(player_ids:list[str]) with hits/kills maps, record_hit, record_kill, score(player_id)=hits+5*kills"
+    ],
+    [
+      "Game orchestration",
+      "tank_battle/game.py",
+      "Validates initial state; queue and apply commands with isinstance; same-tick projectile movement and collision; scoring calls; winner; reset; snapshot"
+    ],
+    [
+      "Default demo",
+      "tank_battle/configs.py",
+      "build_default_demo()->Game constructs Arena(8,5,[]) and exact two Tanks; returns Game"
+    ],
+    [
+      "Public API surface",
+      "tank_battle/__init__.py",
+      "Explicitly re-exports only required symbols and sets __all__"
+    ],
+    [
+      "Runtime demo entry",
+      "Main.py",
+      "run_demo queues RotateRight for p1 then tick once; returns snapshot; prints under guard"
+    ],
+    [
+      "Protocol tests",
+      "tests/test_main.py",
+      "Four concise tests: runtime demo, obstacle blocking, projectile hit/scoring, reset"
+    ]
+  ],
+  "File list": [
+    "requirements.txt",
+    "tank_battle/directions.py",
+    "tank_battle/geometry.py",
+    "tank_battle/obstacle.py",
+    "tank_battle/arena.py",
+    "tank_battle/tank.py",
+    "tank_battle/projectile.py",
+    "tank_battle/commands.py",
+    "tank_battle/scoring.py",
+    "tank_battle/game.py",
+    "tank_battle/configs.py",
+    "tank_battle/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Implementation approach": "Bob (Architect) designs a concise, medium-size Python 3.10 repository for a deterministic Tank battle game. Preserve protocol files exactly and keep Main.py thin. All reusable logic lives in a lowercase snake_case package tank_battle. Imports are acyclic: foundational modules (directions, geometry, obstacle) do not import engines or entrypoints. Snapshot returns plain dict/list/scalars with Direction serialized via .name. Deterministic Game.tick applies queued commands with isinstance dispatch only, then moves projectiles in order during the same tick; reset restores deep initial clones and zeroed ScoreBoard with next_projectile_id=0.\n\nFull API specification (literal, exhaustive and aligned to the non-negotiable checklist):\n- Module tank_battle/directions.py:\n  - from enum import Enum; class Direction(Enum): with enum members exactly: N=(0,-1), E=(1,0), S=(0,1), W=(-1,0).\n  - Methods: delta(self)->tuple[int,int] returns self.value; left(self)->Direction returns enum member; right(self)->Direction returns enum member.\n- Module tank_battle/geometry.py:\n  - Class Rect(x:int,y:int,w:int,h:int): immutable value; raises ValueError if w<=0 or h<=0; method contains(px:int,py:int)->bool uses half-open cells x<=px<x+w and y<=py<y+h.\n- Module tank_battle/obstacle.py:\n  - Class Obstacle(rect:Rect) encapsulating one Rect. Provides its rect.\n- Module tank_battle/arena.py:\n  - Class Arena(width:int,height:int,obstacles:list[Obstacle]) rejects nonpositive dimensions; methods: in_bounds(x:int,y:int)->bool; is_blocked(x:int,y:int)->bool where out-of-bounds and any Obstacle cell are blocked.\n- Module tank_battle/tank.py:\n  - Class Tank(id:str,name:str,x:int,y:int,direction:Direction,health:int=3,speed:int=1). Public attributes include direction.\n  - Methods: barrel_ahead()->tuple[int,int] using direction.delta(); alive()->bool; clone()->Tank deep copy.\n- Module tank_battle/projectile.py:\n  - Class Projectile(pid:int,owner_id:str,x:int,y:int,direction:Direction,speed:int=1) with attribute direction.\n  - Methods: move()->None advances one unit using direction.delta(); clone()->Projectile deep copy.\n- Module tank_battle/commands.py:\n  - Class Command: instantiable marker; Command has no execute method; no ABC and no @abstractmethod.\n  - Subclasses: MoveForward(steps:int=1) rejects steps<1; RotateLeft(); RotateRight(); RotateTo(direction:Direction) stores attribute direction; Fire(). None defines execute.\n- Module tank_battle/scoring.py:\n  - Class ScoreBoard(player_ids:list[str]) immediately initializes hits and kills as {player_id:0 for player_id in player_ids}.\n  - Methods: record_hit(player_id:str)->None; record_kill(player_id:str)->None; score(player_id:str)->int defined as score(player_id)=hits+5*kills.\n- Module tank_battle/game.py:\n  - Must literally include the import line: from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire\n  - Class Game(arena:Arena,tanks:dict[str,Tank]) validates unique in-bounds unblocked tank cells; deep-copies and stores an immutable initial arena/tank snapshot.\n  - Public mutable attributes: arena, tanks, projectiles, scores, command_queue, next_projectile_id.\n  - Methods:\n    - queue_command(self, player_id:str, command:Command)->None: enqueue without reordering.\n    - tick(self)->None: deterministic order: stable-sort queued commands by player id; dispatch solely with isinstance(command, MoveForward/RotateLeft/RotateRight/RotateTo/Fire); apply; clear queue; then process projectiles by pid ascending. MoveForward attempts one cell at a time and stops before bounds, obstacle, or a live tank. On Fire, if barrel_ahead is free, spawn a new Projectile at that cell with owner_id:str equal to the queuing tank id and pid=self.next_projectile_id then increment; in the same tick's projectile phase, every projectile including the new one moves by its speed one cell at a time; after each unit step, despawn on bounds/obstacle or if hitting the first non-owner live tank at that cell, reduce health by 1, call self.scores.record_hit(projectile.owner_id) and, only when health becomes zero, call self.scores.record_kill(projectile.owner_id), then remove the projectile.\n    - reset(self)->None: restore deep clones of the constructor-supplied initial arena and tanks (position, direction, health, speed), clear projectiles and command_queue, set scores=ScoreBoard(list(self._initial_tanks)), and next_projectile_id=0.\n    - winner(self)->str|None: returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks; else None.\n    - snapshot(self)->dict: returns only plain dict/list/scalars; arena as dict, tanks as dict of dicts with direction serialized via .name, projectiles similarly, scores as a dict with hits, kills, and per-player score mapping, and winner as scalar id or None.\n- Module tank_battle/configs.py:\n  - build_default_demo()->Game: constructs exactly Arena(8,5,[]) and two tanks: Tank(\"p1\",\"P1\",1,2,Direction.E,3,1) and Tank(\"p2\",\"P2\",6,2,Direction.W,3,1); builds Game and returns it.\n- Module tank_battle/__init__.py:\n  - Explicitly import and re-export exactly these public symbols: Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, and build_default_demo; __all__ lists those exact names; no wildcard imports and no nested aliases such as Game.Arena; no package attribute named commands.\n- Module Main.py:\n  - from tank_battle import build_default_demo, RotateRight\n  - Function run_demo()->dict: constructs game=build_default_demo(); literally calls game.queue_command(\"p1\", RotateRight()) with a command instance (not the string \"RotateRight\"), then calls game.tick() exactly once, returns game.snapshot(). main() prints that snapshot and is called under if __name__==\"__main__\".\n\nDeterministic fixtures (repeat verbatim):\n- Arena(8,5,[])\n- Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)\n- Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)\n\nProjectile same-tick movement rule: Fire first creates a projectile at barrel_ahead; tick one therefore leaves it at (3,2); tick two moves it to (4,2) and hits p2. A test expecting (2,2) after tick one is forbidden.\n\nScoring call literals: self.scores.record_hit(projectile.owner_id) and self.scores.record_kill(projectile.owner_id) on kill only.\n\nWinner rule: winner returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks.\n\nReset fixture rule: capture initial snapshot immediately after Game construction with no queued Fire and no tick; after manipulating state, reset() must restore deep clones and zeroed scores as {\"p1\":0,\"p2\":0}; next_projectile_id==0.\n\nImport graph policy: foundational modules never import engines or entrypoints; game.py directly imports command classes via the literal line; __init__.py only re-exports public symbols; Main.py imports only build_default_demo and RotateRight.\n\nImplementation Task List (dependency-first order):\n1) requirements.txt — list pytest only.\n2) tank_battle/directions.py — implement Direction exactly with from enum import Enum; class Direction(Enum): N=(0,-1), E=(1,0), S=(0,1), W=(-1,0); delta/left/right methods.\n3) tank_battle/geometry.py — immutable Rect with validation and contains() half-open rule.\n4) tank_battle/obstacle.py — Obstacle wrapping one Rect.\n5) tank_battle/arena.py — Arena with bounds and obstacle blocking.\n6) tank_battle/tank.py — Tank with barrel_ahead(), alive(), and clone().\n7) tank_battle/projectile.py — Projectile with move() using direction.delta() and clone().\n8) tank_battle/commands.py — Command marker; MoveForward(steps:int=1) validates steps<1; RotateLeft, RotateRight, RotateTo, Fire; none defines execute.\n9) tank_battle/scoring.py — ScoreBoard(player_ids:list[str]) with hits/kills initialized to zeros; record_hit, record_kill, score(player_id)=hits+5*kills.\n10) tank_battle/game.py — Game(arena:Arena,tanks:dict[str,Tank]) with validation, initial deep snapshot, public mutable attributes, queue_command, tick (isinstance dispatch only; same-tick projectile move; literal scoring calls), winner, reset (ScoreBoard(list(self._initial_tanks))), snapshot with plain dict/list/scalars and direction.name.\n11) tank_battle/configs.py — build_default_demo()->Game constructs Arena(8,5,[]) and two exact Tanks then returns Game.\n12) tank_battle/__init__.py — explicit imports+re-exports with __all__ set to the exact list.\n13) Main.py — run_demo() queues RotateRight for \"p1\", calls tick once, returns snapshot; CLI guard prints snapshot.\n14) tests/test_main.py — exactly four concise tests using absolute imports: runtime demo, obstacle blocking, projectile hit/scoring, and reset fixture matching literal descriptions.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Python 3.10 repository architecture for: Tank battle game.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python Tank Battle public-API and deterministic-fixture contract:\n- the architecture Canonical File References, File list, Logic Analysis, and Task list must use exactly these files and no substitutes: requirements.txt, tank_battle/directions.py, tank_battle/geometry.py, tank_battle/obstacle.py, tank_battle/arena.py, tank_battle/tank.py, tank_battle/projectile.py, tank_battle/commands.py, tank_battle/scoring.py, tank_battle/game.py, tank_battle/configs.py, tank_battle/__init__.py, Main.py, tests/test_main.py; tank_battle/direction.py, tank_battle/entities.py, tank_battle/scoreboard.py, tank_battle/demo.py, and any combined or renamed substitute are forbidden\n- tank_battle/__init__.py must explicitly import and re-export exactly these public symbols: Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, and build_default_demo; __all__ lists those exact names, no wildcard import is allowed, and tests must never expect nested aliases such as Game.Arena or a package attribute named commands\n- Direction is defined only in tank_battle/directions.py with the literal skeleton `from enum import Enum`, `class Direction(Enum):`, `N=(0,-1)`, `E=(1,0)`, `S=(0,1)`, and `W=(-1,0)`; delta(self)->tuple[int,int] returns self.value, left()->Direction and right()->Direction return enum members, and all movement/barrel/projectile code uses delta rather than duplicate mappings; a plain class whose members are strings or post-construction singleton objects is forbidden\n- Rect is an immutable value with Rect(x:int,y:int,w:int,h:int), rejects nonpositive w/h, and contains(px,py) uses half-open cells x<=px<x+w and y<=py<y+h; Obstacle contains one Rect; Arena(width:int,height:int,obstacles:list[Obstacle]) rejects nonpositive dimensions and exposes in_bounds(x,y) and is_blocked(x,y), where out-of-bounds and obstacle cells are blocked\n- Tank has the exact constructor Tank(id:str,name:str,x:int,y:int,direction:Direction,health:int=3,speed:int=1), public attributes with the name direction (never dir), barrel_ahead() using direction.delta(), alive(), and clone(); Projectile uses Projectile(pid:int,owner_id:str,x:int,y:int,direction:Direction,speed:int=1), the attribute name direction, move(), and clone()\n- Command is an instantiable marker class with no ABC inheritance, no @abstractmethod, and no execute method; its concrete MoveForward, RotateLeft, RotateRight, RotateTo, and Fire subclasses also define no execute method\n- Game.tick dispatches commands itself solely with isinstance(command, MoveForward/RotateLeft/RotateRight/RotateTo/Fire); command.execute(...) and every other polymorphic command-execution callback are forbidden; MoveForward(steps:int=1) rejects steps<1, RotateLeft/RotateRight/Fire take no arguments, and RotateTo(direction:Direction) stores the attribute direction\n- the canonical Game constructor is Game(arena:Arena,tanks:dict[str,Tank]); it validates unique in-bounds unblocked tank cells, deep-copies and stores an immutable initial arena/tank snapshot, and exposes public arena, tanks, projectiles, scores, command_queue, next_projectile_id plus queue_command(player_id,command), tick(), reset(), winner(), and snapshot()\n- deterministic tick order is exact: stable-sort queued commands by player id, apply them, clear the queue, then process projectiles by pid; MoveForward attempts one cell at a time and stops before bounds, obstacle, or another live tank; Fire spawns at barrel_ahead if that cell is free, then every projectile including a newly spawned one moves by its speed during that same tick; after each unit step it despawns on bounds/obstacle or hits the first non-owner live tank at that cell, deals exactly one health, records exactly one hit and one kill only if health becomes zero, and is removed\n- reset must restore deep clones of the constructor-supplied initial arena and every initial tank including position, direction, health, and speed; it also clears projectiles and command_queue, recreates zeroed scores, and sets next_projectile_id=0; merely clearing projectiles/scores while leaving moved or damaged tanks unchanged is forbidden\n- ScoreBoard has the exact constructor `ScoreBoard(player_ids:list[str])`, immediately initializes both hits and kills as `{player_id:0 for player_id in player_ids}`, exposes record_hit, record_kill, and score(player_id)=hits+5*kills; Game construction and reset each use `ScoreBoard(list(self._initial_tanks))`, so zero-hit and zero-kill entries such as kills[\"p1\"] always exist; winner returns one surviving tank id only when at least two tanks were initially supplied and exactly one remains alive, otherwise None\n- tank_battle/game.py directly imports every command class it dispatches with the literal line `from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire`; importing only Command and then referencing undeclared subclasses is forbidden, and the six mutable public attributes arena, tanks, projectiles, scores, command_queue, and next_projectile_id must be ordinary assignable attributes rather than getter-only properties\n- Fire first creates a projectile at barrel_ahead, then the same tick's projectile phase moves every projectile including that new projectile by speed one cell at a time; in the exact hit fixture, tick one therefore leaves it at (3,2), and tick two moves it to (4,2) and hits p2; a test expecting (2,2) after tick one is forbidden\n- on a hit, game.py must literally call `self.scores.record_hit(projectile.owner_id)` and, only when health becomes zero, `self.scores.record_kill(projectile.owner_id)`; passing the hit tank id, target id, Tank object, or any other value is forbidden\n- tank_battle/configs.py is the sole owner of build_default_demo()->Game; it constructs exactly an 8-by-5 empty Arena and two tanks: Tank(\"p1\",\"P1\",1,2,Direction.E,3,1) and Tank(\"p2\",\"P2\",6,2,Direction.W,3,1); tank_battle/__init__.py imports build_default_demo from .configs; Main.py must use the literal import `from tank_battle import build_default_demo, RotateRight`, exposes run_demo()->dict, literally calls `game.queue_command(\"p1\", RotateRight())` (a command instance, never the string \"RotateRight\"), then calls `game.tick()` exactly once and returns snapshot without input/network/GUI; main() prints that one snapshot and is called only under the __name__ guard\n- for architecture validation, the Full API specification must literally describe string tank/player/owner ids, `Tank(id:str,...)`, `Projectile(...,owner_id:str,...)`, `Game(arena:Arena,tanks:dict[str,Tank])`, `queue_command(self,player_id:str,...)`, `build_default_demo()->Game`, `record_hit`, `record_kill`, and `score(player_id)=hits+5*kills`; numeric tank/player/owner ids, `tanks:list[Tank]`, and any tuple return from build_default_demo are forbidden\n- the Full API specification must also repeat these exact compact fixture expressions verbatim: `Arena(8,5,[])`, `Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)`, and `Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)`; it must explicitly say `MoveForward` rejects `steps<1`, winner returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks, and run_demo queues `RotateRight` for `p1` then calls tick exactly once\n- tests/test_main.py contains exactly four concise pytest tests, imports every used symbol directly from tank_battle plus run_demo from Main, and must not use Game.Arena, package.commands, private members, monkeypatching, long loops, or alternate fixtures\n- tests/test_main.py uses only absolute top-level imports beginning with the literal `from tank_battle import` and `from Main import run_demo`; any leading-dot relative import is forbidden because pytest loads this file as a top-level test module\n- runtime fixture: result=run_demo(); assert it is a dict with keys exactly arena,tanks,projectiles,scores,winner and result[\"tanks\"][\"p1\"][\"direction\"]==\"S\"\n- obstacle fixture: Arena(8,5,[Obstacle(Rect(3,1,1,1))]), p1=Tank(\"p1\",\"P1\",2,1,Direction.E), p2=Tank(\"p2\",\"P2\",6,4,Direction.W), Game(arena,{\"p1\":p1,\"p2\":p2}); queue MoveForward(2) for p1 and tick; assert game.tanks[\"p1\"] remains at (2,1)\n- hit fixture: Arena(8,5,[]), p1=Tank(\"p1\",\"P1\",1,2,Direction.E), p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1), Game(arena,{\"p1\":p1,\"p2\":p2}); queue Fire for p1 and tick once, yielding one projectile at (3,2); tick again, yielding p2.health==1, no projectiles, hits[\"p1\"]==1, kills[\"p1\"]==0, score(\"p1\")==1, and winner() is None\n- reset fixture constructs a fresh Arena(8,5,[]) with p1=Tank(\"p1\",\"P1\",1,2,Direction.E) and p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1), then immediately records `initial=game.snapshot()` before any command or tick; it must not queue Fire and must not call tick before this initial capture; only afterward it queues MoveForward(1) for p1 and ticks once, directly changes game.tanks[\"p2\"].health=0, then reset(); assert snapshot()==initial, command_queue/projectiles empty, `game.scores.hits=={\"p1\":0,\"p2\":0}`, `game.scores.kills=={\"p1\":0,\"p2\":0}`, score(\"p1\")==0, score(\"p2\")==0, and next_projectile_id==0; asserting empty score dictionaries or capturing the post-hit state as initial is forbidden\n- snapshot returns only newly allocated plain dict/list/scalar values: arena is a dict (never an Arena object), each tank/projectile direction is `direction.name`, scores contains plain hits/kills/score mappings, and no mutable domain object is returned; tests compare this serialized dict data and must never compare Arena/Tank/Projectile objects by identity\n- repeat the exact explicit exports, attribute names direction, constructors, initialized ScoreBoard dictionaries, direct command imports, owner-id scoring calls, same-tick projectile movement, absolute test imports, full reset rule, build_default_demo layout, run_demo result, four-test limit, and all literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task; generic statements about a public API or deterministic reset are insufficient\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 9 repository files\n- about 46 functions or methods\n- about 727 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tank movement and orientation\n- bounded arena and obstacles\n- projectile creation and movement\n- projectile collision and damage\n- score or winner state\n- deterministic tick and reset\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE TANK-BATTLE ARCHITECTURE CHECKLIST:\n- Task list filenames are exactly: requirements.txt; tank_battle/directions.py; tank_battle/geometry.py; tank_battle/obstacle.py; tank_battle/arena.py; tank_battle/tank.py; tank_battle/projectile.py; tank_battle/commands.py; tank_battle/scoring.py; tank_battle/game.py; tank_battle/configs.py; tank_battle/__init__.py; Main.py; tests/test_main.py.\n- Full API must contain these literal strings: `id:str`, `owner_id:str`, `tanks:dict[str,Tank]`, `player_id:str`, `build_default_demo()->Game`, `record_hit`, `record_kill`, `score(player_id)=hits+5*kills`, `steps<1`, `Arena(8,5,[])`, `Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)`, and `Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)`.\n- Full API must also contain the literal Enum tokens `from enum import Enum`, `class Direction(Enum):`, `N=(0,-1)`, `E=(1,0)`, `S=(0,1)`, and `W=(-1,0)`; snapshot values are only plain dict/list/scalars and directions serialize through `.name`.\n- Full API and game.py task must literally contain `ScoreBoard(player_ids:list[str])`, `ScoreBoard(list(self._initial_tanks))`, `from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire`, `self.scores.record_hit(projectile.owner_id)`, and `self.scores.record_kill(projectile.owner_id)`; hits and kills contain every initial player id with value zero before events.\n- Full API must literally say `Command has no execute method` and `Game.tick dispatches solely with isinstance`; commands.py must not use ABC or @abstractmethod, no command class may define execute, and game.py must never call command.execute.\n- configs.py is the sole build_default_demo owner, __init__.py imports it from .configs, and Main.py literally uses `from tank_battle import build_default_demo, RotateRight` plus `game.queue_command(\"p1\", RotateRight())`, never a command-name string; build_default_demo returns that exact Game, run_demo calls tick once, a new Fire projectile moves from (2,2) to (3,2) during that same tick and hits p2 at (4,2) on the next tick, reset restores a deep initial snapshot with hits/kills exactly `{\"p1\":0,\"p2\":0}` rather than empty dictionaries, the reset test captures initial immediately after Game construction with no prior Fire or tick, tests use absolute imports, and Test Scope Plan contains exactly four rows: runtime, obstacle, projectile-hit/scoring, and reset using the literal fixtures already specified above. Do not summarize, rename, weaken, or substitute any item in this final checklist.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant M as Main\n    participant C as configs.build_default_demo\n    participant G as Game\n    participant SB as ScoreBoard\n    M->>C: build_default_demo()\n    C-->>M: Game(arena:Arena, tanks:dict[str,Tank])\n    M->>G: queue_command(\"p1\", RotateRight())\n    M->>G: tick()\n    G->>G: stable-sort commands by player id\n    G->>G: isinstance dispatch MoveForward/RotateLeft/RotateRight/RotateTo/Fire\n    G->>G: spawn projectile on Fire at barrel_ahead if free\n    G->>G: move all projectiles same tick by speed; resolve collisions; record_hit/record_kill\n    M->>G: snapshot()\n    G-->>M: dict {arena,tanks,projectiles,scores,winner}\n    M->>M: print(snapshot)\n    note over G: winner returns sole surviving id only when exactly one remains alive from at least two initial tanks",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "python -m pytest -q",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: requirements.txt. Runtime entry: Main.py. Single test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is planned.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "from tank_battle import Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, build_default_demo",
+      "from Main import run_demo"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "pure_logic_modules": [
+      "tank_battle/directions.py",
+      "tank_battle/geometry.py",
+      "tank_battle/obstacle.py",
+      "tank_battle/arena.py",
+      "tank_battle/tank.py",
+      "tank_battle/projectile.py",
+      "tank_battle/commands.py",
+      "tank_battle/scoring.py",
+      "tank_battle/game.py",
+      "tank_battle/configs.py",
+      "tank_battle/__init__.py"
+    ],
+    "test_targets_should_focus_on": [
+      "Basic runtime wiring via run_demo() and snapshot dict contract",
+      "Obstacle blocking of MoveForward respecting Arena.is_blocked",
+      "Projectile same-tick movement and hit scoring via self.scores.record_hit(projectile.owner_id)",
+      "Full reset rule restoring deep initial clones and zeroed ScoreBoard(list(self._initial_tanks)) with next_projectile_id=0"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "tank_battle/directions.py",
+    "tank_battle/geometry.py",
+    "tank_battle/obstacle.py",
+    "tank_battle/arena.py",
+    "tank_battle/tank.py",
+    "tank_battle/projectile.py",
+    "tank_battle/commands.py",
+    "tank_battle/scoring.py",
+    "tank_battle/game.py",
+    "tank_battle/configs.py",
+    "tank_battle/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.py with run_demo()->dict. Exactly one protocol-level test file: tests/test_main.py. Tests are deterministic, headless, and require no manual interaction or network. Additional implementation files do not alter protocol or introduce extra tests.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 14,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 14,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 14,
+    "task_list_count": 14
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Python 3.10 repository architecture for: Tank battle game.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python Tank Battle public-API and deterministic-fixture contract:\n- the architecture Canonical File References, File list, Logic Analysis, and Task list must use exactly these files and no substitutes: requirements.txt, tank_battle/directions.py, tank_battle/geometry.py, tank_battle/obstacle.py, tank_battle/arena.py, tank_battle/tank.py, tank_battle/projectile.py, tank_battle/commands.py, tank_battle/scoring.py, tank_battle/game.py, tank_battle/configs.py, tank_battle/__init__.py, Main.py, tests/test_main.py; tank_battle/direction.py, tank_battle/entities.py, tank_battle/scoreboard.py, tank_battle/demo.py, and any combined or renamed substitute are forbidden\n- tank_battle/__init__.py must explicitly import and re-export exactly these public symbols: Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, and build_default_demo; __all__ lists those exact names, no wildcard import is allowed, and tests must never expect nested aliases such as Game.Arena or a package attribute named commands\n- Direction is defined only in tank_battle/directions.py with the literal skeleton `from enum import Enum`, `class Direction(Enum):`, `N=(0,-1)`, `E=(1,0)`, `S=(0,1)`, and `W=(-1,0)`; delta(self)->tuple[int,int] returns self.value, left()->Direction and right()->Direction return enum members, and all movement/barrel/projectile code uses delta rather than duplicate mappings; a plain class whose members are strings or post-construction singleton objects is forbidden\n- Rect is an immutable value with Rect(x:int,y:int,w:int,h:int), rejects nonpositive w/h, and contains(px,py) uses half-open cells x<=px<x+w and y<=py<y+h; Obstacle contains one Rect; Arena(width:int,height:int,obstacles:list[Obstacle]) rejects nonpositive dimensions and exposes in_bounds(x,y) and is_blocked(x,y), where out-of-bounds and obstacle cells are blocked\n- Tank has the exact constructor Tank(id:str,name:str,x:int,y:int,direction:Direction,health:int=3,speed:int=1), public attributes with the name direction (never dir), barrel_ahead() using direction.delta(), alive(), and clone(); Projectile uses Projectile(pid:int,owner_id:str,x:int,y:int,direction:Direction,speed:int=1), the attribute name direction, move(), and clone()\n- Command is an instantiable marker class with no ABC inheritance, no @abstractmethod, and no execute method; its concrete MoveForward, RotateLeft, RotateRight, RotateTo, and Fire subclasses also define no execute method\n- Game.tick dispatches commands itself solely with isinstance(command, MoveForward/RotateLeft/RotateRight/RotateTo/Fire); command.execute(...) and every other polymorphic command-execution callback are forbidden; MoveForward(steps:int=1) rejects steps<1, RotateLeft/RotateRight/Fire take no arguments, and RotateTo(direction:Direction) stores the attribute direction\n- the canonical Game constructor is Game(arena:Arena,tanks:dict[str,Tank]); it validates unique in-bounds unblocked tank cells, deep-copies and stores an immutable initial arena/tank snapshot, and exposes public arena, tanks, projectiles, scores, command_queue, next_projectile_id plus queue_command(player_id,command), tick(), reset(), winner(), and snapshot()\n- deterministic tick order is exact: stable-sort queued commands by player id, apply them, clear the queue, then process projectiles by pid; MoveForward attempts one cell at a time and stops before bounds, obstacle, or another live tank; Fire spawns at barrel_ahead if that cell is free, then every projectile including a newly spawned one moves by its speed during that same tick; after each unit step it despawns on bounds/obstacle or hits the first non-owner live tank at that cell, deals exactly one health, records exactly one hit and one kill only if health becomes zero, and is removed\n- reset must restore deep clones of the constructor-supplied initial arena and every initial tank including position, direction, health, and speed; it also clears projectiles and command_queue, recreates zeroed scores, and sets next_projectile_id=0; merely clearing projectiles/scores while leaving moved or damaged tanks unchanged is forbidden\n- ScoreBoard has the exact constructor `ScoreBoard(player_ids:list[str])`, immediately initializes both hits and kills as `{player_id:0 for player_id in player_ids}`, exposes record_hit, record_kill, and score(player_id)=hits+5*kills; Game construction and reset each use `ScoreBoard(list(self._initial_tanks))`, so zero-hit and zero-kill entries such as kills[\"p1\"] always exist; winner returns one surviving tank id only when at least two tanks were initially supplied and exactly one remains alive, otherwise None\n- tank_battle/game.py directly imports every command class it dispatches with the literal line `from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire`; importing only Command and then referencing undeclared subclasses is forbidden, and the six mutable public attributes arena, tanks, projectiles, scores, command_queue, and next_projectile_id must be ordinary assignable attributes rather than getter-only properties\n- Fire first creates a projectile at barrel_ahead, then the same tick's projectile phase moves every projectile including that new projectile by speed one cell at a time; in the exact hit fixture, tick one therefore leaves it at (3,2), and tick two moves it to (4,2) and hits p2; a test expecting (2,2) after tick one is forbidden\n- on a hit, game.py must literally call `self.scores.record_hit(projectile.owner_id)` and, only when health becomes zero, `self.scores.record_kill(projectile.owner_id)`; passing the hit tank id, target id, Tank object, or any other value is forbidden\n- tank_battle/configs.py is the sole owner of build_default_demo()->Game; it constructs exactly an 8-by-5 empty Arena and two tanks: Tank(\"p1\",\"P1\",1,2,Direction.E,3,1) and Tank(\"p2\",\"P2\",6,2,Direction.W,3,1); tank_battle/__init__.py imports build_default_demo from .configs; Main.py must use the literal import `from tank_battle import build_default_demo, RotateRight`, exposes run_demo()->dict, literally calls `game.queue_command(\"p1\", RotateRight())` (a command instance, never the string \"RotateRight\"), then calls `game.tick()` exactly once and returns snapshot without input/network/GUI; main() prints that one snapshot and is called only under the __name__ guard\n- for architecture validation, the Full API specification must literally describe string tank/player/owner ids, `Tank(id:str,...)`, `Projectile(...,owner_id:str,...)`, `Game(arena:Arena,tanks:dict[str,Tank])`, `queue_command(self,player_id:str,...)`, `build_default_demo()->Game`, `record_hit`, `record_kill`, and `score(player_id)=hits+5*kills`; numeric tank/player/owner ids, `tanks:list[Tank]`, and any tuple return from build_default_demo are forbidden\n- the Full API specification must also repeat these exact compact fixture expressions verbatim: `Arena(8,5,[])`, `Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)`, and `Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)`; it must explicitly say `MoveForward` rejects `steps<1`, winner returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks, and run_demo queues `RotateRight` for `p1` then calls tick exactly once\n- tests/test_main.py contains exactly four concise pytest tests, imports every used symbol directly from tank_battle plus run_demo from Main, and must not use Game.Arena, package.commands, private members, monkeypatching, long loops, or alternate fixtures\n- tests/test_main.py uses only absolute top-level imports beginning with the literal `from tank_battle import` and `from Main import run_demo`; any leading-dot relative import is forbidden because pytest loads this file as a top-level test module\n- runtime fixture: result=run_demo(); assert it is a dict with keys exactly arena,tanks,projectiles,scores,winner and result[\"tanks\"][\"p1\"][\"direction\"]==\"S\"\n- obstacle fixture: Arena(8,5,[Obstacle(Rect(3,1,1,1))]), p1=Tank(\"p1\",\"P1\",2,1,Direction.E), p2=Tank(\"p2\",\"P2\",6,4,Direction.W), Game(arena,{\"p1\":p1,\"p2\":p2}); queue MoveForward(2) for p1 and tick; assert game.tanks[\"p1\"] remains at (2,1)\n- hit fixture: Arena(8,5,[]), p1=Tank(\"p1\",\"P1\",1,2,Direction.E), p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1), Game(arena,{\"p1\":p1,\"p2\":p2}); queue Fire for p1 and tick once, yielding one projectile at (3,2); tick again, yielding p2.health==1, no projectiles, hits[\"p1\"]==1, kills[\"p1\"]==0, score(\"p1\")==1, and winner() is None\n- reset fixture constructs a fresh Arena(8,5,[]) with p1=Tank(\"p1\",\"P1\",1,2,Direction.E) and p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1), then immediately records `initial=game.snapshot()` before any command or tick; it must not queue Fire and must not call tick before this initial capture; only afterward it queues MoveForward(1) for p1 and ticks once, directly changes game.tanks[\"p2\"].health=0, then reset(); assert snapshot()==initial, command_queue/projectiles empty, `game.scores.hits=={\"p1\":0,\"p2\":0}`, `game.scores.kills=={\"p1\":0,\"p2\":0}`, score(\"p1\")==0, score(\"p2\")==0, and next_projectile_id==0; asserting empty score dictionaries or capturing the post-hit state as initial is forbidden\n- snapshot returns only newly allocated plain dict/list/scalar values: arena is a dict (never an Arena object), each tank/projectile direction is `direction.name`, scores contains plain hits/kills/score mappings, and no mutable domain object is returned; tests compare this serialized dict data and must never compare Arena/Tank/Projectile objects by identity\n- repeat the exact explicit exports, attribute names direction, constructors, initialized ScoreBoard dictionaries, direct command imports, owner-id scoring calls, same-tick projectile movement, absolute test imports, full reset rule, build_default_demo layout, run_demo result, four-test limit, and all literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task; generic statements about a public API or deterministic reset are insufficient\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 9 repository files\n- about 46 functions or methods\n- about 727 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tank movement and orientation\n- bounded arena and obstacles\n- projectile creation and movement\n- projectile collision and damage\n- score or winner state\n- deterministic tick and reset\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE TANK-BATTLE ARCHITECTURE CHECKLIST:\n- Task list filenames are exactly: requirements.txt; tank_battle/directions.py; tank_battle/geometry.py; tank_battle/obstacle.py; tank_battle/arena.py; tank_battle/tank.py; tank_battle/projectile.py; tank_battle/commands.py; tank_battle/scoring.py; tank_battle/game.py; tank_battle/configs.py; tank_battle/__init__.py; Main.py; tests/test_main.py.\n- Full API must contain these literal strings: `id:str`, `owner_id:str`, `tanks:dict[str,Tank]`, `player_id:str`, `build_default_demo()->Game`, `record_hit`, `record_kill`, `score(player_id)=hits+5*kills`, `steps<1`, `Arena(8,5,[])`, `Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)`, and `Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)`.\n- Full API must also contain the literal Enum tokens `from enum import Enum`, `class Direction(Enum):`, `N=(0,-1)`, `E=(1,0)`, `S=(0,1)`, and `W=(-1,0)`; snapshot values are only plain dict/list/scalars and directions serialize through `.name`.\n- Full API and game.py task must literally contain `ScoreBoard(player_ids:list[str])`, `ScoreBoard(list(self._initial_tanks))`, `from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire`, `self.scores.record_hit(projectile.owner_id)`, and `self.scores.record_kill(projectile.owner_id)`; hits and kills contain every initial player id with value zero before events.\n- Full API must literally say `Command has no execute method` and `Game.tick dispatches solely with isinstance`; commands.py must not use ABC or @abstractmethod, no command class may define execute, and game.py must never call command.execute.\n- configs.py is the sole build_default_demo owner, __init__.py imports it from .configs, and Main.py literally uses `from tank_battle import build_default_demo, RotateRight` plus `game.queue_command(\"p1\", RotateRight())`, never a command-name string; build_default_demo returns that exact Game, run_demo calls tick once, a new Fire projectile moves from (2,2) to (3,2) during that same tick and hits p2 at (4,2) on the next tick, reset restores a deep initial snapshot with hits/kills exactly `{\"p1\":0,\"p2\":0}` rather than empty dictionaries, the reset test captures initial immediately after Game construction with no prior Fire or tick, tests use absolute imports, and Test Scope Plan contains exactly four rows: runtime, obstacle, projectile-hit/scoring, and reset using the literal fixtures already specified above. Do not summarize, rename, weaken, or substitute any item in this final checklist.\n\n",
+  "Logic Analysis": [
+    [
+      "requirements.txt",
+      "dependency/build; declares pytest only for running the single protocol-level test"
+    ],
+    [
+      "tank_battle/directions.py",
+      "domain-entity; Direction enum with turning and movement delta used by Tank and Projectile; foundational and imported by others"
+    ],
+    [
+      "tank_battle/geometry.py",
+      "domain-entity; immutable Rect with validation and half-open contains; used by Obstacle and Arena"
+    ],
+    [
+      "tank_battle/obstacle.py",
+      "domain-entity; Obstacle encapsulates one Rect; used by Arena"
+    ],
+    [
+      "tank_battle/arena.py",
+      "pure-rule; Arena bounds and blocking logic; in_bounds and is_blocked; used by Game"
+    ],
+    [
+      "tank_battle/tank.py",
+      "domain-entity; Tank state and helpers (barrel_ahead, alive, clone); depends on Direction; used by Game"
+    ],
+    [
+      "tank_battle/projectile.py",
+      "domain-entity; Projectile movement and clone; depends on Direction; used by Game"
+    ],
+    [
+      "tank_battle/commands.py",
+      "interface; Command marker and concrete commands MoveForward, RotateLeft, RotateRight, RotateTo, Fire; no execute method; used by Game"
+    ],
+    [
+      "tank_battle/scoring.py",
+      "domain-entity; ScoreBoard(player_ids:list[str]) with hits/kills maps and score(player_id)=hits+5*kills; used by Game"
+    ],
+    [
+      "tank_battle/game.py",
+      "orchestration; Game lifecycle: validation, deterministic tick with isinstance dispatch, projectile processing, scoring calls, winner, reset restoring deep clones, and snapshot serialization"
+    ],
+    [
+      "tank_battle/configs.py",
+      "package; build_default_demo()->Game constructs Arena(8,5,[]) and two exact Tanks; sole owner of demo wiring"
+    ],
+    [
+      "tank_battle/__init__.py",
+      "package; explicit re-exports of public API symbols; sets __all__ without wildcards or nested aliases"
+    ],
+    [
+      "Main.py",
+      "environment-dependent; thin runtime entry; run_demo queues RotateRight for p1, ticks once, returns snapshot; prints under guard"
+    ],
+    [
+      "tests/test_main.py",
+      "automated-test; single protocol test file with exactly four concise tests covering runtime demo, obstacle blocking, projectile hit/scoring, and reset fixture"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "tank_battle/directions.py",
+      "tank_battle/geometry.py",
+      "tank_battle/obstacle.py",
+      "tank_battle/arena.py",
+      "tank_battle/tank.py",
+      "tank_battle/projectile.py",
+      "tank_battle/commands.py",
+      "tank_battle/scoring.py",
+      "tank_battle/game.py",
+      "tank_battle/configs.py",
+      "tank_battle/__init__.py"
+    ],
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "Only pytest is required; tests are deterministic and headless; target Python 3.10 APIs only",
+    "not_applicable": false,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [],
+  "Required packages": [
+    "pytest"
+  ],
+  "Shared Knowledge": "Roles: Alice (foundations), Bob (Architect), Alex (game orchestration). Foundational modules (directions, geometry, obstacle) define core types. Arena encodes bounds and blocking. Tank and Projectile encapsulate entities. Commands file declares marker and concrete commands with no execute method. ScoreBoard tracks hits/kills and score(player_id)=hits+5*kills. Game orchestrates validation, deterministic tick with isinstance dispatch, projectile processing, literal scoring calls, reset restoring deep clones and zeroed ScoreBoard(list(self._initial_tanks)), winner, and snapshot serialization. configs.py is the sole owner of build_default_demo()->Game. __init__.py re-exports the public API. Main.py is a thin, headless entrypoint used by tests. tests/test_main.py is the only test file and uses absolute imports only.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "requirements.txt",
+    "tank_battle/directions.py",
+    "tank_battle/geometry.py",
+    "tank_battle/obstacle.py",
+    "tank_battle/arena.py",
+    "tank_battle/tank.py",
+    "tank_battle/projectile.py",
+    "tank_battle/commands.py",
+    "tank_battle/scoring.py",
+    "tank_battle/game.py",
+    "tank_battle/configs.py",
+    "tank_battle/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.py",
+      "from tank_battle import Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, build_default_demo"
+    ],
+    [
+      "tests/test_main.py",
+      "from Main import run_demo"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.py",
+      "runtime: result=run_demo(); assert exact plain snapshot keys and p1 direction S"
+    ],
+    [
+      "tests/test_main.py",
+      "obstacle: exact Obstacle(Rect(3,1,1,1)) fixture blocks MoveForward(2)"
+    ],
+    [
+      "tests/test_main.py",
+      "projectile-hit/scoring: exact (3,2) same-tick position, (4,2) hit, score and p1 assertions"
+    ],
+    [
+      "tests/test_main.py",
+      "reset: fresh Game then immediately initial=game.snapshot() before any command/tick; no prior Fire; mutate, reset, snapshot equality, empty queues/projectiles, exact zeroed p1/p2 score maps"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: requirements.txt
+```python
+## requirements.txt
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: requirements.txt. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

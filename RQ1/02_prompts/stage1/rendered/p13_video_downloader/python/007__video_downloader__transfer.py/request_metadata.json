@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p13_video_downloader_python",
+  "action_index": 7,
+  "filename": "video_downloader/transfer.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/python/007__video_downloader__transfer.py/user_prompt.txt",
+  "user_prompt_sha256": "259b9c6cde037aacb0039bade9abd6abe7b934d2ec0f1a1f2d5c5a8af2958084",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/python/007__video_downloader__transfer.py/input_context.json",
+  "input_context_sha256": "074704aac0a75638c22c2c0eea9f1acdb476bc5c9cc182101323f760a15a6808",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/errors.py",
+      "generated_code_sha256": "b62cf29f86c544416527b19550db6f7f2185fc738e7d3167e54ac34c2b459dd3",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/url.py",
+      "generated_code_sha256": "b21783d3ef445bcbbe5d4bb77ec057699c9ca5458234ad5caf2be9d3fe971d4f",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/naming.py",
+      "generated_code_sha256": "65ab287678739729c2af35d7933ce3bb8bf54c7840f4f24d491b16f1b6011339",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/request.py",
+      "generated_code_sha256": "8dc7666c65083060f70e6ff219abdcfebb58bf210ad1a8e11e9f886daad413cb",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/progress.py",
+      "generated_code_sha256": "0cc596e21044af237d46ab79c0745abedcfa4a437bb85076d4ecddfd59f48ea9",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p13_video_downloader/python/architecture/team/team.json",
+  "checkpoint_sha256": "83470ec0963573472d5b4d87fbfa6614e29466a9a4e7fb10ab31cbc86f357dbc",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/python/attempts/0012_seed_872520481/generation_report.json",
+  "rng_seed": 872520481,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789423013274",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 856,
+    "prompt_tokens": 10568,
+    "total_tokens": 11424
+  },
+  "response_content_sha256": "0ba39aebfc15cd6f0c2f713700d691c0f12ecf9b4cfff75b209208dc095ab2f4",
+  "generated_code_sha256": "b086c932b0b09d2097a270e9ab0e86b8e5c62fff47312b504c4a0cbbddfcf5a2",
+  "accepted_source_restoration": "restored_leading_h2"
+}

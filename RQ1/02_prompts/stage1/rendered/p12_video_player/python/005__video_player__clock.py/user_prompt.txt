@@ -1,0 +1,204 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve protocol-required files exactly: requirements.txt, Main.py, tests/test_main.py. Keep Main.py a thin, non-interactive bootstrap that constructs a playlist, a deterministic ManualClock, and a Player, performs a few scripted operations, and exits. Place reusable modules in a lowercase snake_case package named video_player. Separate pure domain logic (media metadata, playlist rules, playback state transitions, seeking, volume/mute) from environment/runtime concerns. Provide a headless, deterministic clock abstraction with a tick-driven model: the Player subscribes to a provided clock and advances only on ticks. Tests drive time deterministically by calling ManualClock.tick(...) directly; no GUI, audio, filesystem, or network. Use only pytest as an external dependency. Ensure an acyclic import graph: errors -> media -> playlist -> player; clock is orthogonal and imported by player only; __init__.py only re-exports submodule symbols.","Domain Decomposition":[["Runtime bootstrap and small demo","Main.py","environment-dependent"],["Package public API surface","video_player/__init__.py","package"],["Domain-specific exceptions (validation, state, not found)","video_player/errors.py","interface"],["Immutable media metadata entity with validation","video_player/media.py","domain-entity"],["Deterministic headless clock abstraction and manual tick source","video_player/clock.py","domain-entity"],["Playlist ordering, current index, and navigation rules","video_player/playlist.py","pure-rule"],["Core Player: playback state machine, clock-driven position, seeking, volume/mute, playlist-aware navigation","video_player/player.py","orchestration"],["Protocol-level smoke and core rule tests (headless, deterministic)","tests/test_main.py","automated-test"],["Build dependencies (pytest only)","requirements.txt","protocol-required"]],"File list":["requirements.txt","Main.py","video_player/__init__.py","video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py","tests/test_main.py"],"Canonical File References":["requirements.txt","Main.py","video_player/__init__.py","video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py","tests/test_main.py"],"Data structures and interfaces":"classDiagram\n    class ValidationError\n    class StateError\n    class NotFoundError\n    ValidationError <|-- StateError\n    ValidationError <|-- NotFoundError\n\n    class Media {\n        +id: str\n        +title: str\n        +duration_seconds: float\n        +metadata: dict\n        +__init__(id: str, title: str, duration_seconds: float, metadata: Optional[dict])\n    }\n\n    class ManualClock {\n        -_time: float\n        -_listeners: list\n        +now() float\n        +add_tick_listener(fn: Callable[[float], None]) None\n        +remove_tick_listener(fn) None\n        +tick(delta_seconds: float) None\n    }\n\n    class Playlist {\n        -_items: list[Media]\n        -_current_index: int|None\n        +__init__(items: list[Media])\n        +is_empty() bool\n        +size() int\n        +current() Media|None\n        +select(index: int) Media\n        +next() Media|None\n        +previous() Media|None\n    }\n\n    class PlaybackState {\n        <<enumeration>>\n        STOPPED\n        PLAYING\n        PAUSED\n    }\n\n    class Player {\n        -_playlist: Playlist\n        -_clock: ManualClock\n        -_state: PlaybackState\n        -_position: float\n        -_volume: float\n        -_muted: bool\n        +__init__(playlist: Playlist, clock: ManualClock)\n        +state() PlaybackState\n        +current_media() Media|None\n        +position_seconds() float\n        +duration_seconds() float\n        +play() None\n        +pause() None\n        +stop() None\n        +seek(seconds: float) float\n        +set_volume(v: float) float\n        +get_volume() float\n        +mute() None\n        +unmute() None\n        +toggle_mute() bool\n        +effective_volume() float\n        +next_media() Media|None\n        +previous_media() Media|None\n        +select_index(i: int) Media\n        -_on_tick(delta: float) None\n        -_reset_position() None\n    }\n\n    Player --> Playlist\n    Player --> ManualClock\n    Playlist --> Media\n    Player ..> PlaybackState","Program call flow":"sequenceDiagram\n    participant Main as Main.py\n    participant VP as video_player (API)\n    participant C as ManualClock\n    participant P as Player\n    participant PL as Playlist\n    participant M as Media\n\n    Main->>M: construct Media(id, title, duration)\n    Main->>PL: construct Playlist([Media,...])\n    Main->>C: construct ManualClock()\n    Main->>P: construct Player(playlist=PL, clock=C)\n    Main->>P: play()\n    Main->>C: tick(1.0)\n    C-->>P: on_tick(delta=1.0)\n    P->>P: advance position; clamp; maybe stop at end\n    Main->>P: seek(5.0)\n    Main->>P: pause()\n    Main->>C: tick(2.0)\n    C-->>P: on_tick(delta=2.0) (no-op while paused)\n    Main->>P: next_media(); play()\n    Main->>C: tick(999.0)\n    C-->>P: on_tick(delta=999.0) (stop at end)\n    Main-->>Main: exit","Domain Mapping":[["Package initialization and public API exports","video_player/__init__.py"],["Domain exceptions","video_player/errors.py"],["Media metadata entity","video_player/media.py"],["Headless tick-driven clock","video_player/clock.py"],["Playlist rules and navigation","video_player/playlist.py"],["Player state machine, seek, volume/mute, clock-driven progression","video_player/player.py"],["Runtime wiring demo","Main.py"],["Deterministic protocol tests","tests/test_main.py"]],"Testable Core Boundary":{"pure_logic_modules":["video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py"],"environment_dependent_modules":["Main.py"],"test_targets_should_focus_on":["clock-driven play/pause/stop and end-of-media clamping","seek clamping to [0, duration]","volume/mute effective volume behavior","playlist navigation bounds and state reset on selection"]},"C++ Interface Plan":{},"Test Include Audit":{"declared_test_includes":["video_player"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: requirements.txt. Runtime entry: Main.py. Test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is used.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":["pytest"],"Required Other language third-party packages":[],"Canonical File References":["requirements.txt","Main.py","video_player/__init__.py","video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py","tests/test_main.py"],"Logic Analysis":[["requirements.txt","dependency/build; declares pytest as the only external dependency"],["Main.py","runtime/bootstrap; thin, non-interactive demo wiring ManualClock, Media, Playlist, Player, performs scripted operations and exits"],["video_player/__init__.py","package; re-exports package public API without creating cycles"],["video_player/errors.py","interface; domain-specific exceptions (ValidationError, StateError, NotFoundError), imported by other modules"],["video_player/media.py","domain-entity; immutable Media metadata entity with validation; depends on errors"],["video_player/clock.py","domain-entity; deterministic headless ManualClock abstraction and manual tick source; independent of other domain modules"],["video_player/playlist.py","pure-rule; Playlist ordering, selection, navigation; depends on media and errors"],["video_player/player.py","orchestration; Player state machine, clock-driven progression, seeking, volume/mute, playlist-aware navigation; depends on errors, media, playlist, and clock"],["tests/test_main.py","automated-test; protocol-level smoke and core rule tests, headless and deterministic using ManualClock.tick"]],"Task list":["requirements.txt","video_player/__init__.py","video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py","Main.py","tests/test_main.py"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[]},"File Coverage Audit":{"design_file_list_count":9,"pm_canonical_count":9,"logic_analysis_count":9,"task_list_count":9,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.py","clock-driven playback progression: play(), tick advances position; pause() prevents advancement; stopping at end-of-media clamps and transitions to STOPPED"],["tests/test_main.py","seek clamping within [0, duration]; returns effective seek position"],["tests/test_main.py","volume/mute: set_volume clamps to [0,1]; effective_volume reflects mute state; toggle_mute returns new mute status"],["tests/test_main.py","playlist navigation: next/previous bounds; select_index resets position and keeps deterministic state"]],"Test Include Plan":[["tests/test_main.py","video_player"]],"Module Boundary Audit":{"core_domain_logic_modules":["video_player/__init__.py","video_player/errors.py","video_player/media.py","video_player/clock.py","video_player/playlist.py","video_player/player.py"],"environment_dependent_modules":["Main.py"],"environment_test_coupling_risks":[],"headless_testing_risks":["Ensure Player advances only on ManualClock ticks; avoid implicit time sources or sleep calls in core modules"]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{},"Python Dependency Compatibility Audit":{"not_applicable":false,"uses_outdated_pins":false,"version_range_recommendations":["pytest>=7,<9 to stay current and compatible with Python 3.8+"],"headless_test_notes":"No runtime dependencies besides pytest; tests execute deterministically via ManualClock without I/O, GUI, audio, filesystem, or network"},"Full API spec":"Public API and import rules\n\nPackage: video_player\n- video_player.__init__ re-exports: ValidationError, StateError, NotFoundError; Media; ManualClock; Playlist; Player; PlaybackState.\n- Import graph must be acyclic: errors -> media -> playlist -> player; clock is orthogonal and imported by player only; tests and Main.py import from video_player or submodules without creating cycles.\n\nExceptions (video_player.errors)\n- class ValidationError(Exception): raised for invalid inputs and configuration.\n- class StateError(ValidationError): raised for invalid state transitions (e.g., play with empty playlist).\n- class NotFoundError(ValidationError): raised when addressing non-existent playlist indices/items.\n\nEntity: Media (video_player.media)\n- class Media:\n  - __init__(self, id: str, title: str, duration_seconds: float, metadata: Optional[dict] = None)\n    - id: non-empty str\n    - title: non-empty str\n    - duration_seconds: float > 0\n    - metadata: optional dict; stored as a shallow copy; object is immutable after construction (no setters; attributes may be read-only via properties or by convention).\n  - Attributes (public, read-only): id, title, duration_seconds, metadata (a shallow-copied dict or {})\n  - Errors: ValidationError for invalid field types/values.\n\nClock: ManualClock (video_player.clock)\n- class ManualClock:\n  - now(self) -> float: returns accumulated clock time in seconds.\n  - add_tick_listener(self, fn: Callable[[float], None]) -> None: registers a listener to receive tick deltas; idempotent add allowed; listener called synchronously on tick in registration order.\n  - remove_tick_listener(self, fn) -> None: unregisters a previously added listener; no-op if not present.\n  - tick(self, delta_seconds: float) -> None: advances clock by delta_seconds (> 0) and synchronously notifies listeners via fn(delta_seconds). Raises ValidationError if delta_seconds <= 0.\n\nPlaylist (video_player.playlist)\n- class Playlist:\n  - __init__(self, items: list[Media]): stores an immutable snapshot list of Media; initial _current_index is 0 if non-empty else None.\n  - is_empty(self) -> bool: True if no items.\n  - size(self) -> int: number of items.\n  - current(self) -> Media | None: current Media if selected else None.\n  - select(self, index: int) -> Media: selects and returns item at index; raises NotFoundError for out-of-range; sets current index to index.\n  - next(self) -> Media | None: if empty, return None; if at last item, keep last and return None; otherwise advance index by 1 and return the new current item.\n  - previous(self) -> Media | None: if empty, return None; if at first item, keep first and return None; otherwise decrement index by 1 and return the new current item.\n  - Invariants: indices are 0-based; navigation does not wrap; selection maintains bounds.\n\nPlaybackState (video_player.player)\n- enum-like class PlaybackState with three members: STOPPED, PLAYING, PAUSED. Comparable by identity or value; string reprs stable.\n\nPlayer (video_player.player)\n- class Player:\n  - __init__(self, playlist: Playlist, clock: ManualClock): subscribes an internal _on_tick listener to clock; initializes state STOPPED, position 0.0, volume 1.0, muted False. If playlist not empty, current selection is as in Playlist (index 0 by default).\n  - state(self) -> PlaybackState: returns current playback state.\n  - current_media(self) -> Media | None: returns playlist.current().\n  - position_seconds(self) -> float: current position within current media in seconds; 0.0 when no selection.\n  - duration_seconds(self) -> float: duration of current media in seconds; 0.0 when no selection.\n  - play(self) -> None: transitions to PLAYING if a media is selected; if playlist is empty, raises StateError; if at end (position >= duration), resets to 0.0 before playing.\n  - pause(self) -> None: transitions to PAUSED from PLAYING; no-op if already PAUSED or STOPPED (remains STOPPED).\n  - stop(self) -> None: transitions to STOPPED and resets position to 0.0.\n  - seek(self, seconds: float) -> float: clamps seconds to [0.0, duration_seconds()] and sets position; returns the effective position. If no media selected, returns 0.0 and leaves state STOPPED. Raises ValidationError for NaN or negative infinite values; finite negatives clamp to 0.0.\n  - set_volume(self, v: float) -> float: sets volume to clamp(v, 0.0, 1.0); returns effective volume.\n  - get_volume(self) -> float: returns current volume (0.0..1.0), independent of muted flag.\n  - mute(self) -> None: sets muted True.\n  - unmute(self) -> None: sets muted False.\n  - toggle_mute(self) -> bool: flips muted and returns new muted state.\n  - effective_volume(self) -> float: returns 0.0 if muted else get_volume().\n  - next_media(self) -> Media | None: requests playlist.next(); if a next item exists, resets position to 0.0 and sets state to STOPPED; returns the Media or None if at end.\n  - previous_media(self) -> Media | None: requests playlist.previous(); if a previous item exists, resets position to 0.0 and sets state to STOPPED; returns the Media or None if at start.\n  - select_index(self, i: int) -> Media: delegates to playlist.select(i); resets position to 0.0 and sets state to STOPPED; returns selected Media.\n  - _on_tick(self, delta: float) -> None: internal; invoked by ManualClock ticks; advances position only when state is PLAYING and a current media exists; clamps at duration and transitions to STOPPED when reaching or exceeding end, leaving position at exact duration.\n  - _reset_position(self) -> None: internal; sets position to 0.0.\n\nSemantics\n- Deterministic, headless, tick-driven: Player time advances only via ManualClock.tick calls; no wall-clock usage. End-of-media behavior: when position + delta >= duration, set position to duration and set state to STOPPED.\n- No I/O, no GUI/audio/network/filesystem side effects anywhere in core modules.\n\n__init__ exports (video_player.__init__)\n- from .errors import ValidationError, StateError, NotFoundError\n- from .media import Media\n- from .clock import ManualClock\n- from .playlist import Playlist\n- from .player import Player, PlaybackState\n\nImport constraints\n- errors is leaf; media imports errors; playlist imports media and errors; player imports errors, media, playlist, and clock; clock imports nothing from domain; __init__ re-exports only.\n\nRuntime entry (Main.py)\n- Constructs a small list of Media, a Playlist, a ManualClock, and a Player. Demonstrates play/pause/seek/next and ticks deterministically, then exits without interaction or I/O.","Shared Knowledge":"The project provides a headless, deterministic video player domain. Core modules live under video_player/*.py and do not touch environment concerns. ManualClock provides a tick-driven time source; Player subscribes to it and advances only on ticks. The import graph is acyclic: errors -> media -> playlist -> player, with clock orthogonal and used only by player. The package initializer re-exports the public API. Main.py is a thin bootstrap demo. tests/test_main.py imports video_player and exercises deterministic behaviors: clock-driven progression, seek clamping, volume/mute, and playlist navigation. No GUI, audio, filesystem, or network are used.","Execution Protocol":"Run tests with: python -m pytest -q. Exactly one protocol-level test file exists: tests/test_main.py. The runtime entrypoint is Main.py, which is non-interactive and purely demonstrative. The test drives time deterministically by calling ManualClock.tick(...). No additional files alter protocol-required files.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- requirements.txt
+```## requirements.txt
+pytest>=7,<9```
+----- video_player/__init__.py
+```## video_player/__init__.py
+"""Public API for the video_player package.
+
+This module re-exports all publicly accessible symbols from the package,
+ensuring a clean and consistent interface for users of the video_player library.
+"""
+
+from .errors import ValidationError, StateError, NotFoundError
+from .media import Media
+from .clock import ManualClock
+from .playlist import Playlist
+from .player import Player, PlaybackState
+
+__all__ = [
+    'ValidationError',
+    'StateError',
+    'NotFoundError',
+    'Media',
+    'ManualClock',
+    'Playlist',
+    'Player',
+    'PlaybackState',
+]```
+----- video_player/errors.py
+```## video_player/errors.py
+"""Domain-specific exceptions for the video player application.
+
+This module defines custom exception classes that are raised when
+invalid operations or states are encountered within the video player
+domain logic. These exceptions help provide clear error messages
+and facilitate proper error handling in the application.
+"""
+
+class ValidationError(Exception):
+    """Base exception class for validation errors in the video player domain.
+
+    This exception is raised when input data or operation parameters
+    do not meet the required validation criteria.
+    """
+
+class StateError(ValidationError):
+    """Exception raised for invalid state transitions or operations.
+
+    This exception is raised when an operation cannot be performed
+    due to the current state of the system, such as attempting to
+    play when no media is selected or when the playlist is empty.
+    """
+
+class NotFoundError(ValidationError):
+    """Exception raised when a requested resource is not found.
+
+    This exception is raised when attempting to access a playlist
+    item or index that does not exist, such as an invalid index
+    or a non-existent media ID.
+    """```
+----- video_player/media.py
+```## video_player/media.py
+"""Immutable media metadata entity with validation.
+
+This module defines the Media class, which represents a single piece of media
+with its metadata. The class is immutable after construction and includes
+validation to ensure data integrity.
+"""
+
+from typing import Optional, Dict
+from .errors import ValidationError
+
+
+class Media:
+    """Represents a media item with metadata.
+
+    This class encapsulates the essential information about a media item,
+    including its unique identifier, title, duration, and optional metadata.
+    The object is immutable after construction.
+    """
+
+    def __init__(
+        self,
+        id: str,
+        title: str,
+        duration_seconds: float,
+        metadata: Optional[Dict] = None
+    ):
+        """Initialize a new Media object.
+
+        Args:
+            id: Unique identifier for the media item. Must be a non-empty string.
+            title: Title of the media item. Must be a non-empty string.
+            duration_seconds: Duration of the media in seconds. Must be a positive float.
+            metadata: Optional dictionary containing additional metadata.
+                      If None, an empty dict is used internally.
+
+        Raises:
+            ValidationError: If any of the validation checks fail.
+        """
+        # Validate id
+        if not isinstance(id, str):
+            raise ValidationError("Media ID must be a string")
+        if not id:
+            raise ValidationError("Media ID cannot be empty")
+
+        # Validate title
+        if not isinstance(title, str):
+            raise ValidationError("Media title must be a string")
+        if not title:
+            raise ValidationError("Media title cannot be empty")
+
+        # Validate duration
+        if not isinstance(duration_seconds, (int, float)):
+            raise ValidationError("Duration must be a number")
+        if duration_seconds <= 0:
+            raise ValidationError("Duration must be positive")
+
+        # Store validated values
+        self._id = id
+        self._title = title
+        self._duration_seconds = float(duration_seconds)
+        self._metadata = dict(metadata) if metadata is not None else {}
+
+    @property
+    def id(self) -> str:
+        """Get the unique identifier of this media item."""
+        return self._id
+
+    @property
+    def title(self) -> str:
+        """Get the title of this media item."""
+        return self._title
+
+    @property
+    def duration_seconds(self) -> float:
+        """Get the duration of this media item in seconds."""
+        return self._duration_seconds
+
+    @property
+    def metadata(self) -> Dict:
+        """Get a shallow copy of the metadata dictionary."""
+        return dict(self._metadata)
+
+    def __repr__(self) -> str:
+        """Return a string representation of this Media object."""
+        return f"Media(id='{self._id}', title='{self._title}', duration_seconds={self._duration_seconds})"
+
+    def __eq__(self, other) -> bool:
+        """Check equality with another object."""
+        if not isinstance(other, Media):
+            return False
+        return (
+            self._id == other._id and
+            self._title == other._title and
+            self._duration_seconds == other._duration_seconds and
+            self._metadata == other._metadata
+        )```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: video_player/clock.py
+```python
+## video_player/clock.py
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: video_player/clock.py. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

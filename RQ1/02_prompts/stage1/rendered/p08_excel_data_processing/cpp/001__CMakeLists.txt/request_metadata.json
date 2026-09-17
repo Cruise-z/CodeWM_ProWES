@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p08_excel_data_processing_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "7177bd60e5d723d40f70796911499cf88faf9f594c58e011018ff5996b3461a3",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p08_excel_data_processing/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "892519fba586ad4b52a9f0a97f42931ea47731acd47db21e8d7cbbe75a8fe117",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p08_excel_data_processing/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "ba0b641569ac16a5d80e47d25a412b770de8095e130b9a26b33ec5aaf8c2bfe7",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p08_excel_data_processing/cpp/attempts/0001_seed_3698866069/generation_report.json",
+  "rng_seed": 3698866069,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789263504431",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 162,
+    "prompt_tokens": 4667,
+    "total_tokens": 4829
+  },
+  "response_content_sha256": "761fcbec8188d8a9fd93efaa68d6d5d804fb5cdeb40107e9b35745b6fe0d88b8",
+  "generated_code_sha256": "531d343f1c09dbc5c6a2aeb5ac4df74a9897f79fabc39a8e5d95eb2f54aa0f96",
+  "accepted_source_restoration": "accepted_repository_content"
+}

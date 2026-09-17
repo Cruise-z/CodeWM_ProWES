@@ -1,0 +1,705 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/Main.java",
+    "src/main/java/DownloadFormat.java",
+    "src/main/java/ValidationUtils.java",
+    "src/main/java/VideoDownloadRequest.java",
+    "src/main/java/DownloadStatus.java",
+    "src/main/java/ProgressListener.java",
+    "src/main/java/TransferAdapter.java",
+    "src/main/java/TransferSession.java",
+    "src/main/java/OfflineDeterministicAdapter.java",
+    "src/main/java/DownloadTask.java",
+    "src/main/java/VideoDownloader.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class DownloadFormat {\n        +fromExtension(ext String) DownloadFormat\n        +defaultExtension() String\n        <<enumeration>>\n    }\n    class ValidationUtils {\n        +isValidUrl(url String) boolean\n        +sanitizeName(name String) String\n        +withExtension(baseName String, format DownloadFormat) String\n    }\n    class VideoDownloadRequest {\n        -url String\n        -format DownloadFormat\n        -suggestedName String\n        -outputName String\n        +of(url String, format DownloadFormat, suggestedName String) VideoDownloadRequest\n        +getUrl() String\n        +getFormat() DownloadFormat\n        +getSuggestedName() String\n        +getOutputName() String\n    }\n    class DownloadStatus {\n        <<enumeration>> PENDING RUNNING COMPLETED FAILED CANCELLED\n    }\n    class ProgressListener {\n        <<interface>>\n        +onProgress(downloaded long, total long) void\n        +onCompleted() void\n        +onFailed(message String) void\n    }\n    class TransferSession {\n        <<interface>>\n        +step() boolean\n        +cancel() void\n        +getTotalBytes() long\n        +getDownloadedBytes() long\n    }\n    class TransferAdapter {\n        <<interface>>\n        +begin(url String, format DownloadFormat, outputName String, listener ProgressListener) TransferSession\n    }\n    class OfflineDeterministicAdapter {\n        +begin(url String, format DownloadFormat, outputName String, listener ProgressListener) TransferSession\n    }\n    class DownloadTask {\n        -id int\n        -request VideoDownloadRequest\n        -status DownloadStatus\n        -session TransferSession\n        -progress int\n        +DownloadTask(id int, request VideoDownloadRequest)\n        +getId() int\n        +getStatus() DownloadStatus\n        +getProgress() int\n        +getOutputName() String\n        +start(adapter TransferAdapter) void\n        +tick() void\n        +cancel() void\n    }\n    class VideoDownloader {\n        -adapter TransferAdapter\n        -tasks Map~Integer, DownloadTask~\n        -nextId int\n        +VideoDownloader(adapter TransferAdapter)\n        +requestDownload(url String, format DownloadFormat, suggestedName String) int\n        +startPending() void\n        +tick() void\n        +cancel(taskId int) void\n        +getStatus(taskId int) DownloadStatus\n        +getProgress(taskId int) int\n        +getOutputName(taskId int) String\n    }\n    VideoDownloader --> TransferAdapter\n    VideoDownloader --> DownloadTask\n    DownloadTask --> VideoDownloadRequest\n    DownloadTask --> TransferSession\n    OfflineDeterministicAdapter ..|> TransferAdapter\n    TransferSession <|.. OfflineDeterministicAdapter\n    VideoDownloadRequest --> DownloadFormat\n    VideoDownloadRequest --> ValidationUtils\n    TransferAdapter --> ProgressListener\n    DownloadTask --> DownloadStatus",
+  "Domain Decomposition": [
+    [
+      "Build and test configuration (Java 11, JUnit 5, Surefire)",
+      "pom.xml",
+      "protocol-required"
+    ],
+    [
+      "Runtime entry: brief demo wiring adapter and downloader",
+      "src/main/java/Main.java",
+      "protocol-required"
+    ],
+    [
+      "Supported download formats and canonical extensions",
+      "src/main/java/DownloadFormat.java",
+      "domain-entity"
+    ],
+    [
+      "URL validation and safe output naming rules",
+      "src/main/java/ValidationUtils.java",
+      "pure-rule"
+    ],
+    [
+      "Download request value object with validated URL and output name",
+      "src/main/java/VideoDownloadRequest.java",
+      "domain-entity"
+    ],
+    [
+      "Download lifecycle statuses",
+      "src/main/java/DownloadStatus.java",
+      "domain-entity"
+    ],
+    [
+      "Transfer progress listener callbacks",
+      "src/main/java/ProgressListener.java",
+      "interface"
+    ],
+    [
+      "Transfer adapter boundary for starting sessions",
+      "src/main/java/TransferAdapter.java",
+      "interface"
+    ],
+    [
+      "Transfer session boundary for stepping and cancellation",
+      "src/main/java/TransferSession.java",
+      "interface"
+    ],
+    [
+      "Deterministic offline transfer adapter and session",
+      "src/main/java/OfflineDeterministicAdapter.java",
+      "environment-dependent"
+    ],
+    [
+      "Download task state machine with progress, start, tick, cancel",
+      "src/main/java/DownloadTask.java",
+      "domain-entity"
+    ],
+    [
+      "Canonical public API orchestrating tasks and queue lifecycle",
+      "src/main/java/VideoDownloader.java",
+      "orchestration"
+    ],
+    [
+      "Protocol-level JUnit 5 tests for wiring, validation/naming, cancellation",
+      "src/test/java/MainTest.java",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Formats and canonical extensions",
+      "src/main/java/DownloadFormat.java"
+    ],
+    [
+      "URL validation and output naming",
+      "src/main/java/ValidationUtils.java"
+    ],
+    [
+      "Request creation and validation",
+      "src/main/java/VideoDownloadRequest.java"
+    ],
+    [
+      "Task lifecycle and progress computation",
+      "src/main/java/DownloadTask.java"
+    ],
+    [
+      "Queue orchestration and canonical API",
+      "src/main/java/VideoDownloader.java"
+    ],
+    [
+      "Transfer boundary (adapter API)",
+      "src/main/java/TransferAdapter.java"
+    ],
+    [
+      "Transfer session stepping and cancellation",
+      "src/main/java/TransferSession.java"
+    ],
+    [
+      "Progress callback contract",
+      "src/main/java/ProgressListener.java"
+    ],
+    [
+      "Deterministic offline transfer implementation",
+      "src/main/java/OfflineDeterministicAdapter.java"
+    ],
+    [
+      "Lifecycle status enumeration",
+      "src/main/java/DownloadStatus.java"
+    ],
+    [
+      "Runtime demo entrypoint",
+      "src/main/java/Main.java"
+    ],
+    [
+      "Automated tests (wiring, validation, cancellation)",
+      "src/test/java/MainTest.java"
+    ]
+  ],
+  "File list": [
+    "pom.xml",
+    "src/main/java/Main.java",
+    "src/main/java/DownloadFormat.java",
+    "src/main/java/ValidationUtils.java",
+    "src/main/java/VideoDownloadRequest.java",
+    "src/main/java/DownloadStatus.java",
+    "src/main/java/ProgressListener.java",
+    "src/main/java/TransferAdapter.java",
+    "src/main/java/TransferSession.java",
+    "src/main/java/OfflineDeterministicAdapter.java",
+    "src/main/java/DownloadTask.java",
+    "src/main/java/VideoDownloader.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Implementation approach": "Preserve Maven protocol files exactly and target Java 11 without preview features. Keep Main.java thin and non-interactive. Model the domain around a canonical VideoDownloader API that orchestrates a queue of DownloadTask. Separate pure domain (validation, request construction, task state machine, queue orchestration) from the transfer boundary via TransferAdapter/TransferSession interfaces. Provide a deterministic OfflineDeterministicAdapter that simulates chunked transfers offline and headlessly for tests. Use enums and small interfaces to keep the architecture simple and composable. Tests use only the canonical API, run offline, and assert deterministic progress/cancellation and validation/naming behavior.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Java 11 repository architecture for: Video Downloader.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 30 functions or methods\n- about 665 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- URL validation\n- download request and format selection\n- queue lifecycle\n- progress and cancellation\n- safe output naming\n- offline deterministic transfer adapter for tests\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Program call flow": "sequenceDiagram\n    participant M as Main\n    participant A as OfflineDeterministicAdapter\n    participant VD as VideoDownloader\n    participant DT as DownloadTask\n    M->>A: new OfflineDeterministicAdapter()\n    M->>VD: new VideoDownloader(A)\n    M->>VD: requestDownload(url1, MP4, name1)\n    M->>VD: requestDownload(url2, WEBM, name2)\n    M->>VD: startPending()\n    loop few ticks\n        M->>VD: tick()\n        VD->>DT: tick() for each RUNNING\n        DT->>DT: session.step(), update progress/status\n    end\n    M->>VD: getStatus(taskId), getProgress(taskId), getOutputName(taskId)\n    VD-->>M: statuses and progress\n    Note over DT,A: ProgressListener callbacks occur on each step\n    DT-->>VD: status becomes COMPLETED/CANCELLED/FAILED as appropriate",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "mvn test",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: pom.xml. Runtime entry: src/main/java/Main.java. Test target: src/test/java/MainTest.java. Test command: mvn test. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "VideoDownloader",
+      "OfflineDeterministicAdapter",
+      "DownloadFormat",
+      "DownloadStatus"
+    ],
+    "notes": "JUnit 5 test imports only canonical public API classes from src/main/java and uses org.junit.jupiter.*.",
+    "undeclared_test_imports": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "src/main/java/Main.java",
+      "src/main/java/OfflineDeterministicAdapter.java"
+    ],
+    "pure_logic_modules": [
+      "src/main/java/DownloadFormat.java",
+      "src/main/java/ValidationUtils.java",
+      "src/main/java/VideoDownloadRequest.java",
+      "src/main/java/DownloadStatus.java",
+      "src/main/java/ProgressListener.java",
+      "src/main/java/TransferAdapter.java",
+      "src/main/java/TransferSession.java",
+      "src/main/java/DownloadTask.java",
+      "src/main/java/VideoDownloader.java"
+    ],
+    "test_targets_should_focus_on": [
+      "Runtime wiring with OfflineDeterministicAdapter and VideoDownloader",
+      "URL validation and safe naming",
+      "Progress reaching 100% deterministically",
+      "Cancellation transitions and idempotence"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [
+      "ValidationUtils is a narrowly scoped utility for URL validation and output naming; it does not accumulate unrelated logic beyond its declared responsibilities."
+    ],
+    "generic_bucket_modules": [
+      "src/main/java/ValidationUtils.java"
+    ],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/Main.java",
+    "src/main/java/DownloadFormat.java",
+    "src/main/java/ValidationUtils.java",
+    "src/main/java/VideoDownloadRequest.java",
+    "src/main/java/DownloadStatus.java",
+    "src/main/java/ProgressListener.java",
+    "src/main/java/TransferAdapter.java",
+    "src/main/java/TransferSession.java",
+    "src/main/java/OfflineDeterministicAdapter.java",
+    "src/main/java/DownloadTask.java",
+    "src/main/java/VideoDownloader.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Execution Protocol": "Test command: 'mvn -q test'. Runtime entry: src/main/java/Main.java. Single protocol test target: src/test/java/MainTest.java. Tests are headless, offline, and deterministic; they require no manual interaction. Exactly one protocol-level test file is present. Additional implementation files do not alter protocol files.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 13,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 13,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 13,
+    "task_list_count": 13
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Java 11 repository architecture for: Video Downloader.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 30 functions or methods\n- about 665 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- URL validation\n- download request and format selection\n- queue lifecycle\n- progress and cancellation\n- safe output naming\n- offline deterministic transfer adapter for tests\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Logic Analysis": [
+    [
+      "pom.xml",
+      "dependency/build; Maven project descriptor targeting Java 11; declare org.junit.jupiter:junit-jupiter as test-scoped dependency; configure maven-surefire-plugin (version that runs JUnit 5, e.g., 3.1.2); compiler plugin set to 11; single test target path src/test/java/MainTest.java; no external runtime deps"
+    ],
+    [
+      "src/main/java/Main.java",
+      "runtime/bootstrap; thin demo in default package; wires OfflineDeterministicAdapter and VideoDownloader; enqueues two downloads; starts pending; ticks a few iterations; prints statuses/progress/output names; exits deterministically without long-running loops or I/O"
+    ],
+    [
+      "src/main/java/DownloadFormat.java",
+      "domain-entity; enumeration of supported download formats (e.g., MP4, WEBM) and canonical extensions; public static fromExtension(String) to resolve format by extension; defaultExtension() returns canonical extension for the enum constant; pure and side-effect-free"
+    ],
+    [
+      "src/main/java/ValidationUtils.java",
+      "pure-rule; URL validation and safe output naming helpers; isValidUrl(String) validates scheme and basic structure without network access; sanitizeName(String) returns filesystem-safe base name (strip dangerous chars, trim, normalize spaces); withExtension(String, DownloadFormat) appends canonical extension to sanitized base name; pure functions"
+    ],
+    [
+      "src/main/java/VideoDownloadRequest.java",
+      "domain-entity; value object representing a requested download; static factory of(url, format, suggestedName) validates URL via ValidationUtils and computes outputName via sanitizeName + withExtension; getters for url, format, suggestedName, outputName; throws IllegalArgumentException on invalid url/format/suggestedName null"
+    ],
+    [
+      "src/main/java/DownloadStatus.java",
+      "domain-entity; enumeration of lifecycle statuses: PENDING, RUNNING, COMPLETED, FAILED, CANCELLED; used by DownloadTask and VideoDownloader"
+    ],
+    [
+      "src/main/java/ProgressListener.java",
+      "interface; progress callback boundary used by TransferAdapter/TransferSession; onProgress(downloaded, total) invoked on each transfer step; onCompleted() on transfer completion; onFailed(message) on failure; no environment dependencies"
+    ],
+    [
+      "src/main/java/TransferAdapter.java",
+      "interface; boundary to begin a transfer session; begin(url, format, outputName, listener) returns a TransferSession; decouples domain from environment/network; used by DownloadTask.start() and VideoDownloader orchestration"
+    ],
+    [
+      "src/main/java/TransferSession.java",
+      "interface; boundary representing an in-progress transfer; step() performs one deterministic chunk and returns true if more steps remain; cancel() stops the session; getTotalBytes() and getDownloadedBytes() expose progress; used by DownloadTask to compute progress percent"
+    ],
+    [
+      "src/main/java/OfflineDeterministicAdapter.java",
+      "environment-dependent; deterministic offline implementation of TransferAdapter and TransferSession; begin() creates a session with fixed total bytes (e.g., 1000) and fixed per-step chunk (e.g., 100); calls ProgressListener on each step and on completion; supports cancel(); no network or filesystem; designed for tests and demo"
+    ],
+    [
+      "src/main/java/DownloadTask.java",
+      "domain-entity; state machine for a single download; fields: id, request, status, session, progress percent; start(adapter) validates state and begins session with internally wired ProgressListener that updates progress and status; tick() advances session one step and updates status; cancel() cancels session and sets status to CANCELLED idempotently; getters for id/status/progress/outputName"
+    ],
+    [
+      "src/main/java/VideoDownloader.java",
+      "orchestration; canonical public API managing tasks and queue lifecycle; holds TransferAdapter, Map<Integer, DownloadTask>, and nextId; requestDownload(url, format, suggestedName) creates VideoDownloadRequest and stores PENDING task with new id; startPending() starts all PENDING; tick() advances all RUNNING tasks; cancel(taskId) cancels a task; getters for status/progress/outputName by id; throws IllegalArgumentException for unknown ids"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "automated-test; JUnit 5 tests using canonical API only; deterministic offline runtime wiring test, validation/naming rule checks, progress reaching 100%, and cancellation behavior; no network or UI; concise (2–4 tests under ~150 LOC)"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/main/java/DownloadFormat.java",
+      "src/main/java/ValidationUtils.java",
+      "src/main/java/VideoDownloadRequest.java",
+      "src/main/java/DownloadStatus.java",
+      "src/main/java/ProgressListener.java",
+      "src/main/java/TransferAdapter.java",
+      "src/main/java/TransferSession.java",
+      "src/main/java/DownloadTask.java",
+      "src/main/java/VideoDownloader.java"
+    ],
+    "environment_dependent_modules": [
+      "src/main/java/Main.java",
+      "src/main/java/OfflineDeterministicAdapter.java"
+    ],
+    "environment_test_coupling_risks": [
+      "Tests use OfflineDeterministicAdapter explicitly as the environment-dependent boundary per design; no other environment leakage into tests."
+    ],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "Java 11 (JDK 11)",
+    "Apache Maven >= 3.6",
+    "org.junit.jupiter:junit-jupiter (test scope)",
+    "maven-surefire-plugin (JUnit 5 compatible, e.g., 3.1.2)"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "The build uses Maven with Java 11 and JUnit Jupiter via Surefire. All classes live in the default package under src/main/java to avoid package mismatch. The canonical public API consists of VideoDownloader (orchestration), DownloadTask (single-task state machine), VideoDownloadRequest (value object), DownloadFormat, ValidationUtils, DownloadStatus, ProgressListener, TransferAdapter, and TransferSession. OfflineDeterministicAdapter is the deterministic environment boundary used by Main and tests. The single test file src/test/java/MainTest.java imports only VideoDownloader, OfflineDeterministicAdapter, DownloadFormat, and DownloadStatus, and asserts deterministic progress/completion, naming/validation rules, and cancellation. Main provides a thin runtime demo and does not affect tests.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "pom.xml",
+    "src/main/java/DownloadFormat.java",
+    "src/main/java/ValidationUtils.java",
+    "src/main/java/ProgressListener.java",
+    "src/main/java/TransferSession.java",
+    "src/main/java/TransferAdapter.java",
+    "src/main/java/DownloadStatus.java",
+    "src/main/java/VideoDownloadRequest.java",
+    "src/main/java/DownloadTask.java",
+    "src/main/java/VideoDownloader.java",
+    "src/main/java/OfflineDeterministicAdapter.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Test Include Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "VideoDownloader"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "OfflineDeterministicAdapter"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "DownloadFormat"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "DownloadStatus"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "runtime wiring: instantiate OfflineDeterministicAdapter and VideoDownloader, request two downloads, startPending, tick until completion, assert both reach COMPLETED and 100% progress"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "validation/naming: requestDownload with invalid URL should throw IllegalArgumentException; valid URL with suggested name containing unsafe characters should produce a sanitized outputName with canonical extension"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "cancellation: request one download, startPending, tick once, cancel it, assert status transitions to CANCELLED and tick afterward does not resume"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- pom.xml
+```<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>video-downloader</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>```
+----- src/main/java/DownloadFormat.java
+```/**
+ * Enumeration of supported download formats and their canonical extensions.
+ */
+public enum DownloadFormat {
+    MP4("mp4"),
+    WEBM("webm");
+
+    private final String extension;
+
+    /**
+     * Constructs a download format with the specified extension.
+     *
+     * @param extension the canonical file extension for this format
+     */
+    DownloadFormat(String extension) {
+        this.extension = extension;
+    }
+
+    /**
+     * Returns the canonical file extension for this format.
+     *
+     * @return the file extension
+     */
+    public String extension() {
+        return extension;
+    }
+
+    /**
+     * Resolves a DownloadFormat from its file extension.
+     *
+     * @param ext the file extension to resolve
+     * @return the corresponding DownloadFormat
+     * @throws IllegalArgumentException if the extension is not recognized
+     */
+    public static DownloadFormat fromExtension(String ext) {
+        for (DownloadFormat format : values()) {
+            if (format.extension().equals(ext)) {
+                return format;
+            }
+        }
+        throw new IllegalArgumentException("Unknown format extension: " + ext);
+    }
+
+    /**
+     * Returns the canonical file extension for this format.
+     *
+     * @return the canonical file extension
+     */
+    public String defaultExtension() {
+        return extension();
+    }
+}```
+----- src/main/java/ValidationUtils.java
+```/**
+ * Utility class for URL validation and safe output naming.
+ */
+public class ValidationUtils {
+
+    /**
+     * Validates if the given string is a well-formed URL.
+     * This method checks for a valid scheme and basic structure,
+     * but does not perform network requests.
+     *
+     * @param url the string to validate as a URL
+     * @return true if the URL is valid, false otherwise
+     */
+    public static boolean isValidUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return false;
+        }
+        
+        // Basic check for URL scheme
+        if (!url.contains("://")) {
+            return false;
+        }
+        
+        try {
+            new java.net.URL(url);
+            return true;
+        } catch (java.net.MalformedURLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sanitizes a string to make it safe for use as a filename.
+     * Removes or replaces characters that are invalid or dangerous
+     * in filenames on most operating systems.
+     *
+     * @param name the input string to sanitize
+     * @return a filesystem-safe version of the input string
+     */
+    public static String sanitizeName(String name) {
+        if (name == null || name.isEmpty()) {
+            return "unnamed";
+        }
+        
+        // Replace potentially dangerous characters with underscores
+        String sanitized = name.replaceAll("[<>:\"/\\|?*]", "_");
+        
+        // Trim whitespace
+        sanitized = sanitized.trim();
+        
+        // Normalize spaces
+        sanitized = sanitized.replaceAll("\\s+", " ");
+        
+        // Handle edge case where result is empty after sanitization
+        if (sanitized.isEmpty()) {
+            return "unnamed";
+        }
+        
+        return sanitized;
+    }
+
+    /**
+     * Appends the canonical file extension for the given format to the base name.
+     *
+     * @param baseName the base name for the file
+     * @param format the download format to use for extension
+     * @return the full filename with extension
+     */
+    public static String withExtension(String baseName, DownloadFormat format) {
+        if (baseName == null || baseName.isEmpty()) {
+            throw new IllegalArgumentException("Base name cannot be null or empty");
+        }
+        if (format == null) {
+            throw new IllegalArgumentException("Format cannot be null");
+        }
+        
+        return baseName + "." + format.defaultExtension();
+    }
+}```
+----- src/main/java/ProgressListener.java
+```/**
+ * Progress listener interface for receiving transfer progress updates.
+ * This interface defines the contract for progress callbacks during a transfer operation.
+ */
+public interface ProgressListener {
+    
+    /**
+     * Called periodically to report transfer progress.
+     *
+     * @param downloaded the number of bytes downloaded so far
+     * @param total the total number of bytes to download
+     */
+    void onProgress(long downloaded, long total);
+    
+    /**
+     * Called when the transfer completes successfully.
+     */
+    void onCompleted();
+    
+    /**
+     * Called when the transfer fails.
+     *
+     * @param message a descriptive message about the failure
+     */
+    void onFailed(String message);
+}```
+----- src/main/java/TransferSession.java
+```/**
+ * Boundary interface representing an in-progress transfer.
+ * This interface defines the contract for transfer sessions,
+ * allowing them to be stepped forward and cancelled.
+ */
+public interface TransferSession {
+    
+    /**
+     * Performs one step of the transfer operation.
+     * This method should advance the transfer by one deterministic chunk
+     * and return whether more steps are needed.
+     *
+     * @return true if the transfer has more steps to complete, false if finished
+     */
+    boolean step();
+    
+    /**
+     * Cancels the ongoing transfer operation.
+     * After calling this method, the session should not perform any further work.
+     */
+    void cancel();
+    
+    /**
+     * Gets the total number of bytes expected to be transferred.
+     *
+     * @return the total byte count
+     */
+    long getTotalBytes();
+    
+    /**
+     * Gets the number of bytes that have been successfully transferred so far.
+     *
+     * @return the downloaded byte count
+     */
+    long getDownloadedBytes();
+}```
+----- src/main/java/TransferAdapter.java
+```/**
+ * Boundary interface for starting transfer sessions.
+ * This interface defines the contract for beginning transfer operations,
+ * decoupling the domain logic from environment-specific implementations.
+ */
+public interface TransferAdapter {
+    
+    /**
+     * Begins a new transfer session for the specified parameters.
+     *
+     * @param url the URL to download from
+     * @param format the download format to use
+     * @param outputName the name of the output file
+     * @param listener the progress listener to notify during transfer
+     * @return a TransferSession representing the ongoing transfer
+     */
+    TransferSession begin(String url, DownloadFormat format, String outputName, ProgressListener listener);
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/main/java/DownloadStatus.java
+```python
+## src/main/java/DownloadStatus.java
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/main/java/DownloadStatus.java. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

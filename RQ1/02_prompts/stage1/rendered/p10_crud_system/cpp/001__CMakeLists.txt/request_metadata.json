@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "753cef7bce52e1fbfa57815acbecb4af0a62769f45564263c400b348220390d9",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "4935283b32fd80e58e20b1c13bff722ec88583dcd1c0ccd107e71a11dbc5b9b6",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/cpp/attempts/0001_seed_252729447/generation_report.json",
+  "rng_seed": 252729447,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789406073764",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 200,
+    "prompt_tokens": 9123,
+    "total_tokens": 9323
+  },
+  "response_content_sha256": "90a65731c9127ca10e97b48ca6fec9ae4cf74c6d98b40bddefc615d13c059446",
+  "generated_code_sha256": "05febd8cce44b4038f38874463d8612f01e55c0a5f74cfdbe00d6a99612f7337",
+  "accepted_source_restoration": "accepted_repository_content"
+}

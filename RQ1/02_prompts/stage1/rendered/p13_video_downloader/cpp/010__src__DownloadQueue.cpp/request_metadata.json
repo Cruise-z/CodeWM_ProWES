@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p13_video_downloader_cpp",
+  "action_index": 10,
+  "filename": "src/DownloadQueue.cpp",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/cpp/010__src__DownloadQueue.cpp/user_prompt.txt",
+  "user_prompt_sha256": "d1cabb1fa4fa6f7f795281bebb305e4b9cf9ec2afafe0d063de8be2361abb2c1",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/cpp/010__src__DownloadQueue.cpp/input_context.json",
+  "input_context_sha256": "04c2ab10d7830a42766aee591714c210d6b1aa4c267ed87fcd5bfd6e9b5c69db",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "63572ef13b0b35253ed7a369fedf27885da33fc3759f7a0cd6264bebb1a79677",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/DownloadTypes.h",
+      "generated_code_sha256": "35548aafdf7c257815d8b87b2baeec935c17edfbbd4dedea4d59c54aa0cbbbb0",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Url.h",
+      "generated_code_sha256": "b493312dc55052fc245ddfed74334bc709f4b24aba0fa49908413c6fcc0e680b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Url.cpp",
+      "generated_code_sha256": "4bd4ec365c6f0298afdb6ffe452d92ae1de6be93cdd67da57888d90977f0aefd",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/SafeNamer.h",
+      "generated_code_sha256": "af1b125e8bbc8af2a5e8c07eb9db5060281a3a52101f2c490c0bc24b741f7596",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/SafeNamer.cpp",
+      "generated_code_sha256": "9ca818ed604fd9babb79dc3fb235760c81dd01d04be10b9237e1989c4d727a40",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Transfer.h",
+      "generated_code_sha256": "443b027c9154b4fcbdac2dd7d0e13c653ba13ff2641fa27633069581d50d2a99",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/Transfer.cpp",
+      "generated_code_sha256": "55dc2b67b1086d21f1143c9891d1b5604df7507b5f1310d0f75825bbee1a921d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/DownloadQueue.h",
+      "generated_code_sha256": "3d41bfad8bab40a7a3305c3cac666f721ec49f1c8286f8802a9ab907ce49d065",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p13_video_downloader/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "0c3308c5aeee9258c55977229ef5b91bb5a3a7c9130d93444a59becd23faef67",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/cpp/attempts/0001_seed_2929423155/generation_report.json",
+  "rng_seed": 2929423155,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789418903690",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 797,
+    "prompt_tokens": 16675,
+    "total_tokens": 17472
+  },
+  "response_content_sha256": "f37df6ffa7aacaaaa2a2cd4abb96a5804915a8c7d1a921d1430151f2f9fafc45",
+  "generated_code_sha256": "7f0c8ff4fad53cd8c1a6bc63b36be225965c58a1ae46e34a7445b7d64b1b2668",
+  "accepted_source_restoration": "accepted_repository_content"
+}

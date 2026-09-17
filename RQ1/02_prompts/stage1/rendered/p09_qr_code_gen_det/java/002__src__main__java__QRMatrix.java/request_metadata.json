@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p09_qr_code_gen_det_java",
+  "action_index": 2,
+  "filename": "src/main/java/QRMatrix.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/java/002__src__main__java__QRMatrix.java/user_prompt.txt",
+  "user_prompt_sha256": "ee23c90e46011c56b05a3b96a1f458b97bfe15433b6fd1e9fc02078e8b9155b4",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/java/002__src__main__java__QRMatrix.java/input_context.json",
+  "input_context_sha256": "3be9fe2bcb873eda35861e874c5eb19c5258e8fa790222096c5d0297330e7de9",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "45686c118570d9efd300faa84c4f8b6c0d0ef1a7f79d66d65ed01a41af2111e1",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p09_qr_code_gen_det/java/architecture/team/team.json",
+  "checkpoint_sha256": "49e3f2f3b934092fc1361464575fd7ab23559ff70bda598db86644cb239fc920",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/java/attempts/0001_seed_3719859282/generation_report.json",
+  "rng_seed": 3719859282,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789400427067",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 537,
+    "prompt_tokens": 13073,
+    "total_tokens": 13610
+  },
+  "response_content_sha256": "931365ab87fc25ec621455499eb31cff184ab0b83ed8e5ba4664c802559bcf82",
+  "generated_code_sha256": "b059a6760327c84ff591f7fbab015b93923543d7c61b7e1f7fd6ca18e0e8e600",
+  "accepted_source_restoration": "accepted_repository_content"
+}

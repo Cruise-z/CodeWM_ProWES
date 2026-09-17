@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p02_flappy_bird_game_python",
+  "action_index": 3,
+  "filename": "flappy_bird/physics.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/python/003__flappy_bird__physics.py/user_prompt.txt",
+  "user_prompt_sha256": "6f22827385ad3db9a448831cfa9dfb341492f09c3b8789485bb9d3d47abb6ca3",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/python/003__flappy_bird__physics.py/input_context.json",
+  "input_context_sha256": "773d66e148555ea8aa05100543dc4f30e8fbb4ecab66e3583f0297f19be24217",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "flappy_bird/config.py",
+      "generated_code_sha256": "713bd3f7634f885c8e1f0b30172ff24fb046412f28a79f52c66ad8625b66f9a4",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p02_flappy_bird_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "0199e47687655dee3c403fcbe05c29a39e70ded3d5393dadb1ce32edc3b308d5",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/python/attempts/0006_seed_1298988375/generation_report.json",
+  "rng_seed": 1298988375,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789288759391",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 243,
+    "prompt_tokens": 5686,
+    "total_tokens": 5929
+  },
+  "response_content_sha256": "571a1edd3197ca23f0c524f3c3e04bcac1cb6e3f0262b6c41aa7942fffea92f1",
+  "generated_code_sha256": "aafa543a3a7336edd7c63075d475e650b6ce92722d15c71fb8d50185cea130cc",
+  "accepted_source_restoration": "restored_leading_h2"
+}

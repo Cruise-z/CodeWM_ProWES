@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_java",
+  "action_index": 1,
+  "filename": "pom.xml",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/java/001__pom.xml/user_prompt.txt",
+  "user_prompt_sha256": "f2619f47b8cd90534ad33dcf8c6586857f1e538672b127ddffe563d7d3eae663",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/java/001__pom.xml/input_context.json",
+  "input_context_sha256": "855a3d49c519b0b2c33f16e51160fd0c325fdef9868e34c4c407894d2437a486",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/java/architecture/team/team.json",
+  "checkpoint_sha256": "fd409171b75f9ae34cee44c935e48b5236c55f6661e9e0eba1a17f0c60cd328c",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/java/attempts/0001_seed_2697919693/generation_report.json",
+  "rng_seed": 2697919693,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789314190474",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 379,
+    "prompt_tokens": 5314,
+    "total_tokens": 5693
+  },
+  "response_content_sha256": "d917dbec1ff172ac96da9a846d3a3f0dee3d460aea7c50d8b14e5bda3236d2a8",
+  "generated_code_sha256": "740c72e9d18e5407dd7d24bd0960f59c82ba970511db86b823ea69ce0cbf4fe0",
+  "accepted_source_restoration": "accepted_repository_content"
+}

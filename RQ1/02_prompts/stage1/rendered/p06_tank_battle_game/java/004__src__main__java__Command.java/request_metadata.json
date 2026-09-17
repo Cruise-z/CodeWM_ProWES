@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p06_tank_battle_game_java",
+  "action_index": 4,
+  "filename": "src/main/java/Command.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/java/004__src__main__java__Command.java/user_prompt.txt",
+  "user_prompt_sha256": "124d3f02f080480bb641f1e0bb918a7551986963a282fc69379b080396f9117f",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/java/004__src__main__java__Command.java/input_context.json",
+  "input_context_sha256": "25660a13de609421fc84ed75cd03d559d769c0d836c879576027217f4610d5fb",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "64ae04f4266f3169e3deb9962165d3f3ed9cdf119a0a1daec5268e235a3e0b3b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Position.java",
+      "generated_code_sha256": "a2f4498b46d037d64b585b94aee72345f11a500a835b4f676e02e49a91b44b7b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Orientation.java",
+      "generated_code_sha256": "31e0558a51e894411abecdcff8dfde7f92d2800e5aa7ca459363fbacfb773d32",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p06_tank_battle_game/java/architecture/team/team.json",
+  "checkpoint_sha256": "ffd84b34deb72ac8b8cca4a83df026458047e882d4d6b81a1c38f6e441008c6b",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/java/attempts/0001_seed_573870900/generation_report.json",
+  "rng_seed": 573870900,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789394330955",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 52,
+    "prompt_tokens": 13270,
+    "total_tokens": 13322
+  },
+  "response_content_sha256": "4c0a810307c0b94cab066b02c64b784066fd551fcbdfaa0c298aefa9155a9a0c",
+  "generated_code_sha256": "8f0dc99658b6871f4dc6bc2fe63c937cc31045112bd203aa9e5df9522476a901",
+  "accepted_source_restoration": "accepted_repository_content"
+}

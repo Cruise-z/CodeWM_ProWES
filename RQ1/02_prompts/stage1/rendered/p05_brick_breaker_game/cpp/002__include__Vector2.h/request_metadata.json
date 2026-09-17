@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_cpp",
+  "action_index": 2,
+  "filename": "include/Vector2.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/002__include__Vector2.h/user_prompt.txt",
+  "user_prompt_sha256": "e094bc894894111f835bb6b1354fafc7ef8026d72c9509b7bf4edaf165f1202b",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/002__include__Vector2.h/input_context.json",
+  "input_context_sha256": "3bc0f76f768f7d05183beb3a7caa8a2da2ec32fa9418cd3ec74b26b964bc253f",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "7834c58de6bce8d6baa2e86dab975777e6650ff314009aa9ec428f985be1e33f",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/generation_report.json",
+  "rng_seed": 1300987923,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789322614176",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 207,
+    "prompt_tokens": 6063,
+    "total_tokens": 6270
+  },
+  "response_content_sha256": "ac9725ce2fe55447af66a168ee740efd55b3dd9c919e1399aae48158a5451db5",
+  "generated_code_sha256": "403d5b28e2a268a45523b929b45c20fc9c86c944c8c0a6422ee2312817b3d670",
+  "accepted_source_restoration": "accepted_repository_content"
+}

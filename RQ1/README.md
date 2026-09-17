@@ -7,8 +7,12 @@ Evidence map:
 
 1. `01_task_specs/manifest.json`: 14 medium-size tasks × C++/Java/Python,
    generation parameters, architecture backend, and acceptance protocol.
-2. `02_prompts/templates/`: language/task prompt source.
-3. `03_architecture_checkpoints/`: 42 rendered `prompt.txt` files, serialized
+2. `02_prompts/`: reviewer-facing prompt evidence. It contains 42 exact
+   Stage-0 architecture payloads and 480 exact accepted-run Stage-1 `WriteCode`
+   prompts/contexts, with per-request hashes and a deterministic builder. The
+   uneven older task modules are explicitly isolated under
+   `02_prompts/legacy_templates/` and are not the formal campaign matrix.
+3. `03_architecture_checkpoints/`: 42 canonical rendered `prompt.txt` files, serialized
    `team/team.json` agent state, architecture evidence/log, and corresponding
    `initial_repository` input. These checkpoints permit downstream generation
    without recalling the proprietary Stage-0 model.

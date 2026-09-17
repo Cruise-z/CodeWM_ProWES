@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p10_crud_system_python",
+  "action_index": 3,
+  "filename": "crud_system/types.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/003__crud_system__types.py/user_prompt.txt",
+  "user_prompt_sha256": "6506780dc7ce5f072426bb6393c6211544d1e52a79b56bc2b72fc8fb1ac00f7f",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p10_crud_system/python/003__crud_system__types.py/input_context.json",
+  "input_context_sha256": "0040a36c21501584399c632b03f9062d9e557718849a870b542a0ce0a55cabce",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "crud_system/errors.py",
+      "generated_code_sha256": "8f30c3d4590bc3fd9e6fba8095a46fbbf75f7deacf54eb1ec654be72a88a29ff",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p10_crud_system/python/architecture/team/team.json",
+  "checkpoint_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p10_crud_system/python/attempts/0001_seed_1014069831/generation_report.json",
+  "rng_seed": 1014069831,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789408789812",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 170,
+    "prompt_tokens": 9394,
+    "total_tokens": 9564
+  },
+  "response_content_sha256": "d189cb57ca76b1bc77df21d822823d9f5cdda8e2cb7fa583912421c1e8753f88",
+  "generated_code_sha256": "e470fbc7f298402fca7c33e45938c4ae20cb2e9bdae1b5f9c46e06cccb5098a2",
+  "accepted_source_restoration": "restored_leading_h2"
+}

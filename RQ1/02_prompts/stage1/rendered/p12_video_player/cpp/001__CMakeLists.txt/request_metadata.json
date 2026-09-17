@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_cpp",
+  "action_index": 1,
+  "filename": "CMakeLists.txt",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/001__CMakeLists.txt/user_prompt.txt",
+  "user_prompt_sha256": "63418e6b1f730cde0527c77b92ca3ee0db9ca739105e5dbbddba6f02ad3c815d",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/cpp/001__CMakeLists.txt/input_context.json",
+  "input_context_sha256": "0ab11103f2589a719ff5e6d286be0addaffb1539720c3839e9e29cb710f0e80c",
+  "visible_prior_sources": [],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/cpp/attempts/0001_seed_1700920662/generation_report.json",
+  "rng_seed": 1700920662,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789390199333",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 196,
+    "prompt_tokens": 9612,
+    "total_tokens": 9808
+  },
+  "response_content_sha256": "303a9db0f42b57c333ec54975386b068301130471e00ed290a5bfe24fa4fefda",
+  "generated_code_sha256": "28c81ba05cbb2620754237a88e4751bee81d1a29a55a9bc3bd9fcede927c2568",
+  "accepted_source_restoration": "accepted_repository_content"
+}

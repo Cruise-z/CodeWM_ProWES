@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p09_qr_code_gen_det_java",
+  "action_index": 7,
+  "filename": "src/main/java/MatrixValidator.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/java/007__src__main__java__MatrixValidator.java/user_prompt.txt",
+  "user_prompt_sha256": "d906fd293b27c655e13db7bb95fd616648ca4336adebaf2746dbf8fb56134854",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p09_qr_code_gen_det/java/007__src__main__java__MatrixValidator.java/input_context.json",
+  "input_context_sha256": "5a4e986e533d679b9ff9475630ed6f9fa1b6dc5b9738157fe0057b02d70a0cf1",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "45686c118570d9efd300faa84c4f8b6c0d0ef1a7f79d66d65ed01a41af2111e1",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/QRMatrix.java",
+      "generated_code_sha256": "b059a6760327c84ff591f7fbab015b93923543d7c61b7e1f7fd6ca18e0e8e600",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Checksum.java",
+      "generated_code_sha256": "2a8baebe1158262bb9c36216cae43310a4fc280d2f817489e43cb0089378e054",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/ZigZag.java",
+      "generated_code_sha256": "9927fe96578c584c58285c8a764d7d602f41b20e12926a7470ce2df467ce581a",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/FinderPattern.java",
+      "generated_code_sha256": "9adc6e51ea81cc8ff3c0d77955c81900b2d947792b5d369af427b37a29cb6dc2",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/TextEncoder.java",
+      "generated_code_sha256": "1f259e15628eb4859f44c0481aa693a291fb79378ba2c65d3e4158092dced130",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p09_qr_code_gen_det/java/architecture/team/team.json",
+  "checkpoint_sha256": "49e3f2f3b934092fc1361464575fd7ab23559ff70bda598db86644cb239fc920",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p09_qr_code_gen_det/java/attempts/0001_seed_3719859282/generation_report.json",
+  "rng_seed": 3719859282,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789400629594",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 407,
+    "prompt_tokens": 16342,
+    "total_tokens": 16749
+  },
+  "response_content_sha256": "258e859fc7883d244a26f74367c87912e6a60cc37e3ffab713433a3d93d35ebc",
+  "generated_code_sha256": "5239562c0fe49d9d045fb50a12d9d28bae092261b19ec153ea998a5ff3c21adf",
+  "accepted_source_restoration": "accepted_repository_content"
+}

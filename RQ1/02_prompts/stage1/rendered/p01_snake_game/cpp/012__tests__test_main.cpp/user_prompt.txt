@@ -1,0 +1,630 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Alice, Eve, Alex: Bob here. We will preserve protocol files exactly and build a clean, deterministic, headless-friendly Snake core in C++17 using CMake. The runtime entry is thin (src/Main.cpp). We separate pure domain entities (Board, Snake) and orchestration (Game) from the RNG boundary (IRandom/DefaultRandom) to keep tests deterministic and portable. Tests include only headers and seed the RNG. We honor strict compilation contracts: include/Types.h is the sole definition site for Position and Direction; any header that mentions either includes \"Types.h\" directly. include/IRandom.h declares both IRandom and DefaultRandom; src/Random.cpp includes \"IRandom.h\" exactly. include/IRandom.h directly includes <cstddef>, <cstdint>, and <random>, using std::size_t and std::uint32_t with a std::mt19937 data member. include/Game.h directly includes \"Board.h\", \"IRandom.h\", \"Snake.h\", \"Types.h\", <cstddef>, <deque>, and <optional>. Direction reversal is prevented; food placement uses the RNG on unoccupied cells; moving into tail is allowed only if not growing. The Game constructor validates dimensions and uses the exact initializer snake_(Position{static_cast<int>(width / 2), static_cast<int>(height / 2)}, Direction::Right, 3). CMake builds a core library from non-Main sources, links runtime and tests to it, calls enable_testing(), and registers the test. Each target_compile_options flag is a separate argument. No GUI or OS-specific behavior; tests run via ctest.","Domain Decomposition":[["Build configuration and single project definition; core library plus runtime and tests","CMakeLists.txt","protocol-required"],["Runtime bootstrap: thin demo wiring to construct Game, tick a few times, and print","src/Main.cpp","environment-dependent"],["Protocol-level deterministic tests covering wiring and one core rule","tests/test_main.cpp","automated-test"],["Fundamental types: Position and Direction (sole definition site)","include/Types.h","interface"],["RNG interface and default deterministic implementation declaration","include/IRandom.h","interface"],["Default RNG implementation using std::mt19937 (includes \"IRandom.h\" exactly)","src/Random.cpp","domain-entity"],["Board dimensions and bounds checking (grid walls)","include/Board.h","interface"],["Board implementation: store width/height and in-bounds queries","src/Board.cpp","domain-entity"],["Snake body/deque, direction, movement, growth-safe advance, occupancy","include/Snake.h","interface"],["Snake implementation: initialize length-3 body, direction change with reversal prevention","src/Snake.cpp","domain-entity"],["Game orchestration: ticks, direction queue, collisions, food placement, score, reset","include/Game.h","interface"],["Game implementation: apply movement rules, wouldSelfCollide helper, deterministic RNG placement","src/Game.cpp","orchestration"]],"File list":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Types.h","include/IRandom.h","src/Random.cpp","include/Board.h","src/Board.cpp","include/Snake.h","src/Snake.cpp","include/Game.h","src/Game.cpp"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Types.h","include/IRandom.h","src/Random.cpp","include/Board.h","src/Board.cpp","include/Snake.h","src/Snake.cpp","include/Game.h","src/Game.cpp"],"Data structures and interfaces":"classDiagram\n    class Position {\n        int x\n        int y\n    }\n    class Direction {\n        <<enum>> Up\n        <<enum>> Down\n        <<enum>> Left\n        <<enum>> Right\n    }\n    class IRandom {\n        <<interface>>\n        +~IRandom()\n        +next(maxExclusive: std::size_t) std::size_t\n    }\n    class DefaultRandom {\n        -engine: std::mt19937\n        +DefaultRandom(seed: std::uint32_t)\n        +next(maxExclusive: std::size_t) std::size_t\n    }\n    class Board {\n        -width_: std::size_t\n        -height_: std::size_t\n        +Board(width: std::size_t, height: std::size_t)\n        +getWidth() std::size_t\n        +getHeight() std::size_t\n        +inBounds(p: Position) bool\n    }\n    class Snake {\n        -body_: std::deque<Position>\n        -dir_: Direction\n        +Snake(start: Position, dir: Direction, initialLength: int)\n        +head() Position\n        +tail() Position\n        +body() const std::deque<Position>&\n        +direction() Direction\n        +trySetDirection(d: Direction) bool\n        +advanceTo(next: Position, grow: bool) void\n        +occupies(p: Position) bool\n    }\n    class Game {\n        -board_: Board\n        -rng_: IRandom&\n        -snake_: Snake\n        -food_: std::optional<Position>\n        -score_: std::size_t\n        -gameOver_: bool\n        -pendingDir_: std::optional<Direction>\n        +Game(width: std::size_t, height: std::size_t, rng: IRandom&)\n        +reset() void\n        +setDirection(d: Direction) void\n        +tick() void\n        +isGameOver() bool\n        +getScore() std::size_t\n        +getSnake() const Snake&\n        +getFood() std::optional<Position>\n        -placeFood() void\n        -wouldSelfCollide(next: Position, grow: bool) const bool\n    }\n    DefaultRandom ..|> IRandom\n    Game --> Board\n    Game --> Snake\n    Game --> IRandom\n    Snake --> Position\n    Snake --> Direction\n    Board --> Position","Program call flow":"sequenceDiagram\n    participant R as runtime (src/Main.cpp)\n    participant G as Game\n    participant S as Snake\n    participant B as Board\n    participant RNG as IRandom/DefaultRandom\n    R->>RNG: construct(seed)\n    R->>G: construct(width,height,RNG)\n    G->>B: init bounds\n    G->>S: init centered length=3 dir=Right\n    G->>G: placeFood()\n    loop ticks\n        R->>G: setDirection(optional)\n        R->>G: tick()\n        G->>S: apply pending direction\n        G->>S: compute next head\n        G->>B: inBounds(next)\n        G->>S: wouldSelfCollide(next, grow?)\n        alt eating food\n            G->>S: advanceTo(next,grow=true)\n            G->>G: score++ and placeFood()\n        else normal move\n            G->>S: advanceTo(next,grow=false)\n        end\n    end\n    R-->>R: print summary and exit","Domain Mapping":[["Fundamental types: Position and Direction (sole definition site)","include/Types.h"],["RNG interface and default deterministic RNG declarations","include/IRandom.h"],["Default RNG implementation using std::mt19937","src/Random.cpp"],["Board dimensions and wall/bounds rules","include/Board.h"],["Board implementation: width/height storage and in-bounds checks","src/Board.cpp"],["Snake body deque, direction, movement, occupancy","include/Snake.h"],["Snake implementation details including reversal prevention and advance","src/Snake.cpp"],["Game orchestration: lifecycle, ticks, scoring, collisions, food placement","include/Game.h"],["Game implementation including wouldSelfCollide helper and reset","src/Game.cpp"],["Runtime bootstrap (non-interactive demo)","src/Main.cpp"],["Headless deterministic tests (wiring and core rule)","tests/test_main.cpp"]],"Testable Core Boundary":{"pure_logic_modules":["include/Types.h","include/IRandom.h","src/Random.cpp","include/Board.h","src/Board.cpp","include/Snake.h","src/Snake.cpp","include/Game.h","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"test_targets_should_focus_on":["construct Game with a seeded RNG and tick a few steps (wiring)","one core rule such as food consumption growth and score increment or wall collision and game-over"]},"C++ Interface Plan":{"uses_header_files":true,"header_files":["include/Types.h","include/IRandom.h","include/Board.h","include/Snake.h","include/Game.h"],"source_files":["src/Random.cpp","src/Board.cpp","src/Snake.cpp","src/Game.cpp","src/Main.cpp"],"test_includes_must_reference_declared_headers_only":true},"Test Include Audit":{"declared_test_includes":["include/Game.h","include/IRandom.h","include/Types.h"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest. Exactly one protocol-level test file is used.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["CMake>=3.10","C++17","No third-party dependencies required"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Types.h","include/IRandom.h","src/Random.cpp","include/Board.h","src/Board.cpp","include/Snake.h","src/Snake.cpp","include/Game.h","src/Game.cpp"],"Logic Analysis":[["CMakeLists.txt","dependency/build; defines a reusable core library from non-Main sources, a runtime executable, a test executable; calls enable_testing() and registers the test with add_test()"],["src/Main.cpp","runtime/bootstrap; thin, environment-dependent entry wiring: construct RNG and Game, tick a few times, print summary"],["tests/test_main.cpp","automated-test; deterministic protocol-level test that includes only declared headers and exercises wiring and one core rule"],["include/Types.h","interface; sole definition site for Position and Direction. Any header that mentions either must include this header directly"],["include/IRandom.h","interface; declares IRandom and DefaultRandom. Includes <cstddef>, <cstdint>, and <random>; uses std::size_t, std::uint32_t, and has std::mt19937 data member in DefaultRandom"],["src/Random.cpp","domain-entity; implements DefaultRandom using std::mt19937; includes \"IRandom.h\" exactly"],["include/Board.h","interface; declares Board API for dimensions and in-bounds checks"],["src/Board.cpp","domain-entity; implements Board storage and in-bounds logic"],["include/Snake.h","interface; declares Snake body/deque, direction, movement, growth-safe advance, occupancy"],["src/Snake.cpp","domain-entity; implements Snake initialization (length 3), direction change with reversal prevention, advance behavior"],["include/Game.h","interface; declares Game orchestration API, includes Board.h, IRandom.h, Snake.h, Types.h, <cstddef>, <deque>, and <optional>"],["src/Game.cpp","orchestration; implements Game lifecycle: constructor validation and exact snake initializer, ticks, direction queue, collisions, food placement via RNG on unoccupied cells, score, reset, and wouldSelfCollide helper; allows moving into the tail only if not growing"]],"Task list":["CMakeLists.txt","include/Types.h","include/IRandom.h","include/Board.h","include/Snake.h","include/Game.h","src/Random.cpp","src/Board.cpp","src/Snake.cpp","src/Game.cpp","src/Main.cpp","tests/test_main.cpp"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"cpp_header_source_pairs_complete":true,"tests_include_headers_only":true},"File Coverage Audit":{"design_file_list_count":12,"pm_canonical_count":12,"logic_analysis_count":12,"task_list_count":12,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.cpp","basic runtime wiring: construct DefaultRandom with fixed seed, construct Game with small board, perform several ticks deterministically (no GUI), and verify no crash"],["tests/test_main.cpp","core rule: verify that when the snake eats food, it grows by one segment and score increments by 1; also confirm direction reversal is prevented"]],"Test Include Plan":[["tests/test_main.cpp","include/Game.h"],["tests/test_main.cpp","include/IRandom.h"],["tests/test_main.cpp","include/Types.h"]],"Module Boundary Audit":{"core_domain_logic_modules":["src/Random.cpp","src/Board.cpp","src/Snake.cpp","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{"declared_headers_match_declared_sources":true,"every_src_cpp_has_matching_header_or_is_main":true,"main_is_only_environment_entry":true,"tests_include_headers_only":true,"core_library_declared":true,"runtime_links_core_library":true,"test_links_core_library":true,"enable_testing_declared":true,"add_test_declared":true,"missing_interface_files":[],"undeclared_test_includes":[],"suspected_build_breakers":[],"notes":["include/IRandom.h must include <cstddef>, <cstdint>, and <random> and declare both IRandom and DefaultRandom","src/Random.cpp must include \"IRandom.h\" exactly and no other project headers","include/Game.h must directly include \"Board.h\", \"IRandom.h\", \"Snake.h\", \"Types.h\", <cstddef>, <deque>, and <optional>","Tests must not include or link any src/*.cpp directly; they link via the core library"]},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"include/Types.h:\n- struct Position { int x; int y; };\n- enum class Direction { Up, Down, Left, Right };\nSemantics: Position uses integer grid coordinates. Direction enumerates movement axes. This header is the sole definition site for both Position and Direction; any header using them must include this header directly.\n\ninclude/IRandom.h:\n- class IRandom { public: virtual ~IRandom() = default; virtual std::size_t next(std::size_t maxExclusive) = 0; };\n- class DefaultRandom final : public IRandom { public: explicit DefaultRandom(std::uint32_t seed); std::size_t next(std::size_t maxExclusive) override; private: std::mt19937 engine_; };\nSemantics: next(maxExclusive) returns an integer in [0, maxExclusive) uniformly. Behavior is deterministic given the seed. Header includes <cstddef>, <cstdint>, and <random> and uses std::size_t, std::uint32_t, std::mt19937.\n\ninclude/Board.h:\n- class Board { public: Board(std::size_t width, std::size_t height); std::size_t getWidth() const noexcept; std::size_t getHeight() const noexcept; bool inBounds(Position p) const noexcept; private: std::size_t width_; std::size_t height_; };\nSemantics: Stores immutable grid dimensions. inBounds returns true iff 0 <= p.x < width and 0 <= p.y < height.\n\ninclude/Snake.h:\n- class Snake { public: Snake(Position start, Direction dir, int initialLength); Position head() const; Position tail() const; const std::deque<Position>& body() const noexcept; Direction direction() const noexcept; bool trySetDirection(Direction d); void advanceTo(Position next, bool grow); bool occupies(Position p) const noexcept; private: std::deque<Position> body_; Direction dir_; };\nSemantics: Constructor initializes a length-3 body when called by Game as per protocol, extending opposite to initial direction. trySetDirection prevents 180-degree reversal relative to current direction; returns true if accepted, false if ignored. advanceTo moves head to 'next'; if grow is false, it pops the tail; if grow is true, it keeps the tail (growing by one). occupies checks if any segment equals p.\n\ninclude/Game.h:\n- class Game { public: Game(std::size_t width, std::size_t height, IRandom& rng); void reset(); void setDirection(Direction d); void tick(); bool isGameOver() const noexcept; std::size_t getScore() const noexcept; const Snake& getSnake() const noexcept; std::optional<Position> getFood() const; private: void placeFood(); bool wouldSelfCollide(Position next, bool grow) const; private: Board board_; IRandom& rng_; Snake snake_; std::optional<Position> food_; std::size_t score_; bool gameOver_; std::optional<Direction> pendingDir_; };\nSemantics:\n- Construction: validates dimensions (both width and height must be > 0; otherwise throws std::invalid_argument). Initializes the snake exactly as: snake_(Position{static_cast<int>(width / 2), static_cast<int>(height / 2)}, Direction::Right, 3). Resets score_=0, gameOver_=false, pendingDir_=std::nullopt, and places initial food on an unoccupied cell using RNG.\n- setDirection: queues a pending direction; actual change is applied at the start of the next tick via Snake::trySetDirection, preserving reversal-prevention.\n- tick: if gameOver_ is true, it is a no-op. Otherwise, applies pending direction, computes next head based on current direction, checks board_.inBounds(next) and self-collision via wouldSelfCollide(next, grow). Moving into the current tail position is allowed only when grow == false (i.e., not eating this tick). If next equals current food position, sets grow=true, advances snake with grow=true, increments score_, and calls placeFood(). Otherwise advances with grow=false. If out-of-bounds or self-collide, sets gameOver_=true and does not move further for this tick.\n- getFood returns std::nullopt if no food is currently placed (e.g., if board is fully occupied). placeFood selects uniformly among unoccupied cells using rng_.next().\n\nsrc/Random.cpp:\n- Implements DefaultRandom::DefaultRandom(seed) to seed engine_ and DefaultRandom::next(maxExclusive) using uniform_int_distribution in [0, maxExclusive-1]. Includes \"IRandom.h\" exactly.\n\nsrc/Board.cpp:\n- Implements Board methods; inBounds uses Position from include/Types.h (via include in include/Board.h).\n\nsrc/Snake.cpp:\n- Implements Snake, including reversal prevention in trySetDirection and growth-safe advanceTo.\n\nsrc/Game.cpp:\n- Implements Game: constructor performs validation, initializes snake_ exactly as specified, places food deterministically using rng_ over unoccupied cells, and ensures movement rules including the 'move into tail allowed only if not growing' rule via wouldSelfCollide.\n\nsrc/Main.cpp:\n- Demonstration-only thin runtime: constructs DefaultRandom with fixed seed, constructs Game, performs several ticks, prints a brief summary; no GUI/OS interactions. Not used by tests.\n\nInclude boundaries:\n- Any header using Position or Direction must include include/Types.h directly.\n- include/IRandom.h is the declaration site for both IRandom and DefaultRandom; src/Random.cpp includes only this header from the project.\n\nTesting boundaries:\n- tests/test_main.cpp includes only include/Game.h, include/IRandom.h, and include/Types.h, and links via the core library (not by including sources).","Shared Knowledge":"Protocol mandates preserving exact file names and roles. Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Single test file: tests/test_main.cpp. Core types Position and Direction are defined only in include/Types.h; any header that mentions either must include include/Types.h directly. include/IRandom.h declares both IRandom and DefaultRandom and includes <cstddef>, <cstdint>, and <random>. src/Random.cpp includes \"IRandom.h\" exactly. include/Game.h includes \"Board.h\", \"IRandom.h\", \"Snake.h\", \"Types.h\", <cstddef>, <deque>, and <optional>. Direction reversal is prevented in Snake; food placement is deterministic using RNG over unoccupied cells; moving into tail is allowed only if not growing; Game constructor initializes snake_ exactly as specified. CMake builds a reusable core library from non-Main src/*.cpp, then links both the runtime (src/Main.cpp) and the test (tests/test_main.cpp) against that library. Tests include declared headers only and run via ctest.","Execution Protocol":"Build with CMake and run ctest. Exactly one protocol-level test target is registered. tests/test_main.cpp includes declared headers only (no src/*.cpp). Both the runtime executable (src/Main.cpp) and the test executable (tests/test_main.cpp) link against the core library built from non-Main sources. No GUI or OS-specific behavior; tests are deterministic and headless.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```cmake_minimum_required(VERSION 3.10)
+project(SnakeGame)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Create the core library
+add_library(snake_core 
+    src/Random.cpp
+    src/Board.cpp
+    src/Snake.cpp
+    src/Game.cpp
+)
+
+target_include_directories(snake_core PUBLIC 
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+# Runtime executable
+add_executable(snake_runtime src/Main.cpp)
+target_link_libraries(snake_runtime snake_core)
+
+# Test executable
+add_executable(snake_tests tests/test_main.cpp)
+target_link_libraries(snake_tests snake_core)
+
+# Enable testing
+enable_testing()
+
+# Add test
+add_test(NAME snake_test COMMAND snake_tests)```
+----- include/Types.h
+```#ifndef SNAKE_TYPES_H_
+#define SNAKE_TYPES_H_
+
+namespace snake {
+
+/// Represents a position on the game grid
+struct Position {
+  int x;
+  int y;
+};
+
+/// Represents the four possible directions of movement
+enum class Direction {
+  Up,
+  Down,
+  Left,
+  Right
+};
+
+}  // namespace snake
+
+#endif  // SNAKE_TYPES_H_```
+----- include/IRandom.h
+```#ifndef SNAKE_IRANDOM_H_
+#define SNAKE_IRANDOM_H_
+
+#include <cstddef>
+#include <cstdint>
+#include <random>
+
+namespace snake {
+
+/// Interface for random number generation
+class IRandom {
+ public:
+  virtual ~IRandom() = default;
+
+  /// Returns a random integer in the range [0, maxExclusive)
+  /// @param maxExclusive The upper bound (exclusive) for the generated number
+  /// @return A random integer in [0, maxExclusive)
+  virtual std::size_t next(std::size_t maxExclusive) = 0;
+};
+
+/// Default implementation of IRandom using std::mt19937
+class DefaultRandom final : public IRandom {
+ public:
+  /// Constructs a new DefaultRandom with the given seed
+  /// @param seed The seed for the random number generator
+  explicit DefaultRandom(std::uint32_t seed);
+
+  /// Generates a random number in the range [0, maxExclusive)
+  /// @param maxExclusive The upper bound (exclusive) for the generated number
+  /// @return A random integer in [0, maxExclusive)
+  std::size_t next(std::size_t maxExclusive) override;
+
+ private:
+  std::mt19937 engine_;
+};
+
+}  // namespace snake
+
+#endif  // SNAKE_IRANDOM_H_```
+----- include/Board.h
+```#ifndef SNAKE_BOARD_H_
+#define SNAKE_BOARD_H_
+
+#include "Types.h"
+#include <cstddef>
+
+namespace snake {
+
+/// Represents the game board with dimensions and bounds checking
+class Board {
+ public:
+  /// Constructs a new Board with the specified width and height
+  /// @param width The width of the board (must be > 0)
+  /// @param height The height of the board (must be > 0)
+  Board(std::size_t width, std::size_t height);
+
+  /// Gets the width of the board
+  /// @return The width of the board
+  std::size_t getWidth() const noexcept;
+
+  /// Gets the height of the board
+  /// @return The height of the board
+  std::size_t getHeight() const noexcept;
+
+  /// Checks if a position is within the bounds of the board
+  /// @param p The position to check
+  /// @return true if the position is within the board's bounds, false otherwise
+  bool inBounds(Position p) const noexcept;
+
+ private:
+  std::size_t width_;
+  std::size_t height_;
+};
+
+}  // namespace snake
+
+#endif  // SNAKE_BOARD_H_```
+----- include/Snake.h
+```#ifndef SNAKE_SNAKE_H_
+#define SNAKE_SNAKE_H_
+
+#include "Types.h"
+#include <cstddef>
+#include <deque>
+
+namespace snake {
+
+/// Represents the snake in the game, including its body, direction, and movement logic
+class Snake {
+ public:
+  /// Constructs a new Snake with the specified starting position, direction, and initial length
+  /// @param start The starting position of the snake's head
+  /// @param dir The initial direction of the snake
+  /// @param initialLength The initial length of the snake (must be positive)
+  Snake(Position start, Direction dir, int initialLength);
+
+  /// Gets the position of the snake's head
+  /// @return The position of the snake's head
+  Position head() const;
+
+  /// Gets the position of the snake's tail
+  /// @return The position of the snake's tail
+  Position tail() const;
+
+  /// Gets the snake's body segments
+  /// @return A const reference to the deque of body positions
+  const std::deque<Position>& body() const noexcept;
+
+  /// Gets the current direction of the snake
+  /// @return The current direction of the snake
+  Direction direction() const noexcept;
+
+  /// Attempts to change the snake's direction
+  /// @param d The desired new direction
+  /// @return true if the direction was successfully changed, false if the change was ignored (e.g., 180-degree turn)
+  bool trySetDirection(Direction d);
+
+  /// Moves the snake to a new position
+  /// @param next The new position for the snake's head
+  /// @param grow If true, the snake grows by one segment; if false, the tail is removed
+  void advanceTo(Position next, bool grow);
+
+  /// Checks if any segment of the snake occupies a given position
+  /// @param p The position to check
+  /// @return true if any segment of the snake occupies the position, false otherwise
+  bool occupies(Position p) const noexcept;
+
+ private:
+  std::deque<Position> body_;
+  Direction dir_;
+};
+
+}  // namespace snake
+
+#endif  // SNAKE_SNAKE_H_```
+----- include/Game.h
+```#ifndef SNAKE_GAME_H_
+#define SNAKE_GAME_H_
+
+#include "Board.h"
+#include "IRandom.h"
+#include "Snake.h"
+#include "Types.h"
+
+#include <cstddef>
+#include <deque>
+#include <optional>
+
+namespace snake {
+
+/// Orchestrates the game state, handling ticks, direction changes, collisions, and food placement
+class Game {
+ public:
+  /// Constructs a new Game with the specified dimensions and random number generator
+  /// @param width The width of the game board (must be > 0)
+  /// @param height The height of the game board (must be > 0)
+  /// @param rng A reference to the random number generator to use for food placement
+  /// @throws std::invalid_argument if width or height is not greater than 0
+  Game(std::size_t width, std::size_t height, IRandom& rng);
+
+  /// Resets the game to its initial state
+  void reset();
+
+  /// Sets the desired direction for the snake to move in the next tick
+  /// @param d The desired direction
+  void setDirection(Direction d);
+
+  /// Advances the game state by one tick
+  void tick();
+
+  /// Checks if the game is over
+  /// @return true if the game is over, false otherwise
+  bool isGameOver() const noexcept;
+
+  /// Gets the current score
+  /// @return The current score
+  std::size_t getScore() const noexcept;
+
+  /// Gets a const reference to the snake
+  /// @return A const reference to the snake
+  const Snake& getSnake() const noexcept;
+
+  /// Gets the current food position, if any
+  /// @return An optional containing the food position, or std::nullopt if no food is placed
+  std::optional<Position> getFood() const;
+
+ private:
+  /// Places food on an unoccupied cell using the random number generator
+  void placeFood();
+
+  /// Checks if moving to a given position would result in a self-collision
+  /// @param next The position to check for potential collision
+  /// @param grow Whether the snake will grow after moving to this position
+  /// @return true if a self-collision would occur, false otherwise
+  bool wouldSelfCollide(Position next, bool grow) const;
+
+  Board board_;
+  IRandom& rng_;
+  Snake snake_;
+  std::optional<Position> food_;
+  std::size_t score_;
+  bool gameOver_;
+  std::optional<Direction> pendingDir_;
+};
+
+}  // namespace snake
+
+#endif  // SNAKE_GAME_H_```
+----- src/Random.cpp
+```#include "IRandom.h"
+
+namespace snake {
+
+DefaultRandom::DefaultRandom(std::uint32_t seed) : engine_(seed) {}
+
+std::size_t DefaultRandom::next(std::size_t maxExclusive) {
+  if (maxExclusive == 0) {
+    return 0;
+  }
+  std::uniform_int_distribution<std::size_t> dist(0, maxExclusive - 1);
+  return dist(engine_);
+}
+
+}  // namespace snake```
+----- src/Board.cpp
+```#include "Board.h"
+
+namespace snake {
+
+Board::Board(std::size_t width, std::size_t height) : width_(width), height_(height) {}
+
+std::size_t Board::getWidth() const noexcept {
+  return width_;
+}
+
+std::size_t Board::getHeight() const noexcept {
+  return height_;
+}
+
+bool Board::inBounds(Position p) const noexcept {
+  return p.x >= 0 && p.x < static_cast<int>(width_) && 
+         p.y >= 0 && p.y < static_cast<int>(height_);
+}
+
+}  // namespace snake```
+----- src/Snake.cpp
+```#include "Snake.h"
+#include <stdexcept>
+
+namespace snake {
+
+Snake::Snake(Position start, Direction dir, int initialLength) : dir_(dir) {
+  if (initialLength <= 0) {
+    throw std::invalid_argument("Initial length must be positive");
+  }
+
+  // Initialize the snake body with the specified length
+  // The body extends in the opposite direction from the initial direction
+  switch (dir) {
+    case Direction::Up:
+      for (int i = 0; i < initialLength; ++i) {
+        body_.push_back({start.x, start.y + i});
+      }
+      break;
+    case Direction::Down:
+      for (int i = 0; i < initialLength; ++i) {
+        body_.push_back({start.x, start.y - i});
+      }
+      break;
+    case Direction::Left:
+      for (int i = 0; i < initialLength; ++i) {
+        body_.push_back({start.x + i, start.y});
+      }
+      break;
+    case Direction::Right:
+      for (int i = 0; i < initialLength; ++i) {
+        body_.push_back({start.x - i, start.y});
+      }
+      break;
+  }
+}
+
+Position Snake::head() const {
+  return body_.front();
+}
+
+Position Snake::tail() const {
+  return body_.back();
+}
+
+const std::deque<Position>& Snake::body() const noexcept {
+  return body_;
+}
+
+Direction Snake::direction() const noexcept {
+  return dir_;
+}
+
+bool Snake::trySetDirection(Direction d) {
+  // Prevent 180-degree turns
+  if ((d == Direction::Up && dir_ == Direction::Down) ||
+      (d == Direction::Down && dir_ == Direction::Up) ||
+      (d == Direction::Left && dir_ == Direction::Right) ||
+      (d == Direction::Right && dir_ == Direction::Left)) {
+    return false;
+  }
+  
+  dir_ = d;
+  return true;
+}
+
+void Snake::advanceTo(Position next, bool grow) {
+  // Add new head
+  body_.push_front(next);
+  
+  // Remove tail unless we're growing
+  if (!grow) {
+    body_.pop_back();
+  }
+}
+
+bool Snake::occupies(Position p) const noexcept {
+  for (const auto& segment : body_) {
+    if (segment.x == p.x && segment.y == p.y) {
+      return true;
+    }
+  }
+  return false;
+}
+
+}  // namespace snake```
+----- src/Game.cpp
+```#include "Game.h"
+#include <stdexcept>
+
+namespace snake {
+
+Game::Game(std::size_t width, std::size_t height, IRandom& rng)
+    : board_(width, height),
+      rng_(rng),
+      snake_(Position{static_cast<int>(width / 2), static_cast<int>(height / 2)}, 
+             Direction::Right, 3),
+      food_(std::nullopt),
+      score_(0),
+      gameOver_(false),
+      pendingDir_(std::nullopt) {
+  if (width == 0 || height == 0) {
+    throw std::invalid_argument("Board dimensions must be greater than 0");
+  }
+  placeFood();
+}
+
+void Game::reset() {
+  snake_ = Snake(Position{static_cast<int>(board_.getWidth() / 2), 
+                         static_cast<int>(board_.getHeight() / 2)}, 
+                Direction::Right, 3);
+  score_ = 0;
+  gameOver_ = false;
+  pendingDir_ = std::nullopt;
+  food_ = std::nullopt;
+  placeFood();
+}
+
+void Game::setDirection(Direction d) {
+  pendingDir_ = d;
+}
+
+void Game::tick() {
+  if (gameOver_) {
+    return;
+  }
+
+  // Apply pending direction change
+  if (pendingDir_.has_value()) {
+    snake_.trySetDirection(pendingDir_.value());
+    pendingDir_ = std::nullopt;
+  }
+
+  // Compute next head position based on current direction
+  Position next = snake_.head();
+  switch (snake_.direction()) {
+    case Direction::Up:
+      next.y--;
+      break;
+    case Direction::Down:
+      next.y++;
+      break;
+    case Direction::Left:
+      next.x--;
+      break;
+    case Direction::Right:
+      next.x++;
+      break;
+  }
+
+  // Check if next position is within bounds
+  if (!board_.inBounds(next)) {
+    gameOver_ = true;
+    return;
+  }
+
+  // Check for self-collision (allowing move into tail only if not growing)
+  bool grow = false;
+  if (food_.has_value() && next.x == food_.value().x && next.y == food_.value().y) {
+    grow = true;
+    score_++;
+  }
+
+  if (wouldSelfCollide(next, grow)) {
+    gameOver_ = true;
+    return;
+  }
+
+  // Move snake
+  snake_.advanceTo(next, grow);
+
+  // If we ate food, place new food
+  if (grow) {
+    food_ = std::nullopt;
+    placeFood();
+  }
+}
+
+bool Game::isGameOver() const noexcept {
+  return gameOver_;
+}
+
+std::size_t Game::getScore() const noexcept {
+  return score_;
+}
+
+const Snake& Game::getSnake() const noexcept {
+  return snake_;
+}
+
+std::optional<Position> Game::getFood() const {
+  return food_;
+}
+
+void Game::placeFood() {
+  // Find all empty cells
+  std::vector<Position> emptyCells;
+  for (std::size_t y = 0; y < board_.getHeight(); ++y) {
+    for (std::size_t x = 0; x < board_.getWidth(); ++x) {
+      Position p{static_cast<int>(x), static_cast<int>(y)};
+      if (!snake_.occupies(p)) {
+        emptyCells.push_back(p);
+      }
+    }
+  }
+
+  // If no empty cells, game is over
+  if (emptyCells.empty()) {
+    gameOver_ = true;
+    return;
+  }
+
+  // Select a random empty cell
+  std::size_t index = rng_.next(emptyCells.size());
+  food_ = emptyCells[index];
+}
+
+bool Game::wouldSelfCollide(Position next, bool grow) const {
+  // Check if next position is occupied by snake body (excluding tail if not growing)
+  if (grow) {
+    // When growing, we don't remove the tail, so check all body segments
+    return snake_.occupies(next);
+  } else {
+    // When not growing, we remove the tail, so skip tail in collision check
+    auto body = snake_.body();
+    if (body.size() < 2) {
+      return false;
+    }
+    
+    // Skip the tail (last element) when checking for collision
+    for (auto it = body.begin(); it != body.end() - 1; ++it) {
+      if (it->x == next.x && it->y == next.y) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+}  // namespace snake```
+----- src/Main.cpp
+```#include "Game.h"
+#include "IRandom.h"
+#include "Types.h"
+#include <iostream>
+
+int main() {
+  // Create a deterministic random number generator with a fixed seed
+  snake::DefaultRandom rng(42);
+  
+  // Create a game with a small board
+  snake::Game game(10, 10, rng);
+  
+  // Print initial game state
+  std::cout << "Initial state:" << std::endl;
+  std::cout << "Score: " << game.getScore() << std::endl;
+  std::cout << "Food: ";
+  if (game.getFood().has_value()) {
+    auto food = game.getFood().value();
+    std::cout << "(" << food.x << ", " << food.y << ")" << std::endl;
+  } else {
+    std::cout << "none" << std::endl;
+  }
+  
+  // Tick the game a few times
+  for (int i = 0; i < 5; ++i) {
+    game.tick();
+    std::cout << "\nAfter tick " << (i+1) << ":" << std::endl;
+    std::cout << "Score: " << game.getScore() << std::endl;
+    std::cout << "Food: ";
+    if (game.getFood().has_value()) {
+      auto food = game.getFood().value();
+      std::cout << "(" << food.x << ", " << food.y << ")" << std::endl;
+    } else {
+      std::cout << "none" << std::endl;
+    }
+    std::cout << "Game Over: " << (game.isGameOver() ? "Yes" : "No") << std::endl;
+  }
+  
+  return 0;
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: tests/test_main.cpp
+```python
+## tests/test_main.cpp
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: tests/test_main.cpp. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

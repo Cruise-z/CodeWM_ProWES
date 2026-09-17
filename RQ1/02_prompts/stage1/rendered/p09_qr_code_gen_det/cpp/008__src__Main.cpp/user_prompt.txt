@@ -1,0 +1,745 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {
+    "header_files": [
+      "include/QRMatrix.h",
+      "include/QRCodec.h",
+      "include/QRRenderer.h"
+    ],
+    "source_files": [
+      "src/QRMatrix.cpp",
+      "src/QRCodec.cpp",
+      "src/QRRenderer.cpp"
+    ],
+    "test_includes_must_reference_declared_headers_only": true,
+    "uses_header_files": true
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "include/QRMatrix.h",
+    "src/QRMatrix.cpp",
+    "include/QRCodec.h",
+    "src/QRCodec.cpp",
+    "include/QRRenderer.h",
+    "src/QRRenderer.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Data structures and interfaces": "",
+  "Domain Decomposition": [
+    [
+      "Build configuration and targets: define qr_core library from core sources, qr_app runtime, qr_tests test executable, publish include/, enable CTest",
+      "CMakeLists.txt",
+      "protocol-required"
+    ],
+    [
+      "Matrix value type for 21x21 modules with exact three 5x5 finder markers, bounds-checked get/set, and finder cell/value helpers (interface)",
+      "include/QRMatrix.h",
+      "interface"
+    ],
+    [
+      "Matrix implementation: initialize finders, enforce access bounds, and provide finder helpers",
+      "src/QRMatrix.cpp",
+      "domain-entity"
+    ],
+    [
+      "QR encode/decode/detect API (interface) with fixed wire format and row-major non-finder mapping",
+      "include/QRCodec.h",
+      "interface"
+    ],
+    [
+      "QR encode/decode/detect implementation: length<=40, MSB-first bytes, checksum=sum%256, zero-padding, validation and exception semantics",
+      "src/QRCodec.cpp",
+      "pure-rule"
+    ],
+    [
+      "ASCII renderer API (interface) with customizable markers and exact 21-line, 20-newline output invariant",
+      "include/QRRenderer.h",
+      "interface"
+    ],
+    [
+      "ASCII renderer implementation: validate non-empty markers and render deterministic grid without trailing newline",
+      "src/QRRenderer.cpp",
+      "pure-rule"
+    ],
+    [
+      "Runtime entry: encode literal \"CodeWM\", decode, print one concise line, return 0",
+      "src/Main.cpp",
+      "environment-dependent"
+    ],
+    [
+      "Single protocol test: round-trip hello-世界 with detect true; corruption of (0,0) finder causes detect false and decode error; render newline count and length>40 rejection",
+      "tests/test_main.cpp",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Build and test orchestration",
+      "CMakeLists.txt"
+    ],
+    [
+      "Deterministic 21x21 matrix and finder markers (API)",
+      "include/QRMatrix.h"
+    ],
+    [
+      "Deterministic 21x21 matrix and finder markers (implementation)",
+      "src/QRMatrix.cpp"
+    ],
+    [
+      "Encoding/decoding/detection API",
+      "include/QRCodec.h"
+    ],
+    [
+      "Encoding/decoding/detection implementation with row-major non-finder bitstream and wire format validation",
+      "src/QRCodec.cpp"
+    ],
+    [
+      "ASCII rendering API",
+      "include/QRRenderer.h"
+    ],
+    [
+      "ASCII rendering implementation enforcing 21 lines and 20 newlines",
+      "src/QRRenderer.cpp"
+    ],
+    [
+      "Thin CLI demo entry point with fixed literal",
+      "src/Main.cpp"
+    ],
+    [
+      "Protocol-compliant single test covering round-trip, corruption, rendering newlines, and length rejection",
+      "tests/test_main.cpp"
+    ]
+  ],
+  "File list": [
+    "CMakeLists.txt",
+    "include/QRMatrix.h",
+    "src/QRMatrix.cpp",
+    "include/QRCodec.h",
+    "src/QRCodec.cpp",
+    "include/QRRenderer.h",
+    "src/QRRenderer.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Implementation approach": "Preserve the exact nine-file C++17 layout with a single qr_core library exposing three focused headers: QRMatrix (fixed 21x21 matrix with strict finder markers and bounds-checked access), QRCodec (encode/decode/detect using fixed row-major non-finder bit ordering and a simple length+payload+checksum+padding wire format), and QRRenderer (ASCII rendering). Keep src/Main.cpp as a thin, deterministic demo that encodes and decodes a fixed literal and prints one concise line. Use only the C++17 standard library and CMake; no external libraries or platform-specific features. Ensure headers are self-contained with mandated includes, sources include headers by basename, and tests include headers only. Automated tests remain fully headless and deterministic, focusing on core rules (round-trip, corruption detection, rendering format, and length bounds).",
+  "Normative Architecture Requirements": "Generate a complete medium-size C++17 repository architecture for: QR Code Gen.&Det..\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\n\nProject-specific C++17 fixed QR-like codec contract:\n- structured-output safety for this unit: every role outputs only fields listed in that current action's `nodes` schema. In particular, the Architect/Design action sets its optional `Data structures and interfaces` and `Program call flow` fields to empty strings and MUST NOT prematurely add ProjectManager-only fields such as Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, or Task list. The later ProjectManager/Task action must provide all of those fields and preserve the exact API tokens below. Keep every JSON string as single-line plain prose, and emit no Mermaid, Markdown code fence, multiline code sample, literal newline inside a JSON string, or function body. This transport rule prevents invalid JSON and does not relax any repository contract\n- replace the over-split architecture with exactly these files in dependency order: CMakeLists.txt, include/QRMatrix.h, src/QRMatrix.cpp, include/QRCodec.h, src/QRCodec.cpp, include/QRRenderer.h, src/QRRenderer.cpp, src/Main.cpp, tests/test_main.cpp. Do not create BinaryEncoder, QRLayout, QREncoder, QRValidator, QRDetector, namespace-only helper headers, or any additional source/test file\n- CMakeLists.txt sets C++17 with extensions off, builds one qr_core library from the three non-Main source files, publishes `${CMAKE_CURRENT_SOURCE_DIR}/include`, builds qr_app from src/Main.cpp and qr_tests from tests/test_main.cpp, links both to qr_core, calls enable_testing(), and registers qr_tests with add_test. No external package, FetchContent, network, image, GUI, or thread dependency is allowed\n- every header is self-contained and uses `#pragma once`. QRMatrix.h directly includes <array>, <cstddef>, and <stdexcept>. QRCodec.h directly includes <string> and \"QRMatrix.h\". QRRenderer.h directly includes <string> and \"QRMatrix.h\". Sources and tests include headers only by basename such as `#include \"QRCodec.h\"`; `#include \"include/QRCodec.h\"` and inclusion of any .cpp file are forbidden\n- QRMatrix is a fixed value type with public `static constexpr std::size_t SIZE = 21;`, `static constexpr std::size_t FINDER_SIZE = 5;`, constructor QRMatrix(), bool get(std::size_t row,std::size_t col) const, void set(std::size_t row,std::size_t col,bool value), static bool isFinderCell(std::size_t row,std::size_t col), and static bool expectedFinderValue(std::size_t row,std::size_t col). It stores `std::array<std::array<bool, SIZE>, SIZE> modules_{}`; get/set throw std::out_of_range outside 21x21\n- the constructor initializes all modules false and then writes three exact 5x5 finder markers at origins (0,0), (0,16), and (16,0). Within each marker the border is true, the inner ring is false, and only local center (2,2) is true. isFinderCell returns true for exactly those 75 cells; expectedFinderValue uses this same definition. There are no separators and no fourth marker\n- QRCodec exposes only static QRMatrix encode(const std::string& text), static std::string decode(const QRMatrix& matrix), and static bool detect(const QRMatrix& matrix) noexcept. Data positions are every non-finder cell in row-major order, exactly 366 positions. The wire bits are one unsigned length byte, then every text byte MSB-first, then one checksum byte equal to the sum of text bytes modulo 256, followed by zero bits to capacity. encode rejects text.size()>40 with std::invalid_argument\n- decode first compares every finder cell to QRMatrix::expectedFinderValue, then reads non-finder bits row-major. It parses unsigned length N from the first 8 bits, rejects N>40 or insufficient data, reconstructs exactly N bytes MSB-first, validates the following checksum byte against sum(payload)%256, requires every remaining data bit to be false, and returns the exact byte string. Invalid finder/checksum/length/padding throws std::runtime_error. detect returns false on every exception and true only when decode succeeds\n- QRRenderer exposes only static std::string render(const QRMatrix&,const std::string& on=\"##\",const std::string& off=\"  \"). It rejects empty markers, emits exactly 21 lines separated by exactly 20 newline characters with no trailing newline, and performs no I/O\n- src/Main.cpp encodes literal \"CodeWM\", decodes it, prints at most one concise line, and returns 0. tests/test_main.cpp directly includes <cassert>, <stdexcept>, <string>, \"QRCodec.h\", and \"QRRenderer.h\"; it defines exactly one `int main()` and no framework\n- tests/test_main.cpp has exactly three short blocks: (1) encode/decode literal `hello-世界`, assert detect true and decoded equality; (2) copy with `QRMatrix corrupted = matrix;`, literally call `corrupted.set(0, 0, false);`, assert detect false, and assert decode throws std::runtime_error; (3) assert render has 20 newline characters and assert encoding `std::string(41, 'a')` throws std::invalid_argument. Never set finder [0][0] to true because its valid value is already true\n- repeat the exact nine-file list, self-contained includes, fixed marker definition, 366 row-major data positions, byte-length/payload/checksum/zero-padding format, exact public APIs, literal corruption statement, single-main test, and three scopes in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 7 repository files\n- about 29 functions or methods\n- about 632 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- text-to-binary payload encoding\n- deterministic square module matrix generation\n- finder-pattern placement\n- matrix validation and rendering\n- payload detection from generated matrices\n- invalid or corrupted matrix rejection\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE QR C++17 CHECKLIST:\n- Every role outputs only fields from its current `nodes` schema. The Architect sets `Data structures and interfaces` and `Program call flow` to empty strings and does not emit Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, or Task list; the ProjectManager emits those later. Keep JSON strings single-line and emit no Mermaid, code fence, multiline code sample, or raw function body.\n- Task filenames are exactly: CMakeLists.txt; include/QRMatrix.h; src/QRMatrix.cpp; include/QRCodec.h; src/QRCodec.cpp; include/QRRenderer.h; src/QRRenderer.cpp; src/Main.cpp; tests/test_main.cpp. BinaryEncoder, QRLayout, QREncoder, QRValidator, and QRDetector files are forbidden.\n- Headers are self-contained. QRMatrix.h directly includes <array>, <cstddef>, <stdexcept>; QRCodec.h and QRRenderer.h directly include <string> and \"QRMatrix.h\". Sources/tests include basename headers, never include/... or .cpp files. CMake publishes the include directory and links app/tests to qr_core.\n- QRMatrix is fixed 21x21 with three exact 5x5 markers, no separators; exactly 366 other cells are payload positions in row-major order. Wire format is length8, text bytes MSB-first, checksum8=sum(text bytes)%256, then all-zero padding; text length is at most 40.\n- Tests define one int main and exactly three blocks. Corruption is literally `QRMatrix corrupted = matrix;` followed by `corrupted.set(0, 0, false);`; setting [0][0] true is forbidden because true is already valid. Round-trip text is hello-世界, render contains exactly 20 newlines, and 41 bytes are rejected. Do not summarize or substitute these rules.\n\n",
+  "Program call flow": "",
+  "Protocol Compliance Check": {
+    "build_file": "CMakeLists.txt",
+    "non_main_sources_have_matching_headers": true,
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry": "src/Main.cpp",
+    "single_protocol_test_file_used": true,
+    "test_command": "ctest --test-dir build --output-on-failure",
+    "test_target": "tests/test_main.cpp",
+    "tests_include_only_headers": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest --test-dir build --output-on-failure. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_includes": [
+      "include/QRCodec.h",
+      "include/QRRenderer.h"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "pure_logic_modules": [
+      "include/QRMatrix.h",
+      "include/QRCodec.h",
+      "include/QRRenderer.h",
+      "src/QRMatrix.cpp",
+      "src/QRCodec.cpp",
+      "src/QRRenderer.cpp"
+    ],
+    "test_targets_should_focus_on": [
+      "Round-trip encode/decode and detect() true on valid matrix",
+      "Finder corruption handling causing detect() false and decode() exception",
+      "Renderer newline count invariant and empty marker rejection",
+      "Length bound enforcement at 40 bytes and checksum/padding validation"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {
+    "add_test_declared": true,
+    "core_library_declared": true,
+    "declared_headers_match_declared_sources": true,
+    "enable_testing_declared": true,
+    "missing_interface_files": [],
+    "notes": "CMakeLists.txt must set CXX standard to 17 with extensions off; build qr_core from src/QRMatrix.cpp, src/QRCodec.cpp, src/QRRenderer.cpp; target_include_directories publish ${CMAKE_CURRENT_SOURCE_DIR}/include; build qr_app from src/Main.cpp and qr_tests from tests/test_main.cpp; link both to qr_core; enable_testing(); add_test(NAME qr_tests COMMAND qr_tests); sources and tests include headers by basename only; tests must never include any .cpp or use include/ path literals in code",
+    "runtime_links_core_library": true,
+    "suspected_build_breakers": [],
+    "test_links_core_library": true,
+    "tests_include_headers_only": true,
+    "undeclared_test_includes": []
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "include/QRMatrix.h",
+    "src/QRMatrix.cpp",
+    "include/QRCodec.h",
+    "src/QRCodec.cpp",
+    "include/QRRenderer.h",
+    "src/QRRenderer.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Execution Protocol": "Build with CMake and run ctest using the command: ctest --test-dir build --output-on-failure. There is exactly one protocol-level test file at tests/test_main.cpp, which includes headers only and links against the qr_core library. The runtime entry is src/Main.cpp, a thin deterministic demo. Tests are headless, deterministic, and offline.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 9,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 9,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 9,
+    "task_list_count": 9
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size C++17 repository architecture for: QR Code Gen.&Det..\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\n\nProject-specific C++17 fixed QR-like codec contract:\n- structured-output safety for this unit: every role outputs only fields listed in that current action's `nodes` schema. In particular, the Architect/Design action sets its optional `Data structures and interfaces` and `Program call flow` fields to empty strings and MUST NOT prematurely add ProjectManager-only fields such as Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, or Task list. The later ProjectManager/Task action must provide all of those fields and preserve the exact API tokens below. Keep every JSON string as single-line plain prose, and emit no Mermaid, Markdown code fence, multiline code sample, literal newline inside a JSON string, or function body. This transport rule prevents invalid JSON and does not relax any repository contract\n- replace the over-split architecture with exactly these files in dependency order: CMakeLists.txt, include/QRMatrix.h, src/QRMatrix.cpp, include/QRCodec.h, src/QRCodec.cpp, include/QRRenderer.h, src/QRRenderer.cpp, src/Main.cpp, tests/test_main.cpp. Do not create BinaryEncoder, QRLayout, QREncoder, QRValidator, QRDetector, namespace-only helper headers, or any additional source/test file\n- CMakeLists.txt sets C++17 with extensions off, builds one qr_core library from the three non-Main source files, publishes `${CMAKE_CURRENT_SOURCE_DIR}/include`, builds qr_app from src/Main.cpp and qr_tests from tests/test_main.cpp, links both to qr_core, calls enable_testing(), and registers qr_tests with add_test. No external package, FetchContent, network, image, GUI, or thread dependency is allowed\n- every header is self-contained and uses `#pragma once`. QRMatrix.h directly includes <array>, <cstddef>, and <stdexcept>. QRCodec.h directly includes <string> and \"QRMatrix.h\". QRRenderer.h directly includes <string> and \"QRMatrix.h\". Sources and tests include headers only by basename such as `#include \"QRCodec.h\"`; `#include \"include/QRCodec.h\"` and inclusion of any .cpp file are forbidden\n- QRMatrix is a fixed value type with public `static constexpr std::size_t SIZE = 21;`, `static constexpr std::size_t FINDER_SIZE = 5;`, constructor QRMatrix(), bool get(std::size_t row,std::size_t col) const, void set(std::size_t row,std::size_t col,bool value), static bool isFinderCell(std::size_t row,std::size_t col), and static bool expectedFinderValue(std::size_t row,std::size_t col). It stores `std::array<std::array<bool, SIZE>, SIZE> modules_{}`; get/set throw std::out_of_range outside 21x21\n- the constructor initializes all modules false and then writes three exact 5x5 finder markers at origins (0,0), (0,16), and (16,0). Within each marker the border is true, the inner ring is false, and only local center (2,2) is true. isFinderCell returns true for exactly those 75 cells; expectedFinderValue uses this same definition. There are no separators and no fourth marker\n- QRCodec exposes only static QRMatrix encode(const std::string& text), static std::string decode(const QRMatrix& matrix), and static bool detect(const QRMatrix& matrix) noexcept. Data positions are every non-finder cell in row-major order, exactly 366 positions. The wire bits are one unsigned length byte, then every text byte MSB-first, then one checksum byte equal to the sum of text bytes modulo 256, followed by zero bits to capacity. encode rejects text.size()>40 with std::invalid_argument\n- decode first compares every finder cell to QRMatrix::expectedFinderValue, then reads non-finder bits row-major. It parses unsigned length N from the first 8 bits, rejects N>40 or insufficient data, reconstructs exactly N bytes MSB-first, validates the following checksum byte against sum(payload)%256, requires every remaining data bit to be false, and returns the exact byte string. Invalid finder/checksum/length/padding throws std::runtime_error. detect returns false on every exception and true only when decode succeeds\n- QRRenderer exposes only static std::string render(const QRMatrix&,const std::string& on=\"##\",const std::string& off=\"  \"). It rejects empty markers, emits exactly 21 lines separated by exactly 20 newline characters with no trailing newline, and performs no I/O\n- src/Main.cpp encodes literal \"CodeWM\", decodes it, prints at most one concise line, and returns 0. tests/test_main.cpp directly includes <cassert>, <stdexcept>, <string>, \"QRCodec.h\", and \"QRRenderer.h\"; it defines exactly one `int main()` and no framework\n- tests/test_main.cpp has exactly three short blocks: (1) encode/decode literal `hello-世界`, assert detect true and decoded equality; (2) copy with `QRMatrix corrupted = matrix;`, literally call `corrupted.set(0, 0, false);`, assert detect false, and assert decode throws std::runtime_error; (3) assert render has 20 newline characters and assert encoding `std::string(41, 'a')` throws std::invalid_argument. Never set finder [0][0] to true because its valid value is already true\n- repeat the exact nine-file list, self-contained includes, fixed marker definition, 366 row-major data positions, byte-length/payload/checksum/zero-padding format, exact public APIs, literal corruption statement, single-main test, and three scopes in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 7 repository files\n- about 29 functions or methods\n- about 632 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- text-to-binary payload encoding\n- deterministic square module matrix generation\n- finder-pattern placement\n- matrix validation and rendering\n- payload detection from generated matrices\n- invalid or corrupted matrix rejection\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE QR C++17 CHECKLIST:\n- Every role outputs only fields from its current `nodes` schema. The Architect sets `Data structures and interfaces` and `Program call flow` to empty strings and does not emit Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, or Task list; the ProjectManager emits those later. Keep JSON strings single-line and emit no Mermaid, code fence, multiline code sample, or raw function body.\n- Task filenames are exactly: CMakeLists.txt; include/QRMatrix.h; src/QRMatrix.cpp; include/QRCodec.h; src/QRCodec.cpp; include/QRRenderer.h; src/QRRenderer.cpp; src/Main.cpp; tests/test_main.cpp. BinaryEncoder, QRLayout, QREncoder, QRValidator, and QRDetector files are forbidden.\n- Headers are self-contained. QRMatrix.h directly includes <array>, <cstddef>, <stdexcept>; QRCodec.h and QRRenderer.h directly include <string> and \"QRMatrix.h\". Sources/tests include basename headers, never include/... or .cpp files. CMake publishes the include directory and links app/tests to qr_core.\n- QRMatrix is fixed 21x21 with three exact 5x5 markers, no separators; exactly 366 other cells are payload positions in row-major order. Wire format is length8, text bytes MSB-first, checksum8=sum(text bytes)%256, then all-zero padding; text length is at most 40.\n- Tests define one int main and exactly three blocks. Corruption is literally `QRMatrix corrupted = matrix;` followed by `corrupted.set(0, 0, false);`; setting [0][0] true is forbidden because true is already valid. Round-trip text is hello-世界, render contains exactly 20 newlines, and 41 bytes are rejected. Do not summarize or substitute these rules.\n\n",
+  "Logic Analysis": [
+    [
+      "CMakeLists.txt",
+      "dependency/build; defines qr_core library from src/QRMatrix.cpp, src/QRCodec.cpp, src/QRRenderer.cpp; publishes include/; builds qr_app from src/Main.cpp and qr_tests from tests/test_main.cpp; links both to qr_core; sets C++17 with extensions off; calls enable_testing() and registers qr_tests with add_test(); strictly no external packages"
+    ],
+    [
+      "include/QRMatrix.h",
+      "interface; self-contained header with #pragma once; directly includes <array>, <cstddef>, <stdexcept>; declares fixed 21x21 QRMatrix value type with static constexpr SIZE=21 and FINDER_SIZE=5; constructor initializes modules_ with three exact 5x5 finder markers at (0,0), (0,16), (16,0); provides bounds-checked get/set, and static isFinderCell/expectedFinderValue helpers covering exactly 75 finder cells; no separators and no fourth marker"
+    ],
+    [
+      "src/QRMatrix.cpp",
+      "domain-entity; implements QRMatrix: initializes modules_ to false then writes three finders with border=true, inner ring=false, center(2,2)=true at the specified origins; enforces 21x21 bounds in get/set and throws std::out_of_range on violations; implements isFinderCell/expectedFinderValue consistent with marker definition"
+    ],
+    [
+      "include/QRCodec.h",
+      "interface; self-contained header with #pragma once; directly includes <string> and \"QRMatrix.h\"; declares static QRMatrix encode(const std::string&), static std::string decode(const QRMatrix&), and static bool detect(const QRMatrix&) noexcept; defines canonical API for encoding/decoding/detection using row-major non-finder mapping"
+    ],
+    [
+      "src/QRCodec.cpp",
+      "pure-rule; implements encode/decode/detect with deterministic wire format: non-finder cells in row-major order provide exactly 366 data positions; bits are length(8), payload bytes MSB-first, checksum(8)=sum(payload)%256, then zero-padding to capacity; encode throws std::invalid_argument for text.size()>40; decode validates finders via QRMatrix::expectedFinderValue, parses length (rejects N>40 or insufficient data), reconstructs bytes MSB-first, validates checksum, requires remaining bits to be zero, else throws std::runtime_error; detect returns true only if decode succeeds, otherwise false, and is noexcept; no I/O or OS dependencies"
+    ],
+    [
+      "include/QRRenderer.h",
+      "interface; self-contained header with #pragma once; directly includes <string> and \"QRMatrix.h\"; declares static std::string render(const QRMatrix&, const std::string& on=\"##\", const std::string& off=\"  \"); rejects empty markers; guarantees exact 21 lines separated by exactly 20 newlines and no trailing newline"
+    ],
+    [
+      "src/QRRenderer.cpp",
+      "pure-rule; implements ASCII renderer validating non-empty markers; renders deterministic 21x21 grid using provided markers; ensures exactly 21 lines and 20 newline characters with no trailing newline; performs no I/O"
+    ],
+    [
+      "src/Main.cpp",
+      "environment-dependent runtime/bootstrap; thin CLI demo that encodes literal \"CodeWM\", decodes it, prints at most one concise line, and returns 0; links to qr_core; no loops, no input, deterministic"
+    ],
+    [
+      "tests/test_main.cpp",
+      "automated-test; single protocol test defining exactly one int main(); includes <cassert>, <stdexcept>, <string>, \"QRCodec.h\", and \"QRRenderer.h\"; three short blocks: (1) round-trip encode/decode of hello-世界 and detect true; (2) corruption via QRMatrix corrupted = matrix; corrupted.set(0, 0, false); detect false and decode throws std::runtime_error; (3) renderer newline count is 20 and encoding 41-byte string throws std::invalid_argument; tests include headers only, never .cpp"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/QRMatrix.cpp",
+      "src/QRCodec.cpp",
+      "src/QRRenderer.cpp"
+    ],
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "CMake>=3.10",
+    "C++17",
+    "No third-party dependencies required"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "Nine files are mandated: CMakeLists.txt; include/QRMatrix.h; src/QRMatrix.cpp; include/QRCodec.h; src/QRCodec.cpp; include/QRRenderer.h; src/QRRenderer.cpp; src/Main.cpp; tests/test_main.cpp. qr_core library exposes three headers (QRMatrix, QRCodec, QRRenderer). QRMatrix is a fixed 21x21 grid with three exact 5x5 finder markers and 366 non-finder data cells in row-major order. QRCodec implements the length/payload/checksum/zero-padding wire format with strict validation and exception semantics; detect() is noexcept and returns true only if decode succeeds. QRRenderer renders exactly 21 lines with 20 newlines and no trailing newline and rejects empty markers. src/Main.cpp is the only environment-dependent module and prints at most one concise line. tests/test_main.cpp includes only headers (QRCodec.h and QRRenderer.h) and standard headers; it never includes any .cpp. CMake publishes include/, builds qr_core from the three implementation sources, and links both the runtime and the single test target to qr_core; enable_testing() and add_test are declared.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "tests_include_headers_only": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "CMakeLists.txt",
+    "include/QRMatrix.h",
+    "src/QRMatrix.cpp",
+    "include/QRCodec.h",
+    "src/QRCodec.cpp",
+    "include/QRRenderer.h",
+    "src/QRRenderer.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.cpp",
+      "include/QRCodec.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/QRRenderer.h"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.cpp",
+      "Round-trip: encode/decode literal hello-世界, assert QRCodec::detect(matrix) is true, and decoded string equals input"
+    ],
+    [
+      "tests/test_main.cpp",
+      "Finder corruption handling: QRMatrix corrupted = matrix; corrupted.set(0, 0, false); assert QRCodec::detect(corrupted) is false and QRCodec::decode(corrupted) throws std::runtime_error"
+    ],
+    [
+      "tests/test_main.cpp",
+      "Renderer/newline count and length bound: assert QRRenderer::render(matrix) has exactly 20 newline characters and that QRCodec::encode(std::string(41,'a')) throws std::invalid_argument"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```cmake_minimum_required(VERSION 3.10)
+project(qr_code_project)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Define the qr_core library
+add_library(qr_core STATIC
+    src/QRMatrix.cpp
+    src/QRCodec.cpp
+    src/QRRenderer.cpp
+)
+
+# Publish the include directory
+target_include_directories(qr_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Build the qr_app executable
+add_executable(qr_app src/Main.cpp)
+target_link_libraries(qr_app qr_core)
+
+# Build the qr_tests executable
+add_executable(qr_tests tests/test_main.cpp)
+target_link_libraries(qr_tests qr_core)
+
+# Enable testing
+enable_testing()
+
+# Add the test
+add_test(NAME qr_tests COMMAND qr_tests)```
+----- include/QRMatrix.h
+```#pragma once
+
+#include <array>
+#include <cstddef>
+#include <stdexcept>
+
+class QRMatrix {
+ public:
+  static constexpr std::size_t SIZE = 21;
+  static constexpr std::size_t FINDER_SIZE = 5;
+
+  QRMatrix();
+
+  bool get(std::size_t row, std::size_t col) const;
+  void set(std::size_t row, std::size_t col, bool value);
+
+  static bool isFinderCell(std::size_t row, std::size_t col);
+  static bool expectedFinderValue(std::size_t row, std::size_t col);
+
+ private:
+  std::array<std::array<bool, SIZE>, SIZE> modules_{};
+};```
+----- src/QRMatrix.cpp
+```#include "QRMatrix.h"
+
+QRMatrix::QRMatrix() {
+  // Initialize all modules to false
+  for (std::size_t i = 0; i < SIZE; ++i) {
+    for (std::size_t j = 0; j < SIZE; ++j) {
+      modules_[i][j] = false;
+    }
+  }
+
+  // Define the three finder patterns at (0,0), (0,16), and (16,0)
+  const std::size_t finder_origins[3][2] = {{0, 0}, {0, 16}, {16, 0}};
+
+  for (const auto& origin : finder_origins) {
+    const std::size_t row_origin = origin[0];
+    const std::size_t col_origin = origin[1];
+
+    // Draw the 5x5 finder pattern
+    for (std::size_t i = 0; i < FINDER_SIZE; ++i) {
+      for (std::size_t j = 0; j < FINDER_SIZE; ++j) {
+        const std::size_t row = row_origin + i;
+        const std::size_t col = col_origin + j;
+
+        // Border is true
+        if (i == 0 || i == FINDER_SIZE - 1 || j == 0 || j == FINDER_SIZE - 1) {
+          modules_[row][col] = true;
+        }
+        // Inner ring is false
+        else if (i == 1 || i == FINDER_SIZE - 2 || j == 1 || j == FINDER_SIZE - 2) {
+          modules_[row][col] = false;
+        }
+        // Center is true
+        else if (i == 2 && j == 2) {
+          modules_[row][col] = true;
+        }
+      }
+    }
+  }
+}
+
+bool QRMatrix::get(std::size_t row, std::size_t col) const {
+  if (row >= SIZE || col >= SIZE) {
+    throw std::out_of_range("Accessing QRMatrix out of bounds");
+  }
+  return modules_[row][col];
+}
+
+void QRMatrix::set(std::size_t row, std::size_t col, bool value) {
+  if (row >= SIZE || col >= SIZE) {
+    throw std::out_of_range("Setting QRMatrix out of bounds");
+  }
+  modules_[row][col] = value;
+}
+
+bool QRMatrix::isFinderCell(std::size_t row, std::size_t col) {
+  // Finder pattern is 5x5 at (0,0), (0,16), (16,0)
+  const std::size_t finder_origins[3][2] = {{0, 0}, {0, 16}, {16, 0}};
+  
+  for (const auto& origin : finder_origins) {
+    const std::size_t row_origin = origin[0];
+    const std::size_t col_origin = origin[1];
+    
+    if (row >= row_origin && row < row_origin + FINDER_SIZE &&
+        col >= col_origin && col < col_origin + FINDER_SIZE) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QRMatrix::expectedFinderValue(std::size_t row, std::size_t col) {
+  // Finder pattern is 5x5 at (0,0), (0,16), (16,0)
+  const std::size_t finder_origins[3][2] = {{0, 0}, {0, 16}, {16, 0}};
+  
+  for (const auto& origin : finder_origins) {
+    const std::size_t row_origin = origin[0];
+    const std::size_t col_origin = origin[1];
+    
+    if (row >= row_origin && row < row_origin + FINDER_SIZE &&
+        col >= col_origin && col < col_origin + FINDER_SIZE) {
+      
+      // Border is true
+      if (row == row_origin || row == row_origin + FINDER_SIZE - 1 ||
+          col == col_origin || col == col_origin + FINDER_SIZE - 1) {
+        return true;
+      }
+      // Inner ring is false
+      else if (row == row_origin + 1 || row == row_origin + FINDER_SIZE - 2 ||
+               col == col_origin + 1 || col == col_origin + FINDER_SIZE - 2) {
+        return false;
+      }
+      // Center is true
+      else if (row == row_origin + 2 && col == col_origin + 2) {
+        return true;
+      }
+    }
+  }
+  return false;
+}```
+----- include/QRCodec.h
+```#pragma once
+
+#include <string>
+#include "QRMatrix.h"
+
+class QRCodec {
+ public:
+  static QRMatrix encode(const std::string& text);
+  static std::string decode(const QRMatrix& matrix);
+  static bool detect(const QRMatrix& matrix) noexcept;
+};```
+----- src/QRCodec.cpp
+```#include "QRCodec.h"
+#include <stdexcept>
+#include <algorithm>
+#include <numeric>
+
+QRMatrix QRCodec::encode(const std::string& text) {
+  if (text.size() > 40) {
+    throw std::invalid_argument("Text size exceeds maximum limit of 40 bytes");
+  }
+
+  QRMatrix matrix;
+
+  // Encode the text into bits according to the wire format
+  // Length byte
+  uint8_t length = static_cast<uint8_t>(text.size());
+  // Payload bytes (MSB-first)
+  std::vector<bool> bits;
+  bits.reserve(8 + 8 * text.size() + 8); // Reserve space for length + payload + checksum
+
+  // Add length
+  for (int i = 7; i >= 0; --i) {
+    bits.push_back((length >> i) & 1);
+  }
+
+  // Add payload
+  for (char c : text) {
+    uint8_t byte = static_cast<uint8_t>(c);
+    for (int i = 7; i >= 0; --i) {
+      bits.push_back((byte >> i) & 1);
+    }
+  }
+
+  // Calculate checksum
+  uint8_t checksum = 0;
+  for (char c : text) {
+    checksum += static_cast<uint8_t>(c);
+  }
+
+  // Add checksum
+  for (int i = 7; i >= 0; --i) {
+    bits.push_back((checksum >> i) & 1);
+  }
+
+  // Fill remaining bits with zeros
+  while (bits.size() < 366) {
+    bits.push_back(false);
+  }
+
+  // Fill the matrix with bits
+  std::size_t bit_index = 0;
+  for (std::size_t row = 0; row < QRMatrix::SIZE; ++row) {
+    for (std::size_t col = 0; col < QRMatrix::SIZE; ++col) {
+      if (!QRMatrix::isFinderCell(row, col)) {
+        matrix.set(row, col, bits[bit_index]);
+        ++bit_index;
+      }
+    }
+  }
+
+  return matrix;
+}
+
+std::string QRCodec::decode(const QRMatrix& matrix) {
+  // Validate finder patterns
+  for (std::size_t row = 0; row < QRMatrix::SIZE; ++row) {
+    for (std::size_t col = 0; col < QRMatrix::SIZE; ++col) {
+      if (QRMatrix::isFinderCell(row, col) && matrix.get(row, col) != QRMatrix::expectedFinderValue(row, col)) {
+        throw std::runtime_error("Invalid finder pattern detected");
+      }
+    }
+  }
+
+  // Collect data bits
+  std::vector<bool> bits;
+  bits.reserve(366);
+
+  for (std::size_t row = 0; row < QRMatrix::SIZE; ++row) {
+    for (std::size_t col = 0; col < QRMatrix::SIZE; ++col) {
+      if (!QRMatrix::isFinderCell(row, col)) {
+        bits.push_back(matrix.get(row, col));
+      }
+    }
+  }
+
+  // Parse length
+  uint8_t length = 0;
+  for (int i = 0; i < 8; ++i) {
+    length |= (bits[i] ? 1 : 0) << (7 - i);
+  }
+
+  if (length > 40) {
+    throw std::runtime_error("Invalid length in encoded data");
+  }
+
+  // Check if we have enough bits for the payload
+  if (bits.size() < 8 + 8 * length + 8) {
+    throw std::runtime_error("Insufficient data bits for payload");
+  }
+
+  // Extract payload
+  std::string payload;
+  payload.reserve(length);
+  for (std::size_t i = 0; i < length; ++i) {
+    uint8_t byte = 0;
+    for (int j = 0; j < 8; ++j) {
+      byte |= (bits[8 + i * 8 + j] ? 1 : 0) << (7 - j);
+    }
+    payload.push_back(static_cast<char>(byte));
+  }
+
+  // Verify checksum
+  uint8_t checksum = 0;
+  for (char c : payload) {
+    checksum += static_cast<uint8_t>(c);
+  }
+
+  // Extract checksum from bits
+  uint8_t received_checksum = 0;
+  for (int i = 0; i < 8; ++i) {
+    received_checksum |= (bits[8 + 8 * length + i] ? 1 : 0) << (7 - i);
+  }
+
+  if (checksum != received_checksum) {
+    throw std::runtime_error("Checksum verification failed");
+  }
+
+  // Check for padding
+  for (std::size_t i = 8 + 8 * length + 8; i < bits.size(); ++i) {
+    if (bits[i]) {
+      throw std::runtime_error("Non-zero padding detected");
+    }
+  }
+
+  return payload;
+}
+
+bool QRCodec::detect(const QRMatrix& matrix) noexcept {
+  try {
+    decode(matrix);
+    return true;
+  } catch (...) {
+    return false;
+  }
+}```
+----- include/QRRenderer.h
+```#pragma once
+
+#include <string>
+#include "QRMatrix.h"
+
+class QRRenderer {
+ public:
+  static std::string render(const QRMatrix& matrix,
+                            const std::string& on = "##",
+                            const std::string& off = "  ");
+};```
+----- src/QRRenderer.cpp
+```#include "QRRenderer.h"
+#include <string>
+#include <stdexcept>
+
+std::string QRRenderer::render(const QRMatrix& matrix,
+                               const std::string& on,
+                               const std::string& off) {
+  // Validate markers
+  if (on.empty() || off.empty()) {
+    throw std::invalid_argument("Markers cannot be empty");
+  }
+
+  std::string result;
+  result.reserve(21 * (2 * 21 + 20)); // Pre-allocate for efficiency
+
+  for (std::size_t row = 0; row < QRMatrix::SIZE; ++row) {
+    for (std::size_t col = 0; col < QRMatrix::SIZE; ++col) {
+      if (matrix.get(row, col)) {
+        result += on;
+      } else {
+        result += off;
+      }
+    }
+    // Add newline after each row except the last one
+    if (row < QRMatrix::SIZE - 1) {
+      result += '\n';
+    }
+  }
+
+  // Ensure exactly 21 lines and 20 newlines
+  // Count newlines in result
+  std::size_t newline_count = 0;
+  for (char c : result) {
+    if (c == '\n') {
+      newline_count++;
+    }
+  }
+
+  // Verify the count is exactly 20 (21 lines, 20 newlines between them)
+  if (newline_count != 20) {
+    throw std::runtime_error("Rendered matrix does not have exactly 20 newlines");
+  }
+
+  return result;
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/Main.cpp
+```python
+## src/Main.cpp
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/Main.cpp. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

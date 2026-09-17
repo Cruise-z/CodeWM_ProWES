@@ -1,0 +1,158 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve protocol files exactly: requirements.txt with pytest only; runtime entry Main.py thin; single test file tests/test_main.py using python -m pytest -q. Put all reusable modules in a lowercase snake_case package named snake_game. Maintain an acyclic import graph: direction -> none; grid -> none; snake -> direction+grid; collision -> grid; random_provider -> grid; food -> grid+random_provider; game -> direction, grid, snake, collision, food, random_provider. Keep Python 3.10 only: do not use typing.Self, StrEnum, exception groups, or any Python 3.11+ APIs. For any module with forward references to its own types, start with from __future__ import annotations; otherwise, avoid forward references or quote them. Full API specification details and exact contracts repeated here:\n- snake_game/direction.py owns Direction(Enum) and no other module duplicates deltas. Direction values must map to exact integer tuples: UP=(0,-1), DOWN=(0,1), LEFT=(-1,0), RIGHT=(1,0). Expose delta(self) -> tuple[int, int] returning (dx,dy), and is_opposite(self, other: Direction) -> bool rejecting immediate reversal.\n- snake_game/grid.py defines only Position and Grid. Position is immutable/hashable with fields x:int, y:int. Grid validates width,height > 0 and provides in_bounds(pos: Position) -> bool. It must never mention or import Direction.\n- snake_game/snake.py imports Direction and Position directly. Provide Snake mutable API: turn(requested: Direction) -> bool (reject immediate reversal), next_head() -> Position using self.direction.delta(), and advance(grow: bool) -> None mutating the body in place.\n- snake_game/collision.py operates only on explicit Position/Grid/body arguments; no direction-to-delta mapping replication. Provide hit_wall(grid: Grid, pos: Position) -> bool and hit_self(body: list[Position], next_head: Position, grow: bool) -> bool treating moving into the departing tail as safe when not growing.\n- snake_game/random_provider.py provides RandomProvider with deterministic behavior. It can be constructed with a pre-seeded sequence of Position objects for tests and demo. It must not depend on non-standard libraries.\n- snake_game/food.py uses grid+random_provider to place food not on the snake body, only after consumption.\n- snake_game/game.py exposes Game(grid: Grid, rng: RandomProvider, start: Position, direction: Direction). No second mandatory initialization call; the constructor initializes a live game. Public methods: turn(requested: Direction) -> bool, step() -> None, reset() -> None, state() -> dict, is_over() -> bool, score_get() -> int. Step semantics: compute next_head once; check wall and self collision prior to mutation; treat moving into departing tail as safe when not growing; advance once; increment score only on food; place new food only after consumption.\n- Main.py defines main(), creates a deterministic RandomProvider and a valid Game, performs at most two safe steps, prints one snapshot, exits, and runs main() only under the __name__ guard.\n- Tests must be deterministic and concise (2–4). Import only canonical public API symbols explicitly (no wildcards). Direction must be imported explicitly.\nDeterministic fixtures:\n- No-growth fixture: grid 10x10, start Position(5,5), direction RIGHT, deterministic food Position(1,1): one step results in snake [(6,5)], food (1,1), score 0, over False.\n- Growth fixture: grid 10x10, start Position(5,5), direction RIGHT, deterministic food sequence [Position(6,5), Position(1,1)]: one step results in snake [(6,5),(5,5)], new food (1,1), score 1, over False.\nHeadless-friendly tests: no GUI, IO, or network; all pure domain logic validated via Game.state and related APIs.","Domain Decomposition":[["Build descriptor for tests; list pytest only","requirements.txt","protocol-required"],["Package marker and public API export of canonical symbols (Direction, Position, Grid, Snake, RandomProvider, Game)","snake_game/__init__.py","package"],["Direction enum with exact deltas and reversal rule","snake_game/direction.py","domain-entity"],["Grid bounds and immutable Position","snake_game/grid.py","domain-entity"],["Canonical mutable Snake API: turn, next_head, advance","snake_game/snake.py","domain-entity"],["Pure collision checks: wall and self (with departing-tail safety)","snake_game/collision.py","pure-rule"],["Deterministic RandomProvider for food candidates (sequence/LCG); produces Position values","snake_game/random_provider.py","domain-entity"],["Food placement using grid bounds and RandomProvider, avoiding snake body; only place after consumption","snake_game/food.py","pure-rule"],["Game orchestration: constructor initializes live state; turn, step, reset, state, is_over, score_get with exact semantics","snake_game/game.py","orchestration"],["Runtime demo: thin main(), deterministic, perform at most two safe steps, print one snapshot, exit","Main.py","environment-dependent"],["Protocol test: deterministic fixtures for no-growth and growth; import canonical public API explicitly; assert flat state schema","tests/test_main.py","automated-test"]],"File list":["requirements.txt","Main.py","snake_game/__init__.py","snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py","tests/test_main.py"],"Canonical File References":["requirements.txt","Main.py","snake_game/__init__.py","snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py","tests/test_main.py"],"Data structures and interfaces":"classDiagram\n    class Direction {\n        +delta() tuple[int,int]\n        +is_opposite(other: Direction) bool\n        <<Enum>>\n    }\n    class Position {\n        +x: int\n        +y: int\n        <<immutable>>\n    }\n    class Grid {\n        -_width: int\n        -_height: int\n        +__init__(width: int, height: int)\n        +width() int\n        +height() int\n        +in_bounds(pos: Position) bool\n    }\n    class Snake {\n        -_body: list[Position]\n        -direction: Direction\n        +__init__(start: Position, direction: Direction)\n        +turn(requested: Direction) bool\n        +head() Position\n        +next_head() Position\n        +advance(grow: bool) None\n        +body() list[Position]\n    }\n    class RandomProvider {\n        -_queue: list[Position]\n        -_seed: int\n        +__init__(sequence: Optional[list[Position]] = None, seed: Optional[int] = None)\n        +next_position(grid: Grid) Position\n    }\n    class Game {\n        -_grid: Grid\n        -_rng: RandomProvider\n        -_snake: Snake\n        -_food: Position\n        -_score: int\n        -_over: bool\n        +__init__(grid: Grid, rng: RandomProvider, start: Position, direction: Direction)\n        +turn(requested: Direction) bool\n        +step() None\n        +reset() None\n        +state() dict\n        +is_over() bool\n        +score_get() int\n    }\n    Direction <.. Snake : uses\n    Position <.. Snake : uses\n    Grid <.. Game : uses\n    Snake <.. Game : orchestrates\n    RandomProvider <.. Game : uses\n    Position <.. RandomProvider : produces\n    class collision {\n        +hit_wall(grid: Grid, pos: Position) bool\n        +hit_self(body: list[Position], next_head: Position, grow: bool) bool\n    }\n    class food {\n        +place_food(grid: Grid, rng: RandomProvider, occupied: set[Position]) Position\n    }\n    Game --> collision : checks\n    Game --> food : places","Program call flow":"sequenceDiagram\n    participant M as Main\n    participant G as Game\n    participant S as Snake\n    participant C as collision\n    participant F as food\n    participant RP as RandomProvider\n    M->>G: __init__(Grid(10,10), rng, start=(5,5), dir=RIGHT)\n    G->>RP: next_position(grid)\n    RP-->>G: initial food Position\n    M->>G: step()\n    G->>S: next_head()\n    S-->>G: Position(x+dx, y+dy)\n    G->>C: hit_wall(grid, next_head)\n    C-->>G: False (safe)\n    G->>C: hit_self(body, next_head, grow)\n    C-->>G: False (safe)\n    G->>S: advance(grow)\n    alt food consumed\n        G->>F: place_food(grid, rng, occupied)\n        F->>RP: next_position(grid)\n        RP-->>F: new food Position\n        F-->>G: new food Position\n        G->>G: score += 1\n    end\n    M->>G: state()\n    G-->>M: {width,height,snake,food,score,over,direction}\n    M-->>M: print snapshot\n    M-->>M: exit","Domain Mapping":[["Direction rules and deltas (reject immediate reversal via is_opposite)","snake_game/direction.py","Defines Enum Direction with delta() and is_opposite(); no other module defines or duplicates deltas."],["Immutable Position and validated Grid bounds","snake_game/grid.py","Position(x:int,y:int) frozen dataclass; Grid(width:int,height:int) validates positive dims; in_bounds(Position)->bool; no Direction imports."],["Snake movement and mutation API","snake_game/snake.py","turn(Direction)->bool rejects immediate reversal; next_head()->Position uses direction.delta(); advance(grow:bool)->None mutates body; provides head() and body() accessors."],["Collision checks (pure functions)","snake_game/collision.py","hit_wall(Grid,Position)->bool; hit_self(body:list[Position], next_head:Position, grow:bool)->bool treating departing tail as safe when not growing."],["Deterministic randomness provider","snake_game/random_provider.py","RandomProvider with optional pre-seeded sequence of Position; next_position(Grid)->Position; no external deps; uses simple LCG fallback for demo."],["Food placement","snake_game/food.py","place_food(Grid,RandomProvider,occupied:set[Position])->Position; loops until an in-bounds, unoccupied position; only called after consumption."],["Game orchestration and state","snake_game/game.py","Game(grid,rng,start,direction) constructs live game; turn, step, reset, state (flat schema), is_over, score_get. Step computes next_head once; checks collisions before mutation; tail safety; score increment only on food; new food placed only after consumption."],["Runtime bootstrap demo","Main.py","Thin main() that wires Grid, RandomProvider (deterministic), Game; performs at most two safe steps; prints a single snapshot; __name__ guard."],["Protocol-level tests","tests/test_main.py","Two deterministic tests: no-growth and growth fixtures exactly; import canonical API explicitly; assert state schema and values."]],"Testable Core Boundary":{"pure_logic_modules":["snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py"],"environment_dependent_modules":["Main.py"],"test_targets_should_focus_on":["Deterministic no-growth movement (no food eaten)","Deterministic growth on food consumption","Flat state schema values (width,height,snake,food,score,over,direction)"]},"C++ Interface Plan":{},"Test Include Audit":{"declared_test_imports":["snake_game.Direction","snake_game.Position","snake_game.Grid","snake_game.Game","snake_game.RandomProvider"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: requirements.txt. Runtime entry: Main.py. Test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is used.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":["pytest"],"Required Other language third-party packages":[],"Canonical File References":["requirements.txt","Main.py","snake_game/__init__.py","snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py","tests/test_main.py"],"Logic Analysis":[["requirements.txt","dependency/build; pin test runner to pytest only per protocol"],["Main.py","runtime/bootstrap; thin entrypoint wiring deterministic demo and printing one snapshot under __name__ guard"],["snake_game/__init__.py","package; exports canonical public API (Direction, Position, Grid, Snake, RandomProvider, Game) without side effects"],["snake_game/direction.py","domain-entity; defines Direction Enum with exact deltas and reversal rules; no replication elsewhere"],["snake_game/grid.py","domain-entity; defines immutable/hashable Position and validated Grid with in_bounds; never imports Direction"],["snake_game/snake.py","domain-entity; mutable Snake with turn, next_head, advance; imports Direction and Position directly"],["snake_game/collision.py","pure-rule; hit_wall and hit_self collision checks using only provided Grid/Position/body; handles departing-tail safety"],["snake_game/random_provider.py","domain-entity; deterministic RandomProvider yielding Position candidates from a queue or simple LCG fallback; depends only on Grid for bounds"],["snake_game/food.py","pure-rule; place_food uses grid bounds and RandomProvider to choose an unoccupied Position; called only after consumption"],["snake_game/game.py","orchestration; Game lifecycle: constructor initializes live state; implements turn, step, reset, state, is_over, score_get with exact semantics and dependency graph compliance"],["tests/test_main.py","automated-test; deterministic, headless protocol tests validating no-growth and growth fixtures via Game.state and explicit public imports"]],"Task list":["requirements.txt","snake_game/__init__.py","snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py","Main.py","tests/test_main.py"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"exactly_one_protocol_test_file":true},"File Coverage Audit":{"design_file_list_count":11,"pm_canonical_count":11,"logic_analysis_count":11,"task_list_count":11,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.py","No-growth fixture: Grid(10,10), start Position(5,5), direction RIGHT, deterministic food Position(1,1). After one step: snake [(6,5)], food (1,1), score 0, over False; assert flat state schema and values."],["tests/test_main.py","Growth fixture: Grid(10,10), start Position(5,5), direction RIGHT, deterministic food sequence [Position(6,5), Position(1,1)]. After one step: snake [(6,5),(5,5)], new food (1,1), score 1, over False; assert flat state schema and values."]],"Test Include Plan":[["tests/test_main.py","snake_game/__init__.py (exports Direction, Position, Grid, Game, RandomProvider for explicit imports)"]],"Module Boundary Audit":{"core_domain_logic_modules":["snake_game/__init__.py","snake_game/direction.py","snake_game/grid.py","snake_game/snake.py","snake_game/collision.py","snake_game/random_provider.py","snake_game/food.py","snake_game/game.py"],"environment_dependent_modules":["Main.py"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{},"Python Dependency Compatibility Audit":{"not_applicable":false,"uses_outdated_pins":false,"version_range_recommendations":["Target Python 3.10 only; avoid typing.Self, StrEnum, exception groups, or any Python 3.11+ APIs."],"headless_test_notes":"No GUI/IO/network in tests; deterministic RandomProvider ensures reproducible results."},"Full API spec":"Public API and contracts:\n- Module: snake_game.direction\n  - class Direction(Enum): members UP=(0,-1), DOWN=(0,1), LEFT=(-1,0), RIGHT=(1,0).\n    - delta(self) -> tuple[int, int]: returns (dx, dy) exactly as bound to the member; no external duplication of deltas allowed.\n    - is_opposite(self, other: Direction) -> bool: returns True iff other is the immediate opposite of self; prevents reversal during Snake.turn.\n\n- Module: snake_game.grid\n  - @dataclass(frozen=True)\n    class Position: fields x:int, y:int; immutable and hashable.\n  - class Grid:\n    - __init__(self, width: int, height: int): validates width > 0 and height > 0; raises ValueError on invalid.\n    - width(self) -> int: returns configured width.\n    - height(self) -> int: returns configured height.\n    - in_bounds(self, pos: Position) -> bool: returns True iff 0 <= pos.x < width and 0 <= pos.y < height.\n  Import rules: grid.py must not import Direction or any movement deltas.\n\n- Module: snake_game.snake\n  - class Snake:\n    - __init__(self, start: Position, direction: Direction): initializes body with [start] and current direction.\n    - turn(self, requested: Direction) -> bool: if requested is opposite of current direction, reject and return False; otherwise set direction and return True.\n    - head(self) -> Position: returns current head Position (front of body).\n    - next_head(self) -> Position: computes head advanced by current direction.delta().\n    - advance(self, grow: bool) -> None: mutates body in place; inserts next_head at front; if grow is False, pops tail; if True, retains tail (growing by 1).\n    - body(self) -> list[Position]: returns live reference to internal body list (tests and Game read only).\n  Import rules: imports Direction and Position directly; no duplicate delta logic.\n\n- Module: snake_game.collision\n  - hit_wall(grid: Grid, pos: Position) -> bool: returns True if pos is out of bounds; otherwise False.\n  - hit_self(body: list[Position], next_head: Position, grow: bool) -> bool: returns True if moving into next_head collides with the body; when grow is False, moving into the current tail is safe (tail will depart in the same tick).\n  Import rules: does not import Direction; uses only arguments provided.\n\n- Module: snake_game.random_provider\n  - class RandomProvider:\n    - __init__(self, sequence: Optional[list[Position]] = None, seed: Optional[int] = None): if sequence provided, use as deterministic queue; else initialize with a simple deterministic LCG seeded by 'seed' or a default.\n    - next_position(self, grid: Grid) -> Position: returns the next candidate Position within grid bounds. If a sequence was provided, yields items in order (reusing last or wrapping as needed per implementation); if LCG, computes a reproducible in-bounds Position.\n  Constraints: standard library only; must be deterministic for tests.\n\n- Module: snake_game.food\n  - place_food(grid: Grid, rng: RandomProvider, occupied: set[Position]) -> Position: repeatedly obtains candidates via rng.next_position(grid) until an in-bounds candidate not in 'occupied' is found; returns that Position. Called only after consumption; no side effects beyond returning a Position.\n\n- Module: snake_game.game\n  - class Game:\n    - __init__(self, grid: Grid, rng: RandomProvider, start: Position, direction: Direction): constructs a live game: initializes Snake, places initial food not on snake, sets score=0 and over=False; no second init call required.\n    - turn(self, requested: Direction) -> bool: forwards to Snake.turn; returns whether the turn was accepted.\n    - step(self) -> None: computes next_head once; determines grow = True iff next_head equals current food; checks hit_wall and hit_self before any mutation; if collision, sets over=True and returns; else advances snake with grow flag; if grow: increments score by 1; places new food via food.place_food only after consumption.\n    - reset(self) -> None: resets game to initial start, initial direction, score=0, over=False, and places a new initial food not on snake using the same rng.\n    - state(self) -> dict: returns a flat dict with keys: width:int, height:int, snake:list[tuple[int,int]], food:tuple[int,int], score:int, over:bool, direction:str. Direction is a stable string name (\"UP\",\"DOWN\",\"LEFT\",\"RIGHT\"). Snake is ordered head-first list of (x,y) tuples; food is (x,y) tuple.\n    - is_over(self) -> bool: returns current terminal flag.\n    - score_get(self) -> int: returns current score.\n  Import graph: game.py may import direction, grid, snake, collision, food, random_provider only; must maintain acyclic imports.\n\n- Module: snake_game.__init__\n  - Exposes from snake_game import Direction, Position, Grid, Snake, RandomProvider, Game as the canonical public API.\n\n- Module: Main.py\n  - main() -> None: constructs deterministic RandomProvider and Game, performs at most two safe steps, prints exactly one state snapshot (e.g., repr or formatted dict) and exits; only runs under if __name__ == \"__main__\": main().\n\n- Module: tests/test_main.py\n  - Deterministically imports canonical public API symbols explicitly (no wildcards): from snake_game import Direction, Position, Grid, Game, RandomProvider. Executes two concise tests (no-growth and growth fixtures) using python -m pytest -q.\n\nGeneral constraints:\n- Python 3.10 only; avoid typing.Self, StrEnum, exception groups, or any 3.11+ APIs.\n- Maintain acyclic import graph per protocol: direction -> none; grid -> none; snake -> direction+grid; collision -> grid; random_provider -> grid; food -> grid+random_provider; game -> direction, grid, snake, collision, food, random_provider.\n- For any forward references within a module referencing its own types, start with: from __future__ import annotations; otherwise avoid forward references.","Shared Knowledge":"Protocol requires preserving files exactly: requirements.txt lists pytest only; runtime entry is Main.py; single test file tests/test_main.py executed via python -m pytest -q. All reusable modules live under snake_game package with acyclic import graph. Canonical public symbols exported via snake_game/__init__.py: Direction, Position, Grid, Snake, RandomProvider, Game. Tests import only those symbols explicitly and validate deterministic domain logic through Game.state without GUI, IO, or network.","Execution Protocol":"Run: python -m pytest -q. Runtime entry: Main.py defines main(), runs only under __name__ guard, performs at most two safe steps, prints one snapshot, and exits. Single protocol-level test file: tests/test_main.py; deterministic and concise; imports only canonical exports from snake_game; no additional files alter protocol files.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- requirements.txt
+```## requirements.txt
+pytest```
+----- snake_game/__init__.py
+```## snake_game/__init__.py
+"""Public API for the snake game package."""
+
+from snake_game.direction import Direction
+from snake_game.grid import Position, Grid
+from snake_game.snake import Snake
+from snake_game.random_provider import RandomProvider
+from snake_game.game import Game
+
+__all__ = [
+    "Direction",
+    "Position",
+    "Grid",
+    "Snake",
+    "RandomProvider",
+    "Game",
+]```
+----- snake_game/direction.py
+```## snake_game/direction.py
+"""Direction enumeration for snake movement."""
+
+from enum import Enum
+
+
+class Direction(Enum):
+    """Enumeration of cardinal directions."""
+
+    UP = (0, -1)
+    DOWN = (0, 1)
+    LEFT = (-1, 0)
+    RIGHT = (1, 0)
+
+    def delta(self) -> tuple[int, int]:
+        """Get the delta tuple for this direction.
+
+        Returns:
+            The (dx, dy) tuple representing movement in this direction.
+        """
+        return self.value
+
+    def is_opposite(self, other: "Direction") -> bool:
+        """Check if this direction is the opposite of another.
+
+        Args:
+            other: Another Direction instance to compare against.
+
+        Returns:
+            True if the directions are opposite, False otherwise.
+        """
+        return self.value == (-other.value[0], -other.value[1])```
+----- snake_game/grid.py
+```## snake_game/grid.py
+"""Grid and position definitions for the snake game."""
+
+from dataclasses import dataclass
+from typing import Tuple
+
+
+@dataclass(frozen=True)
+class Position:
+    """An immutable position in the grid."""
+
+    x: int
+    y: int
+
+
+class Grid:
+    """A rectangular grid with width and height."""
+
+    def __init__(self, width: int, height: int) -> None:
+        """Initialize a grid with given dimensions.
+
+        Args:
+            width: The width of the grid, must be positive.
+            height: The height of the grid, must be positive.
+
+        Raises:
+            ValueError: If width or height is not positive.
+        """
+        if width <= 0:
+            raise ValueError("Width must be positive")
+        if height <= 0:
+            raise ValueError("Height must be positive")
+        
+        self._width = width
+        self._height = height
+
+    @property
+    def width(self) -> int:
+        """Get the width of the grid."""
+        return self._width
+
+    @property
+    def height(self) -> int:
+        """Get the height of the grid."""
+        return self._height
+
+    def in_bounds(self, pos: Position) -> bool:
+        """Check if a position is within the grid bounds.
+
+        Args:
+            pos: The position to check.
+
+        Returns:
+            True if the position is within the grid, False otherwise.
+        """
+        return (0 <= pos.x < self._width and 0 <= pos.y < self._height)```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: snake_game/snake.py
+```python
+## snake_game/snake.py
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: snake_game/snake.py. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

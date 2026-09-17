@@ -1,0 +1,1250 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "todo_app/errors.py",
+    "todo_app/priority.py",
+    "todo_app/entities.py",
+    "todo_app/filtering.py",
+    "todo_app/sorting.py",
+    "todo_app/repository.py",
+    "todo_app/clock.py",
+    "todo_app/service.py",
+    "todo_app/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class ValidationError\n    ValidationError : +__init__(message: str)\n\n    class NotFoundError\n    NotFoundError --|> ValidationError\n\n    class Priority {\n        <<enumeration>>\n        LOW\n        MEDIUM\n        HIGH\n        +order_value() int\n        +from_value(v: Priority|str) Priority\n    }\n\n    class Task {\n        +id: int\n        +title: str\n        +description: Optional[str]\n        +priority: Priority\n        +due_date: Optional[date]\n        +tags: List[str]\n        +completed: bool\n        +completed_at: Optional[date]\n        +mark_complete_on(day: date) None\n        +mark_incomplete() None\n    }\n\n    class TagMatchMode {\n        <<enumeration>>\n        ANY\n        ALL\n    }\n\n    class FilterCriteria {\n        +tags: Optional[List[str]]\n        +tag_mode: TagMatchMode\n        +include_completed: bool\n        +priorities: Optional[List[Priority]]\n    }\n\n    class SortKey {\n        <<enumeration>>\n        DUE_DATE\n        PRIORITY\n        TITLE\n        COMPLETED\n    }\n\n    class SortDirection {\n        <<enumeration>>\n        ASC\n        DESC\n    }\n\n    class TaskRepository {\n        <<abstract>>\n        +next_id() int\n        +add(task: Task) None\n        +get(task_id: int) Task\n        +edit(task: Task) None\n        +delete(task_id: int) None\n        +list_all() List[Task]\n    }\n\n    class InMemoryTaskRepository {\n        +next_id() int\n        +add(task: Task) None\n        +get(task_id: int) Task\n        +edit(task: Task) None\n        +delete(task_id: int) None\n        +list_all() List[Task]\n    }\n    InMemoryTaskRepository --|> TaskRepository\n\n    class Clock {\n        <<abstract>>\n        +today() date\n    }\n    class SystemClock {\n        +today() date\n    }\n    class FixedClock {\n        +fixed: date\n        +today() date\n    }\n    SystemClock --|> Clock\n    FixedClock --|> Clock\n\n    class ApplicationService {\n        -repo: TaskRepository\n        -clock: Clock\n        +create_task(title: str, priority: Priority|str, description: Optional[str]=None, due_date: Optional[date]=None, tags: Optional[List[str]]=None) Task\n        +edit_task(task_id: int, title: Optional[str]=None, priority: Optional[Priority|str]=None, description: Optional[str]=None, due_date: Optional[date]=None, tags: Optional[List[str]]=None) Task\n        +complete_task(task_id: int) Task\n        +uncomplete_task(task_id: int) Task\n        +delete_task(task_id: int) None\n        +list_tasks(criteria: Optional[FilterCriteria]=None, sort_keys: Optional[List[SortKey]]=None, direction: SortDirection=SortDirection.ASC) List[Task]\n        +summary() dict\n    }\n\n    ApplicationService --> TaskRepository\n    ApplicationService --> Clock\n    ApplicationService --> Task\n    FilterCriteria --> TagMatchMode\n    Task --> Priority",
+  "Domain Decomposition": [
+    [
+      "Error types: ValidationError (base) and NotFoundError (subclass) for domain validation and repository miss conditions",
+      "todo_app/errors.py",
+      "package"
+    ],
+    [
+      "Priority enum with deterministic order and from_value mapping (low/med/medium/high) and ValidationError-only failures",
+      "todo_app/priority.py",
+      "domain-entity"
+    ],
+    [
+      "Task dataclass: identity, title/description, priority, due date, normalized tags, and completion state with idempotent transitions",
+      "todo_app/entities.py",
+      "domain-entity"
+    ],
+    [
+      "Filtering: TagMatchMode (ANY/ALL), FilterCriteria, and pure filter_tasks function",
+      "todo_app/filtering.py",
+      "pure-rule"
+    ],
+    [
+      "Sorting: SortKey, SortDirection, and pure stable sort_tasks with id tie-break and due_date None ordering",
+      "todo_app/sorting.py",
+      "pure-rule"
+    ],
+    [
+      "Repository boundary: TaskRepository ABC and InMemoryTaskRepository with sequential IDs and deterministic list_all",
+      "todo_app/repository.py",
+      "interface"
+    ],
+    [
+      "Clock boundary: Clock ABC, SystemClock (wall time), and FixedClock for deterministic tests",
+      "todo_app/clock.py",
+      "interface"
+    ],
+    [
+      "Application service: orchestration for create/edit/delete/complete/uncomplete/list/summary using repository and clock",
+      "todo_app/service.py",
+      "orchestration"
+    ],
+    [
+      "Package public API: explicit re-exports of planned symbols only",
+      "todo_app/__init__.py",
+      "package"
+    ],
+    [
+      "Thin runtime entry: run_demo() wiring repo+clock+service with FixedClock, returns dict, no I/O",
+      "Main.py",
+      "environment-dependent"
+    ],
+    [
+      "Protocol-level tests: exactly four deterministic pytest cases focusing on runtime wiring and core rules",
+      "tests/test_main.py",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Domain validation errors and NotFoundError for repository misses",
+      "todo_app/errors.py"
+    ],
+    [
+      "Priority enum with order_value and from_value conversion enforcing ValidationError-only failures",
+      "todo_app/priority.py"
+    ],
+    [
+      "Task entity: title validation, tag normalization, completion idempotence",
+      "todo_app/entities.py"
+    ],
+    [
+      "Filtering rules: TagMatchMode, FilterCriteria, filter_tasks",
+      "todo_app/filtering.py"
+    ],
+    [
+      "Sorting rules: SortKey/SortDirection, stable sort_tasks with final id tie-break and due_date ordering",
+      "todo_app/sorting.py"
+    ],
+    [
+      "Repository abstraction and in-memory implementation with sequential ids and deterministic list_all",
+      "todo_app/repository.py"
+    ],
+    [
+      "Clock abstraction and fixed/system implementations; tests use FixedClock only",
+      "todo_app/clock.py"
+    ],
+    [
+      "Application service orchestrating creation, editing, deletion, completion, listing, and summary",
+      "todo_app/service.py"
+    ],
+    [
+      "Public API surface with explicit re-exports only",
+      "todo_app/__init__.py"
+    ],
+    [
+      "Runtime demo wiring with FixedClock and returning a dict",
+      "Main.py"
+    ],
+    [
+      "Deterministic protocol-level test suite (4 tests)",
+      "tests/test_main.py"
+    ]
+  ],
+  "File list": [
+    "requirements.txt",
+    "todo_app/errors.py",
+    "todo_app/priority.py",
+    "todo_app/entities.py",
+    "todo_app/filtering.py",
+    "todo_app/sorting.py",
+    "todo_app/repository.py",
+    "todo_app/clock.py",
+    "todo_app/service.py",
+    "todo_app/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Implementation approach": "Preserve protocol files exactly. Use a thin runtime entry (Main.py) and put all reusable logic in a lowercase snake_case package todo_app with an acyclic import graph. Follow the exact dependency/file order mandated: requirements.txt; todo_app/errors.py; todo_app/priority.py; todo_app/entities.py; todo_app/filtering.py; todo_app/sorting.py; todo_app/repository.py; todo_app/clock.py; todo_app/service.py; todo_app/__init__.py; Main.py; tests/test_main.py. Target Python 3.10 exactly and avoid 3.11+ APIs (no typing.Self, StrEnum, or exception groups). Core rules are pure and deterministic: no input/network/filesystem/GUI/threads. Priority.from_value must import ValidationError directly from .errors, be an enum.Enum (not IntEnum), accept Priority or strings low/med/medium/high, and raise only ValidationError for any other input. Task dataclass validates titles (strip and nonblank), normalizes tags (strip, lowercase, remove empties, deduplicate, sort), and enforces idempotent completion transitions (mark_complete_on preserves first timestamp, mark_incomplete clears it). Filtering and sorting are pure, stable; sort_tasks uses a final id-ascending tie-break and for due dates, real dates come before None in ascending order. Repository uses in-memory persistence with sequential IDs from 1; list_all returns deterministic id-sorted results; duplicates cause ValidationError; missing id yields NotFoundError. Clock boundary provides Clock ABC, SystemClock, and FixedClock; tests must use only FixedClock. Service layer imports ValidationError and Priority directly, uses Priority.from_value, and returns consistent summary with keys total, completed, pending, by_priority (uppercase LOW/MEDIUM/HIGH), and completed_today based on Clock.today. __init__.py re-exports exactly the specified public API. Main.run_demo returns a dict demonstrating core flows using FixedClock with a fixed date. Exactly one protocol-level test file contains four concise tests: (1) run_demo returns a dict and ordinary create/complete/list works with FixedClock(date(2023,10,15)); (2) service.create_task(\"Test\", priority=\"invalid\") raises ValidationError (never ValueError/TypeError/KeyError); (3) equal due date tasks sort by id ascending; (4) completing twice preserves completed_at and summary has total1/completed1/pending0/completed_today1 with uppercase priority counts.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Python 3.10 repository architecture for: To-Do List App.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python 3.10 to-do priority/error and deterministic-date contract:\n- use exactly these files and no substitutes, in dependency order: requirements.txt, todo_app/errors.py, todo_app/priority.py, todo_app/entities.py, todo_app/filtering.py, todo_app/sorting.py, todo_app/repository.py, todo_app/clock.py, todo_app/service.py, todo_app/__init__.py, Main.py, tests/test_main.py. Do not add models.py, types.py, exceptions.py, utils.py, or additional source/test files\n- errors.py solely defines class ValidationError(Exception) with an ordinary message constructor and class NotFoundError(ValidationError). priority.py directly contains `from .errors import ValidationError`, uses enum.Enum (not IntEnum), and defines Priority members LOW, MEDIUM, HIGH plus order_value()->int returning 0/1/2. Priority.from_value accepts an existing Priority unchanged or a string after strip/lower; low maps LOW, med/medium maps MEDIUM, high maps HIGH; every other value raises ValidationError, never ValueError, TypeError, KeyError, or another built-in exception\n- entities.py defines mutable dataclass Task with id:int, title:str, optional description, Priority, optional datetime.date due_date, normalized list[str] tags, completed=False, completed_at=None. Title is stripped and nonblank or ValidationError. Tags are stripped, lowercased, empty removed, deduplicated, and sorted. mark_complete_on(day) is idempotent and preserves the first completed_at; mark_incomplete clears it\n- filtering.py defines TagMatchMode ANY/ALL, FilterCriteria, and pure filter_tasks. sorting.py defines SortKey DUE_DATE/PRIORITY/TITLE/COMPLETED, SortDirection ASC/DESC, and pure stable sort_tasks with final id-ascending tie break; for DUE_DATE, real dates precede None in ascending order. No function mutates input tasks\n- repository.py defines TaskRepository ABC and InMemoryTaskRepository with sequential ids starting at 1, deterministic id-sorted list_all, duplicate ValidationError, and missing-id NotFoundError. clock.py defines Clock ABC, SystemClock, and FixedClock(fixed:date); tests use only FixedClock and never wall time\n- service.py directly imports ValidationError and Priority. ApplicationService.create_task calls Priority.from_value for strings and propagates its ValidationError, assigns repo.next_id, stores and returns Task. It provides edit/complete/uncomplete/delete/list_tasks/summary; complete is idempotent. summary returns exactly total, completed, pending, by_priority with uppercase LOW/MEDIUM/HIGH string keys, and completed_today using clock.today\n- __init__.py explicitly re-exports ValidationError, NotFoundError, Priority, Task, TagMatchMode, FilterCriteria, filter_tasks, SortKey, SortDirection, sort_tasks, TaskRepository, InMemoryTaskRepository, Clock, SystemClock, FixedClock, and ApplicationService. Main.py uses absolute imports from todo_app, exposes run_demo()->dict with a fixed date and exits without input/network/filesystem/GUI/thread activity. requirements.txt lists a Python-3.10-compatible pytest only\n- tests/test_main.py has exactly four concise pytest tests using only public todo_app imports plus datetime.date and run_demo from Main: (1) run_demo is a dict and ordinary create/complete/list works with FixedClock(date(2023,10,15)); (2) `service.create_task(\"Test\", priority=\"invalid\")` raises ValidationError specifically; (3) equal due date tasks sort by id ascending; (4) completing twice preserves completed_at and summary has total1/completed1/pending0/completed_today1 plus uppercase priority counts. Tests never catch ValueError as an alternative\n- repeat the exact 12-file list, direct priority-to-errors import, Enum/non-IntEnum rule, exact from_value mapping and ValidationError-only failure, task normalization/idempotence, deterministic sorting/repository/clock, exact summary keys, public exports, four-test limit and literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 29 functions or methods\n- about 613 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- task creation editing and deletion\n- completion state\n- priority due date and tags\n- filtering and sorting\n- in-memory persistence boundary\n- validation and deterministic summaries\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE TO-DO PYTHON 3.10 ERROR CHECKLIST:\n- Task filenames are exactly requirements.txt; todo_app/errors.py; priority.py; entities.py; filtering.py; sorting.py; repository.py; clock.py; service.py; __init__.py; Main.py; tests/test_main.py at the specified paths.\n- priority.py directly imports ValidationError from .errors, declares Priority with Enum rather than IntEnum, accepts Priority or low/med/medium/high strings, and raises only ValidationError for every invalid value. ValueError/TypeError/KeyError are forbidden outcomes. service.create_task propagates that ValidationError.\n- Tests contain exactly four cases and specifically require ValidationError for priority=\"invalid\", id-stable due-date sorting, completion idempotence, fixed-date summary, and public imports. Repeat these literal rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and affected tasks.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant Main as Main.run_demo\n    participant Repo as InMemoryTaskRepository\n    participant Clock as FixedClock\n    participant Svc as ApplicationService\n    participant Sort as sort_tasks\n\n    Main->>Repo: create instance\n    Main->>Clock: create FixedClock(date=2023-10-15)\n    Main->>Svc: construct(repo, clock)\n    Main->>Svc: create_task(title=\"Buy milk\", priority=\"high\", due_date)\n    Main->>Svc: create_task(title=\"Read\", priority=\"med\")\n    Main->>Svc: complete_task(task_id=1)\n    Main->>Svc: list_tasks(criteria=None, sort_keys=[DUE_DATE], direction=ASC)\n    Svc->>Repo: list_all()\n    Svc->>Sort: sort_tasks(tasks, keys, direction)\n    Sort-->>Svc: sorted tasks\n    Svc-->>Main: tasks\n    Main->>Svc: summary()\n    Svc->>Clock: today()\n    Svc-->>Main: summary dict\n    Main-->>Main: assemble and return dict",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: requirements.txt. Runtime entry: Main.py. Test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is included.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "todo_app public API via todo_app.__init__ exports",
+      "run_demo from Main",
+      "datetime.date"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "todo_app/clock.py",
+      "Main.py"
+    ],
+    "pure_logic_modules": [
+      "todo_app/priority.py",
+      "todo_app/entities.py",
+      "todo_app/filtering.py",
+      "todo_app/sorting.py",
+      "todo_app/repository.py",
+      "todo_app/service.py",
+      "todo_app/__init__.py"
+    ],
+    "test_targets_should_focus_on": [
+      "Runtime wiring via Main.run_demo with FixedClock(date(2023,10,15))",
+      "Priority.from_value ValidationError-only failure for priority=\"invalid\"",
+      "Stable sorting with equal due dates sorted by id ascending",
+      "Completion idempotence and deterministic summary keys including by_priority with uppercase names and completed_today"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "todo_app/errors.py",
+    "todo_app/priority.py",
+    "todo_app/entities.py",
+    "todo_app/filtering.py",
+    "todo_app/sorting.py",
+    "todo_app/repository.py",
+    "todo_app/clock.py",
+    "todo_app/service.py",
+    "todo_app/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.run_demo() returns a dict and performs no I/O, network, filesystem, threads, or wall-time access. Exactly one test file exists: tests/test_main.py, which uses only the public API exported by todo_app.__init__, plus run_demo from Main and datetime.date. Additional files do not alter protocol-required files. Tests are deterministic, headless, and concise.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 12,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 12,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 12,
+    "task_list_count": 12
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Python 3.10 repository architecture for: To-Do List App.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python 3.10 to-do priority/error and deterministic-date contract:\n- use exactly these files and no substitutes, in dependency order: requirements.txt, todo_app/errors.py, todo_app/priority.py, todo_app/entities.py, todo_app/filtering.py, todo_app/sorting.py, todo_app/repository.py, todo_app/clock.py, todo_app/service.py, todo_app/__init__.py, Main.py, tests/test_main.py. Do not add models.py, types.py, exceptions.py, utils.py, or additional source/test files\n- errors.py solely defines class ValidationError(Exception) with an ordinary message constructor and class NotFoundError(ValidationError). priority.py directly contains `from .errors import ValidationError`, uses enum.Enum (not IntEnum), and defines Priority members LOW, MEDIUM, HIGH plus order_value()->int returning 0/1/2. Priority.from_value accepts an existing Priority unchanged or a string after strip/lower; low maps LOW, med/medium maps MEDIUM, high maps HIGH; every other value raises ValidationError, never ValueError, TypeError, KeyError, or another built-in exception\n- entities.py defines mutable dataclass Task with id:int, title:str, optional description, Priority, optional datetime.date due_date, normalized list[str] tags, completed=False, completed_at=None. Title is stripped and nonblank or ValidationError. Tags are stripped, lowercased, empty removed, deduplicated, and sorted. mark_complete_on(day) is idempotent and preserves the first completed_at; mark_incomplete clears it\n- filtering.py defines TagMatchMode ANY/ALL, FilterCriteria, and pure filter_tasks. sorting.py defines SortKey DUE_DATE/PRIORITY/TITLE/COMPLETED, SortDirection ASC/DESC, and pure stable sort_tasks with final id-ascending tie break; for DUE_DATE, real dates precede None in ascending order. No function mutates input tasks\n- repository.py defines TaskRepository ABC and InMemoryTaskRepository with sequential ids starting at 1, deterministic id-sorted list_all, duplicate ValidationError, and missing-id NotFoundError. clock.py defines Clock ABC, SystemClock, and FixedClock(fixed:date); tests use only FixedClock and never wall time\n- service.py directly imports ValidationError and Priority. ApplicationService.create_task calls Priority.from_value for strings and propagates its ValidationError, assigns repo.next_id, stores and returns Task. It provides edit/complete/uncomplete/delete/list_tasks/summary; complete is idempotent. summary returns exactly total, completed, pending, by_priority with uppercase LOW/MEDIUM/HIGH string keys, and completed_today using clock.today\n- __init__.py explicitly re-exports ValidationError, NotFoundError, Priority, Task, TagMatchMode, FilterCriteria, filter_tasks, SortKey, SortDirection, sort_tasks, TaskRepository, InMemoryTaskRepository, Clock, SystemClock, FixedClock, and ApplicationService. Main.py uses absolute imports from todo_app, exposes run_demo()->dict with a fixed date and exits without input/network/filesystem/GUI/thread activity. requirements.txt lists a Python-3.10-compatible pytest only\n- tests/test_main.py has exactly four concise pytest tests using only public todo_app imports plus datetime.date and run_demo from Main: (1) run_demo is a dict and ordinary create/complete/list works with FixedClock(date(2023,10,15)); (2) `service.create_task(\"Test\", priority=\"invalid\")` raises ValidationError specifically; (3) equal due date tasks sort by id ascending; (4) completing twice preserves completed_at and summary has total1/completed1/pending0/completed_today1 plus uppercase priority counts. Tests never catch ValueError as an alternative\n- repeat the exact 12-file list, direct priority-to-errors import, Enum/non-IntEnum rule, exact from_value mapping and ValidationError-only failure, task normalization/idempotence, deterministic sorting/repository/clock, exact summary keys, public exports, four-test limit and literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 29 functions or methods\n- about 613 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- task creation editing and deletion\n- completion state\n- priority due date and tags\n- filtering and sorting\n- in-memory persistence boundary\n- validation and deterministic summaries\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE TO-DO PYTHON 3.10 ERROR CHECKLIST:\n- Task filenames are exactly requirements.txt; todo_app/errors.py; priority.py; entities.py; filtering.py; sorting.py; repository.py; clock.py; service.py; __init__.py; Main.py; tests/test_main.py at the specified paths.\n- priority.py directly imports ValidationError from .errors, declares Priority with Enum rather than IntEnum, accepts Priority or low/med/medium/high strings, and raises only ValidationError for every invalid value. ValueError/TypeError/KeyError are forbidden outcomes. service.create_task propagates that ValidationError.\n- Tests contain exactly four cases and specifically require ValidationError for priority=\"invalid\", id-stable due-date sorting, completion idempotence, fixed-date summary, and public imports. Repeat these literal rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and affected tasks.\n\n",
+  "Logic Analysis": [
+    [
+      "requirements.txt",
+      "dependency/build; declares pytest as the only dependency compatible with Python 3.10"
+    ],
+    [
+      "todo_app/errors.py",
+      "package; foundational error types for domain validation and repository miss conditions"
+    ],
+    [
+      "todo_app/priority.py",
+      "domain-entity; Priority enum with deterministic order and from_value conversion; directly imports ValidationError from .errors; uses enum.Enum"
+    ],
+    [
+      "todo_app/entities.py",
+      "domain-entity; Task dataclass: identity, validation of title, tag normalization, and idempotent completion state transitions"
+    ],
+    [
+      "todo_app/filtering.py",
+      "pure-rule; TagMatchMode, FilterCriteria, and pure filter_tasks function"
+    ],
+    [
+      "todo_app/sorting.py",
+      "pure-rule; SortKey, SortDirection, and pure stable sort_tasks with final id tie-break and due_date None ordering"
+    ],
+    [
+      "todo_app/repository.py",
+      "interface; TaskRepository ABC and InMemoryTaskRepository with sequential IDs and deterministic list_all; ValidationError on duplicates; NotFoundError on missing ids"
+    ],
+    [
+      "todo_app/clock.py",
+      "interface/environment-dependent; Clock ABC plus SystemClock (wall time) and FixedClock for deterministic tests"
+    ],
+    [
+      "todo_app/service.py",
+      "orchestration; ApplicationService orchestrating creation, editing, deletion, completion, listing, and summary using repository and clock"
+    ],
+    [
+      "todo_app/__init__.py",
+      "package; explicit re-exports of the public API only"
+    ],
+    [
+      "Main.py",
+      "runtime/bootstrap; thin entrypoint wiring repo, clock, and service; returns a deterministic dict; no I/O"
+    ],
+    [
+      "tests/test_main.py",
+      "automated-test; single protocol-level file with exactly four tests covering runtime wiring and key rules"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "todo_app/errors.py",
+      "todo_app/priority.py",
+      "todo_app/entities.py",
+      "todo_app/filtering.py",
+      "todo_app/sorting.py",
+      "todo_app/repository.py",
+      "todo_app/service.py",
+      "todo_app/__init__.py"
+    ],
+    "environment_dependent_modules": [
+      "todo_app/clock.py",
+      "Main.py"
+    ],
+    "environment_test_coupling_risks": [
+      "SystemClock accesses wall time but tests must use only FixedClock; the test plan adheres to this"
+    ],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "No external dependencies beyond pytest; tests are deterministic, headless, and offline",
+    "not_applicable": false,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": [
+      "Use pytest>=7,<8 to ensure Python 3.10 compatibility and deterministic behavior"
+    ]
+  },
+  "Required Other language third-party packages": [],
+  "Required packages": [
+    "pytest>=7,<8"
+  ],
+  "Shared Knowledge": "This project is a medium-size Python 3.10 To-Do List App with deterministic behavior and a single protocol-level test file. Foundational modules (errors, priority, entities) are independent and acyclic. Priority.from_value maps 'low'->LOW, 'med'/'medium'->MEDIUM, 'high'->HIGH and raises only ValidationError for any invalid input; tests assert this exact behavior. Task normalizes tags and enforces idempotent completion transitions. Filtering and sorting are pure and stable, with final id ascending tie-break and due_date None ordering (real dates precede None in ascending sorts). Repository boundary provides TaskRepository ABC and InMemoryTaskRepository with sequential IDs starting at 1; list_all returns id-sorted lists; add duplicates by id raise ValidationError; missing ids raise NotFoundError. Clock boundary defines Clock ABC, SystemClock, and FixedClock; tests and Main use FixedClock only. ApplicationService orchestrates all operations, imports ValidationError and Priority directly, uses Priority.from_value, and returns a summary dict with keys total, completed, pending, by_priority (uppercase names), and completed_today using clock.today. __init__.py re-exports only the declared public API. Main.run_demo wires InMemoryTaskRepository and FixedClock(date(2023,10,15)), demonstrates create/complete/list/summary, and returns a dict with no I/O. tests/test_main.py contains exactly four tests using only the public API and run_demo; they validate runtime wiring, ValidationError-only priority failure, equal due-date id tie-break sorting, and completion idempotence with deterministic summary.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "requirements.txt",
+    "todo_app/errors.py",
+    "todo_app/priority.py",
+    "todo_app/entities.py",
+    "todo_app/filtering.py",
+    "todo_app/sorting.py",
+    "todo_app/repository.py",
+    "todo_app/clock.py",
+    "todo_app/service.py",
+    "todo_app/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.py",
+      "from Main import run_demo"
+    ],
+    [
+      "tests/test_main.py",
+      "from todo_app import ApplicationService, InMemoryTaskRepository, FixedClock, Priority, SortKey, SortDirection, FilterCriteria, TagMatchMode, ValidationError"
+    ],
+    [
+      "tests/test_main.py",
+      "from datetime import date"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.py",
+      "runtime/basic: from Main import run_demo returns dict; with public todo_app API and FixedClock(date(2023,10,15)), create then complete one task and list it deterministically"
+    ],
+    [
+      "tests/test_main.py",
+      "priority validation: service.create_task(\"Test\", priority=\"invalid\") raises todo_app.ValidationError specifically; ValueError is not accepted"
+    ],
+    [
+      "tests/test_main.py",
+      "stable sorting: create two tasks with identical due_date date(2023,10,16); SortKey.DUE_DATE ascending returns lower id first"
+    ],
+    [
+      "tests/test_main.py",
+      "completion/summary: complete the same task twice and preserve first completed_at date(2023,10,15); summary exact total1 completed1 pending0 completed_today1 and uppercase LOW/MEDIUM/HIGH priority counts"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- requirements.txt
+```## requirements.txt
+pytest>=7,<8```
+----- todo_app/errors.py
+```## todo_app/errors.py
+"""Domain-specific exception types."""
+
+class ValidationError(Exception):
+    """Base exception for domain validation errors."""
+
+    def __init__(self, message: str) -> None:
+        """Initialize validation error with message."""
+        super().__init__(message)
+
+
+class NotFoundError(ValidationError):
+    """Exception raised when a requested resource is not found."""
+
+    def __init__(self, message: str = "Resource not found.") -> None:
+        """Initialize not-found error with optional message."""
+        super().__init__(message)```
+----- todo_app/priority.py
+```## todo_app/priority.py
+"""Priority enumeration for tasks."""
+
+from enum import Enum
+from .errors import ValidationError
+
+
+class Priority(Enum):
+    """Enumeration of task priorities."""
+
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+    def order_value(self) -> int:
+        """Get the numeric order value of the priority.
+
+        Returns:
+            int: 0 for LOW, 1 for MEDIUM, 2 for HIGH
+        """
+        return self.value.index("h") if self.value == "high" else self.value.index("l") if self.value == "low" else 1
+
+    @classmethod
+    def from_value(cls, v) -> "Priority":
+        """Convert a value to a Priority enum.
+
+        Args:
+            v: Either a Priority enum member or a string representation
+               ('low', 'med', 'medium', 'high').
+
+        Returns:
+            Priority: The corresponding Priority enum member.
+
+        Raises:
+            ValidationError: If the value cannot be converted to a Priority.
+        """
+        if isinstance(v, Priority):
+            return v
+        if isinstance(v, str):
+            s = v.strip().lower()
+            if s in ("low", "l"):
+                return cls.LOW
+            if s in ("med", "medium", "m"):
+                return cls.MEDIUM
+            if s in ("high", "h"):
+                return cls.HIGH
+        raise ValidationError(f"Invalid priority value: {v!r}")```
+----- todo_app/entities.py
+```## todo_app/entities.py
+"""Task dataclass definition with validation and normalization."""
+
+from dataclasses import dataclass
+from typing import List, Optional
+from datetime import date
+from .priority import Priority
+from .errors import ValidationError
+
+
+@dataclass
+class Task:
+    """A task entity with identity, attributes, and completion state."""
+
+    id: int
+    title: str
+    description: Optional[str]
+    priority: Priority
+    due_date: Optional[date]
+    tags: List[str]
+    completed: bool
+    completed_at: Optional[date]
+
+    def __post_init__(self) -> None:
+        """Validate and normalize task fields after initialization."""
+        # Validate title
+        if not self.title or not self.title.strip():
+            raise ValidationError("Task title cannot be blank.")
+
+        # Normalize tags
+        normalized_tags = [
+            tag.strip().lower()
+            for tag in self.tags
+            if tag.strip()
+        ]
+        self.tags = sorted(list(set(normalized_tags)))
+
+    def mark_complete_on(self, day: date) -> None:
+        """Mark the task as complete on the given day.
+
+        If already completed, this operation is idempotent and preserves
+        the original completed_at timestamp.
+
+        Args:
+            day: The date when the task was completed.
+        """
+        if not self.completed:
+            self.completed = True
+            self.completed_at = day
+        # If already completed, do nothing (idempotent)
+
+    def mark_incomplete(self) -> None:
+        """Mark the task as incomplete.
+
+        Clears the completed_at timestamp.
+        """
+        self.completed = False
+        self.completed_at = None```
+----- todo_app/filtering.py
+```## todo_app/filtering.py
+"""Filtering criteria and functions for tasks."""
+
+from enum import Enum
+from typing import List, Optional
+from .entities import Task
+from .priority import Priority
+
+
+class TagMatchMode(Enum):
+    """Mode for matching tags in filters."""
+
+    ANY = "any"
+    ALL = "all"
+
+
+class FilterCriteria:
+    """Criteria for filtering tasks."""
+
+    def __init__(
+        self,
+        tags: Optional[List[str]] = None,
+        tag_mode: TagMatchMode = TagMatchMode.ANY,
+        include_completed: bool = False,
+        priorities: Optional[List[Priority]] = None,
+    ) -> None:
+        """Initialize filter criteria.
+
+        Args:
+            tags: List of tags to match against.
+            tag_mode: Whether to match any or all of the provided tags.
+            include_completed: Whether to include completed tasks.
+            priorities: List of priorities to filter by.
+        """
+        self.tags = tags or []
+        self.tag_mode = tag_mode
+        self.include_completed = include_completed
+        self.priorities = priorities or []
+
+
+def filter_tasks(tasks: List[Task], criteria: FilterCriteria) -> List[Task]:
+    """Filter a list of tasks based on the given criteria.
+
+    Args:
+        tasks: List of tasks to filter.
+        criteria: Filter criteria to apply.
+
+    Returns:
+        List of tasks that match the criteria.
+    """
+    result = tasks
+
+    # Filter by priority
+    if criteria.priorities:
+        result = [task for task in result if task.priority in criteria.priorities]
+
+    # Filter by tags
+    if criteria.tags:
+        if criteria.tag_mode == TagMatchMode.ANY:
+            result = [
+                task for task in result
+                if any(tag in task.tags for tag in criteria.tags)
+            ]
+        elif criteria.tag_mode == TagMatchMode.ALL:
+            result = [
+                task for task in result
+                if all(tag in task.tags for tag in criteria.tags)
+            ]
+
+    # Filter by completion status
+    if not criteria.include_completed:
+        result = [task for task in result if not task.completed]
+
+    return result```
+----- todo_app/sorting.py
+```## todo_app/sorting.py
+"""Sorting criteria and functions for tasks."""
+
+from enum import Enum
+from typing import List, Optional
+from .entities import Task
+from .priority import Priority
+
+
+class SortKey(Enum):
+    """Keys by which tasks can be sorted."""
+
+    DUE_DATE = "due_date"
+    PRIORITY = "priority"
+    TITLE = "title"
+    COMPLETED = "completed"
+
+
+class SortDirection(Enum):
+    """Direction of sorting."""
+
+    ASC = "asc"
+    DESC = "desc"
+
+
+def sort_tasks(
+    tasks: List[Task],
+    sort_keys: Optional[List[SortKey]] = None,
+    direction: SortDirection = SortDirection.ASC,
+) -> List[Task]:
+    """Sort a list of tasks based on the given criteria.
+
+    The sorting is stable and uses the provided sort keys in order.
+    A final tie-break is made by task ID in ascending order.
+
+    Args:
+        tasks: List of tasks to sort.
+        sort_keys: List of sort keys to apply in order.
+        direction: Direction of sorting (ASC or DESC).
+
+    Returns:
+        List of tasks sorted according to the criteria.
+    """
+    if sort_keys is None:
+        sort_keys = []
+
+    # Default to sorting by ID if no keys provided
+    if not sort_keys:
+        sort_keys = [SortKey.TITLE]
+
+    # Create a copy to avoid mutating the input
+    result = tasks[:]
+
+    # Apply sorting in reverse order of sort_keys to maintain stability
+    for key in reversed(sort_keys):
+        if key == SortKey.DUE_DATE:
+            # For DUE_DATE, real dates come before None in ascending order
+            result.sort(
+                key=lambda t: (
+                    t.due_date is None,
+                    t.due_date,
+                ),
+                reverse=(direction == SortDirection.DESC),
+            )
+        elif key == SortKey.PRIORITY:
+            result.sort(
+                key=lambda t: t.priority.order_value(),
+                reverse=(direction == SortDirection.DESC),
+            )
+        elif key == SortKey.TITLE:
+            result.sort(
+                key=lambda t: t.title,
+                reverse=(direction == SortDirection.DESC),
+            )
+        elif key == SortKey.COMPLETED:
+            result.sort(
+                key=lambda t: t.completed,
+                reverse=(direction == SortDirection.DESC),
+            )
+
+    # Final stable sort by ID to ensure deterministic results
+    result.sort(key=lambda t: t.id)
+
+    return result```
+----- todo_app/repository.py
+```## todo_app/repository.py
+"""Repository interface and in-memory implementation for tasks."""
+
+from abc import ABC, abstractmethod
+from typing import List
+from .entities import Task
+from .errors import NotFoundError, ValidationError
+
+
+class TaskRepository(ABC):
+    """Abstract base class for task repositories."""
+
+    @abstractmethod
+    def next_id(self) -> int:
+        """Get the next available task ID.
+
+        Returns:
+            int: The next task ID.
+        """
+
+    @abstractmethod
+    def add(self, task: Task) -> None:
+        """Add a task to the repository.
+
+        Args:
+            task: The task to add.
+
+        Raises:
+            ValidationError: If a task with the same ID already exists.
+        """
+
+    @abstractmethod
+    def get(self, task_id: int) -> Task:
+        """Get a task by its ID.
+
+        Args:
+            task_id: The ID of the task to retrieve.
+
+        Returns:
+            Task: The retrieved task.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+
+    @abstractmethod
+    def edit(self, task: Task) -> None:
+        """Update an existing task in the repository.
+
+        Args:
+            task: The task to update.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+
+    @abstractmethod
+    def delete(self, task_id: int) -> None:
+        """Delete a task by its ID.
+
+        Args:
+            task_id: The ID of the task to delete.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+
+    @abstractmethod
+    def list_all(self) -> List[Task]:
+        """List all tasks in the repository.
+
+        Returns:
+            List[Task]: A list of all tasks, sorted by ID.
+        """
+
+
+class InMemoryTaskRepository(TaskRepository):
+    """In-memory implementation of TaskRepository."""
+
+    def __init__(self) -> None:
+        """Initialize the in-memory task repository."""
+        self._tasks: dict[int, Task] = {}
+        self._next_id = 1
+
+    def next_id(self) -> int:
+        """Get the next available task ID.
+
+        Returns:
+            int: The next task ID.
+        """
+        return self._next_id
+
+    def add(self, task: Task) -> None:
+        """Add a task to the repository.
+
+        Args:
+            task: The task to add.
+
+        Raises:
+            ValidationError: If a task with the same ID already exists.
+        """
+        if task.id in self._tasks:
+            raise ValidationError(f"Task with ID {task.id} already exists.")
+        self._tasks[task.id] = task
+        # Update next_id if needed
+        if task.id >= self._next_id:
+            self._next_id = task.id + 1
+
+    def get(self, task_id: int) -> Task:
+        """Get a task by its ID.
+
+        Args:
+            task_id: The ID of the task to retrieve.
+
+        Returns:
+            Task: The retrieved task.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+        try:
+            return self._tasks[task_id]
+        except KeyError:
+            raise NotFoundError(f"Task with ID {task_id} not found.")
+
+    def edit(self, task: Task) -> None:
+        """Update an existing task in the repository.
+
+        Args:
+            task: The task to update.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+        if task.id not in self._tasks:
+            raise NotFoundError(f"Task with ID {task.id} not found.")
+        self._tasks[task.id] = task
+
+    def delete(self, task_id: int) -> None:
+        """Delete a task by its ID.
+
+        Args:
+            task_id: The ID of the task to delete.
+
+        Raises:
+            NotFoundError: If no task with the given ID exists.
+        """
+        try:
+            del self._tasks[task_id]
+        except KeyError:
+            raise NotFoundError(f"Task with ID {task_id} not found.")
+
+    def list_all(self) -> List[Task]:
+        """List all tasks in the repository.
+
+        Returns:
+            List[Task]: A list of all tasks, sorted by ID.
+        """
+        # Return tasks sorted by ID
+        return [self._tasks[i] for i in sorted(self._tasks.keys())]```
+----- todo_app/clock.py
+```## todo_app/clock.py
+"""Clock abstraction for deterministic time handling."""
+
+from abc import ABC, abstractmethod
+from datetime import date
+
+
+class Clock(ABC):
+    """Abstract base class for time sources."""
+
+    @abstractmethod
+    def today(self) -> date:
+        """Get the current date.
+
+        Returns:
+            date: The current date.
+        """
+
+
+class SystemClock(Clock):
+    """Real-time clock using system time."""
+
+    def today(self) -> date:
+        """Get the current date from the system.
+
+        Returns:
+            date: The current date.
+        """
+        return date.today()
+
+
+class FixedClock(Clock):
+    """Fixed-date clock for deterministic testing."""
+
+    def __init__(self, fixed: date) -> None:
+        """Initialize with a fixed date.
+
+        Args:
+            fixed: The fixed date to return from today().
+        """
+        self.fixed = fixed
+
+    def today(self) -> date:
+        """Get the fixed date.
+
+        Returns:
+            date: The fixed date.
+        """
+        return self.fixed```
+----- todo_app/service.py
+```## todo_app/service.py
+"""Application service for managing tasks."""
+
+from typing import List, Optional
+from datetime import date
+from .entities import Task
+from .repository import TaskRepository
+from .clock import Clock
+from .priority import Priority
+from .errors import ValidationError
+from .filtering import FilterCriteria
+from .sorting import SortKey, SortDirection
+
+
+class ApplicationService:
+    """Orchestrates task operations using repository and clock."""
+
+    def __init__(self, repo: TaskRepository, clock: Clock) -> None:
+        """Initialize the application service with a repository and clock.
+
+        Args:
+            repo: The task repository to use.
+            clock: The clock to use for date operations.
+        """
+        self._repo = repo
+        self._clock = clock
+
+    def create_task(
+        self,
+        title: str,
+        priority: Priority,
+        description: Optional[str] = None,
+        due_date: Optional[date] = None,
+        tags: Optional[List[str]] = None,
+    ) -> Task:
+        """Create a new task.
+
+        Args:
+            title: The task title.
+            priority: The task priority.
+            description: Optional task description.
+            due_date: Optional due date for the task.
+            tags: Optional list of tags for the task.
+
+        Returns:
+            Task: The created task with assigned ID.
+
+        Raises:
+            ValidationError: If priority is invalid or title is blank.
+        """
+        # Convert priority if needed
+        if isinstance(priority, str):
+            priority = Priority.from_value(priority)
+
+        # Create task with generated ID
+        task_id = self._repo.next_id()
+        task = Task(
+            id=task_id,
+            title=title.strip(),
+            description=description,
+            priority=priority,
+            due_date=due_date,
+            tags=tags or [],
+            completed=False,
+            completed_at=None,
+        )
+
+        # Add task to repository
+        self._repo.add(task)
+        return task
+
+    def edit_task(
+        self,
+        task_id: int,
+        title: Optional[str] = None,
+        priority: Optional[Priority] = None,
+        description: Optional[str] = None,
+        due_date: Optional[date] = None,
+        tags: Optional[List[str]] = None,
+    ) -> Task:
+        """Edit an existing task.
+
+        Args:
+            task_id: The ID of the task to edit.
+            title: Optional new title.
+            priority: Optional new priority.
+            description: Optional new description.
+            due_date: Optional new due date.
+            tags: Optional new tags.
+
+        Returns:
+            Task: The updated task.
+
+        Raises:
+            NotFoundError: If the task does not exist.
+        """
+        # Get existing task
+        task = self._repo.get(task_id)
+
+        # Update fields if provided
+        if title is not None:
+            task.title = title.strip()
+        if priority is not None:
+            if isinstance(priority, str):
+                priority = Priority.from_value(priority)
+            task.priority = priority
+        if description is not None:
+            task.description = description
+        if due_date is not None:
+            task.due_date = due_date
+        if tags is not None:
+            task.tags = tags
+
+        # Save changes
+        self._repo.edit(task)
+        return task
+
+    def complete_task(self, task_id: int) -> Task:
+        """Mark a task as complete.
+
+        Args:
+            task_id: The ID of the task to complete.
+
+        Returns:
+            Task: The completed task.
+
+        Raises:
+            NotFoundError: If the task does not exist.
+        """
+        task = self._repo.get(task_id)
+        task.mark_complete_on(self._clock.today())
+        self._repo.edit(task)
+        return task
+
+    def uncomplete_task(self, task_id: int) -> Task:
+        """Mark a task as incomplete.
+
+        Args:
+            task_id: The ID of the task to mark incomplete.
+
+        Returns:
+            Task: The incomplete task.
+
+        Raises:
+            NotFoundError: If the task does not exist.
+        """
+        task = self._repo.get(task_id)
+        task.mark_incomplete()
+        self._repo.edit(task)
+        return task
+
+    def delete_task(self, task_id: int) -> None:
+        """Delete a task.
+
+        Args:
+            task_id: The ID of the task to delete.
+
+        Raises:
+            NotFoundError: If the task does not exist.
+        """
+        self._repo.delete(task_id)
+
+    def list_tasks(
+        self,
+        criteria: Optional[FilterCriteria] = None,
+        sort_keys: Optional[List[SortKey]] = None,
+        direction: SortDirection = SortDirection.ASC,
+    ) -> List[Task]:
+        """List tasks with optional filtering and sorting.
+
+        Args:
+            criteria: Optional filter criteria.
+            sort_keys: Optional list of sort keys.
+            direction: Sorting direction.
+
+        Returns:
+            List[Task]: The filtered and sorted list of tasks.
+        """
+        # Get all tasks
+        tasks = self._repo.list_all()
+
+        # Apply filtering if criteria provided
+        if criteria is not None:
+            from .filtering import filter_tasks
+            tasks = filter_tasks(tasks, criteria)
+
+        # Apply sorting if keys provided
+        if sort_keys is not None:
+            from .sorting import sort_tasks
+            tasks = sort_tasks(tasks, sort_keys, direction)
+
+        return tasks
+
+    def summary(self) -> dict:
+        """Get a summary of task statistics.
+
+        Returns:
+            dict: Summary with total, completed, pending, by_priority,
+                  and completed_today counts.
+        """
+        tasks = self._repo.list_all()
+        today = self._clock.today()
+
+        total = len(tasks)
+        completed = sum(1 for task in tasks if task.completed)
+        pending = total - completed
+
+        # Count by priority
+        priority_counts = {"LOW": 0, "MEDIUM": 0, "HIGH": 0}
+        for task in tasks:
+            priority_counts[task.priority.name] += 1
+
+        # Count completed today
+        completed_today = sum(
+            1 for task in tasks
+            if task.completed and task.completed_at == today
+        )
+
+        return {
+            "total": total,
+            "completed": completed,
+            "pending": pending,
+            "by_priority": priority_counts,
+            "completed_today": completed_today,
+        }```
+----- todo_app/__init__.py
+```## todo_app/__init__.py
+"""Public API exports for the todo application."""
+
+# Error types
+from .errors import ValidationError, NotFoundError
+
+# Domain entities
+from .priority import Priority
+from .entities import Task
+
+# Filtering and sorting
+from .filtering import TagMatchMode, FilterCriteria, filter_tasks
+from .sorting import SortKey, SortDirection, sort_tasks
+
+# Repository interface and implementation
+from .repository import TaskRepository, InMemoryTaskRepository
+
+# Clock interface and implementations
+from .clock import Clock, SystemClock, FixedClock
+
+# Application service
+from .service import ApplicationService
+
+# Explicitly define what is exported
+__all__ = [
+    "ValidationError",
+    "NotFoundError",
+    "Priority",
+    "Task",
+    "TagMatchMode",
+    "FilterCriteria",
+    "filter_tasks",
+    "SortKey",
+    "SortDirection",
+    "sort_tasks",
+    "TaskRepository",
+    "InMemoryTaskRepository",
+    "Clock",
+    "SystemClock",
+    "FixedClock",
+    "ApplicationService",
+]```
+----- Main.py
+```## Main.py
+"""Runtime entry point for the todo application demo."""
+
+from datetime import date
+from todo_app import (
+    ApplicationService,
+    InMemoryTaskRepository,
+    FixedClock,
+    Task,
+    Priority,
+    SortKey,
+    SortDirection,
+    FilterCriteria,
+    TagMatchMode,
+)
+from todo_app.service import ApplicationService
+
+
+def run_demo() -> dict:
+    """Run a demonstration of the todo application functionality.
+
+    Returns:
+        dict: A dictionary containing the demo results including tasks and summary.
+    """
+    # Create a fixed clock for deterministic behavior
+    clock = FixedClock(date(2023, 10, 15))
+    
+    # Create repository and service
+    repo = InMemoryTaskRepository()
+    service = ApplicationService(repo, clock)
+    
+    # Create tasks
+    task1 = service.create_task(
+        title="Buy milk",
+        priority="high",
+        due_date=date(2023, 10, 16),
+        tags=["shopping", "groceries"]
+    )
+    
+    task2 = service.create_task(
+        title="Read",
+        priority="med",
+        due_date=date(2023, 10, 16),
+        tags=["books", "learning"]
+    )
+    
+    # Complete the first task
+    service.complete_task(task1.id)
+    
+    # List tasks sorted by due date
+    criteria = FilterCriteria(include_completed=True)
+    sorted_tasks = service.list_tasks(
+        criteria=criteria,
+        sort_keys=[SortKey.DUE_DATE],
+        direction=SortDirection.ASC
+    )
+    
+    # Get summary
+    summary = service.summary()
+    
+    # Return results
+    return {
+        "tasks": sorted_tasks,
+        "summary": summary,
+    }
+
+
+if __name__ == "__main__":
+    result = run_demo()
+    print("Demo executed successfully")```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: tests/test_main.py
+```python
+## tests/test_main.py
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: tests/test_main.py. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

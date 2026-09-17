@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_java",
+  "action_index": 9,
+  "filename": "src/main/java/Main.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/009__src__main__java__Main.java/user_prompt.txt",
+  "user_prompt_sha256": "a036996fd991cf517bac80687975492a08847a8d45856e0a6ab7f876b665ddcb",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/009__src__main__java__Main.java/input_context.json",
+  "input_context_sha256": "5672cb85a429101d64f3daafe137c2dce1057662480fe6938e56a246b6714892",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "255954d414655da0a6477c3c2b0fca959d874bc16ededd90a5d63a85007bb819",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/MediaItem.java",
+      "generated_code_sha256": "22ba9b0f7b4545008dad283bb26fb0921ba61159643cd78572295c8659a629b4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Playlist.java",
+      "generated_code_sha256": "cb650b228f371943cf5debd36d34fce12be0031dbfd4b536f00323c8ea9485d5",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/PlayerState.java",
+      "generated_code_sha256": "ec4279e7dc9c9b3c3b72d05daa5e04294225d1a6bb8db4819c225342cce02c46",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/VolumeControl.java",
+      "generated_code_sha256": "3e249c9c1523153a9d4fa089d9d2dac1f321fff453b634f6357d814001f1cd52",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/DeterministicClock.java",
+      "generated_code_sha256": "f2cb984cd8505e3c60b2dc1b8cad86ffffe8e943955598bcaa6b671556464a90",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/PlayerSnapshot.java",
+      "generated_code_sha256": "a4c9614b58c5fbe698f4e6b29b0d4f3b01d920dd98cdbe451dcc2f440abe6b40",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/PlaybackController.java",
+      "generated_code_sha256": "792622d1b8efb7dfcd43b53f1918b494e91993ff8cff35035d693024cb4b7bb3",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/java/architecture/team/team.json",
+  "checkpoint_sha256": "55a24988dadc1c0548f81eb53ef5082a36c4b2158dc668c56533c513abcfba20",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/attempts/0001_seed_400582985/generation_report.json",
+  "rng_seed": 400582985,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789416724039",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 343,
+    "prompt_tokens": 15177,
+    "total_tokens": 15520
+  },
+  "response_content_sha256": "53206776ccbc5df7a0a12817aa8911553b8d6044e68d8f3b872a92f072757379",
+  "generated_code_sha256": "53c6a063b015e07c78900db95c6656c56ef26ea36195774f6290fd6a0c007d28",
+  "accepted_source_restoration": "accepted_repository_content"
+}

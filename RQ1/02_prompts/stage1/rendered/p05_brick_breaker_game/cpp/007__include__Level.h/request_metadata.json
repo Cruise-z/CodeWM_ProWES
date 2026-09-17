@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p05_brick_breaker_game_cpp",
+  "action_index": 7,
+  "filename": "include/Level.h",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/007__include__Level.h/user_prompt.txt",
+  "user_prompt_sha256": "9e3d93573ce198d98d9b55e66c9611368042d1cb59f7fd431832c721a9df1180",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p05_brick_breaker_game/cpp/007__include__Level.h/input_context.json",
+  "input_context_sha256": "bdf0331332fd90725c4ed8870a481f58a443e2993303675a855faac744ecee5e",
+  "visible_prior_sources": [
+    {
+      "filename": "CMakeLists.txt",
+      "generated_code_sha256": "7834c58de6bce8d6baa2e86dab975777e6650ff314009aa9ec428f985be1e33f",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Vector2.h",
+      "generated_code_sha256": "403d5b28e2a268a45523b929b45c20fc9c86c944c8c0a6422ee2312817b3d670",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Playfield.h",
+      "generated_code_sha256": "68d9e74a1d77c84b2a3185c0d48444f1f1f36c5260bd776dc45f7bfc33533a16",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Ball.h",
+      "generated_code_sha256": "e755a253d441c5c7bffaa326ba158d8d93f6f5919c528b3d8f743ad6d3416a1d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Paddle.h",
+      "generated_code_sha256": "2cf86e872168db51ae1b800d4a5dfbb24d0c8f96051fc329f6f8c56d8f7e92b5",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "include/Brick.h",
+      "generated_code_sha256": "ca3cb922c7a47a97426610c969498427f83d61baf54d6af7a209f0236b4a6e88",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p05_brick_breaker_game/cpp/architecture/team/team.json",
+  "checkpoint_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/generation_report.json",
+  "rng_seed": 1300987923,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789322653416",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 112,
+    "prompt_tokens": 6683,
+    "total_tokens": 6795
+  },
+  "response_content_sha256": "62ff2b215d20d5e268df0666ef156ddce9dd971d2102c2e38fb7fd9486f88ba2",
+  "generated_code_sha256": "755ca5389c61b0c0518fedfdf275e80e72bb513fda4fd606987bf70d3cb1d2ac",
+  "accepted_source_restoration": "accepted_repository_content"
+}

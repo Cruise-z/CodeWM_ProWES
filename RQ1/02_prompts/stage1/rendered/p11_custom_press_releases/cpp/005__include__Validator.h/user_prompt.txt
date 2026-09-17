@@ -1,0 +1,699 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {
+    "header_files": [
+      "include/Clock.h",
+      "include/VersionHistory.h",
+      "include/TemplateEngine.h",
+      "include/Validator.h",
+      "include/PressRelease.h",
+      "include/Renderer.h",
+      "include/SearchIndex.h"
+    ],
+    "source_files": [
+      "src/Clock.cpp",
+      "src/VersionHistory.cpp",
+      "src/TemplateEngine.cpp",
+      "src/Validator.cpp",
+      "src/PressRelease.cpp",
+      "src/Renderer.cpp",
+      "src/SearchIndex.cpp"
+    ],
+    "test_includes_must_reference_declared_headers_only": true,
+    "uses_header_files": true
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "src/Main.cpp",
+    "tests/test_main.cpp",
+    "include/Clock.h",
+    "src/Clock.cpp",
+    "include/VersionHistory.h",
+    "src/VersionHistory.cpp",
+    "include/TemplateEngine.h",
+    "src/TemplateEngine.cpp",
+    "include/Validator.h",
+    "src/Validator.cpp",
+    "include/PressRelease.h",
+    "src/PressRelease.cpp",
+    "include/Renderer.h",
+    "src/Renderer.cpp",
+    "include/SearchIndex.h",
+    "src/SearchIndex.cpp"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class Clock {\n        <<interface>>\n        +now() std::string\n        +~Clock()\n    }\n    class FixedClock {\n        -timestamp : std::string\n        +FixedClock(ts: std::string)\n        +now() std::string\n    }\n    Clock <|.. FixedClock\n    class VersionEntry {\n        +timestamp : std::string\n        +description : std::string\n    }\n    class VersionHistory {\n        -entries_ : std::vector<VersionEntry>\n        +append(clock: Clock, description: std::string) void\n        +entries() const std::vector<VersionEntry>&\n        +size() const std::size_t\n        +toString() const std::string\n    }\n    class SubstitutionResult {\n        +output : std::string\n        +missingKeys : std::vector<std::string>\n    }\n    class TemplateEngine {\n        +render(tmpl: std::string, fields: std::map<std::string,std::string>) const SubstitutionResult\n    }\n    class ValidationResult {\n        +ok : bool\n        +errors : std::vector<std::string>\n    }\n    class Validator {\n        +validateFields(headline: std::string, body: std::string, email: std::string, phone: std::string) const ValidationResult\n    }\n    class Contact {\n        +name : std::string\n        +email : std::string\n        +phone : std::string\n    }\n    class PressRelease {\n        +id() const std::string\n        +headline() const std::string\n        +body() const std::string\n        +contact() const Contact\n        +state() const LifecycleState\n        +tags() const std::set<std::string>&\n        +setHeadline(value: std::string, clock: Clock, desc: std::string) void\n        +setBody(value: std::string, clock: Clock, desc: std::string) void\n        +setContact(contact: Contact, clock: Clock, desc: std::string) void\n        +addTag(tag: std::string, clock: Clock, desc: std::string) void\n        +removeTag(tag: std::string, clock: Clock, desc: std::string) void\n        +submitForReview(validator: Validator, clock: Clock, desc: std::string) bool\n        +publish(validator: Validator, clock: Clock, desc: std::string) bool\n        +toFieldMap() const std::map<std::string,std::string>\n        +history() const VersionHistory&\n    }\n    class Renderer {\n        +render(templateTxt: std::string, pr: PressRelease, engine: TemplateEngine) const std::string\n    }\n    class ReleaseRecord {\n        +id : std::string\n        +headline : std::string\n        +body : std::string\n        +tags : std::set<std::string>\n    }\n    class SearchIndex {\n        -records_ : std::vector<ReleaseRecord>\n        +add(rec: ReleaseRecord) void\n        +clear() void\n        +search(textQuery: std::string, requiredTags: std::set<std::string>) const std::vector<ReleaseRecord>\n    }\n    PressRelease --> VersionHistory\n    PressRelease --> Validator\n    Renderer --> TemplateEngine\n    Renderer --> PressRelease\n    VersionHistory --> Clock\n    SearchIndex --> ReleaseRecord",
+  "Domain Decomposition": [
+    [
+      "Build descriptor: configure C++17, build core library from src/*.cpp, link demo and tests to core, enable CTest, register test",
+      "CMakeLists.txt",
+      "protocol-required"
+    ],
+    [
+      "Runtime bootstrap demo: construct clock, press release, validator, template engine, renderer, index; perform lifecycle transitions, render, search, print results, exit",
+      "src/Main.cpp",
+      "environment-dependent"
+    ],
+    [
+      "Deterministic clock boundary: abstract Clock interface and FixedClock implementation returning a fixed timestamp string for version history; no OS/time access",
+      "include/Clock.h",
+      "interface"
+    ],
+    [
+      "Clock implementation: FixedClock methods",
+      "src/Clock.cpp",
+      "domain-entity"
+    ],
+    [
+      "Append-only version history: VersionEntry and VersionHistory exposing append(clock, description), entries(), size(), toString()",
+      "include/VersionHistory.h",
+      "domain-entity"
+    ],
+    [
+      "VersionHistory implementation: store entries, build toString with stable formatting",
+      "src/VersionHistory.cpp",
+      "domain-entity"
+    ],
+    [
+      "Template placeholder substitution: TemplateEngine with stable grammar {{key}} supporting nested keys like contact.email; return SubstitutionResult with missing keys and output",
+      "include/TemplateEngine.h",
+      "pure-rule"
+    ],
+    [
+      "TemplateEngine implementation: scan and substitute tokens; collect missing keys; keep headers self-contained",
+      "src/TemplateEngine.cpp",
+      "pure-rule"
+    ],
+    [
+      "Field validation rules: Validator with ValidationResult; validate non-empty headline/body; contact email basic format; phone basic digit count",
+      "include/Validator.h",
+      "pure-rule"
+    ],
+    [
+      "Validator implementation: email/phone checks, aggregate error messages; no IO",
+      "src/Validator.cpp",
+      "pure-rule"
+    ],
+    [
+      "PressRelease entity and lifecycle: fields (id, headline, body, contact), tags, state machine (Draft -> InReview -> Published); mutation methods record VersionHistory via injected Clock and description; submitForReview/publish gate with Validator",
+      "include/PressRelease.h",
+      "domain-entity"
+    ],
+    [
+      "PressRelease implementation: manage tags, toFieldMap including nested keys; ensure allowed transitions; deterministic version entries",
+      "src/PressRelease.cpp",
+      "domain-entity"
+    ],
+    [
+      "Plain-text rendering wrapper: Renderer that composes TemplateEngine with PressRelease to produce deterministic text output",
+      "include/Renderer.h",
+      "pure-rule"
+    ],
+    [
+      "Renderer implementation: call engine with field map; return output",
+      "src/Renderer.cpp",
+      "pure-rule"
+    ],
+    [
+      "Audience tags and search: SearchIndex storing ReleaseRecord (id, headline, body, tags); search supports case-insensitive contains over headline/body and tag inclusion",
+      "include/SearchIndex.h",
+      "pure-rule"
+    ],
+    [
+      "SearchIndex implementation: add/clear/search; implement case-insensitive comparison and tag filtering",
+      "src/SearchIndex.cpp",
+      "pure-rule"
+    ],
+    [
+      "Protocol-level tests: include headers only; assert runtime wiring and representative rules: template substitution/missing keys, lifecycle gate (publish blocked on invalid), and search behavior",
+      "tests/test_main.cpp",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Clock boundary and deterministic timestamps",
+      "include/Clock.h"
+    ],
+    [
+      "Clock implementation",
+      "src/Clock.cpp"
+    ],
+    [
+      "Append-only version history with human-readable toString",
+      "include/VersionHistory.h"
+    ],
+    [
+      "VersionHistory implementation",
+      "src/VersionHistory.cpp"
+    ],
+    [
+      "Template substitution engine with missing key detection",
+      "include/TemplateEngine.h"
+    ],
+    [
+      "TemplateEngine implementation",
+      "src/TemplateEngine.cpp"
+    ],
+    [
+      "Validation rules for headline/body and contact",
+      "include/Validator.h"
+    ],
+    [
+      "Validator implementation",
+      "src/Validator.cpp"
+    ],
+    [
+      "PressRelease entity: fields, tags, lifecycle transitions with validation and version history recording",
+      "include/PressRelease.h"
+    ],
+    [
+      "PressRelease implementation",
+      "src/PressRelease.cpp"
+    ],
+    [
+      "Plain-text rendering that composes TemplateEngine with PressRelease fields",
+      "include/Renderer.h"
+    ],
+    [
+      "Renderer implementation",
+      "src/Renderer.cpp"
+    ],
+    [
+      "Audience tag indexing and case-insensitive text search",
+      "include/SearchIndex.h"
+    ],
+    [
+      "SearchIndex implementation",
+      "src/SearchIndex.cpp"
+    ],
+    [
+      "Runtime demo composition",
+      "src/Main.cpp"
+    ],
+    [
+      "Protocol-level deterministic tests",
+      "tests/test_main.cpp"
+    ]
+  ],
+  "File list": [
+    "CMakeLists.txt",
+    "src/Main.cpp",
+    "tests/test_main.cpp",
+    "include/Clock.h",
+    "src/Clock.cpp",
+    "include/VersionHistory.h",
+    "src/VersionHistory.cpp",
+    "include/TemplateEngine.h",
+    "src/TemplateEngine.cpp",
+    "include/Validator.h",
+    "src/Validator.cpp",
+    "include/PressRelease.h",
+    "src/PressRelease.cpp",
+    "include/Renderer.h",
+    "src/Renderer.cpp",
+    "include/SearchIndex.h",
+    "src/SearchIndex.cpp"
+  ],
+  "Implementation approach": "Preserve protocol files exactly. Build a small core library of pure domain modules: templating, validation, lifecycle PressRelease entity with version history, rendering, and search indexing. Keep runtime entry thin and deterministic: compose a release, validate, transition states, render, index, search, and print a short demo. Separate environment-dependent runtime (Main.cpp) from pure logic modules. Use only C++17 standard library and CMake. Expose a canonical, cohesive API via headers in include/*.h and implement in src/*.cpp, with directional dependencies: foundational types (Clock, VersionHistory) first, then TemplateEngine and Validator, then PressRelease, followed by Renderer and SearchIndex. Tests include headers only and assert deterministic, externally visible behavior.",
+  "Normative Architecture Requirements": "Generate a complete medium-size C++17 repository architecture for: Custom press releases.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 31 functions or methods\n- about 698 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- press-release templates\n- custom fields and placeholder substitution\n- draft review published lifecycle\n- validation of headline body and contact\n- audience tags and search\n- plain-text rendering and version history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Program call flow": "sequenceDiagram\n    participant M as Main.cpp\n    participant C as FixedClock\n    participant PR as PressRelease\n    participant V as Validator\n    participant T as TemplateEngine\n    participant R as Renderer\n    participant S as SearchIndex\n    M->>C: construct FixedClock(\"2024-01-02T10:00:00Z\")\n    M->>PR: construct PressRelease(\"PR-001\")\n    M->>PR: setHeadline(..., C, \"set headline\")\n    M->>PR: setBody(..., C, \"set body\")\n    M->>PR: setContact(..., C, \"set contact\")\n    M->>PR: addTag(\"finance\", C, \"add tag\")\n    M->>V: construct Validator\n    M->>PR: submitForReview(V, C, \"submit for review\")\n    M->>PR: publish(V, C, \"publish\")\n    M->>T: construct TemplateEngine\n    M->>R: construct Renderer\n    M->>R: render(template, PR, T)\n    R-->>M: output text\n    M->>S: construct SearchIndex\n    M->>S: add(ReleaseRecord from PR)\n    M->>S: search(\"headline\", {\"finance\"})\n    S-->>M: results\n    M-->>M: print version history and search results",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "ctest --test-dir build --output-on-failure",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest --test-dir build --output-on-failure. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_includes": [
+      "include/Clock.h",
+      "include/VersionHistory.h",
+      "include/TemplateEngine.h",
+      "include/Validator.h",
+      "include/PressRelease.h",
+      "include/Renderer.h",
+      "include/SearchIndex.h"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "pure_logic_modules": [
+      "include/Clock.h",
+      "src/Clock.cpp",
+      "include/VersionHistory.h",
+      "src/VersionHistory.cpp",
+      "include/TemplateEngine.h",
+      "src/TemplateEngine.cpp",
+      "include/Validator.h",
+      "src/Validator.cpp",
+      "include/PressRelease.h",
+      "src/PressRelease.cpp",
+      "include/Renderer.h",
+      "src/Renderer.cpp",
+      "include/SearchIndex.h",
+      "src/SearchIndex.cpp"
+    ],
+    "test_targets_should_focus_on": [
+      "runtime wiring via headers",
+      "template substitution and missing key detection",
+      "lifecycle gating (publish blocked when invalid)",
+      "search case-insensitive contains and tag inclusion"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {
+    "add_test_declared": true,
+    "core_library_declared": true,
+    "declared_headers_match_declared_sources": true,
+    "enable_testing_declared": true,
+    "missing_interface_files": [],
+    "runtime_links_core_library": true,
+    "suspected_build_breakers": [],
+    "test_links_core_library": true,
+    "tests_include_headers_only": true,
+    "undeclared_test_includes": []
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "src/Main.cpp",
+    "tests/test_main.cpp",
+    "include/Clock.h",
+    "src/Clock.cpp",
+    "include/VersionHistory.h",
+    "src/VersionHistory.cpp",
+    "include/TemplateEngine.h",
+    "src/TemplateEngine.cpp",
+    "include/Validator.h",
+    "src/Validator.cpp",
+    "include/PressRelease.h",
+    "src/PressRelease.cpp",
+    "include/Renderer.h",
+    "src/Renderer.cpp",
+    "include/SearchIndex.h",
+    "src/SearchIndex.cpp"
+  ],
+  "Execution Protocol": "Run ctest with the command: ctest --test-dir build --output-on-failure. Runtime entry: src/Main.cpp. Single test target: tests/test_main.cpp. tests/test_main.cpp includes headers only and asserts deterministic runtime wiring and core rules. Both the runtime executable and the test executable link against the core library. No manual interaction, network, or OS-specific behavior is required.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 17,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 17,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 17,
+    "task_list_count": 17
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size C++17 repository architecture for: Custom press releases.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 31 functions or methods\n- about 698 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- press-release templates\n- custom fields and placeholder substitution\n- draft review published lifecycle\n- validation of headline body and contact\n- audience tags and search\n- plain-text rendering and version history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Logic Analysis": [
+    [
+      "CMakeLists.txt",
+      "dependency/build; configure C++17, declare core library from src/*.cpp (excluding src/Main.cpp), link runtime and tests, enable CTest and add test"
+    ],
+    [
+      "src/Main.cpp",
+      "runtime/bootstrap; non-interactive demo: constructs clock, press release, validator, template engine, renderer, search index; performs lifecycle transitions, renders, indexes, searches, prints deterministic output"
+    ],
+    [
+      "tests/test_main.cpp",
+      "automated-test; single protocol test including only declared headers; asserts representative core rules and runtime wiring deterministically"
+    ],
+    [
+      "include/Clock.h",
+      "interface; declares Clock abstract interface and FixedClock deterministic implementation returning a fixed timestamp string; no OS/time access"
+    ],
+    [
+      "src/Clock.cpp",
+      "implementation; defines FixedClock methods and destructor behavior consistent with interface"
+    ],
+    [
+      "include/VersionHistory.h",
+      "interface; declares VersionEntry value type and VersionHistory append-only container; exposes append(clock, description), entries(), size(), toString() with stable formatting"
+    ],
+    [
+      "src/VersionHistory.cpp",
+      "implementation; manages internal vector of VersionEntry, append using injected Clock, builds stable toString output"
+    ],
+    [
+      "include/TemplateEngine.h",
+      "interface; declares SubstitutionResult and TemplateEngine render(tmpl, fields) supporting {{key}} including nested keys like contact.email; collects missing keys"
+    ],
+    [
+      "src/TemplateEngine.cpp",
+      "implementation; scans template, substitutes tokens from field map, lists missing keys, produces deterministic output; headers self-contained"
+    ],
+    [
+      "include/Validator.h",
+      "interface; declares ValidationResult and Validator validateFields(headline, body, email, phone) with basic rules"
+    ],
+    [
+      "src/Validator.cpp",
+      "implementation; performs headline/body non-empty check, basic email format, and phone digit count; aggregates error messages; pure logic without IO"
+    ],
+    [
+      "include/PressRelease.h",
+      "interface; declares Contact, LifecycleState enum, and PressRelease entity API: fields, tags, lifecycle transitions (Draft -> InReview -> Published) gated by Validator; mutation methods record VersionHistory via Clock"
+    ],
+    [
+      "src/PressRelease.cpp",
+      "implementation; manages tags and fields, ensures allowed transitions and validation gating, builds field map including nested keys, records deterministic history entries"
+    ],
+    [
+      "include/Renderer.h",
+      "interface; declares Renderer to compose TemplateEngine with PressRelease fields to produce plain-text output"
+    ],
+    [
+      "src/Renderer.cpp",
+      "implementation; calls TemplateEngine with PressRelease toFieldMap and returns output"
+    ],
+    [
+      "include/SearchIndex.h",
+      "interface; declares ReleaseRecord and SearchIndex add/clear/search; search is case-insensitive contains over headline/body and enforces required tag inclusion"
+    ],
+    [
+      "src/SearchIndex.cpp",
+      "implementation; stores records, implements case-insensitive text query and tag filtering, preserves insertion order"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/Clock.cpp",
+      "src/VersionHistory.cpp",
+      "src/TemplateEngine.cpp",
+      "src/Validator.cpp",
+      "src/PressRelease.cpp",
+      "src/Renderer.cpp",
+      "src/SearchIndex.cpp"
+    ],
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "CMake>=3.10",
+    "C++17",
+    "No third-party dependencies required"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "This repository defines a core C++17 library with domain modules in include/*.h and src/*.cpp pairs: deterministic Clock boundary, append-only VersionHistory, TemplateEngine for placeholder substitution, Validator for basic field rules, PressRelease entity with lifecycle and history, Renderer composing press release with template, and SearchIndex for audience tags and text search. src/Main.cpp is a thin, deterministic runtime demo. tests/test_main.cpp includes only declared headers and links against the core library. CMake builds a reusable core library from src/*.cpp (excluding src/Main.cpp), links runtime and test targets, and registers a single test with CTest.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "missing_header_source_pairs": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "tests_include_headers_only": true,
+    "undeclared_file_references": [],
+    "undeclared_test_includes": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "CMakeLists.txt",
+    "include/Clock.h",
+    "include/VersionHistory.h",
+    "include/TemplateEngine.h",
+    "include/Validator.h",
+    "include/PressRelease.h",
+    "include/Renderer.h",
+    "include/SearchIndex.h",
+    "src/Clock.cpp",
+    "src/VersionHistory.cpp",
+    "src/TemplateEngine.cpp",
+    "src/Validator.cpp",
+    "src/PressRelease.cpp",
+    "src/Renderer.cpp",
+    "src/SearchIndex.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.cpp",
+      "include/Clock.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/VersionHistory.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/TemplateEngine.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/Validator.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/PressRelease.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/Renderer.h"
+    ],
+    [
+      "tests/test_main.cpp",
+      "include/SearchIndex.h"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.cpp",
+      "runtime wiring: construct objects, perform Draft->InReview->Published transitions under valid data, render template, index record, and perform a search"
+    ],
+    [
+      "tests/test_main.cpp",
+      "template substitution: render with fields and verify output contains substituted headline and contact.email; missing key detection returns expected missingKeys"
+    ],
+    [
+      "tests/test_main.cpp",
+      "lifecycle gating: ensure publish() returns false when validation fails (e.g., invalid email) and state does not change"
+    ],
+    [
+      "tests/test_main.cpp",
+      "search behavior: case-insensitive contains and tag inclusion; query matches headline/body and respects requiredTags"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```## CMakeLists.txt
+cmake_minimum_required(VERSION 3.10)
+project(PressReleaseSystem)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Core library sources (excluding Main.cpp)
+set(CORE_SOURCES
+    src/Clock.cpp
+    src/VersionHistory.cpp
+    src/TemplateEngine.cpp
+    src/Validator.cpp
+    src/PressRelease.cpp
+    src/Renderer.cpp
+    src/SearchIndex.cpp
+)
+
+# Create the core library
+add_library(press_release_lib STATIC ${CORE_SOURCES})
+
+# Include directories for the core library
+target_include_directories(press_release_lib PUBLIC include)
+
+# Runtime executable
+add_executable(press_release_demo src/Main.cpp)
+target_link_libraries(press_release_demo press_release_lib)
+
+# Test executable
+enable_testing()
+add_executable(press_release_test tests/test_main.cpp)
+target_link_libraries(press_release_test press_release_lib)
+add_test(NAME press_release_test COMMAND press_release_test)```
+----- include/Clock.h
+```#ifndef CLOCK_H
+#define CLOCK_H
+
+#include <string>
+
+/// @brief Abstract interface for time retrieval
+class Clock {
+public:
+    /// @brief Virtual destructor for proper inheritance
+    virtual ~Clock() = default;
+
+    /// @brief Returns current timestamp as string
+    /// @return Current timestamp in ISO format
+    virtual std::string now() const = 0;
+};
+
+/// @brief Fixed-clock implementation for deterministic testing
+class FixedClock : public Clock {
+private:
+    /// @brief Timestamp stored for deterministic returns
+    std::string timestamp_;
+
+public:
+    /// @brief Constructor initializes the fixed timestamp
+    /// @param timestamp The fixed timestamp to return
+    explicit FixedClock(const std::string& timestamp);
+
+    /// @brief Returns the fixed timestamp
+    /// @return The fixed timestamp provided at construction
+    std::string now() const override;
+};
+
+#endif // CLOCK_H```
+----- include/VersionHistory.h
+```#ifndef VERSION_HISTORY_H
+#define VERSION_HISTORY_H
+
+#include <string>
+#include <vector>
+#include "Clock.h"
+
+/// @brief Represents a single version entry in the history
+struct VersionEntry {
+    /// @brief Timestamp of when this entry was created
+    std::string timestamp;
+    
+    /// @brief Description of what changed in this version
+    std::string description;
+};
+
+/// @brief Append-only history of version changes with human-readable toString
+class VersionHistory {
+private:
+    /// @brief Vector of version entries
+    std::vector<VersionEntry> entries_;
+
+public:
+    /// @brief Appends a new entry to the history
+    /// @param clock Clock instance to get timestamp from
+    /// @param description Description of the change
+    void append(const Clock& clock, const std::string& description);
+
+    /// @brief Gets all entries in the history
+    /// @return Const reference to the vector of entries
+    const std::vector<VersionEntry>& entries() const;
+
+    /// @brief Gets the number of entries in the history
+    /// @return Size of the entries vector
+    std::size_t size() const;
+
+    /// @brief Converts the entire history to a human-readable string
+    /// @return Formatted string representation of the history
+    std::string toString() const;
+};
+
+#endif // VERSION_HISTORY_H```
+----- include/TemplateEngine.h
+```#ifndef TEMPLATE_ENGINE_H
+#define TEMPLATE_ENGINE_H
+
+#include <string>
+#include <map>
+#include <vector>
+
+/// @brief Result of template substitution operation
+struct SubstitutionResult {
+    /// @brief The output string after substitution
+    std::string output;
+    
+    /// @brief List of keys that were not found in the fields map
+    std::vector<std::string> missingKeys;
+};
+
+/// @brief Template engine for substituting placeholders in templates
+class TemplateEngine {
+public:
+    /// @brief Renders a template by replacing placeholders with field values
+    /// @param tmpl Template string containing placeholders in {{key}} format
+    /// @param fields Map of field names to their values
+    /// @return SubstitutionResult containing output and missing keys
+    SubstitutionResult render(const std::string& tmpl, 
+                             const std::map<std::string, std::string>& fields) const;
+};
+
+#endif // TEMPLATE_ENGINE_H```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: include/Validator.h
+```python
+## include/Validator.h
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: include/Validator.h. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_java",
+  "action_index": 4,
+  "filename": "src/main/java/PlayerState.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/004__src__main__java__PlayerState.java/user_prompt.txt",
+  "user_prompt_sha256": "41787368b71c110b589cba4a5501130c4ba48ece46ba2209b228e9eadfc6fed2",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/004__src__main__java__PlayerState.java/input_context.json",
+  "input_context_sha256": "ebe818e5cbaea3b77439c318c2fce5bc8216784e528b113076681d6f81f3f1a4",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "255954d414655da0a6477c3c2b0fca959d874bc16ededd90a5d63a85007bb819",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/MediaItem.java",
+      "generated_code_sha256": "22ba9b0f7b4545008dad283bb26fb0921ba61159643cd78572295c8659a629b4",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Playlist.java",
+      "generated_code_sha256": "cb650b228f371943cf5debd36d34fce12be0031dbfd4b536f00323c8ea9485d5",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/java/architecture/team/team.json",
+  "checkpoint_sha256": "55a24988dadc1c0548f81eb53ef5082a36c4b2158dc668c56533c513abcfba20",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/attempts/0001_seed_400582985/generation_report.json",
+  "rng_seed": 400582985,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789416522156",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 508,
+    "prompt_tokens": 11900,
+    "total_tokens": 12408
+  },
+  "response_content_sha256": "efb9a2cdc68c564e014b986743cb83823e55986b53d0966728f72df6b6c6bb98",
+  "generated_code_sha256": "ec4279e7dc9c9b3c3b72d05daa5e04294225d1a6bb8db4819c225342cce02c46",
+  "accepted_source_restoration": "accepted_repository_content"
+}

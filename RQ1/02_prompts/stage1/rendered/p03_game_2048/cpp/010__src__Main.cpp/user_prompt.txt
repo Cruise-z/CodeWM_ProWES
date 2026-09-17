@@ -1,0 +1,677 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{"Implementation approach":"Preserve protocol files exactly: CMakeLists.txt, src/Main.cpp, tests/test_main.cpp. Build a clean, C++17 core library exposing deterministic 2048 mechanics with a small, headless runtime demo. Split domain concerns into concrete modules: Board (4x4 grid), Move (slide/merge rules and direction), Spawner (deterministic tile placement), and Game (score, win/loss, reset, orchestration). Keep Main thin and environment-dependent; all core logic is pure and testable. Headers are self-contained and include their own standard headers. All size/index types use std::size_t with explicit <cstddef> includes. Tests are concise (2–3), headless, and deterministic; they include only headers, cover runtime wiring (Game) and a representative core rule (line processing).","Domain Decomposition":[["Runtime bootstrap and deterministic demo (no I/O loops)","src/Main.cpp","protocol-required"],["CMake build: core library, executable, test, ctest registration","CMakeLists.txt","protocol-required"],["Single protocol-level test entry","tests/test_main.cpp","automated-test"],["4x4 grid storage, cell access, row/col extraction, max tile, emptiness checks","include/Board.h","domain-entity"],["Board implementation","src/Board.cpp","domain-entity"],["Move rules: Direction enum, single-merge-per-line, slide-merge-slide for lines, board move application, legal move detection","include/Move.h","pure-rule"],["Move rules implementation","src/Move.cpp","pure-rule"],["Deterministic tile spawn policy: first empty cell in row-major with value 2; initial fill","include/Spawner.h","pure-rule"],["Spawner implementation","src/Spawner.cpp","pure-rule"],["Game orchestration: score, win/loss state, reset, validated move API, immutable views","include/Game.h","orchestration"],["Game implementation","src/Game.cpp","orchestration"]],"File list":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Board.h","include/Move.h","include/Spawner.h","include/Game.h","src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Board.h","include/Move.h","include/Spawner.h","include/Game.h","src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"Data structures and interfaces":"classDiagram\n    class Board {\n        +Board()\n        +void clear()\n        +std::uint16_t at(std::size_t r, std::size_t c) const\n        +void set(std::size_t r, std::size_t c, std::uint16_t v)\n        +void getRow(std::size_t r, std::array<std::uint16_t,4>& out) const\n        +void setRow(std::size_t r, const std::array<std::uint16_t,4>& in)\n        +void getCol(std::size_t c, std::array<std::uint16_t,4>& out) const\n        +void setCol(std::size_t c, const std::array<std::uint16_t,4>& in)\n        +bool isFull() const\n        +bool hasEmpty() const\n        +std::uint16_t maxTile() const\n        +static std::size_t side()\n    }\n    class Move {\n        <<namespace>> Move\n        Direction : enum {Left, Right, Up, Down}\n        LineMoveResult : struct\n        BoardMoveResult : struct\n        +LineMoveResult processLine(const std::array<std::uint16_t,4>& line)\n        +BoardMoveResult applyMove(Board& board, Direction dir)\n        +bool hasLegalMove(const Board& board)\n    }\n    class Spawner {\n        +bool spawn(Board& board)\n        +void initialFill(Board& board)\n    }\n    class Game {\n        -Board board_\n        -std::uint32_t score_\n        -GameState state_\n        -Spawner spawner_\n        +Game()\n        +void reset()\n        +bool move(Move::Direction dir)\n        +const Board& board() const\n        +std::uint32_t score() const\n        +GameState state() const\n    }\n    class GameState {\n        <<enum>> Ongoing, Won, Lost\n    }\n    Game --> Board\n    Game --> Spawner\n    Game --> Move\n    Move ..> Board","Program call flow":"sequenceDiagram\n    participant Main as Main.cpp\n    participant G as Game\n    participant M as Move\n    participant S as Spawner\n    Main->>G: Game g; g.reset()\n    Note right of G: Reset clears board and calls S.initialFill()\n    G->>S: initialFill(board)\n    S-->>G: board with two 2s (deterministic)\n    Main->>G: g.move(Left)\n    G->>M: applyMove(board, Left)\n    M-->>G: BoardMoveResult{moved, scoreGained}\n    alt moved == true\n        G->>S: spawn(board)\n        S-->>G: spawn success/failure\n        G->>G: update score, check win/loss via board.maxTile and M.hasLegalMove\n    else moved == false\n        G->>G: no spawn, no score change\n    end\n    Main-->>Main: print board/score/state and exit","Domain Mapping":[["4x4 grid representation, row/col access","include/Board.h"],["Slide/merge rules (single merge per tile), line processing","include/Move.h"],["Apply directional moves to board and detect legal moves","include/Move.h"],["Deterministic tile spawning and initial fill","include/Spawner.h"],["Score tracking, win/loss detection, reset lifecycle, validated moves","include/Game.h"],["Board implementation details","src/Board.cpp"],["Move rule implementation details","src/Move.cpp"],["Spawner implementation details","src/Spawner.cpp"],["Game orchestration implementation","src/Game.cpp"],["Headless demo runtime","src/Main.cpp"],["Protocol test for wiring and a core rule","tests/test_main.cpp"]],"Testable Core Boundary":{"pure_logic_modules":["include/Board.h","include/Move.h","include/Spawner.h","include/Game.h","src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"test_targets_should_focus_on":["Game construction/reset produces deterministic starting board","Representative line merge rule via Move::processLine","A simple move updates board and score deterministically"]},"C++ Interface Plan":{"uses_header_files":true,"header_files":["include/Board.h","include/Move.h","include/Spawner.h","include/Game.h"],"source_files":["src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"test_includes_must_reference_declared_headers_only":true},"Test Include Audit":{"declared_test_includes":["include/Game.h","include/Move.h"],"undeclared_test_includes":[],"all_test_includes_declared":true},"Protocol Compliance Check":{"build_file_preserved":true,"runtime_entry_preserved":true,"test_target_preserved":true,"required_files_missing":[],"required_files_renamed":[],"unexpected_additional_test_files":[],"noncanonical_file_references":[],"canonical_matches_file_list":true,"canonical_missing_from_file_list_copy":[],"canonical_extra_paths":[],"protocol_violations":[]},"Protocol Preservation Notes":"Build file: CMakeLists.txt. Runtime entry: src/Main.cpp. Test target: tests/test_main.cpp. Test command: ctest. Exactly one protocol-level test file is used.","Anything UNCLEAR":""}
+
+## Task
+{"Required packages":[],"Required Other language third-party packages":["CMake>=3.10","C++17","No third-party dependencies required"],"Canonical File References":["CMakeLists.txt","src/Main.cpp","tests/test_main.cpp","include/Board.h","include/Move.h","include/Spawner.h","include/Game.h","src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"Logic Analysis":[["CMakeLists.txt","dependency/build; declares a reusable core library from src/*.cpp (excluding src/Main.cpp), builds the runtime executable from src/Main.cpp, builds a single test executable from tests/test_main.cpp, enables testing and registers the test"],["src/Main.cpp","runtime/bootstrap + environment-dependent; thin entry that constructs Game, calls reset, performs a deterministic single move demo, prints board/score/state, then exits"],["tests/test_main.cpp","automated-test; single protocol-level test that includes only declared headers, exercises runtime wiring via Game and a representative core rule via Move::processLine; deterministic and headless"],["include/Board.h","interface/declaration; 4x4 grid entity API: storage, clear, cell access, row/col extraction and setting, fullness/emptiness checks, max tile, and static side()"],["include/Move.h","interface/declaration; pure rule API: Direction enum, structs for line/board move results, line processing (slide/merge rules with single merge per tile), board move application by direction, and legal move detection"],["include/Spawner.h","interface/declaration; deterministic spawn policy API: spawn the first empty cell in row-major with value 2, and initialFill to place the deterministic starting tiles"],["include/Game.h","interface/declaration; orchestration API: GameState enum, score tracking, board access, reset, validated directional move that updates score/state via Move/Spawner"],["src/Board.cpp","implementation/domain-entity; implements 4x4 board storage and operations; includes its own standard headers; uses std::size_t"],["src/Move.cpp","implementation/pure-rule; implements deterministic line processing (slide-merge-slide with single merge per source tile), board move application for all directions, and legal move detection"],["src/Spawner.cpp","implementation/pure-rule; implements deterministic spawning and initial fill (row-major, value 2)"],["src/Game.cpp","implementation/orchestration; implements score, win/loss detection, reset lifecycle, coordination of Move and Spawner, immutable board view"]],"Task list":["CMakeLists.txt","include/Board.h","include/Move.h","include/Spawner.h","include/Game.h","src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp","src/Main.cpp","tests/test_main.cpp"],"Task Protocol Audit":{"required_files_present_exactly":true,"pm_canonical_matches_design_file_list":true,"task_list_covers_all_canonical_files":true,"logic_analysis_covers_all_canonical_files":true,"missing_from_pm_canonical":[],"missing_from_task_list":[],"missing_from_logic_analysis":[],"renamed_required_files":[],"noncanonical_file_references":[],"undeclared_file_references":[],"unexpected_additional_test_files":[],"cpp_missing_headers":[],"cpp_missing_sources":[],"tests_include_src_cpp":false},"File Coverage Audit":{"design_file_list_count":11,"pm_canonical_count":11,"logic_analysis_count":11,"task_list_count":11,"missing_from_pm_canonical":[],"missing_from_logic_analysis":[],"missing_from_task_list":[],"extra_in_pm_canonical":[],"extra_in_task_list":[],"coverage_passed":true},"Test Scope Plan":[["tests/test_main.cpp","Game construction/reset produces deterministic starting board (two 2s placed deterministically via Spawner::initialFill)"],["tests/test_main.cpp","Representative line rule via Move::processLine: slide-merge-slide with single merge per tile and correct score gained"],["tests/test_main.cpp","A simple move updates board and score deterministically via Game::move and then checks state remains Ongoing"]],"Test Include Plan":[["tests/test_main.cpp","include/Game.h"],["tests/test_main.cpp","include/Move.h"]],"Module Boundary Audit":{"core_domain_logic_modules":["src/Board.cpp","src/Move.cpp","src/Spawner.cpp","src/Game.cpp"],"environment_dependent_modules":["src/Main.cpp"],"environment_test_coupling_risks":[],"headless_testing_risks":[]},"Architecture Collapse Audit":{"has_generic_bucket_modules":false,"generic_bucket_modules":[],"collapse_risks":[],"recommended_replacements":[],"passes_architecture_quality_gate":true},"C++ Build Link Audit":{"declared_headers_match_declared_sources":true,"headers_to_sources":{"include/Board.h":"src/Board.cpp","include/Move.h":"src/Move.cpp","include/Spawner.h":"src/Spawner.cpp","include/Game.h":"src/Game.cpp"},"main_is_separate_executable":true,"tests_include_headers_only":true,"core_library_declared":true,"runtime_links_core_library":true,"test_links_core_library":true,"enable_testing_declared":true,"add_test_declared":true,"duplicate_definitions_risk":false,"missing_interface_files":[],"undeclared_test_includes":[],"suspected_build_breakers":[]},"Python Dependency Compatibility Audit":{"not_applicable":true,"uses_outdated_pins":false,"version_range_recommendations":[],"headless_test_notes":""},"Full API spec":"include/Board.h: class Board { public: Board() noexcept; void clear() noexcept; std::uint16_t at(std::size_t r, std::size_t c) const noexcept; void set(std::size_t r, std::size_t c, std::uint16_t v) noexcept; void getRow(std::size_t r, std::array<std::uint16_t,4>& out) const noexcept; void setRow(std::size_t r, const std::array<std::uint16_t,4>& in) noexcept; void getCol(std::size_t c, std::array<std::uint16_t,4>& out) const noexcept; void setCol(std::size_t c, const std::array<std::uint16_t,4>& in) noexcept; bool isFull() const noexcept; bool hasEmpty() const noexcept; std::uint16_t maxTile() const noexcept; static std::size_t side() noexcept; }; Semantics: 4x4 grid with indices r,c in [0,3]. All size/index types use std::size_t (<cstddef>). Values are non-negative 16-bit (std::uint16_t) tiles; 0 means empty. Methods do not throw; callers must respect index preconditions (no bounds checking). include/Move.h: namespace Move { enum class Direction { Left, Right, Up, Down }; struct LineMoveResult { std::array<std::uint16_t,4> line; bool moved; std::uint32_t scoreGained; }; struct BoardMoveResult { bool moved; std::uint32_t scoreGained; }; LineMoveResult processLine(const std::array<std::uint16_t,4>& line) noexcept; BoardMoveResult applyMove(Board& board, Direction dir) noexcept; bool hasLegalMove(const Board& board) noexcept; } Semantics: processLine applies 2048 rules deterministically to a single 4-length line: 1) slide all non-zero values left, 2) merge adjacent equal tiles exactly once per source tile from left to right by doubling the left value and zeroing the right, accumulating scoreGained as the sum of merged values (post-merge value), 3) slide again; moved is true if resulting line differs from input. applyMove transforms the entire board for the given direction by extracting/processing rows or columns with the same slide-merge-slide rule and reapplying; returns total score gained and whether any cell changed. hasLegalMove returns true if any move would change the board (either an empty cell exists or any adjacent equal tiles exist in any direction). include/Spawner.h: class Spawner { public: bool spawn(Board& board) noexcept; void initialFill(Board& board) noexcept; }; Semantics: deterministic spawning, no randomness: spawn places a single tile with value 2 into the first empty cell in row-major order; returns true if a tile was spawned, false if the board is full. initialFill clears the board and places exactly two tiles of value 2 at the first two positions in row-major order (e.g., (0,0) and (0,1)). include/Game.h: enum class GameState { Ongoing, Won, Lost }; class Game { public: Game() noexcept; void reset() noexcept; bool move(Move::Direction dir) noexcept; const Board& board() const noexcept; std::uint32_t score() const noexcept; GameState state() const noexcept; private: /* Board board_; std::uint32_t score_; GameState state_; Spawner spawner_; */ }; Semantics: Game owns its Board and Spawner and tracks a 32-bit score. reset clears game state and uses Spawner::initialFill for deterministic start. move delegates to Move::applyMove; if no tiles moved, returns false and makes no changes. If tiles moved, increments score by scoreGained, calls Spawner::spawn once, then updates state: Won if Board::maxTile() >= 2048; Lost if not Won and Move::hasLegalMove(board) == false; otherwise Ongoing. All methods are noexcept and deterministic. Cross-file include/usage constraints: - All headers are self-contained and include their needed standard headers (<array>, <cstdint>, <cstddef>, <utility>, etc.). - Callers/tests include only headers under include/*.h; they must not include any src/*.cpp. - src/*.cpp implement exactly the interfaces declared in include/*.h. - Main is environment-dependent and may perform minimal printing, but core logic remains pure and testable.","Shared Knowledge":"Core logic resides in include/*.h and src/*.cpp excluding src/Main.cpp. Tests are headless and deterministic, including only include/Game.h and include/Move.h. CMake builds a reusable core library from src/Board.cpp, src/Move.cpp, src/Spawner.cpp, src/Game.cpp. The runtime executable (from src/Main.cpp) and the single test executable (from tests/test_main.cpp) are both linked against this core library.","Execution Protocol":"Build and test via CMake/CTest. The single protocol test file is tests/test_main.cpp. It includes only declared headers and runs headlessly and deterministically. CMakeLists.txt defines a core library from non-Main src/*.cpp files, a runtime executable from src/Main.cpp linked to the core library, and a test executable from tests/test_main.cpp linked to the same core library; it calls enable_testing() and registers the test with add_test(). Run ctest to execute the single test.","Anything UNCLEAR":""}
+
+## Legacy Code
+```Code
+----- CMakeLists.txt
+```cmake_minimum_required(VERSION 3.10)
+project(TwentyFortyEight)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Create the core library
+add_library(twentyfortyeight_lib 
+    src/Board.cpp
+    src/Move.cpp
+    src/Spawner.cpp
+    src/Game.cpp
+)
+
+target_include_directories(twentyfortyeight_lib PUBLIC include)
+
+# Create the runtime executable
+add_executable(twentyfortyeight src/Main.cpp)
+target_link_libraries(twentyfortyeight twentyfortyeight_lib)
+
+# Create the test executable
+add_executable(test_twentyfortyeight tests/test_main.cpp)
+target_link_libraries(test_twentyfortyeight twentyfortyeight_lib)
+
+# Enable testing
+enable_testing()
+
+# Add the test
+add_test(NAME test_twentyfortyeight COMMAND test_twentyfortyeight)```
+----- include/Board.h
+```#ifndef BOARD_H
+#define BOARD_H
+
+#include <array>
+#include <cstdint>
+#include <cstddef>
+
+/**
+ * @brief Represents a 4x4 game board for 2048.
+ */
+class Board {
+ public:
+  /**
+   * @brief Constructs a new Board object.
+   */
+  Board() noexcept;
+
+  /**
+   * @brief Clears the board, setting all cells to 0 (empty).
+   */
+  void clear() noexcept;
+
+  /**
+   * @brief Gets the value at the specified position.
+   * @param r Row index (0-3).
+   * @param c Column index (0-3).
+   * @return Value at (r, c).
+   */
+  std::uint16_t at(std::size_t r, std::size_t c) const noexcept;
+
+  /**
+   * @brief Sets the value at the specified position.
+   * @param r Row index (0-3).
+   * @param c Column index (0-3).
+   * @param v Value to set.
+   */
+  void set(std::size_t r, std::size_t c, std::uint16_t v) noexcept;
+
+  /**
+   * @brief Gets a row from the board.
+   * @param r Row index (0-3).
+   * @param out Output array to store the row.
+   */
+  void getRow(std::size_t r, std::array<std::uint16_t, 4>& out) const noexcept;
+
+  /**
+   * @brief Sets a row on the board.
+   * @param r Row index (0-3).
+   * @param in Input array containing the row data.
+   */
+  void setRow(std::size_t r, const std::array<std::uint16_t, 4>& in) noexcept;
+
+  /**
+   * @brief Gets a column from the board.
+   * @param c Column index (0-3).
+   * @param out Output array to store the column.
+   */
+  void getCol(std::size_t c, std::array<std::uint16_t, 4>& out) const noexcept;
+
+  /**
+   * @brief Sets a column on the board.
+   * @param c Column index (0-3).
+   * @param in Input array containing the column data.
+   */
+  void setCol(std::size_t c, const std::array<std::uint16_t, 4>& in) noexcept;
+
+  /**
+   * @brief Checks if the board is completely filled.
+   * @return True if all cells are occupied, false otherwise.
+   */
+  bool isFull() const noexcept;
+
+  /**
+   * @brief Checks if the board has any empty cells.
+   * @return True if at least one cell is empty, false otherwise.
+   */
+  bool hasEmpty() const noexcept;
+
+  /**
+   * @brief Gets the maximum tile value on the board.
+   * @return Maximum tile value, or 0 if the board is empty.
+   */
+  std::uint16_t maxTile() const noexcept;
+
+  /**
+   * @brief Gets the side length of the board.
+   * @return Side length (4 for a 4x4 board).
+   */
+  static std::size_t side() noexcept;
+
+ private:
+  std::array<std::array<std::uint16_t, 4>, 4> grid_;
+};
+
+#endif // BOARD_H```
+----- include/Move.h
+```#ifndef MOVE_H
+#define MOVE_H
+
+#include <array>
+#include <cstdint>
+#include <cstddef>
+
+class Board;
+
+namespace Move {
+  /**
+   * @brief Direction enum for movement in the game.
+   */
+  enum class Direction {
+    Left,
+    Right,
+    Up,
+    Down
+  };
+
+  /**
+   * @brief Result structure for line movement operations.
+   */
+  struct LineMoveResult {
+    std::array<std::uint16_t, 4> line;
+    bool moved;
+    std::uint32_t scoreGained;
+  };
+
+  /**
+   * @brief Result structure for board movement operations.
+   */
+  struct BoardMoveResult {
+    bool moved;
+    std::uint32_t scoreGained;
+  };
+
+  /**
+   * @brief Processes a single line according to 2048 rules.
+   * @param line Input line of 4 tiles.
+   * @return Result of the line processing including the new line, whether it moved, and score gained.
+   */
+  LineMoveResult processLine(const std::array<std::uint16_t, 4>& line) noexcept;
+
+  /**
+   * @brief Applies a move in the specified direction to the board.
+   * @param board Reference to the board to modify.
+   * @param dir Direction of the move.
+   * @return Result of the board move including whether anything moved and score gained.
+   */
+  BoardMoveResult applyMove(Board& board, Direction dir) noexcept;
+
+  /**
+   * @brief Checks if there are any legal moves remaining on the board.
+   * @param board Reference to the board to check.
+   * @return True if there is at least one legal move, false otherwise.
+   */
+  bool hasLegalMove(const Board& board) noexcept;
+}  // namespace Move
+
+#endif // MOVE_H```
+----- include/Spawner.h
+```#ifndef SPAWNER_H
+#define SPAWNER_H
+
+#include <cstdint>
+
+class Board;
+
+/**
+ * @brief Handles deterministic tile spawning for the 2048 game.
+ */
+class Spawner {
+ public:
+  /**
+   * @brief Spawns a new tile with value 2 in the first empty cell in row-major order.
+   * @param board Reference to the board where the tile will be spawned.
+   * @return True if a tile was successfully spawned, false if the board is full.
+   */
+  bool spawn(Board& board) noexcept;
+
+  /**
+   * @brief Fills the board with the initial two tiles of value 2.
+   * @param board Reference to the board to initialize.
+   */
+  void initialFill(Board& board) noexcept;
+};
+
+#endif // SPAWNER_H```
+----- include/Game.h
+```#ifndef GAME_H
+#define GAME_H
+
+#include "Board.h"
+#include "Move.h"
+#include "Spawner.h"
+#include <cstdint>
+
+/**
+ * @brief Represents the game state for 2048.
+ */
+enum class GameState {
+  Ongoing,
+  Won,
+  Lost
+};
+
+/**
+ * @brief Main game class that orchestrates the 2048 game logic.
+ */
+class Game {
+ public:
+  /**
+   * @brief Constructs a new Game object.
+   */
+  Game() noexcept;
+
+  /**
+   * @brief Resets the game to its initial state.
+   */
+  void reset() noexcept;
+
+  /**
+   * @brief Attempts to move tiles in the specified direction.
+   * @param dir Direction of the move.
+   * @return True if the move was successful (tiles moved), false otherwise.
+   */
+  bool move(Move::Direction dir) noexcept;
+
+  /**
+   * @brief Gets a constant reference to the game board.
+   * @return Constant reference to the board.
+   */
+  const Board& board() const noexcept;
+
+  /**
+   * @brief Gets the current score.
+   * @return Current score.
+   */
+  std::uint32_t score() const noexcept;
+
+  /**
+   * @brief Gets the current game state.
+   * @return Current game state.
+   */
+  GameState state() const noexcept;
+
+ private:
+  Board board_;
+  std::uint32_t score_;
+  GameState state_;
+  Spawner spawner_;
+};
+
+#endif // GAME_H```
+----- src/Board.cpp
+```#include "Board.h"
+
+Board::Board() noexcept {
+  clear();
+}
+
+void Board::clear() noexcept {
+  for (auto& row : grid_) {
+    for (auto& cell : row) {
+      cell = 0;
+    }
+  }
+}
+
+std::uint16_t Board::at(std::size_t r, std::size_t c) const noexcept {
+  return grid_[r][c];
+}
+
+void Board::set(std::size_t r, std::size_t c, std::uint16_t v) noexcept {
+  grid_[r][c] = v;
+}
+
+void Board::getRow(std::size_t r, std::array<std::uint16_t, 4>& out) const noexcept {
+  for (std::size_t i = 0; i < 4; ++i) {
+    out[i] = grid_[r][i];
+  }
+}
+
+void Board::setRow(std::size_t r, const std::array<std::uint16_t, 4>& in) noexcept {
+  for (std::size_t i = 0; i < 4; ++i) {
+    grid_[r][i] = in[i];
+  }
+}
+
+void Board::getCol(std::size_t c, std::array<std::uint16_t, 4>& out) const noexcept {
+  for (std::size_t i = 0; i < 4; ++i) {
+    out[i] = grid_[i][c];
+  }
+}
+
+void Board::setCol(std::size_t c, const std::array<std::uint16_t, 4>& in) noexcept {
+  for (std::size_t i = 0; i < 4; ++i) {
+    grid_[i][c] = in[i];
+  }
+}
+
+bool Board::isFull() const noexcept {
+  for (const auto& row : grid_) {
+    for (const auto& cell : row) {
+      if (cell == 0) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool Board::hasEmpty() const noexcept {
+  return !isFull();
+}
+
+std::uint16_t Board::maxTile() const noexcept {
+  std::uint16_t max = 0;
+  for (const auto& row : grid_) {
+    for (const auto& cell : row) {
+      if (cell > max) {
+        max = cell;
+      }
+    }
+  }
+  return max;
+}
+
+std::size_t Board::side() noexcept {
+  return 4;
+}```
+----- src/Move.cpp
+```#include "Move.h"
+#include "Board.h"
+#include <algorithm>
+#include <numeric>
+
+namespace Move {
+
+namespace {
+  /**
+   * @brief Slides non-zero elements of a line to the left, filling empty spaces with zeros.
+   * @param line Input line to slide.
+   * @return Line with elements slid to the left.
+   */
+  std::array<std::uint16_t, 4> slide(const std::array<std::uint16_t, 4>& line) noexcept {
+    std::array<std::uint16_t, 4> result{};
+    std::size_t dst = 0;
+    
+    // Copy non-zero elements to the left
+    for (std::size_t src = 0; src < 4; ++src) {
+      if (line[src] != 0) {
+        result[dst++] = line[src];
+      }
+    }
+    
+    return result;
+  }
+
+  /**
+   * @brief Merges adjacent equal elements in a line from left to right, 
+   *        doubling the left value and zeroing the right.
+   * @param line Input line to merge.
+   * @return Line after merging and scoring.
+   */
+  LineMoveResult merge(const std::array<std::uint16_t, 4>& line) noexcept {
+    std::array<std::uint16_t, 4> result = line;
+    std::uint32_t score_gained = 0;
+    bool merged = false;
+    
+    // Process from left to right, merging each pair once
+    for (std::size_t i = 0; i < 3; ++i) {
+      if (result[i] != 0 && result[i] == result[i+1]) {
+        result[i] *= 2;
+        score_gained += result[i];  // Score is post-merge value
+        result[i+1] = 0;
+        merged = true;
+      }
+    }
+    
+    return {result, merged, score_gained};
+  }
+
+  /**
+   * @brief Applies slide-merge-slide operation to a line.
+   * @param line Input line.
+   * @return Result of the full operation including final line, moved flag, and score.
+   */
+  LineMoveResult slideMergeSlide(const std::array<std::uint16_t, 4>& line) noexcept {
+    // Step 1: Slide left
+    auto slid = slide(line);
+    
+    // Step 2: Merge
+    auto merged = merge(slid);
+    
+    // Step 3: Slide again
+    auto final_line = slide(merged.line);
+    
+    // Determine if anything changed
+    bool moved = (line != final_line);
+    
+    return {final_line, moved, merged.scoreGained};
+  }
+}  // namespace
+
+LineMoveResult processLine(const std::array<std::uint16_t, 4>& line) noexcept {
+  return slideMergeSlide(line);
+}
+
+BoardMoveResult applyMove(Board& board, Direction dir) noexcept {
+  BoardMoveResult result{false, 0};
+  
+  switch (dir) {
+    case Direction::Left: {
+      // Process each row
+      for (std::size_t r = 0; r < 4; ++r) {
+        std::array<std::uint16_t, 4> row;
+        board.getRow(r, row);
+        auto row_result = slideMergeSlide(row);
+        
+        if (row_result.moved) {
+          board.setRow(r, row_result.line);
+          result.moved = true;
+          result.scoreGained += row_result.scoreGained;
+        }
+      }
+      break;
+    }
+    
+    case Direction::Right: {
+      // Process each row in reverse order (rightmost first)
+      for (std::size_t r = 0; r < 4; ++r) {
+        std::array<std::uint16_t, 4> row;
+        board.getRow(r, row);
+        // Reverse for processing
+        std::reverse(row.begin(), row.end());
+        auto row_result = slideMergeSlide(row);
+        
+        if (row_result.moved) {
+          // Reverse back before setting
+          std::reverse(row_result.line.begin(), row_result.line.end());
+          board.setRow(r, row_result.line);
+          result.moved = true;
+          result.scoreGained += row_result.scoreGained;
+        }
+      }
+      break;
+    }
+    
+    case Direction::Up: {
+      // Process each column
+      for (std::size_t c = 0; c < 4; ++c) {
+        std::array<std::uint16_t, 4> col;
+        board.getCol(c, col);
+        auto col_result = slideMergeSlide(col);
+        
+        if (col_result.moved) {
+          board.setCol(c, col_result.line);
+          result.moved = true;
+          result.scoreGained += col_result.scoreGained;
+        }
+      }
+      break;
+    }
+    
+    case Direction::Down: {
+      // Process each column in reverse order
+      for (std::size_t c = 0; c < 4; ++c) {
+        std::array<std::uint16_t, 4> col;
+        board.getCol(c, col);
+        // Reverse for processing
+        std::reverse(col.begin(), col.end());
+        auto col_result = slideMergeSlide(col);
+        
+        if (col_result.moved) {
+          // Reverse back before setting
+          std::reverse(col_result.line.begin(), col_result.line.end());
+          board.setCol(c, col_result.line);
+          result.moved = true;
+          result.scoreGained += col_result.scoreGained;
+        }
+      }
+      break;
+    }
+  }
+  
+  return result;
+}
+
+bool hasLegalMove(const Board& board) noexcept {
+  // Check for any empty cells
+  if (board.hasEmpty()) {
+    return true;
+  }
+  
+  // Check for adjacent equal tiles in all directions
+  // We'll check left/right adjacency and up/down adjacency
+  
+  // Horizontal adjacent checks (left/right)
+  for (std::size_t r = 0; r < 4; ++r) {
+    std::array<std::uint16_t, 4> row;
+    board.getRow(r, row);
+    for (std::size_t c = 0; c < 3; ++c) {
+      if (row[c] == row[c+1]) {
+        return true;
+      }
+    }
+  }
+  
+  // Vertical adjacent checks (up/down)
+  for (std::size_t c = 0; c < 4; ++c) {
+    std::array<std::uint16_t, 4> col;
+    board.getCol(c, col);
+    for (std::size_t r = 0; r < 3; ++r) {
+      if (col[r] == col[r+1]) {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+}  // namespace Move```
+----- src/Spawner.cpp
+```#include "Spawner.h"
+#include "Board.h"
+
+bool Spawner::spawn(Board& board) noexcept {
+  // Find the first empty cell in row-major order
+  for (std::size_t r = 0; r < Board::side(); ++r) {
+    for (std::size_t c = 0; c < Board::side(); ++c) {
+      if (board.at(r, c) == 0) {
+        board.set(r, c, 2);
+        return true;
+      }
+    }
+  }
+  // No empty cells found
+  return false;
+}
+
+void Spawner::initialFill(Board& board) noexcept {
+  // Clear the board first
+  board.clear();
+  
+  // Place the first two tiles of value 2 at the beginning of row-major order
+  board.set(0, 0, 2);  // First tile
+  board.set(0, 1, 2);  // Second tile
+}```
+----- src/Game.cpp
+```#include "Game.h"
+
+Game::Game() noexcept 
+    : board_(), 
+      score_(0), 
+      state_(GameState::Ongoing),
+      spawner_() {
+}
+
+void Game::reset() noexcept {
+  board_.clear();
+  spawner_.initialFill(board_);
+  score_ = 0;
+  state_ = GameState::Ongoing;
+}
+
+bool Game::move(Move::Direction dir) noexcept {
+  auto result = Move::applyMove(board_, dir);
+  
+  if (!result.moved) {
+    return false;
+  }
+  
+  score_ += result.scoreGained;
+  
+  // Spawn a new tile
+  spawner_.spawn(board_);
+  
+  // Check win condition
+  if (board_.maxTile() >= 2048) {
+    state_ = GameState::Won;
+  } else if (!Move::hasLegalMove(board_)) {
+    state_ = GameState::Lost;
+  } else {
+    state_ = GameState::Ongoing;
+  }
+  
+  return true;
+}
+
+const Board& Game::board() const noexcept {
+  return board_;
+}
+
+std::uint32_t Game::score() const noexcept {
+  return score_;
+}
+
+GameState Game::state() const noexcept {
+  return state_;
+}```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/Main.cpp
+```python
+## src/Main.cpp
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/Main.cpp. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+

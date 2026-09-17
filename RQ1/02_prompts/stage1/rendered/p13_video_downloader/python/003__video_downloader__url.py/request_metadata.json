@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p13_video_downloader_python",
+  "action_index": 3,
+  "filename": "video_downloader/url.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/python/003__video_downloader__url.py/user_prompt.txt",
+  "user_prompt_sha256": "376f7cd1e5042d775498ffaf2a79d021db11a2739aeedf9fbf772bd094b97f12",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p13_video_downloader/python/003__video_downloader__url.py/input_context.json",
+  "input_context_sha256": "8f121179d7c607f703af3f6ecf2380acd6d759154a557fe064bd3870cf070703",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "video_downloader/errors.py",
+      "generated_code_sha256": "b62cf29f86c544416527b19550db6f7f2185fc738e7d3167e54ac34c2b459dd3",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p13_video_downloader/python/architecture/team/team.json",
+  "checkpoint_sha256": "83470ec0963573472d5b4d87fbfa6614e29466a9a4e7fb10ab31cbc86f357dbc",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p13_video_downloader/python/attempts/0012_seed_872520481/generation_report.json",
+  "rng_seed": 872520481,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789422874530",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 267,
+    "prompt_tokens": 8984,
+    "total_tokens": 9251
+  },
+  "response_content_sha256": "52cc32e87c916dc7c5b871ce710b391213076e34c8a1165f67acd7260ba7187b",
+  "generated_code_sha256": "b21783d3ef445bcbbe5d4bb77ec057699c9ca5458234ad5caf2be9d3fe971d4f",
+  "accepted_source_restoration": "restored_leading_h2"
+}

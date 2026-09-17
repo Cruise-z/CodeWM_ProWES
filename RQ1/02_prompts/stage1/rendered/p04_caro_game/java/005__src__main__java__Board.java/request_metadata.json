@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p04_caro_game_java",
+  "action_index": 5,
+  "filename": "src/main/java/Board.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/java/005__src__main__java__Board.java/user_prompt.txt",
+  "user_prompt_sha256": "7bcd078c77df2075c73933f93bf5fd0ed70a7d9e024907127dca91a39cc9bdf3",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p04_caro_game/java/005__src__main__java__Board.java/input_context.json",
+  "input_context_sha256": "2dcab5aee2656a23699352ea5b8dc8670c6e5f07263a495e9d8af5823d007d45",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "4fbe9d69d7a48ce1cda696fd7965369e6a99cbb8ae39f5b2c70db8ae88ce7c6b",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Player.java",
+      "generated_code_sha256": "8f0426d6b5011d2ad18b00a1bfaa2fc0124ab77aaa8b37e1be5ebac3506e3c01",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Move.java",
+      "generated_code_sha256": "c1d2b1d84b3e30376c6002b67ac154b94c83d392abc671459d94c660c06af36d",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/GameState.java",
+      "generated_code_sha256": "49c98a245d0bcdc3764e8ff6f8c34b1039e695b8b19915ea5509b30ffd6134e8",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p04_caro_game/java/architecture/team/team.json",
+  "checkpoint_sha256": "7277a4988d707a85f7f7fd80ba9d050f787d023d3c2b541ea6d7774281cc43d7",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p04_caro_game/java/attempts/0001_seed_3365300451/generation_report.json",
+  "rng_seed": 3365300451,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789318431003",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 872,
+    "prompt_tokens": 7503,
+    "total_tokens": 8375
+  },
+  "response_content_sha256": "b486ba8b2c7410d81d93cb2a6619f79c26e61ecb17becbcd60724ab340924e64",
+  "generated_code_sha256": "e89e3869709f805841a6220dcc6ea330e0ece0929886fff6acc36cf0d6715d1f",
+  "accepted_source_restoration": "accepted_repository_content"
+}

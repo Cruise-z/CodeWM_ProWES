@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p14_todo_list_app_python",
+  "action_index": 7,
+  "filename": "todo_app/repository.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/python/007__todo_app__repository.py/user_prompt.txt",
+  "user_prompt_sha256": "22e67643d447a08e85ba8655632fe7e31068e52f861c2849f318f391956ea6b1",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p14_todo_list_app/python/007__todo_app__repository.py/input_context.json",
+  "input_context_sha256": "99a9c7f9f4dfa884caded330e4b7e7d2c51754ae2e7ebb3e815082a017060f6f",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "8b88dfb271ffc4996fce09911dabb86d9d82a4fda0f3615be1cf6c6ee9cb5935",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/errors.py",
+      "generated_code_sha256": "e79b44e8618fd71d9f613ae9268cf7a33dd572948f665d951e54a46c0189ed07",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/priority.py",
+      "generated_code_sha256": "029ef6c04ef9f903cdd20cce3c1056df4cc58c905e3cfa4130bfce3973f7f254",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/entities.py",
+      "generated_code_sha256": "59006d5e0f43d6b724e040eaf8a6492205388fc50c3ab782180b9ba0af5c00cf",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/filtering.py",
+      "generated_code_sha256": "12ab24f27c69e74998ca7eec353287ac9004a9473e2f6353becda556debedcda",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "todo_app/sorting.py",
+      "generated_code_sha256": "3787841d9d1790bad202e6c879c134313504f847f5994ff3ea18b3f0c1c133dd",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p14_todo_list_app/python/architecture/team/team.json",
+  "checkpoint_sha256": "da4a37654887038ce7dc3fc4b83f333bfff1d56348a47628b99f2956a8136b40",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p14_todo_list_app/python/attempts/0001_seed_4207199519/generation_report.json",
+  "rng_seed": 4207199519,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789416926685",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 937,
+    "prompt_tokens": 10616,
+    "total_tokens": 11553
+  },
+  "response_content_sha256": "ef6afbe562ec2fb3a5824ef8ceca7c53284366eb23f25c8fb7143a2f9c95c351",
+  "generated_code_sha256": "16f5e5e367587d27fbfd635a853a348908ef94c4b9f37ea3c988497fd90ac5a8",
+  "accepted_source_restoration": "restored_leading_h2"
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p12_video_player_java",
+  "action_index": 2,
+  "filename": "src/main/java/MediaItem.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/002__src__main__java__MediaItem.java/user_prompt.txt",
+  "user_prompt_sha256": "87dbd0444f512e2544afd4dd77ae623ada5ab7ae50e9d2efe135b146faecb484",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p12_video_player/java/002__src__main__java__MediaItem.java/input_context.json",
+  "input_context_sha256": "625e259e102f4ea6246aacf49b31a131d110d02cad5aef9d0b1a74e3bb747f1f",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "255954d414655da0a6477c3c2b0fca959d874bc16ededd90a5d63a85007bb819",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p12_video_player/java/architecture/team/team.json",
+  "checkpoint_sha256": "55a24988dadc1c0548f81eb53ef5082a36c4b2158dc668c56533c513abcfba20",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p12_video_player/java/attempts/0001_seed_400582985/generation_report.json",
+  "rng_seed": 400582985,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789416444310",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 376,
+    "prompt_tokens": 10831,
+    "total_tokens": 11207
+  },
+  "response_content_sha256": "82082d813b992bf5126c0964587333cceadcfd448d9361c98a7f895419ddab09",
+  "generated_code_sha256": "22ba9b0f7b4545008dad283bb26fb0921ba61159643cd78572295c8659a629b4",
+  "accepted_source_restoration": "accepted_repository_content"
+}

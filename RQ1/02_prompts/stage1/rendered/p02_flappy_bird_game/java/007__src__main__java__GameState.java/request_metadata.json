@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p02_flappy_bird_game_java",
+  "action_index": 7,
+  "filename": "src/main/java/GameState.java",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/java/007__src__main__java__GameState.java/user_prompt.txt",
+  "user_prompt_sha256": "5ad41d63f3c1a6543d7a049eea0291225e3bc14f5db1a2604a6c83299366ada7",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p02_flappy_bird_game/java/007__src__main__java__GameState.java/input_context.json",
+  "input_context_sha256": "712a1dd92305dcbad1dc028d29910ac6316d23fbbfbbd619709a8b43bd97b5c7",
+  "visible_prior_sources": [
+    {
+      "filename": "pom.xml",
+      "generated_code_sha256": "2a6f948b72e2521afc53791789723f35d36c2b616f37b48a9a990c197c994ed6",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/Bird.java",
+      "generated_code_sha256": "13949e43dffe744070cb15157abc0743969213d8be6a5ef790f0e7391306d6cb",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/RNG.java",
+      "generated_code_sha256": "ea4d4ebaccd26d458066d1be973af9460003ff600629fab2c8259c47fae96ab0",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/PipePair.java",
+      "generated_code_sha256": "7d1c4da8f3c2bf4423feae66d5a5811bdd1252ca9da056aea8fe8d697916a346",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/CollisionDetector.java",
+      "generated_code_sha256": "e33439eb4406621f0fbba79a2989a7b00f4dd0c664d0905a9db3f595b7090af8",
+      "restoration": "accepted_repository_content"
+    },
+    {
+      "filename": "src/main/java/ScoreSystem.java",
+      "generated_code_sha256": "b9e2bcc99b9a7b1f386ae5a51ce70717889def8fadc65700f9de8f6b30abce36",
+      "restoration": "accepted_repository_content"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p02_flappy_bird_game/java/architecture/team/team.json",
+  "checkpoint_sha256": "8b0e52ae4c7090b792426c2e147b798b0d72baea83f9a3a8004de06284cf07a6",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/java/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p02_flappy_bird_game/java/attempts/0001_seed_2540127563/generation_report.json",
+  "rng_seed": 2540127563,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789310756487",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 66,
+    "prompt_tokens": 8993,
+    "total_tokens": 9059
+  },
+  "response_content_sha256": "75aa8bb29a0b00ba8b67f3e42fcb8f9d5b19dea0e6ef59e353bf67e1b310ae21",
+  "generated_code_sha256": "b997b87989d45fe2f52af71287227311ce74562d553b6d7da2e797508a5b2040",
+  "accepted_source_restoration": "accepted_repository_content"
+}

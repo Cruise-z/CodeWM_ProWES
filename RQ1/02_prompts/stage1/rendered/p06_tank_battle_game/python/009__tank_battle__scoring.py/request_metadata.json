@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "status": "exact_reconstruction_from_immutable_run_state",
+  "unit_id": "p06_tank_battle_game_python",
+  "action_index": 9,
+  "filename": "tank_battle/scoring.py",
+  "system_prompt_path": "RQ1/02_prompts/stage1/system_prompt.txt",
+  "system_prompt_sha256": "0538039766843d95a8cefa9a220a3bca4c3c30609bdafb983f6efa0d5a2438ad",
+  "user_prompt_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/python/009__tank_battle__scoring.py/user_prompt.txt",
+  "user_prompt_sha256": "ee1c590278d8ef8cf59eee9591d924705e4b2851826294bfad5da545abc452b4",
+  "input_context_path": "RQ1/02_prompts/stage1/rendered/p06_tank_battle_game/python/009__tank_battle__scoring.py/input_context.json",
+  "input_context_sha256": "91ab983efbda966c7d93f3b9b143db45b8d4aedd04ee13f86fea845d7f332136",
+  "visible_prior_sources": [
+    {
+      "filename": "requirements.txt",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/directions.py",
+      "generated_code_sha256": "601e40eb784810f072c12e95907e6ca52968ce4d6200b11a1c3db5526063a036",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/geometry.py",
+      "generated_code_sha256": "7f9e4af8e9648bc0b6ba9def498974b516d46b8347f85da99c80c1ac90571dd5",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/obstacle.py",
+      "generated_code_sha256": "b0e1c5fdc42b24c4955d688e67d0b6abc3f4e314a514fbcd85c9cf26e1e5e6f3",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/arena.py",
+      "generated_code_sha256": "eaa0242fae862402fd70629e81547f6eec581178f173c790d64e22831c614c2a",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/tank.py",
+      "generated_code_sha256": "793a9d1d87b178c1ad2535be1d5b0e6f6318cef6a979e783ec72024afadbdca4",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/projectile.py",
+      "generated_code_sha256": "28eaf9d9d3acabaec964227c7afbd6430f4deb568f3afa7b2702a7374369ad94",
+      "restoration": "restored_leading_h2"
+    },
+    {
+      "filename": "tank_battle/commands.py",
+      "generated_code_sha256": "55663bd390e294541600d2596c2508abb2b675991feca17fdbc62bd6eded2a53",
+      "restoration": "restored_leading_h2"
+    }
+  ],
+  "empty_runtime_fields": [
+    "debug_logs",
+    "bug_feedback",
+    "summary_log"
+  ],
+  "checkpoint_path": "RQ1/03_architecture_checkpoints/p06_tank_battle_game/python/architecture/team/team.json",
+  "checkpoint_sha256": "eccf1d8d0c25fc9135ec4977f6c34f89c8d889962f86b0a5ee02346c5b6aea66",
+  "accepted_evidence_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/python/accepted/evidence.json",
+  "accepted_generation_report_path": "results/RQ1/05_baseline_qualification/units/p06_tank_battle_game/python/attempts/0002_seed_2408978515/generation_report.json",
+  "rng_seed": 2408978515,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "response_id": "chatcmpl-1789391554761",
+  "finish_reason": "stop",
+  "usage": {
+    "completion_tokens": 358,
+    "prompt_tokens": 17030,
+    "total_tokens": 17388
+  },
+  "response_content_sha256": "2d92bf9c4de70a80d1d2f1263ba16eca82ce98c848c766a8abf541dd65d03c60",
+  "generated_code_sha256": "3a36436f6a2c62f82b75e793d1715c09041fd36d18d2d3dba09557fb6e8e5294",
+  "accepted_source_restoration": "restored_leading_h2"
+}

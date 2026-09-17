@@ -1,0 +1,452 @@
+
+NOTICE
+Role: You are a professional engineer; the main goal is to write google-style, elegant, modular, easy to read and maintain code
+Language: Please use the same language as the user requirement, but the title and code should be still in English. For example, if the user speaks Chinese, the specific text of your answer should also be in Chinese.
+ATTENTION: Use '##' to SPLIT SECTIONS, not '#'. Output format carefully referenced "Format example".
+
+# Context
+## Design
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/MediaItem.java",
+    "src/main/java/Playlist.java",
+    "src/main/java/PlayerState.java",
+    "src/main/java/VolumeControl.java",
+    "src/main/java/DeterministicClock.java",
+    "src/main/java/PlayerSnapshot.java",
+    "src/main/java/PlaybackController.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class MediaItem {\n        +MediaItem(String id, String title, long durationMillis)\n        +String getId()\n        +String getTitle()\n        +long getDurationMillis()\n    }\n    class Playlist {\n        -ArrayList~MediaItem~ items\n        +Playlist()\n        +void add(MediaItem item)\n        +int size()\n        +MediaItem getAt(int index)\n        +MediaItem removeAt(int index)\n        +boolean hasNext(int index)\n        +boolean hasPrevious(int index)\n        +int nextIndex(int index)\n        +int previousIndex(int index)\n    }\n    class PlayerState {\n        <<enum>> PlaybackStatus\n        PlaybackStatus : STOPPED\n        PlaybackStatus : PLAYING\n        PlaybackStatus : PAUSED\n        -int currentIndex\n        -long positionMillis\n        -PlaybackStatus status\n        +PlayerState()\n        +int getCurrentIndex()\n        +void setCurrentIndex(int index)\n        +long getPositionMillis()\n        +void setPositionMillis(long position)\n        +PlaybackStatus getStatus()\n        +void setStatus(PlaybackStatus status)\n        +void resetPosition()\n    }\n    class VolumeControl {\n        -int volume\n        -int lastNonMuted\n        -boolean muted\n        +VolumeControl()\n        +int getVolume()\n        +void setVolume(int volume)\n        +int getLastNonMuted()\n        +boolean isMuted()\n        +void mute()\n        +void unmute()\n        +int getEffectiveVolume()\n    }\n    class DeterministicClock {\n        -long currentTimeMillis\n        +DeterministicClock()\n        +long getCurrentTimeMillis()\n        +void advance(long deltaMillis)\n    }\n    class PlayerSnapshot {\n        -int index\n        -String title\n        -long positionMillis\n        -long durationMillis\n        -PlayerState.PlaybackStatus status\n        -int volume\n        -boolean muted\n        +PlayerSnapshot(int index, String title, long positionMillis, long durationMillis, PlayerState.PlaybackStatus status, int volume, boolean muted)\n        +int getIndex()\n        +String getTitle()\n        +long getPositionMillis()\n        +long getDurationMillis()\n        +PlayerState.PlaybackStatus getStatus()\n        +int getVolume()\n        +boolean isMuted()\n        +static PlayerSnapshot from(Playlist pl, PlayerState st, VolumeControl vc)\n    }\n    class PlaybackController {\n        -Playlist playlist\n        -VolumeControl volumeControl\n        -DeterministicClock clock\n        -PlayerState state\n        -long lastTick\n        +PlaybackController(Playlist playlist, VolumeControl volumeControl, DeterministicClock clock)\n        +void play()\n        +void pause()\n        +void stop()\n        +void seek(long positionMillis)\n        +void next()\n        +void previous()\n        +void onClockAdvanced()\n        +PlayerSnapshot getSnapshot()\n        +PlayerState getState()\n        +Playlist getPlaylist()\n        +VolumeControl getVolumeControl()\n    }\n    class Main {\n        +static void main(String[] args)\n    }\n    PlaybackController --> Playlist\n    PlaybackController --> VolumeControl\n    PlaybackController --> DeterministicClock\n    PlaybackController --> PlayerState\n    PlaybackController --> PlayerSnapshot\n    Playlist --> MediaItem",
+  "Domain Decomposition": [
+    [
+      "Build and test configuration: Java 11 compiler plugin settings; JUnit Jupiter (test scope) dependency; Maven Surefire plugin 3.x running JUnit 5; no other runtime dependencies.",
+      "pom.xml",
+      "protocol-required"
+    ],
+    [
+      "Media metadata entity: final id/title/durationMillis; constructor validation (nonblank id/title, durationMillis > 0); getters for all fields.",
+      "src/main/java/MediaItem.java",
+      "domain-entity"
+    ],
+    [
+      "Playlist storage and navigation: backed by ArrayList<MediaItem>; add rejects null; size/getAt/removeAt standard semantics; hasNext/hasPrevious bounds-safe; nextIndex/previousIndex clamp for nonempty lists and return -1 for empty.",
+      "src/main/java/Playlist.java",
+      "domain-entity"
+    ],
+    [
+      "Player state container: nested enum PlaybackStatus { STOPPED, PLAYING, PAUSED }; zero-arg constructor sets currentIndex=0, positionMillis=0, status=STOPPED; getters/setters with validation (positionMillis >= 0, status non-null); resetPosition.",
+      "src/main/java/PlayerState.java",
+      "domain-entity"
+    ],
+    [
+      "Volume control: starts at volume=100, lastNonMuted=100, muted=false; setVolume validates [0,100] and always assigns both volume and lastNonMuted, even when muted; mute flips muted=true without changing volumes; unmute restores volume=lastNonMuted; getEffectiveVolume returns muted?0:volume.",
+      "src/main/java/VolumeControl.java",
+      "domain-entity"
+    ],
+    [
+      "Deterministic, in-memory clock: currentTimeMillis=0; getCurrentTimeMillis(); advance(deltaMillis) rejects negative and adds nonnegative delta only; no wall clock or side effects.",
+      "src/main/java/DeterministicClock.java",
+      "domain-entity"
+    ],
+    [
+      "Immutable snapshot view: index, title, positionMillis, durationMillis, status, volume, muted; constructor and getters; static from(Playlist, PlayerState, VolumeControl) returns safe defaults for empty/invalid index (empty title, duration 0).",
+      "src/main/java/PlayerSnapshot.java",
+      "pure-rule"
+    ],
+    [
+      "Playback orchestration: constructed from nonnull Playlist, VolumeControl, DeterministicClock; internally creates PlayerState (index 0) and stores lastTick=clock.getCurrentTimeMillis(); play rejects empty playlist, accepts index 0 for nonempty, resets position to zero only if already at duration, sets PLAYING; pause sets PAUSED; stop sets STOPPED and position 0; seek clamps to [0,current duration]; next/previous use Playlist bounds helpers, reset position only when index actually changes; onClockAdvanced advances only while PLAYING, clamps at duration, transitions to STOPPED exactly at end keeping position at duration; getSnapshot/getState/getPlaylist/getVolumeControl expose canonical objects.",
+      "src/main/java/PlaybackController.java",
+      "orchestration"
+    ],
+    [
+      "Thin runtime demo: constructs a small in-memory playlist and deterministic clock with volume control, runs a bounded play/advance/onClockAdvanced sequence, prints a brief snapshot, exits without loops or input.",
+      "src/main/java/Main.java",
+      "environment-dependent"
+    ],
+    [
+      "Deterministic protocol-level tests (JUnit Jupiter): exactly three @Test methods. Test 1 – single item 5000ms: play, clock.advance(5000), onClockAdvanced => snapshot index 0, positionMillis 5000, durationMillis 5000, STOPPED. Test 2 – two items 3000/4000: initial play at index 0; seek(5000) clamps to 3000; next -> index1 position0; next remains index1; previous -> index0; previous remains index0. Test 3 – volume controls: setVolume(70), mute -> effective 0; setVolume(30) while muted -> getVolume 30 and effective 0; unmute -> getVolume 30 and effective 30.",
+      "src/test/java/MainTest.java",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Build/test config: Java 11, JUnit Jupiter (test scope), Surefire 3.x for JUnit 5; enforce single test file and default package.",
+      "pom.xml",
+      "Defines compiler/source/target 11; adds org.junit.jupiter:junit-jupiter; configures surefire-plugin to run JUnit 5; no runtime dependencies."
+    ],
+    [
+      "Entity: MediaItem metadata.",
+      "src/main/java/MediaItem.java",
+      "Implement constructor validations (id/title nonblank via trim length > 0; durationMillis > 0); store final fields; provide getters."
+    ],
+    [
+      "Entity: Playlist collection and index navigation.",
+      "src/main/java/Playlist.java",
+      "Backed by ArrayList<MediaItem>; add rejects null (throw IllegalArgumentException); size, getAt, removeAt use standard list semantics (IndexOutOfBoundsException for invalid index); hasNext/hasPrevious are bounds-safe; nextIndex/previousIndex clamp to [0, size-1] for nonempty lists; for empty lists return -1 for both."
+    ],
+    [
+      "Entity: PlayerState with nested PlaybackStatus enum.",
+      "src/main/java/PlayerState.java",
+      "Zero-arg constructor sets currentIndex=0, positionMillis=0, status=STOPPED (never -1). get/setCurrentIndex with no negative enforcement beyond ordinary use; setPositionMillis rejects negative (IllegalArgumentException); setStatus rejects null (NullPointerException or IllegalArgumentException); resetPosition sets to 0."
+    ],
+    [
+      "Entity: VolumeControl exact semantics.",
+      "src/main/java/VolumeControl.java",
+      "Initialize volume=100, lastNonMuted=100, muted=false; setVolume checks [0,100] and always assigns both fields even while muted; mute sets muted=true without changing volumes; unmute sets muted=false and assigns volume=lastNonMuted; getEffectiveVolume returns muted?0:volume."
+    ],
+    [
+      "Entity: DeterministicClock without side effects.",
+      "src/main/java/DeterministicClock.java",
+      "currentTimeMillis starts at 0; getCurrentTimeMillis returns the counter; advance rejects negative delta (IllegalArgumentException) and adds nonnegative delta."
+    ],
+    [
+      "Value: PlayerSnapshot immutable projection.",
+      "src/main/java/PlayerSnapshot.java",
+      "Constructor sets all fields; no setters; getters only. Static from(Playlist,PlayerState,VolumeControl) returns empty title and duration 0 if playlist empty or index invalid; otherwise reads MediaItem at current index. Copies current position/status and volume/mute state."
+    ],
+    [
+      "Orchestration: PlaybackController rules.",
+      "src/main/java/PlaybackController.java",
+      "Constructor requires nonnull Playlist/VolumeControl/DeterministicClock; creates new PlayerState with index 0; lastTick=clock.getCurrentTimeMillis(). play(): if playlist.size()==0, throw IllegalStateException; else accept index 0; if position==duration clamp (already at end) reset to 0 only if exactly equal to duration; set status=PLAYING. pause(): set PAUSED. stop(): set STOPPED and position=0. seek(pos): clamp to [0,current duration]; update position. next(): compute nextIndex via playlist.nextIndex(currentIndex); if index changes, set currentIndex and reset position to 0; remain at bounds. previous(): analogous using previousIndex. onClockAdvanced(): read now=clock.getCurrentTimeMillis(); delta = max(0, now-lastTick); lastTick = now; advance position only if status==PLAYING; clamp to duration; when reaching duration, set status=STOPPED and keep position at duration exactly. getSnapshot(): PlayerSnapshot.from(...). getState/getPlaylist/getVolumeControl: return references."
+    ],
+    [
+      "Runtime: bounded demo.",
+      "src/main/java/Main.java",
+      "Construct playlist with 2-3 items; construct VolumeControl and DeterministicClock; construct PlaybackController; call play(), clock.advance(1000), controller.onClockAdvanced(); print a snapshot line; exit without loops."
+    ],
+    [
+      "Automated tests: three deterministic JUnit Jupiter tests.",
+      "src/test/java/MainTest.java",
+      "Test 1: one item duration 5000, play, clock.advance(5000), onClockAdvanced => STOPPED at exactly 5000. Test 2: two items (3000, 4000) play at index0; seek(5000) clamps to 3000; next -> index1/position0; next -> remains index1; previous -> index0; previous -> remains index0. Test 3: volume setVolume(70), mute -> effective 0; setVolume(30) while muted -> getVolume 30/effective 0; unmute -> getVolume 30/effective 30."
+    ]
+  ],
+  "File list": [
+    "pom.xml",
+    "src/main/java/MediaItem.java",
+    "src/main/java/Playlist.java",
+    "src/main/java/PlayerState.java",
+    "src/main/java/VolumeControl.java",
+    "src/main/java/DeterministicClock.java",
+    "src/main/java/PlayerSnapshot.java",
+    "src/main/java/PlaybackController.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Implementation approach": "Bob (Architect) designs a deterministic, headless Java 11 video player core that adheres strictly to the protocol: Maven build with pom.xml, single runtime entry Main.java, single JUnit Jupiter test in src/test/java/MainTest.java, all classes in the default package without package declarations, no GUI/network/filesystem/timers/randomness. The system separates pure domain logic from the thin runtime entry and tests. Playback is driven solely by a DeterministicClock with explicit advances. The PlaybackController orchestrates play/pause/stop/seek/next/previous and end-of-media transition rules, while PlayerSnapshot provides immutable views. VolumeControl enforces exact muted/unmuted and lastNonMuted assignment semantics, including assignment while muted. The tests cover exactly three deterministic scenarios: 5000ms single-item end-of-media STOPPED, two-item clamping and navigation bounds, and mute/unmute with volume restoration after setting while muted. Maven Surefire 3.x runs JUnit 5; org.junit.jupiter:junit-jupiter is test-scoped. Allowed dependency direction: MediaItem -> Playlist -> PlayerState/VolumeControl/DeterministicClock -> PlayerSnapshot/PlaybackController -> Main -> MainTest. No circular dependencies. All files remain under 220 LOC, and core logic is fully testable offline.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Java 11 repository architecture for: Video player.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\n\nProject-specific Java 11 deterministic video-player state contract:\n- use exactly these default-package files and no substitutes, in dependency order: pom.xml, src/main/java/MediaItem.java, src/main/java/Playlist.java, src/main/java/PlayerState.java, src/main/java/VolumeControl.java, src/main/java/DeterministicClock.java, src/main/java/PlayerSnapshot.java, src/main/java/PlaybackController.java, src/main/java/Main.java, src/test/java/MainTest.java. Do not add package declarations, interfaces, clocks, exception files, or additional source/test files\n- MediaItem is a public final class with final String id/title and long durationMillis; constructor requires nonblank id/title and durationMillis>0; getters expose all three. Playlist is a public final class backed by ArrayList<MediaItem>; add rejects null; size/getAt/removeAt use ordinary list semantics; hasNext(index), hasPrevious(index), nextIndex(index), and previousIndex(index) are bounds-safe. For nonempty lists nextIndex clamps into [0,size-1] and previousIndex clamps into [0,size-1]; for empty lists both return -1\n- PlayerState is a public final class owning nested enum PlaybackStatus { STOPPED, PLAYING, PAUSED }. Its zero-argument constructor MUST initialize `currentIndex = 0`, `positionMillis = 0`, and `status = PlaybackStatus.STOPPED`; initializing currentIndex to -1 is forbidden. It provides get/setCurrentIndex, get/setPositionMillis (reject negative), get/setStatus (reject null), and resetPosition\n- VolumeControl is a public final class initialized with volume=100, lastNonMuted=100, muted=false. setVolume validates [0,100], always assigns both `this.volume = volume` and `this.lastNonMuted = volume`, including while muted. mute sets muted=true without changing those fields; unmute sets muted=false and assigns volume=lastNonMuted; getEffectiveVolume returns muted?0:volume. A setVolume call while muted therefore changes the value restored by unmute; preserving the pre-mute value instead is forbidden\n- DeterministicClock is a public final class with currentTimeMillis=0, getCurrentTimeMillis(), and advance(long deltaMillis) rejecting negative delta and adding nonnegative delta. No wall clock, Thread.sleep, timer, randomness, GUI, filesystem, or network is used\n- PlayerSnapshot is an immutable public final value with index, title, positionMillis, durationMillis, PlayerState.PlaybackStatus status, volume, and muted; it has a constructor, getters, and static from(Playlist,PlayerState,VolumeControl). For an empty/invalid index it returns a safe empty title/duration snapshot; for a valid index it reads that MediaItem\n- PlaybackController is a public final class constructed from nonnull Playlist, VolumeControl, DeterministicClock; it creates a PlayerState (therefore index 0) and stores lastTick=clock.getCurrentTimeMillis(). play rejects an empty playlist, accepts index 0 for a nonempty playlist, resets position to zero only if already at duration, and sets PLAYING. pause sets PAUSED. stop sets STOPPED and position zero. seek clamps to [0,current duration]. next/previous use Playlist bounds helpers, reset position only when index actually changes, and remain at last/first index at bounds. onClockAdvanced computes nonnegative delta from lastTick, advances only while PLAYING, clamps at duration and changes to STOPPED while keeping position exactly duration. getSnapshot/getState/getPlaylist/getVolumeControl expose the canonical objects\n- Main.java constructs a small in-memory playlist and deterministic clock, runs a bounded demo, and exits without input or loops. pom.xml compiles source/target 11 and uses only JUnit Jupiter test dependency with Surefire\n- MainTest.java contains exactly three JUnit Jupiter @Test methods. Test 1: one MediaItem duration 5000, new controller, play, clock.advance(5000), onClockAdvanced; snapshot is index0, position5000, duration5000, STOPPED. Test 2: two items durations 3000/4000; initial play succeeds at index0; seek(5000) clamps to3000; next makes index1/position0, a second next remains index1; previous makes index0, a second previous remains index0. Test 3: setVolume(70), mute gives effective0, setVolume(30) while muted makes getVolume30/effective0, unmute makes getVolume30/effective30\n- repeat the exact 10-file list, default-package rule, PlayerState index-zero literal initialization and forbidden -1, VolumeControl assignment while muted, deterministic clock, exact controller semantics, exact three tests and fixtures, Java 11 requirement, and no external effects in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 9 repository files\n- about 37 functions or methods\n- about 786 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- media metadata\n- playlist navigation\n- play pause and stop state\n- seek and duration bounds\n- volume and mute\n- headless deterministic playback clock\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE VIDEO-PLAYER JAVA 11 STATE CHECKLIST:\n- Task filenames are exactly pom.xml; MediaItem.java; Playlist.java; PlayerState.java; VolumeControl.java; DeterministicClock.java; PlayerSnapshot.java; PlaybackController.java; Main.java; MainTest.java at their standard Maven paths, all in the default package.\n- PlayerState() literally initializes currentIndex=0, positionMillis=0, STOPPED; -1 is forbidden. VolumeControl.setVolume always updates both volume and lastNonMuted even while muted, so setting 30 while muted restores 30 on unmute. PlaybackController.play therefore succeeds for a nonempty new playlist at index 0.\n- MainTest contains exactly three @Test methods with exact 5000ms end-of-media, 3000/4000 navigation/clamping, and 70->mute->30->unmute fixtures. Repeat these literal values and rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and each affected task.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant Main\n    participant PL as Playlist\n    participant VC as VolumeControl\n    participant DC as DeterministicClock\n    participant PC as PlaybackController\n    participant PS as PlayerSnapshot\n    Main->>PL: construct and add MediaItem(s)\n    Main->>VC: construct\n    Main->>DC: construct\n    Main->>PC: new PlaybackController(PL, VC, DC)\n    Main->>PC: play()\n    Main->>DC: advance(1000)\n    Main->>PC: onClockAdvanced()\n    PC->>PS: getSnapshot()\n    PS-->>Main: immutable snapshot\n    Main-->>Main: print minimal demo info and exit",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "mvn -q test",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: pom.xml. Runtime entry: src/main/java/Main.java. Single test target: src/test/java/MainTest.java. Test command: mvn -q test. Exactly one protocol-level test file is used and all production classes are in the default package.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "MediaItem",
+      "Playlist",
+      "PlayerState",
+      "VolumeControl",
+      "DeterministicClock",
+      "PlayerSnapshot",
+      "PlaybackController",
+      "org.junit.jupiter.api.Test",
+      "org.junit.jupiter.api.Assertions"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "src/main/java/Main.java",
+      "pom.xml"
+    ],
+    "pure_logic_modules": [
+      "src/main/java/MediaItem.java",
+      "src/main/java/Playlist.java",
+      "src/main/java/PlayerState.java",
+      "src/main/java/VolumeControl.java",
+      "src/main/java/DeterministicClock.java",
+      "src/main/java/PlayerSnapshot.java",
+      "src/main/java/PlaybackController.java"
+    ],
+    "test_targets_should_focus_on": [
+      "Deterministic clock-driven playback reaching end-of-media at exactly 5000ms and STOPPED status",
+      "Seek clamping to duration (3000) and next/previous navigation with bounds and position reset only on actual index change",
+      "VolumeControl: setVolume(70) -> mute -> setVolume(30) while muted -> unmute restores 30 and effective 30"
+    ]
+  }
+}
+
+
+## Task
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "pom.xml",
+    "src/main/java/MediaItem.java",
+    "src/main/java/Playlist.java",
+    "src/main/java/PlayerState.java",
+    "src/main/java/VolumeControl.java",
+    "src/main/java/DeterministicClock.java",
+    "src/main/java/PlayerSnapshot.java",
+    "src/main/java/PlaybackController.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Execution Protocol": "Test command: mvn -q test. Runtime entry: src/main/java/Main.java (default package). Single protocol-level test target: src/test/java/MainTest.java with exactly three @Test methods as specified. No manual interaction, no GUI, no filesystem/network/timers/randomness. Additional files are not introduced; all planned files adhere to the exact 10-file list.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 10,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 10,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 10,
+    "task_list_count": 10
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Java 11 repository architecture for: Video player.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: pom.xml\n- runtime entry: src/main/java/Main.java\n- single test target: src/test/java/MainTest.java\n- test command: mvn -q test\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.\n\n\nProject-specific Java 11 deterministic video-player state contract:\n- use exactly these default-package files and no substitutes, in dependency order: pom.xml, src/main/java/MediaItem.java, src/main/java/Playlist.java, src/main/java/PlayerState.java, src/main/java/VolumeControl.java, src/main/java/DeterministicClock.java, src/main/java/PlayerSnapshot.java, src/main/java/PlaybackController.java, src/main/java/Main.java, src/test/java/MainTest.java. Do not add package declarations, interfaces, clocks, exception files, or additional source/test files\n- MediaItem is a public final class with final String id/title and long durationMillis; constructor requires nonblank id/title and durationMillis>0; getters expose all three. Playlist is a public final class backed by ArrayList<MediaItem>; add rejects null; size/getAt/removeAt use ordinary list semantics; hasNext(index), hasPrevious(index), nextIndex(index), and previousIndex(index) are bounds-safe. For nonempty lists nextIndex clamps into [0,size-1] and previousIndex clamps into [0,size-1]; for empty lists both return -1\n- PlayerState is a public final class owning nested enum PlaybackStatus { STOPPED, PLAYING, PAUSED }. Its zero-argument constructor MUST initialize `currentIndex = 0`, `positionMillis = 0`, and `status = PlaybackStatus.STOPPED`; initializing currentIndex to -1 is forbidden. It provides get/setCurrentIndex, get/setPositionMillis (reject negative), get/setStatus (reject null), and resetPosition\n- VolumeControl is a public final class initialized with volume=100, lastNonMuted=100, muted=false. setVolume validates [0,100], always assigns both `this.volume = volume` and `this.lastNonMuted = volume`, including while muted. mute sets muted=true without changing those fields; unmute sets muted=false and assigns volume=lastNonMuted; getEffectiveVolume returns muted?0:volume. A setVolume call while muted therefore changes the value restored by unmute; preserving the pre-mute value instead is forbidden\n- DeterministicClock is a public final class with currentTimeMillis=0, getCurrentTimeMillis(), and advance(long deltaMillis) rejecting negative delta and adding nonnegative delta. No wall clock, Thread.sleep, timer, randomness, GUI, filesystem, or network is used\n- PlayerSnapshot is an immutable public final value with index, title, positionMillis, durationMillis, PlayerState.PlaybackStatus status, volume, and muted; it has a constructor, getters, and static from(Playlist,PlayerState,VolumeControl). For an empty/invalid index it returns a safe empty title/duration snapshot; for a valid index it reads that MediaItem\n- PlaybackController is a public final class constructed from nonnull Playlist, VolumeControl, DeterministicClock; it creates a PlayerState (therefore index 0) and stores lastTick=clock.getCurrentTimeMillis(). play rejects an empty playlist, accepts index 0 for a nonempty playlist, resets position to zero only if already at duration, and sets PLAYING. pause sets PAUSED. stop sets STOPPED and position zero. seek clamps to [0,current duration]. next/previous use Playlist bounds helpers, reset position only when index actually changes, and remain at last/first index at bounds. onClockAdvanced computes nonnegative delta from lastTick, advances only while PLAYING, clamps at duration and changes to STOPPED while keeping position exactly duration. getSnapshot/getState/getPlaylist/getVolumeControl expose the canonical objects\n- Main.java constructs a small in-memory playlist and deterministic clock, runs a bounded demo, and exits without input or loops. pom.xml compiles source/target 11 and uses only JUnit Jupiter test dependency with Surefire\n- MainTest.java contains exactly three JUnit Jupiter @Test methods. Test 1: one MediaItem duration 5000, new controller, play, clock.advance(5000), onClockAdvanced; snapshot is index0, position5000, duration5000, STOPPED. Test 2: two items durations 3000/4000; initial play succeeds at index0; seek(5000) clamps to3000; next makes index1/position0, a second next remains index1; previous makes index0, a second previous remains index0. Test 3: setVolume(70), mute gives effective0, setVolume(30) while muted makes getVolume30/effective0, unmute makes getVolume30/effective30\n- repeat the exact 10-file list, default-package rule, PlayerState index-zero literal initialization and forbidden -1, VolumeControl assignment while muted, deterministic clock, exact controller semantics, exact three tests and fixtures, Java 11 requirement, and no external effects in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 9 repository files\n- about 37 functions or methods\n- about 786 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- media metadata\n- playlist navigation\n- play pause and stop state\n- seek and duration bounds\n- volume and mute\n- headless deterministic playback clock\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE VIDEO-PLAYER JAVA 11 STATE CHECKLIST:\n- Task filenames are exactly pom.xml; MediaItem.java; Playlist.java; PlayerState.java; VolumeControl.java; DeterministicClock.java; PlayerSnapshot.java; PlaybackController.java; Main.java; MainTest.java at their standard Maven paths, all in the default package.\n- PlayerState() literally initializes currentIndex=0, positionMillis=0, STOPPED; -1 is forbidden. VolumeControl.setVolume always updates both volume and lastNonMuted even while muted, so setting 30 while muted restores 30 on unmute. PlaybackController.play therefore succeeds for a nonempty new playlist at index 0.\n- MainTest contains exactly three @Test methods with exact 5000ms end-of-media, 3000/4000 navigation/clamping, and 70->mute->30->unmute fixtures. Repeat these literal values and rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and each affected task.\n\n",
+  "Logic Analysis": [
+    [
+      "pom.xml",
+      "dependency/build; Maven build descriptor: compiles with source/target 11; declares org.junit.jupiter:junit-jupiter (test scope); configures Maven Surefire Plugin 3.x to run JUnit 5; no runtime dependencies."
+    ],
+    [
+      "src/main/java/MediaItem.java",
+      "domain-entity; immutable media metadata (id, title, durationMillis). Constructor validates nonblank id/title and durationMillis > 0; getters expose fields."
+    ],
+    [
+      "src/main/java/Playlist.java",
+      "domain-entity; ArrayList<MediaItem> storage with add/get/remove and navigation helpers: hasNext/hasPrevious/nextIndex/previousIndex (bounds-safe, clamp for nonempty lists; -1 for empty)."
+    ],
+    [
+      "src/main/java/PlayerState.java",
+      "domain-entity; holds playback status and cursor. Nested enum PlaybackStatus { STOPPED, PLAYING, PAUSED }. Zero-arg constructor sets currentIndex=0, positionMillis=0, status=STOPPED. Getters/setters with validation; resetPosition()."
+    ],
+    [
+      "src/main/java/VolumeControl.java",
+      "domain-entity; volume=100, lastNonMuted=100, muted=false initially. setVolume validates [0,100] and always assigns both volume and lastNonMuted even while muted. mute/unmute per exact semantics; getEffectiveVolume returns muted?0:volume."
+    ],
+    [
+      "src/main/java/DeterministicClock.java",
+      "domain-entity; deterministic in-memory clock starting at 0; getCurrentTimeMillis(); advance(deltaMillis) rejects negative and adds nonnegative delta; no wall-clock side effects."
+    ],
+    [
+      "src/main/java/PlayerSnapshot.java",
+      "pure-rule; immutable snapshot projection of playlist/state/volume. Static from(...) returns safe defaults (empty title, duration=0) when playlist empty or index invalid."
+    ],
+    [
+      "src/main/java/PlaybackController.java",
+      "orchestration; coordinates playback using Playlist, VolumeControl, DeterministicClock, and internal PlayerState. Implements play/pause/stop/seek/next/previous, clock-driven advancement, end-of-media STOPPED transition, and snapshot accessors."
+    ],
+    [
+      "src/main/java/Main.java",
+      "environment-dependent; thin demo wiring: constructs playlist, volume control, deterministic clock, controller; runs bounded demo steps and prints brief snapshot; no loops or input."
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "automated-test; exactly three JUnit Jupiter tests: (1) single item 5000ms end-of-media STOPPED; (2) two-item seek clamp and next/previous bounds; (3) volume/mute semantics including set while muted."
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/main/java/MediaItem.java",
+      "src/main/java/Playlist.java",
+      "src/main/java/PlayerState.java",
+      "src/main/java/VolumeControl.java",
+      "src/main/java/DeterministicClock.java",
+      "src/main/java/PlayerSnapshot.java",
+      "src/main/java/PlaybackController.java"
+    ],
+    "environment_dependent_modules": [
+      "pom.xml",
+      "src/main/java/Main.java"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "JDK 11 (Java 11)",
+    "Apache Maven 3.6+",
+    "Maven Surefire Plugin 3.x (JUnit 5 engine)",
+    "JUnit Jupiter (test scope only)"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "All production classes and src/main/java/Main.java are in the default package under src/main/java to avoid package/import mismatches. The build uses Maven with Java 11; org.junit.jupiter:junit-jupiter is test-scoped and Maven Surefire 3.x runs JUnit 5 tests. Core logic is separated from environment-dependent code: MediaItem, Playlist, PlayerState, VolumeControl, DeterministicClock, PlayerSnapshot, and PlaybackController form the pure core; src/main/java/Main.java is a thin, non-interactive runtime demo. The single test file src/test/java/MainTest.java imports only the canonical public classes (MediaItem, Playlist, PlayerState, VolumeControl, DeterministicClock, PlayerSnapshot, PlaybackController) and JUnit Jupiter APIs. Tests are deterministic and headless: they drive playback exclusively via DeterministicClock.advance(...) and PlaybackController.onClockAdvanced().\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "pom.xml",
+    "src/main/java/MediaItem.java",
+    "src/main/java/Playlist.java",
+    "src/main/java/PlayerState.java",
+    "src/main/java/VolumeControl.java",
+    "src/main/java/DeterministicClock.java",
+    "src/main/java/PlayerSnapshot.java",
+    "src/main/java/PlaybackController.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "Test Include Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/MediaItem.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/Playlist.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/PlayerState.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/VolumeControl.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/DeterministicClock.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/PlayerSnapshot.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "src/main/java/PlaybackController.java"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "org.junit.jupiter.api.Test and org.junit.jupiter.api.Assertions (JUnit 5)"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "src/test/java/MainTest.java",
+      "test 1 clock/end: playlist has one MediaItem duration 5000; new controller starts index 0; play succeeds; advance clock 5000 and onClockAdvanced; snapshot index0 position5000 duration5000 status STOPPED"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "test 2 seek/navigation: fresh playlist with durations 3000 and 4000; play at index0; seek5000 clamps3000; next reaches index1 position0; second next stays index1; previous reaches index0; second previous stays index0"
+    ],
+    [
+      "src/test/java/MainTest.java",
+      "test 3 volume: set70, mute makes effective0, set30 while muted makes configured volume30/effective0 and updates lastNonMuted, unmute restores configured/effective30"
+    ]
+  ]
+}
+
+
+## Legacy Code
+```Code
+----- pom.xml
+```<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>video-player</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>```
+```
+
+## Debug logs
+```text
+
+
+
+```
+
+## Bug Feedback logs
+```text
+
+```
+
+# Format example
+## Code: src/main/java/MediaItem.java
+```python
+## src/main/java/MediaItem.java
+...
+```
+
+# Instruction: Based on the context, follow "Format example", write code.
+
+## Code: src/main/java/MediaItem.java. Write code with triple quoto, based on the following attentions and context.
+1. Only One file: do your best to implement THIS ONLY ONE FILE.
+2. COMPLETE CODE: Your code will be part of the entire project, so please implement complete, reliable, reusable code snippets.
+3. Set default value: If there is any setting, ALWAYS SET A DEFAULT VALUE, ALWAYS USE STRONG TYPE AND EXPLICIT VARIABLE. AVOID circular import.
+4. Follow design: YOU MUST FOLLOW "Data structures and interfaces". DONT CHANGE ANY DESIGN. Do not use public member functions that do not exist in your design.
+5. CAREFULLY CHECK THAT YOU DONT MISS ANY NECESSARY CLASS/FUNCTION IN THIS FILE.
+6. Before using a external variable/module, make sure you import it first.
+7. Write out EVERY CODE DETAIL, DON'T LEAVE TODO.
+
