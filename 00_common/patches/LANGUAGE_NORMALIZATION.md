@@ -12,6 +12,12 @@ The pristine source is identified by commit
 `ARTIFACT_MANIFEST.json` records every post-normalization hash. Representative
 pre/post hashes are:
 
+The two historical direct-generation examples listed below were later removed
+together with their incomplete prompt package. They remain available in the
+pre-removal backup tag
+`artifact-backup-before-legacy-dt-removal-20260917`; their hashes are retained
+here as integration provenance.
+
 | File | Original SHA-256 | Released SHA-256 |
 |---|---|---|
 | `DT/codeGen/agent.py` | `ddf28ef10455cc5da090fca8d37fdb06a9d80bc6fcac8099672721bd96fdfc35` | `bbd9674257a34d20ce99b434f365f65271c67fc63f35b99375672e411146b1b8` |
@@ -20,9 +26,10 @@ pre/post hashes are:
 | `reproduct/REPRODUCIBILITY.md` | `c7226537eb37905f47230e5909048915882183366cb73aab6a5f7ca2e902cf1e` | `a0a26904ed8ae1b753646fe3886379651b59bc57fb92fff2a04e3243675c9e0c` |
 | `reproduct/campaign.py` | `6927c0dd5951d13ef20b327061c16e63e93da4c09e97de35edfa58ccd53c8c38` | `33c4aac60594366475d157a3f380a8db8d19916111bcf47e883e16d18c04d255` |
 
-The 22 Java prompt-template copies received the same comment-only English
-translation. The two released example batch configurations are operationally
-equivalent English rewrites with SHA-256
+The historical Java prompt-template copies received the same comment-only
+English translation before that incomplete prompt package was removed. The
+two released example batch configurations are operationally equivalent
+English rewrites with SHA-256
 `491ba7bbab8d9eb2c8d1ab202984ad0aface71fcf959289017d822e6a61d2b8f`.
 Evaluator comments and documentation were translated in both synchronized
 copies (`RQ1/04_docker/` and `RQ1/source/reproduct/evaluator/`).

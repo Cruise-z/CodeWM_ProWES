@@ -12,10 +12,11 @@ Reviewer-facing, credential-free configuration examples are provided in the
 artifact. Put real API credentials only in local MetaGPT configuration files;
 never commit them.
 
-Task prompts are grouped under `prompts/`. Frequently changed generation and
-watermark parameters are carried in the `xargs` mapping. The canonical batch
-schema and method settings are documented in `batchConfig.multi.example.json`
-and `method_specs.py`.
+Formal task inputs and rendered prompts are released under
+`../../../01_task_specs/` and `../../../02_prompts/`. Frequently changed
+generation and watermark parameters are carried in the `xargs` mapping. The
+canonical batch schema and method settings are documented in
+`batchConfig.multi.example.json` and `method_specs.py`.
 
 ## Batch records
 
@@ -36,11 +37,14 @@ receive a stable `h=<hash>` suffix derived from the complete parameter name.
 
 ## Entry points
 
-- `agent.py`: edit `xargs` and generate directly from a task prompt.
-- `agentArchGen.py`: generate and serialize a reusable architecture.
 - `agentCodeGen.py`: generate code from a serialized architecture with the
   configured local model.
+- `batchCodeGenDT.py`: execute the configured strength sweep from serialized
+  architecture state.
 
-The reproducibility campaign under `../reproduct/` is the preferred entry
-point for the released 42-unit experiment because it pins identities, seeds,
-and audit records.
+The reproducibility campaign under `../../reproduct/` is the architecture and
+baseline entry point for the released 42-unit experiment because it pins task
+inputs, model identities, seeds, checkpoints, and audit records. The older
+incomplete DT prompt modules and their two direct-generation examples were
+removed; they remain recoverable from Git tag
+`artifact-backup-before-legacy-dt-removal-20260917`.

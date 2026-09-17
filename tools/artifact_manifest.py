@@ -12,11 +12,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROL = {"ARTIFACT_MANIFEST.csv", "ARTIFACT_MANIFEST.json", "SHA256SUMS.txt"}
+IGNORED_PARTS = {".git", "__pycache__", ".pytest_cache"}
+IGNORED_NAMES = {".DS_Store"}
+IGNORED_SUFFIXES = {".pyc", ".pyo"}
 
 
 def files(include_control: bool = False):
     for path in sorted(ROOT.rglob("*")):
-        if (not path.is_file() and not path.is_symlink()) or ".git" in path.parts:
+        if not path.is_file() and not path.is_symlink():
+            continue
+        if any(part in IGNORED_PARTS for part in path.relative_to(ROOT).parts):
+            continue
+        if path.name in IGNORED_NAMES or path.suffix in IGNORED_SUFFIXES:
             continue
         relative = path.relative_to(ROOT).as_posix()
         if not include_control and relative in CONTROL:

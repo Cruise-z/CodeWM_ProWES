@@ -8,13 +8,13 @@ project modules.
 |---|---|---:|
 | `stage0/` | Exact architecture-synthesis user payloads | 42 units (14 C++, 14 Java, 14 Python) |
 | `stage1/` | Exact accepted-run `WriteCode` system/user prompts and input contexts | 480 file-generation actions |
-| `legacy_templates/` | Historical DT prompt modules retained only for source provenance | 5 C++, 11 Java, 4 Python task modules |
 
 The formal campaign inventory is defined by
-`../01_task_specs/manifest.json`, not by the contents of
-`legacy_templates/`. The old directory previously had the ambiguous name
-`templates/`, which incorrectly suggested that its uneven language coverage
-defined the released RQ1 experiment.
+`../01_task_specs/manifest.json`. The incomplete historical DT prompt set and
+its two obsolete direct-generation examples were removed from the reviewer
+package because they did not define or participate in the released campaign.
+The complete pre-removal tree remains recoverable at Git tag
+`artifact-backup-before-legacy-dt-removal-20260917`.
 
 `build_prompt_bundle.py` deterministically rebuilds both prompt manifests and
 all rendered prompt files from the immutable architecture checkpoints and

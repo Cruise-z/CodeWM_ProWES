@@ -120,8 +120,8 @@
     },
     {
       "path": "00_common/patches/LANGUAGE_NORMALIZATION.md",
-      "bytes": 3014,
-      "sha256": "ee5433d65746c523da8709b4d1217cb409b9fcc263cebf78e81c58295b2e3d1e",
+      "bytes": 3361,
+      "sha256": "841776c60a5c3e07963e0f43ad9670ca240496d1b3a1f7dd3bbc608a9a1fc2f7",
       "rq": "Common",
       "stage": "00_common",
       "role": "metadata-or-reproduction",
@@ -174,17 +174,8 @@
     },
     {
       "path": "RQ1/02_prompts/README.md",
-      "bytes": 1600,
-      "sha256": "d6e4b74fe6a614439d6d63ba30af1c118bcc6e96b8215f524a6395ad3ddc26c8",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/__pycache__/build_prompt_bundle.cpython-313.pyc",
-      "bytes": 20714,
-      "sha256": "4bb7005cf132305f9302722c2114d6667178319a0fcb773f17e1ab4509c6260a",
+      "bytes": 1570,
+      "sha256": "c0b2a8162fd20ba563551e4d73eb68bb93956c03b3c3eb061440ca60a6be8898",
       "rq": "RQ1",
       "stage": "02_prompts",
       "role": "source-or-input",
@@ -203,231 +194,6 @@
       "path": "RQ1/02_prompts/bundle_summary.json",
       "bytes": 1051,
       "sha256": "25e3f4a78bf94ec92b9a4eeb6a25155d7a6636080b57b6f4972b7ce92d8ca046",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/README.md",
-      "bytes": 913,
-      "sha256": "4f9eb4e2ab597474ced326aaa9ce491b215cc395a361ef66566d4cfe0afaa85c",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/__init__.py",
-      "bytes": 168,
-      "sha256": "82bf065467aa851c5f3382060c9c69969bb1d627dc19400bc1b0e9f1ccdd6230",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/__init__.py",
-      "bytes": 334,
-      "sha256": "3a771e808fb809739e31a91fed42d4171c32e7b0c81375f8cb5b1de8751837e1",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/brickBreaker.py",
-      "bytes": 844,
-      "sha256": "6b6bfc041ba2318f554f4f8f69a11b96987c7ecffcccd14b6275028119e97d96",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/caroGame.py",
-      "bytes": 5239,
-      "sha256": "42bd81c061f2226ae70baab4e236d3cefb2d881c1fc52b410c97049e81ef8176",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/flappyBird.py",
-      "bytes": 3262,
-      "sha256": "6c94440ae7526864a78b529d5236c7e78be455f610ffc3a62fa816eaaac0ac23",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/snakeGame.py",
-      "bytes": 1971,
-      "sha256": "2e6c089791571918844e622367c26e78b91a2caa67ceaeae291e325898ea63e4",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/cpp/tankBattle.py",
-      "bytes": 1336,
-      "sha256": "db37188c99b70363c5a33a5a74e9d0cc3170c1d854633f73371d7dddb9ccaccb",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/__init__.py",
-      "bytes": 656,
-      "sha256": "b6b783bbdd963afb111196940ac38c2e0b392aed350d3e4849a0cc3eed935b6c",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/brickBreaker.py",
-      "bytes": 727,
-      "sha256": "0c5ab38a508a6185a5df6c5106f832720cd8e0d58618c7df78b73b3df7a00f1e",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/calculator.py",
-      "bytes": 4472,
-      "sha256": "4773472d53bf3fcdc17a24c7cc2549a598cbb35374610a7245dff33cf082cdfc",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/caroGame.py",
-      "bytes": 7716,
-      "sha256": "79e04b84ee60b1348ab18dafb8f64123072950d6f39047a872174a28bb44231d",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/customerMS.py",
-      "bytes": 4802,
-      "sha256": "777e0a184da80c5f0245b6da292d336c286f5b509a5609301cf9cfd15dd6fc05",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/flappyBird.py",
-      "bytes": 3173,
-      "sha256": "5aac26fe84e32c4d292db785b7457cb89c2c89169a33ea460efbd76aa8bfe625",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/game2048.py",
-      "bytes": 4309,
-      "sha256": "a6975361c186380abc998689684f4f8edd2f4e117e1096afc9618d5203088406",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/qrCodeGenDet.py",
-      "bytes": 5908,
-      "sha256": "adac82db7eff200b03a168b5c9870bf515dd81a263704a7c06fe741f0a59c76d",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/snakeGame.py",
-      "bytes": 1988,
-      "sha256": "5cc325d9b97f8fae3b5b7e6cb2c679ae104ba778be87d19f81d30eb81226866b",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/tankBattle.py",
-      "bytes": 1557,
-      "sha256": "7baded6f3c8fc61ce4aae57ba55cd35d552b9ec4ab4cb595daa8b02f7f3bf62a",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/toDoListApp.py",
-      "bytes": 4454,
-      "sha256": "9266294c15aeb118626fe66227920bf1fe11d253efc30ae89b27d9b7b1ede047",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/java/videoPlayer.py",
-      "bytes": 5326,
-      "sha256": "7068ee75414650904707f4ce3773911f9e99c997be19943073172c9d2af7d126",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/python/__init__.py",
-      "bytes": 326,
-      "sha256": "9c5b2fc15aaa21016981d9e523b6ce0aa583ea37c7e724cb6e313eb9f5877cda",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/python/brickBreaker.py",
-      "bytes": 851,
-      "sha256": "15a542f28031a405912083fcea434b52094bcd2fa18acca4500d958889a0c8d8",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/python/flappyBird.py",
-      "bytes": 2937,
-      "sha256": "f7aa9bc34ca52f95b13d9468f5731fee5dfd966cbff3c29df6e54aff4ef80e42",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/python/snakeGame.py",
-      "bytes": 3134,
-      "sha256": "72c67d12a60572476f5b2e2bc84f79bff4a2464065b5b485c24b4093bac80d50",
-      "rq": "RQ1",
-      "stage": "02_prompts",
-      "role": "source-or-input",
-      "paper_mapping": "RQ1 prompt evidence; 42 Stage-0 architecture payloads and 480 accepted-run Stage-1 file-generation prompts"
-    },
-    {
-      "path": "RQ1/02_prompts/legacy_templates/python/tankBattle.py",
-      "bytes": 3178,
-      "sha256": "3e7dd1c759897ceda371923fafcb2969f6fa1a0e39749bed8765d5fee735e160",
       "rq": "RQ1",
       "stage": "02_prompts",
       "role": "source-or-input",
@@ -29280,8 +29046,8 @@
     },
     {
       "path": "RQ1/README.md",
-      "bytes": 2417,
-      "sha256": "46264d5a80d1f0083cee84c6bd894492a0f5dd77b187e2d483e54521d06eea4c",
+      "bytes": 2283,
+      "sha256": "c5c4056a8faf095703b9ad8a9888be95e74a1b8f880d5e59f44e0efd4ab98fa4",
       "rq": "RQ1",
       "stage": "README.md",
       "role": "source-or-input",
@@ -29415,26 +29181,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/README.md",
-      "bytes": 2023,
-      "sha256": "4f2a4ea1cd166bc0b1323c56172e46e0abd6f487c656948530702876ceb4a42b",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/agent.py",
-      "bytes": 2997,
-      "sha256": "bbd9674257a34d20ce99b434f365f65271c67fc63f35b99375672e411146b1b8",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/agentArchGen.py",
-      "bytes": 2826,
-      "sha256": "ed39fc1f435b5c5fb87d1355df4c6b6596d2508ca1ef342a6598cd1e68cbf558",
+      "bytes": 2289,
+      "sha256": "7af412540379fa1b759406629d6a31b58572a505ad3b78304e6ebbfad74de82b",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -30344,222 +30092,6 @@
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/test/test_evoseal_api.py",
       "bytes": 2352,
       "sha256": "910a9c6908fa4a207ef81a0386f2e200ba1aa8481b418c5b0a0cb5b2b60e5a42",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/__init__.py",
-      "bytes": 167,
-      "sha256": "d988bd15bb327edccdae17f20bcab1a3f0e6350f748ccb70ef883f6c29643e28",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/__init__.py",
-      "bytes": 334,
-      "sha256": "3a771e808fb809739e31a91fed42d4171c32e7b0c81375f8cb5b1de8751837e1",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/brickBreaker.py",
-      "bytes": 844,
-      "sha256": "6b6bfc041ba2318f554f4f8f69a11b96987c7ecffcccd14b6275028119e97d96",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/caroGame.py",
-      "bytes": 5239,
-      "sha256": "42bd81c061f2226ae70baab4e236d3cefb2d881c1fc52b410c97049e81ef8176",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/flappyBird.py",
-      "bytes": 3262,
-      "sha256": "6c94440ae7526864a78b529d5236c7e78be455f610ffc3a62fa816eaaac0ac23",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/snakeGame.py",
-      "bytes": 1971,
-      "sha256": "2e6c089791571918844e622367c26e78b91a2caa67ceaeae291e325898ea63e4",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/cpp/tankBattle.py",
-      "bytes": 1336,
-      "sha256": "db37188c99b70363c5a33a5a74e9d0cc3170c1d854633f73371d7dddb9ccaccb",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/__init__.py",
-      "bytes": 656,
-      "sha256": "b6b783bbdd963afb111196940ac38c2e0b392aed350d3e4849a0cc3eed935b6c",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/brickBreaker.py",
-      "bytes": 727,
-      "sha256": "0c5ab38a508a6185a5df6c5106f832720cd8e0d58618c7df78b73b3df7a00f1e",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/calculator.py",
-      "bytes": 4472,
-      "sha256": "4773472d53bf3fcdc17a24c7cc2549a598cbb35374610a7245dff33cf082cdfc",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/caroGame.py",
-      "bytes": 7716,
-      "sha256": "79e04b84ee60b1348ab18dafb8f64123072950d6f39047a872174a28bb44231d",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/customerMS.py",
-      "bytes": 4802,
-      "sha256": "777e0a184da80c5f0245b6da292d336c286f5b509a5609301cf9cfd15dd6fc05",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/flappyBird.py",
-      "bytes": 3173,
-      "sha256": "5aac26fe84e32c4d292db785b7457cb89c2c89169a33ea460efbd76aa8bfe625",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/game2048.py",
-      "bytes": 4309,
-      "sha256": "a6975361c186380abc998689684f4f8edd2f4e117e1096afc9618d5203088406",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/qrCodeGenDet.py",
-      "bytes": 5908,
-      "sha256": "adac82db7eff200b03a168b5c9870bf515dd81a263704a7c06fe741f0a59c76d",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/snakeGame.py",
-      "bytes": 1988,
-      "sha256": "5cc325d9b97f8fae3b5b7e6cb2c679ae104ba778be87d19f81d30eb81226866b",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/tankBattle.py",
-      "bytes": 1557,
-      "sha256": "7baded6f3c8fc61ce4aae57ba55cd35d552b9ec4ab4cb595daa8b02f7f3bf62a",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/toDoListApp.py",
-      "bytes": 4454,
-      "sha256": "9266294c15aeb118626fe66227920bf1fe11d253efc30ae89b27d9b7b1ede047",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/java/videoPlayer.py",
-      "bytes": 5326,
-      "sha256": "7068ee75414650904707f4ce3773911f9e99c997be19943073172c9d2af7d126",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/python/__init__.py",
-      "bytes": 326,
-      "sha256": "9c5b2fc15aaa21016981d9e523b6ce0aa583ea37c7e724cb6e313eb9f5877cda",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/python/brickBreaker.py",
-      "bytes": 851,
-      "sha256": "15a542f28031a405912083fcea434b52094bcd2fa18acca4500d958889a0c8d8",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/python/flappyBird.py",
-      "bytes": 2937,
-      "sha256": "f7aa9bc34ca52f95b13d9468f5731fee5dfd966cbff3c29df6e54aff4ef80e42",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/python/snakeGame.py",
-      "bytes": 3134,
-      "sha256": "72c67d12a60572476f5b2e2bc84f79bff4a2464065b5b485c24b4093bac80d50",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/DT/codeGen/prompts/python/tankBattle.py",
-      "bytes": 3178,
-      "sha256": "3e7dd1c759897ceda371923fafcb2969f6fa1a0e39749bed8765d5fee735e160",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -35948,15 +35480,6 @@
       "paper_mapping": ""
     },
     {
-      "path": "RQ1/source/reproduct/model_runtime/modelDeployer/__pycache__/server.cpython-313.pyc",
-      "bytes": 25719,
-      "sha256": "dd2123edfe459399676122782bf9fa1e54571310ac168521fe42b75e93ee9605",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/config.py",
       "bytes": 2353,
       "sha256": "cd7208ac02b7bb70e6bd8a4df3d15d6e539b7000fd60580ce337c04395b99ebb",
@@ -35987,15 +35510,6 @@
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__init__.py",
       "bytes": 266,
       "sha256": "1d7c8e570ae08e324f40f8b4591347f0043d516988df5ade9e754f20f1dcdcc8",
-      "rq": "RQ1",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
-      "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__pycache__/timing.cpython-313.pyc",
-      "bytes": 1418,
-      "sha256": "b6cec859d90d73ce0e4792f572e40b0e8013798e5a5b5a18d621a9f80f580006",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -38801,15 +38315,6 @@
       "paper_mapping": ""
     },
     {
-      "path": "RQ2/source/training/SrcMarker_fresh/__pycache__/rq3_benchmark_semantic.cpython-313.pyc",
-      "bytes": 26209,
-      "sha256": "f2cce88ba8cbd32fb12afbe35185d8c4c708697a54fc180ecc007ff4aa751d1e",
-      "rq": "RQ2",
-      "stage": "source",
-      "role": "source-or-input",
-      "paper_mapping": ""
-    },
-    {
       "path": "RQ2/source/training/SrcMarker_fresh/benchmark_mbxp.py",
       "bytes": 14112,
       "sha256": "89f3350d053073473a47c4dcbfd5e2b70c3a7eeddf085b5d34a81b350742b2b2",
@@ -41123,24 +40628,6 @@
       "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
-      "path": "RQ3/01_timing_harness/__pycache__/benchmark_logits_bias.cpython-313.pyc",
-      "bytes": 21366,
-      "sha256": "04453462d161678fc6808c1b09c76ca12197c3a819958a47a207b60715b65a9a",
-      "rq": "RQ3",
-      "stage": "01_timing_harness",
-      "role": "source-or-input",
-      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
-    },
-    {
-      "path": "RQ3/01_timing_harness/__pycache__/benchmark_semantic.cpython-313.pyc",
-      "bytes": 26191,
-      "sha256": "6c06c6b819c78653ffe9d49021435998b4caa98fa7db4aeca82932f4abae3cff",
-      "rq": "RQ3",
-      "stage": "01_timing_harness",
-      "role": "source-or-input",
-      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
-    },
-    {
       "path": "RQ3/01_timing_harness/benchmark_logits_bias.py",
       "bytes": 16151,
       "sha256": "92fc2197a707da4feee462ebfe7f64863d2050422066a891a0625d337e59bd4f",
@@ -41324,15 +40811,6 @@
       "path": "RQ3/05_analysis/README.md",
       "bytes": 1050,
       "sha256": "0ad2318f8b27ae7fd9d6def6a4e8034399d6735aa70ae6aac729ba850e74cd33",
-      "rq": "RQ3",
-      "stage": "05_analysis",
-      "role": "source-or-input",
-      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
-    },
-    {
-      "path": "RQ3/05_analysis/__pycache__/reproduce_table_x.cpython-313.pyc",
-      "bytes": 18451,
-      "sha256": "beea5a895da042c0d81ceae2b1a8ab5eb80cb1b379f3729f43fe9ebe6523aaa2",
       "rq": "RQ3",
       "stage": "05_analysis",
       "role": "source-or-input",
@@ -106517,36 +105995,9 @@
       "paper_mapping": ""
     },
     {
-      "path": "tools/__pycache__/artifact_manifest.cpython-313.pyc",
-      "bytes": 8284,
-      "sha256": "1923af044be18f88fbe06235dba4cbb557f981fac15ccfe94b2c51d55e90f5c7",
-      "rq": "Common",
-      "stage": "tools",
-      "role": "metadata-or-reproduction",
-      "paper_mapping": ""
-    },
-    {
-      "path": "tools/__pycache__/build_rq1_baseline_ledgers.cpython-313.pyc",
-      "bytes": 6471,
-      "sha256": "42576458f09b7005a49c7ac4b6ba9743986edf1a3e398e3917bff8f5d2551eb2",
-      "rq": "Common",
-      "stage": "tools",
-      "role": "metadata-or-reproduction",
-      "paper_mapping": ""
-    },
-    {
-      "path": "tools/__pycache__/verify_rq1_evidence.cpython-313.pyc",
-      "bytes": 26189,
-      "sha256": "ce5c23b0cd125432d47b88e55897c7fc22157c2e355398489cb05100b185f56f",
-      "rq": "Common",
-      "stage": "tools",
-      "role": "metadata-or-reproduction",
-      "paper_mapping": ""
-    },
-    {
       "path": "tools/artifact_manifest.py",
-      "bytes": 5724,
-      "sha256": "582445fbefd264cd731ae469effe7863a6f973900080f2e71d351f6210de5f67",
+      "bytes": 6017,
+      "sha256": "19e4e563cc85dbeac9191b21ce3e9e9acb12a1c489451d1c665a716d01ecc970",
       "rq": "Common",
       "stage": "tools",
       "role": "metadata-or-reproduction",
@@ -106563,8 +106014,8 @@
     },
     {
       "path": "tools/check_release_language.py",
-      "bytes": 3759,
-      "sha256": "e299bff77ce0a07ca9874d99b0b32ae47fea82b80be7ea82d284411969482b26",
+      "bytes": 3637,
+      "sha256": "2c91ef18a102ced681478efc7984c6b650e3dec84bcf09a2887ef8b4e39efd1d",
       "rq": "Common",
       "stage": "tools",
       "role": "metadata-or-reproduction",
