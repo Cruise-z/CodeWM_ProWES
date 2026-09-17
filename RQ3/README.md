@@ -14,7 +14,9 @@ The logits-bias experiment measures six methods on two fixed metaProjectDEV
 Java contexts. Each method receives one excluded warm-up and ten measured
 generations (five repetitions of two workloads), each capped at 256 completion
 tokens. Embedding is method-owned logits-processor wall time and excludes model
-forward time. Extraction is the complete detector invocation. The CodeIP row
+forward time. Extraction is the complete detector invocation. SWEET extraction
+includes a fresh model forward over the completed sequence to reconstruct the
+per-token entropy gate and rejects runs with no scoreable token. The CodeIP row
 uses the released random-message branch without the optional PDA/type predictor,
 which is the variant represented in Table X.
 

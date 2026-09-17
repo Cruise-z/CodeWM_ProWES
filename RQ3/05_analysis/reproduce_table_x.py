@@ -67,12 +67,28 @@ def assert_close(actual: float, recorded: float, label: str) -> None:
         raise ValueError(f"{label}: recomputed {actual} != recorded {recorded}")
 
 
+def mappings_with_field(value: Any, field: str) -> list[dict[str, Any]]:
+    matches = []
+    if isinstance(value, dict):
+        if field in value:
+            matches.append(value)
+        for nested in value.values():
+            matches.extend(mappings_with_field(nested, field))
+    elif isinstance(value, list):
+        for nested in value:
+            matches.extend(mappings_with_field(nested, field))
+    return matches
+
+
 def verify_logits_records(payload: dict[str, Any]) -> None:
     if tuple(payload["workload"]["method_order"]) != LOGITS_ORDER:
         raise ValueError("logits method order does not match the Table X contract")
     for case in payload["workload"]["cases"]:
         if sha256_text(case["rendered_prompt"]) != case["rendered_prompt_sha256"]:
             raise ValueError(f"{case['name']}: rendered-prompt digest mismatch")
+    sweet_params = payload["workload"]["method_params"]["sweet"]
+    if float(sweet_params["entropy_threshold"]) != 0.5:
+        raise ValueError("SWEET Table X campaign must use the paper's ET=0.5 setting")
     for method in LOGITS_ORDER:
         records = payload["runs"][method]
         if len(records) != int(payload["summary"][method]["runs"]):
@@ -93,6 +109,21 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
             )
             if sha256_text(row["generated_text"]) != row["generated_text_sha256"]:
                 raise ValueError(f"{method} run {index}: generated-text digest mismatch")
+            if method == "sweet":
+                scores = mappings_with_field(row.get("wm_detection"), "num_tokens_scored")
+                if len(scores) != 1 or int(scores[0]["num_tokens_scored"]) <= 0:
+                    raise ValueError(
+                        f"sweet run {index}: detector did not score a positive token count"
+                    )
+                entropy = scores[0].get("entropy")
+                if not isinstance(entropy, dict) or entropy.get("source") != "detector_model_forward":
+                    raise ValueError(
+                        f"sweet run {index}: missing independent detector entropy provenance"
+                    )
+                if int(entropy.get("qualified_tokens", -1)) != int(scores[0]["num_tokens_scored"]):
+                    raise ValueError(
+                        f"sweet run {index}: entropy-qualified/scored-token mismatch"
+                    )
 
 
 def verify_semantic_records(

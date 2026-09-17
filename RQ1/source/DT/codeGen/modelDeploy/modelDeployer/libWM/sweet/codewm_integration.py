@@ -37,7 +37,11 @@ CODEWM_INTEGRATION = MethodDecodeContract(
 CODEWM_PLUGIN = MethodIntegrationPlugin(
     contract=CODEWM_INTEGRATION,
     builder=build_codewm,
-    required_framework_components=(FrameworkComponent.TOKENIZER,),
+    required_framework_components=(
+        FrameworkComponent.TOKENIZER,
+        FrameworkComponent.MODEL,
+        FrameworkComponent.DEVICE,
+    ),
     parameter_contract=MethodParameterContract(
         accepted=(
             "gamma",

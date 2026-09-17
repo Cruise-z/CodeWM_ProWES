@@ -1,6 +1,6 @@
 # sweetLP.py
 from __future__ import annotations
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 from math import sqrt
 
 import torch
@@ -17,14 +17,18 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
     SWEET processor with integrated embedding and offline detection.
     - Preserve entropy-gated green-list biasing.
     - Cache prefix_len, full_ids, and per-step entropy at runtime.
-    - Expose detect_last() without server-provided side information.
+    - Recompute detector entropy from the completed sequence, matching the
+      standalone SWEET detection protocol instead of relying on generation
+      side information.
     """
 
     def __init__(
         self,
         *args,
         entropy_threshold: float = 0.9,
-        tokenizer=None,                 # Optional placeholder.
+        tokenizer=None,
+        model=None,
+        device=None,
         z_threshold: float = 4.0,
         ignore_repeated_bigrams: bool = False,
         **kwargs,
@@ -33,6 +37,8 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         # SWEET configuration; it does not alter upstream semantics.
         self.entropy_threshold = float(entropy_threshold)
         self._tokenizer = tokenizer
+        self._model = model
+        self._device = device
         self._z_threshold = float(z_threshold)
         self._ignore_repeated_bigrams = bool(ignore_repeated_bigrams)
         if getattr(self, "rng", None) is None:
@@ -133,6 +139,68 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
     def _compute_p_value(z: float) -> float:
         return float(scipy.stats.norm.sf(z))
 
+    def _detector_entropy(self, input_ids: Tensor, prefix_len: int) -> tuple[List[float], Dict[str, Any]]:
+        """Recompute per-token entropy from the completed sequence.
+
+        A causal LM logit at position ``i - 1`` predicts token ``i``.  The
+        prompt is therefore retained as model context, while only continuation
+        positions are returned to the SWEET scoring gate.  Chunked float32
+        entropy calculation avoids holding several full-vocabulary temporary
+        tensors at once.
+        """
+        if self._model is None or self._device is None:
+            raise RuntimeError("SWEET detection requires the generation model and device")
+
+        prefix_len = int(prefix_len)
+        sequence_length = int(input_ids.numel())
+        if prefix_len < 1 or sequence_length <= prefix_len:
+            raise ValueError(
+                "SWEET detector requires a non-empty prompt and continuation: "
+                f"prefix_len={prefix_len}, sequence_length={sequence_length}"
+            )
+
+        model_ids = input_ids.to(self._device, non_blocking=True).unsqueeze(0)
+        with torch.inference_mode():
+            outputs = self._model(
+                input_ids=model_ids,
+                use_cache=False,
+                return_dict=True,
+            )
+        logits = outputs.logits
+        if logits.ndim != 3 or int(logits.shape[0]) != 1:
+            raise ValueError(
+                "SWEET detector expected model logits with shape [1, sequence, vocab], "
+                f"got {tuple(logits.shape)}"
+            )
+
+        predictive_logits = logits[0, prefix_len - 1 : sequence_length - 1]
+        expected = sequence_length - prefix_len
+        if int(predictive_logits.shape[0]) != expected:
+            raise ValueError(
+                "SWEET detector entropy alignment failed: "
+                f"expected={expected}, got={int(predictive_logits.shape[0])}"
+            )
+
+        entropy_chunks = []
+        for chunk in predictive_logits.split(64, dim=0):
+            log_probabilities = torch.log_softmax(chunk.float(), dim=-1)
+            entropy_chunks.append(
+                -(log_probabilities.exp() * log_probabilities).sum(dim=-1)
+            )
+        continuation_entropy = torch.cat(entropy_chunks).detach().cpu()
+        values = [float(value) for value in continuation_entropy.tolist()]
+        qualified = sum(value > self.entropy_threshold for value in values)
+        stats: Dict[str, Any] = {
+            "source": "detector_model_forward",
+            "continuation_tokens": len(values),
+            "qualified_tokens": int(qualified),
+            "threshold": float(self.entropy_threshold),
+            "minimum": float(min(values)),
+            "maximum": float(max(values)),
+            "mean": float(sum(values) / len(values)),
+        }
+        return [0.0] * prefix_len + values, stats
+
     def _score_sequence(
         self,
         input_ids: Tensor,
@@ -217,15 +285,15 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
 
     def detect_last(self) -> Dict:
         """
-        Detect from full_ids, prefix_len, and entropy cached during generation.
+        Detect from cached token IDs with entropy independently recomputed by
+        the model over the completed prompt and continuation.
         """
         if self._cache_full_ids is None or self._cache_prefix_len is None:
             raise RuntimeError("No cached sequence for detection. Generate with this processor first.")
 
         full_ids: Tensor = self._cache_full_ids
         prefix_len: int = int(self._cache_prefix_len)
-        # Extend generation-only entropy values to the full ID sequence.
-        entropy_full = [0.0] * prefix_len + list(self._cache_entropy[: max(0, len(full_ids) - prefix_len)])
+        entropy_full, entropy_stats = self._detector_entropy(full_ids, prefix_len)
 
         out: Dict = {}
         score = self._score_sequence(
@@ -241,6 +309,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
             return_p_value=True,
         )
         out.update(score)
+        out["entropy"] = entropy_stats
 
         thr = float(self._z_threshold)
         if score.pop("invalid", False):
@@ -274,6 +343,8 @@ def build_codewm(resources, params):
         delta=params.get("delta", 1),
         entropy_threshold=params.get("entropy_threshold", 0.9),
         tokenizer=resources.tokenizer,
+        model=resources.model,
+        device=resources.device,
         z_threshold=params.get("z_threshold", 4.0),
         ignore_repeated_bigrams=ignore_repeated_bigrams,
     )

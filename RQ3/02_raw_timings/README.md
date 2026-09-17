@@ -3,6 +3,10 @@
 - `logits_bias_raw.json` contains the excluded warm-ups, 60 measured
   generations, generated source, processor-level timing, detector output,
   environment, configurations, and run-level bootstrap summaries.
+- `sweet_rerun_raw.json` preserves the standalone corrected SWEET campaign.
+  The same SWEET rows and summary are merged into `logits_bias_raw.json`; its
+  entropy diagnostics prove that extraction executed the detector model
+  forward and scored nonzero tokens.
 - `codemark_csn_js_raw.json` and `srcmarker_csn_js_raw.json` contain the 20
   excluded warm-ups and all 3,150 measured CodeSearchNet JavaScript samples
   for each method. Every row retains input/output hashes, selected

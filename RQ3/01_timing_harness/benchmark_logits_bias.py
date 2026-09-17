@@ -55,7 +55,7 @@ METHOD_PARAMS: dict[str, dict[str, Any]] = {
     "sweet": {
         "gamma": 0.5,
         "delta": EEI_MIDPOINTS["sweet"],
-        "entropy_threshold": 0.9,
+        "entropy_threshold": 0.5,
         "z_threshold": 4.0,
         "ignore_repeated_bigrams": False,
     },
@@ -159,6 +159,56 @@ def detection_errors(value: Any, path: str = "wm_detection") -> list[str]:
     return errors
 
 
+def mappings_with_field(value: Any, field: str) -> list[dict[str, Any]]:
+    matches = []
+    if isinstance(value, dict):
+        if field in value:
+            matches.append(value)
+        for nested in value.values():
+            matches.extend(mappings_with_field(nested, field))
+    elif isinstance(value, list):
+        for nested in value:
+            matches.extend(mappings_with_field(nested, field))
+    return matches
+
+
+def validate_detection(method: str, detection: Any, completion_tokens: int) -> None:
+    """Reject successful-looking responses that did no detector work."""
+    errors = detection_errors(detection or {})
+    if errors:
+        raise RuntimeError(f"{method} detector failed: {'; '.join(errors)}")
+    if method != "sweet":
+        return
+
+    score_rows = mappings_with_field(detection, "num_tokens_scored")
+    if len(score_rows) != 1:
+        raise RuntimeError(
+            "SWEET detector must return exactly one num_tokens_scored record, "
+            f"got {len(score_rows)}"
+        )
+    score = score_rows[0]
+    scored = int(score["num_tokens_scored"])
+    if scored <= 0:
+        raise RuntimeError("SWEET detector scored zero tokens; timing would be a no-op")
+    entropy = score.get("entropy")
+    if not isinstance(entropy, dict):
+        raise RuntimeError("SWEET detector omitted entropy provenance")
+    if entropy.get("source") != "detector_model_forward":
+        raise RuntimeError(
+            "SWEET detector did not use an independent detector model forward"
+        )
+    if int(entropy.get("continuation_tokens", -1)) != completion_tokens:
+        raise RuntimeError(
+            "SWEET detector entropy/token mismatch: "
+            f"entropy={entropy.get('continuation_tokens')}, completion={completion_tokens}"
+        )
+    if int(entropy.get("qualified_tokens", -1)) != scored:
+        raise RuntimeError(
+            "SWEET detector qualified/scored-token mismatch: "
+            f"qualified={entropy.get('qualified_tokens')}, scored={scored}"
+        )
+
+
 def run_once(
     endpoint: str,
     method: str,
@@ -195,9 +245,7 @@ def run_once(
     extraction_seconds = generation_metrics.get("watermark_detection_elapsed_s")
     if extraction_seconds is None:
         raise RuntimeError(f"{method} response omitted detector timing")
-    errors = detection_errors(choice.get("wm_detection") or {})
-    if errors:
-        raise RuntimeError(f"{method} detector failed: {'; '.join(errors)}")
+    validate_detection(method, choice.get("wm_detection") or {}, completion_tokens)
     components = {
         name: metrics
         for name, metrics in processor_metrics.items()
@@ -350,16 +398,17 @@ def main() -> int:
                 )
 
     result = {
-        "schema_version": 3,
+        "schema_version": 4,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "measurement_contract": {
             "embedding": "method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
-            "extraction": "complete detect_last() invocation with CUDA synchronized before and after",
+            "extraction": "complete detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the completed sequence",
             "normalization": "elapsed_seconds * 1,000,000 / authoritative completion_tokens",
             "aggregation": "sum elapsed seconds / sum reference tokens",
             "model_forward_in_embedding": False,
             "codeip_variant": "released random-message branch without PDA/type predictor",
             "strength": "arithmetic midpoint of each method's RQ1 EEI",
+            "sweet_admission": "every measured run must score at least one token and report detector_model_forward entropy provenance",
         },
         "workload": {
             "manifest": str(args.workloads.resolve()),
