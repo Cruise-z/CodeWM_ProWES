@@ -1,0 +1,65 @@
+Generate a complete medium-size C++17 repository architecture for: Brick breaker game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+
+Project-specific C++ compilation contract:
+- every declaration and definition of Level::remaining and GameEngine::remainingBricks uses `std::size_t`, never unqualified `size_t`; include/Level.h and include/GameEngine.h each directly contain `#include <cstddef>`
+- src/Level.cpp and src/GameEngine.cpp spell the matching return definitions as `std::size_t`; declarations and definitions must match exactly
+- src/GameEngine.cpp directly contains `#include "Collision.h"` before using Collision, directly contains `#include <cmath>`, and spells square root as `std::sqrt`; do not rely on GameEngine.h or transitive includes for Collision or cmath
+- keep all public types in namespace breakout consistently; Collision is the `breakout::Collision` struct declared in include/Collision.h, and GameEngine code inside namespace breakout calls that same type without inventing a different namespace or free-function API
+- repeat the literal `#include <cstddef>`, `std::size_t`, `#include "Collision.h"`, `#include <cmath>`, and `std::sqrt` rules in Full API specification, Logic Analysis, Shared Knowledge, and the affected Level/GameEngine tasks so seeded generation cannot omit them
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 39 functions or methods
+- about 628 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- ball motion
+- paddle control
+- wall paddle and brick collision
+- brick durability or removal
+- score and lives
+- level completion and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE BRICK-BREAKER C++ COMPILATION CHECKLIST:
+- Full API specification, Logic Analysis, Shared Knowledge, and every Level/GameEngine task must each preserve the literal tokens `#include <cstddef>` and `std::size_t` for Level::remaining and GameEngine::remainingBricks.
+- The src/GameEngine.cpp contract must literally say it directly contains `#include "Collision.h"` and `#include <cmath>`, and every square-root call is `std::sqrt`. The implementation must not depend on transitive includes.
+- Do not summarize or omit any literal include/type token in this final checklist; the architecture is invalid without all five tokens.
+

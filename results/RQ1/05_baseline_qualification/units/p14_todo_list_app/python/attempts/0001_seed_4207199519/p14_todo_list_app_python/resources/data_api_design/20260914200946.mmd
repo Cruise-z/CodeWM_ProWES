@@ -1,0 +1,107 @@
+classDiagram
+    class ValidationError
+    ValidationError : +__init__(message: str)
+
+    class NotFoundError
+    NotFoundError --|> ValidationError
+
+    class Priority {
+        <<enumeration>>
+        LOW
+        MEDIUM
+        HIGH
+        +order_value() int
+        +from_value(v: Priority|str) Priority
+    }
+
+    class Task {
+        +id: int
+        +title: str
+        +description: Optional[str]
+        +priority: Priority
+        +due_date: Optional[date]
+        +tags: List[str]
+        +completed: bool
+        +completed_at: Optional[date]
+        +mark_complete_on(day: date) None
+        +mark_incomplete() None
+    }
+
+    class TagMatchMode {
+        <<enumeration>>
+        ANY
+        ALL
+    }
+
+    class FilterCriteria {
+        +tags: Optional[List[str]]
+        +tag_mode: TagMatchMode
+        +include_completed: bool
+        +priorities: Optional[List[Priority]]
+    }
+
+    class SortKey {
+        <<enumeration>>
+        DUE_DATE
+        PRIORITY
+        TITLE
+        COMPLETED
+    }
+
+    class SortDirection {
+        <<enumeration>>
+        ASC
+        DESC
+    }
+
+    class TaskRepository {
+        <<abstract>>
+        +next_id() int
+        +add(task: Task) None
+        +get(task_id: int) Task
+        +edit(task: Task) None
+        +delete(task_id: int) None
+        +list_all() List[Task]
+    }
+
+    class InMemoryTaskRepository {
+        +next_id() int
+        +add(task: Task) None
+        +get(task_id: int) Task
+        +edit(task: Task) None
+        +delete(task_id: int) None
+        +list_all() List[Task]
+    }
+    InMemoryTaskRepository --|> TaskRepository
+
+    class Clock {
+        <<abstract>>
+        +today() date
+    }
+    class SystemClock {
+        +today() date
+    }
+    class FixedClock {
+        +fixed: date
+        +today() date
+    }
+    SystemClock --|> Clock
+    FixedClock --|> Clock
+
+    class ApplicationService {
+        -repo: TaskRepository
+        -clock: Clock
+        +create_task(title: str, priority: Priority|str, description: Optional[str]=None, due_date: Optional[date]=None, tags: Optional[List[str]]=None) Task
+        +edit_task(task_id: int, title: Optional[str]=None, priority: Optional[Priority|str]=None, description: Optional[str]=None, due_date: Optional[date]=None, tags: Optional[List[str]]=None) Task
+        +complete_task(task_id: int) Task
+        +uncomplete_task(task_id: int) Task
+        +delete_task(task_id: int) None
+        +list_tasks(criteria: Optional[FilterCriteria]=None, sort_keys: Optional[List[SortKey]]=None, direction: SortDirection=SortDirection.ASC) List[Task]
+        +summary() dict
+    }
+
+    ApplicationService --> TaskRepository
+    ApplicationService --> Clock
+    ApplicationService --> Task
+    FilterCriteria --> TagMatchMode
+    Task --> Priority

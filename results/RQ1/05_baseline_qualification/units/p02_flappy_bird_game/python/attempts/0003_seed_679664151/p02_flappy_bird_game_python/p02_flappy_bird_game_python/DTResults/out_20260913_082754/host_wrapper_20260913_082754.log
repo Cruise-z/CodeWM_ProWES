@@ -1,0 +1,91 @@
+===== BEGIN @ 20260913_082754 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260913_082754
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754/host_wrapper_20260913_082754.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          localhost,127.0.0.1,::1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python -> CodeWM-DT:/workspace/proj_20260913_082754
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (8.2.2)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=1.5 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_____________________________ test_runtime_wiring ______________________________
+
+    def test_runtime_wiring() -> None:
+        """Test basic runtime wiring: Config and Game construction, flap, and step."""
+        # Create a default configuration
+        config = Config.default()
+    
+        # Create a game instance
+        game = Game(config)
+    
+        # Verify initial state
+        status = game.status()
+        assert status["state"] == "ready"
+        assert status["tick"] == 0
+        assert status["y"] == config.start_y
+        assert status["vy"] == 0.0
+        assert status["score"] == 0
+        assert status["pipes"] == []
+    
+        # Perform one flap to start the game
+        game.flap()
+    
+        # Verify state transition
+        status = game.status()
+        assert status["state"] == "running"
+        assert status["vy"] == config.flap_impulse  # Should have immediate impulse
+    
+        # Step the game a few times
+        for _ in range(3):
+            game.step()
+    
+        # Verify game progression
+        status = game.status()
+>       assert status["tick"] == 4  # 1 initial + 3 steps
+E       assert 3 == 4
+
+tests/test_main.py:39: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_runtime_wiring - assert 3 == 4
+1 failed, 2 passed in 0.04s
+[WARN] Evaluation failed with exit code: 1
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0026_seed_679664151/p02_flappy_bird_game_python/p02_flappy_bird_game_python/DTResults/out_20260913_082754/host_wrapper_20260913_082754.log

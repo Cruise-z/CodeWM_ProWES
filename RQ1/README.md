@@ -13,23 +13,25 @@ Evidence map:
    `initial_repository` input. These checkpoints permit downstream generation
    without recalling the proprietary Stage-0 model.
 4. `04_docker/`: frozen Docker/Podman evaluator and build/test/run protocol.
-5. `06_watermark_configs/`: method registry and batch configuration schema.
-6. `source/DT/codeGen/`: generation, watermark, detector, timing, and sweep code.
-7. `source/reproduct/`: resumable campaign driver, frozen framework, model
+5. `05_baseline_qualification/`: baseline protocol and link to the complete
+   final-epoch observations under `results/RQ1/05_baseline_qualification/`.
+6. `06_watermark_configs/`: method registry and batch configuration schema.
+7. `source/DT/codeGen/`: generation, watermark, detector, timing, and sweep code.
+8. `source/reproduct/`: resumable campaign driver, frozen framework, model
    runtime, model identifiers, deterministic seed protocol, and audit logic.
 
 `source/reproduct/units` is a relative link to the reviewer-facing checkpoint
 tree, so `python RQ1/source/reproduct/campaign.py status` recognizes all 42
 architectures without duplicating them.
 
-The supplied result archives are expanded under `../results/RQ1/`. They add
-9,141 point-level applicability rows, 298 batch summaries, four aggregate
-detectability logs, and their analysis scripts. Run
+The result evidence under `../results/RQ1/` includes 88 baseline attempts, 42
+accepted repository snapshots, 42 verified replays, 9,141 point-level
+applicability rows, 298 batch summaries, four aggregate detectability logs,
+and the corresponding audit/analysis scripts. Run
 `../paper_reproduction/reproduce_rq1.sh` to verify and regenerate the released
 outputs.
 
-The result archives do not contain the complete baseline-attempt/replay
-ledger, accepted repository snapshots, per-point Docker logs, or per-sample
-detector scores. The architecture checkpoints here are canonical inputs, but
-they are not a substitute for those absent observations. The exact boundary is
-recorded in `../ARTIFACT_COMPLETENESS.md` and `../results/RQ1/README.md`.
+The baseline qualification chain is complete. The separate strength-sweep and
+detectability archives still do not contain per-point Docker logs/repository
+snapshots or per-sample detector scores. The exact boundary is recorded in
+`../ARTIFACT_COMPLETENESS.md` and `../results/RQ1/README.md`.

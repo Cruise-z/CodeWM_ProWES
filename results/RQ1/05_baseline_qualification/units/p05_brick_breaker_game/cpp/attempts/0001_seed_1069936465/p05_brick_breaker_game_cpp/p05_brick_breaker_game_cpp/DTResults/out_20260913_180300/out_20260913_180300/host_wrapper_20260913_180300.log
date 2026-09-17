@@ -1,0 +1,24 @@
+===== BEGIN @ 20260913_180300 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/attempts/0001_seed_1069936465/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260913_180300
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/attempts/0001_seed_1069936465/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp/DTResults/out_20260913_180300
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/attempts/0001_seed_1069936465/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp/DTResults/out_20260913_180300/host_wrapper_20260913_180300.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          ::1,localhost,127.0.0.1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/attempts/0001_seed_1069936465/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp -> CodeWM-DT:/workspace/proj_20260913_180300

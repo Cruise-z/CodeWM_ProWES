@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T20:49:15.631036+00:00",
+  "accepted_repository_tree_sha256": "68d4a5e9d3694f237851bad0798e85272e101f9fe23959d07788137628d7d6dc",
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "0c3308c5aeee9258c55977229ef5b91bb5a3a7c9130d93444a59becd23faef67",
+    "initial_repository_tree_sha256": "92b49517974bd4546a5b870dda02671d3634413cb2fa3692aef609e626c31476",
+    "prompt_sha256": "d9d23071d745ddfaf734ea629f95f9653ee0241e22dddf68abaff1d42d6416df"
+  },
+  "architecture_team_sha256": "0c3308c5aeee9258c55977229ef5b91bb5a3a7c9130d93444a59becd23faef67",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p13_video_downloader/cpp/attempts/0001_seed_2929423155/evaluator.log",
+  "attempt_evidence": "units/p13_video_downloader/cpp/attempts/0001_seed_2929423155/evidence.json",
+  "attempt_generation_report": "units/p13_video_downloader/cpp/attempts/0001_seed_2929423155/generation_report.json",
+  "completed_at": "2026-09-14T20:49:15.612613+00:00",
+  "evaluator_elapsed_seconds": 3.366,
+  "evaluator_log_sha256": "0f6911450ad2ff69f8cf2ebe9b16d98d94d11c77af0369166196418a3abb10a1",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/cpp/attempts/0001_seed_2929423155/p13_video_downloader_cpp/p13_video_downloader_cpp",
+  "generated_repository_tree_sha256": "b9d39d7f2795d1c62df80ca104916429fc16b908d0340466e8949eb2fcb7fbbf",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2929423155,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "bc2e3c25f2e17f8fff21cc8b2a0d0837dfde41a5a3919fbd40e6449c3fab724d",
+  "initial_repository_tree_sha256": "92b49517974bd4546a5b870dda02671d3634413cb2fa3692aef609e626c31476",
+  "passed": true,
+  "rng_seed": 2929423155,
+  "started_at": "2026-09-14T20:43:46.851338+00:00",
+  "truncated_files": [],
+  "unit_id": "p13_video_downloader_cpp"
+}

@@ -1,0 +1,106 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (8.2.2)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=1.5 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+.FF..F                                                                   [100%]
+=================================== FAILURES ===================================
+__________________________ test_scoring_helper_purity __________________________
+
+    def test_scoring_helper_purity() -> None:
+        """Test the scoring helper function is_pipe_scored with various inputs."""
+        # Test case 1: Bird is to the right of pipe right edge -> should not score
+        result = is_pipe_scored(150.0, 120.0, False)
+>       assert result is False
+E       assert True is False
+
+tests/test_main.py:55: AssertionError
+________________________ test_scoring_integration_order ________________________
+
+    def test_scoring_integration_order() -> None:
+        """Test that scoring happens in the correct order relative to other operations."""
+        # Create a custom config with known values for predictable testing
+        config = Config(
+            bird_x=100.0,
+            pipe_speed=3.0,
+            pipe_width=50.0,
+            gap_height=150.0,
+            spawn_interval_ticks=100
+        )
+    
+        # Create a pipe that is initially to the right of the bird
+        initial_pipe = Pipe(x=150.0, gap_y=250.0, width=50.0, gap_height=150.0)
+    
+        # Create game with this pipe
+        game = Game(config, [initial_pipe])
+    
+        # Initially, the pipe should not be scored
+        status = game.status()
+        assert len(status["pipes"]) == 1
+        assert status["pipes"][0]["passed"] is False
+        assert status["score"] == 0
+    
+        # Perform flap to start game
+        game.flap()
+    
+        # Step once to move pipe toward bird
+        game.step()
+    
+        # Pipe should still not be scored since it's to the right of the bird
+        status = game.status()
+        assert status["pipes"][0]["passed"] is False
+        assert status["score"] == 0
+    
+        # Step more times to move pipe to the left of bird
+        for _ in range(10):
+            game.step()
+    
+        # Now pipe should be scored
+        status = game.status()
+>       assert status["pipes"][0]["passed"] is True
+E       assert False is True
+
+tests/test_main.py:114: AssertionError
+_____________________________ test_pipe_lifecycle ______________________________
+
+    def test_pipe_lifecycle() -> None:
+        """Test pipe lifecycle: creation, movement, scoring, and removal."""
+        config = Config(
+            bird_x=100.0,
+            pipe_speed=3.0,
+            pipe_width=50.0,
+            gap_height=150.0,
+            spawn_interval_ticks=100
+        )
+    
+        # Create a pipe that will trigger scoring
+        pipe = Pipe(x=150.0, gap_y=250.0, width=50.0, gap_height=150.0)
+        game = Game(config, [pipe])
+    
+        # Start game
+        game.flap()
+    
+        # Move pipe to the point where it should be scored
+        for _ in range(20):
+            game.step()
+    
+        # Check that pipe was scored
+        status = game.status()
+        assert len(status["pipes"]) == 1
+>       assert status["pipes"][0]["passed"] is True
+E       assert False is True
+
+tests/test_main.py:209: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_scoring_helper_purity - assert True is False
+FAILED tests/test_main.py::test_scoring_integration_order - assert False is True
+FAILED tests/test_main.py::test_pipe_lifecycle - assert False is True
+3 failed, 3 passed in 0.05s

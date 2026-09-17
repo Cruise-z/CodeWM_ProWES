@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main (src/Main.cpp)
+    participant GE as breakout::GameEngine
+    participant LV as breakout::Level
+    participant PF as breakout::Playfield
+    participant CL as breakout::Collision
+    M->>PF: construct(width,height)
+    M->>LV: generateGrid(rows, cols, origin, cellSize, hp)
+    M->>GE: construct(PF, LV, Ball, Paddle)
+    loop fixed ticks
+        M->>GE: step(dt, Input)
+        GE->>GE: integrate ball, clamp paddle
+        GE->>CL: circleVsAABB(ball, walls/paddle/brick)
+        CL-->>GE: collision result
+        GE->>GE: reflect velocity, update score/lives, remove brick
+    end
+    GE-->>M: report score, lives, remainingBricks()
+    Note right of GE: Contract reminders inside impl: #include "Collision.h", #include <cmath>, std::sqrt

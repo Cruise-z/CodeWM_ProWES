@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "481cb409e06f670bd969de1383ac37276501959e90d730e6b7a4dbfe66d47c34",
+  "architecture_team_sha256": "a1cc46f1bed3edcf7b1c191c98cc1e1827bebbeccfa6a9e04418faff60eaba09",
+  "completed_at": "2026-09-14T18:26:22.029000+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 9.348,
+  "evaluator_log_sha256": "f94fa10339ccfb56d2f4c929a38e6e369717d8c9129bc88e15002babd64e9517",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/java/replays/0001_seed_2020452492/p13_video_downloader_java/p13_video_downloader_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2020452492,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "1c7139d4bcc61df56602f36d52ef4692823c36afa98e91360475f9673b921ac6",
+  "initial_repository_tree_sha256": "c66e3cf59aaf70cceef7092073a92cccb4904c69d489dbc64d3882b199ed916f",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "481cb409e06f670bd969de1383ac37276501959e90d730e6b7a4dbfe66d47c34",
+  "rng_seed": 2020452492,
+  "started_at": "2026-09-14T18:19:36.039703+00:00",
+  "truncated_files": [],
+  "unit_id": "p13_video_downloader_java"
+}

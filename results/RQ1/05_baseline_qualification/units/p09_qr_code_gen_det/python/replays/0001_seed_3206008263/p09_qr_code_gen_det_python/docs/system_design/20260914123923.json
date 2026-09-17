@@ -1,0 +1,236 @@
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "qr_code/payload.py",
+    "qr_code/matrix.py",
+    "qr_code/codec.py",
+    "qr_code/render.py",
+    "qr_code/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class PayloadModule {\n      +encode_text(text: str) bytes\n      +pack_payload(data: bytes) list[int]\n      +unpack_payload(bits: list[int]) bytes\n    }\n    class MatrixModule {\n      +SIZE: int = 21\n      +FINDER_SIZE: int = 5\n      +place_finder_patterns(matrix: list[list[int]]) None\n      +data_positions() list[tuple[int,int]]\n      +build_matrix(bits: list[int]) list[list[int]]\n      +validate_matrix(matrix: object) bool\n      +extract_bits(matrix: list[list[int]]) list[int]\n    }\n    class CodecModule {\n      +generate(text: str) list[list[int]]\n      +decode(matrix: list[list[int]]) str\n      +detect(matrix: object) bool\n    }\n    class RenderModule {\n      +render(matrix: list[list[int]], on: str, off: str) str\n    }\n    class PackageAPI {\n      +encode_text(...)\n      +pack_payload(...)\n      +unpack_payload(...)\n      +place_finder_patterns(...)\n      +data_positions(...)\n      +build_matrix(...)\n      +extract_bits(...)\n      +validate_matrix(...)\n      +generate(...)\n      +decode(...)\n      +detect(...)\n      +render(...)\n    }\n    class MainRuntime {\n      +run_demo() dict\n      +main() None\n    }\n    CodecModule --> PayloadModule\n    CodecModule --> MatrixModule\n    RenderModule --> MatrixModule\n    MainRuntime --> CodecModule\n    MainRuntime --> RenderModule\n    PackageAPI --> PayloadModule\n    PackageAPI --> MatrixModule\n    PackageAPI --> CodecModule\n    PackageAPI --> RenderModule",
+  "Domain Decomposition": [
+    [
+      "UTF-8 text to bytes encoder: encode_text(text:str)->bytes with strict UTF-8",
+      "qr_code/payload.py",
+      "pure-rule"
+    ],
+    [
+      "Payload packer: pack_payload(data:bytes)->list[int] with 8-bit length, MSB-first bits, 8-bit checksum; max 40 bytes",
+      "qr_code/payload.py",
+      "pure-rule"
+    ],
+    [
+      "Payload unpacker: unpack_payload(bits:list[int])->bytes validating bit domain, length<=40, truncation, checksum, and zero-only trailing padding",
+      "qr_code/payload.py",
+      "pure-rule"
+    ],
+    [
+      "Matrix constants SIZE=21, FINDER_SIZE=5 and finder pattern definition",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Finder placement: place_finder_patterns(matrix:list[list[int]])->None at (0,0), (0,16), (16,0)",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Data positions listing: data_positions()->list[tuple[int,int]] returning all non-finder cells row-major",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Matrix builder: build_matrix(bits:list[int])->list[list[int]] initializing zeros, placing finders, writing bits, rejecting non-bits/overflow",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Matrix validator: validate_matrix(matrix:object)->bool returns False on non-21x21/ragged/non-binary/incorrect finders",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Bit extractor: extract_bits(matrix:list[list[int]])->list[int] requiring validate_matrix True and reading 366 non-finder bits",
+      "qr_code/matrix.py",
+      "pure-rule"
+    ],
+    [
+      "Codec generate: generate(text:str)->list[list[int]] composes encode_text->pack_payload->build_matrix",
+      "qr_code/codec.py",
+      "orchestration"
+    ],
+    [
+      "Codec decode: decode(matrix:list[list[int]])->str uses unpack_payload(extract_bits(matrix)).decode('utf-8','strict') and raises ValueError on invalid",
+      "qr_code/codec.py",
+      "orchestration"
+    ],
+    [
+      "Codec detect: detect(matrix:object)->bool returns True only when decode succeeds; catches validation/checksum/UTF-8 errors",
+      "qr_code/codec.py",
+      "orchestration"
+    ],
+    [
+      "ASCII renderer: render(matrix:list[list[int]], on:str='##', off:str='  ')->str validates matrix and markers; returns 21 joined lines",
+      "qr_code/render.py",
+      "pure-rule"
+    ],
+    [
+      "Public API aggregator: explicit re-exports of all canonical functions",
+      "qr_code/__init__.py",
+      "package"
+    ],
+    [
+      "Runtime entry and demo: run_demo()->dict with exact fields; main() prints a concise line under guard",
+      "Main.py",
+      "environment-dependent"
+    ],
+    [
+      "Protocol-level tests: exactly three pytest tests covering demo, Unicode roundtrip, rendering, and corruption/malformed rejection",
+      "tests/test_main.py",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "UTF-8 encoding for payload",
+      "qr_code/payload.py",
+      "encode_text(text: str)->bytes; strict UTF-8"
+    ],
+    [
+      "Pack payload into bits with length+checksum",
+      "qr_code/payload.py",
+      "pack_payload(data: bytes)->list[int]; MSB-first, max 40 bytes, returns length8 + data bits + checksum8"
+    ],
+    [
+      "Unpack bits with strict validation and zero padding enforcement",
+      "qr_code/payload.py",
+      "unpack_payload(bits: list[int])->bytes; validates bit domain, length<=40, sufficient bits, checksum, and all trailing zeros"
+    ],
+    [
+      "Finder patterns and constants",
+      "qr_code/matrix.py",
+      "SIZE=21, FINDER_SIZE=5; finder: border=1, inner ring=0, center=1"
+    ],
+    [
+      "Place finders at three corners",
+      "qr_code/matrix.py",
+      "place_finder_patterns(matrix)->None; positions (0,0), (0,16), (16,0)"
+    ],
+    [
+      "Enumerate non-finder data positions row-major",
+      "qr_code/matrix.py",
+      "data_positions()->list[tuple[int,int]]; all 441-75=366 cells"
+    ],
+    [
+      "Build 21x21 matrix with data bits",
+      "qr_code/matrix.py",
+      "build_matrix(bits:list[int])->list[list[int]]; rejects non-bits/overflow; fills zeros and writes bits over data positions"
+    ],
+    [
+      "Validate matrix shape, binary content, and finder correctness",
+      "qr_code/matrix.py",
+      "validate_matrix(matrix:object)->bool; returns False on invalid"
+    ],
+    [
+      "Extract 366 non-finder bits from a valid matrix",
+      "qr_code/matrix.py",
+      "extract_bits(matrix:list[list[int]])->list[int]; raises ValueError if validate_matrix is False"
+    ],
+    [
+      "Generate matrix from text",
+      "qr_code/codec.py",
+      "generate(text:str)->list[list[int]]; compose encode_text->pack_payload->build_matrix"
+    ],
+    [
+      "Decode strict UTF-8 text from matrix",
+      "qr_code/codec.py",
+      "decode(matrix:list[list[int]])->str; uses unpack_payload(extract_bits(matrix)).decode('utf-8','strict')"
+    ],
+    [
+      "Detect validity by safe decode probe",
+      "qr_code/codec.py",
+      "detect(matrix:object)->bool; returns True iff decode succeeds; catches validation/checksum/UTF-8 errors"
+    ],
+    [
+      "ASCII render of validated matrix",
+      "qr_code/render.py",
+      "render(matrix:list[list[int]], on:str='##', off:str='  ')->str; rejects invalid matrix or empty markers; returns 21 newline-joined rows"
+    ],
+    [
+      "Canonical API re-exports",
+      "qr_code/__init__.py",
+      "export encode_text, pack_payload, unpack_payload, place_finder_patterns, data_positions, build_matrix, extract_bits, validate_matrix, generate, decode, detect, render"
+    ],
+    [
+      "Thin runtime entry and demo",
+      "Main.py",
+      "run_demo()->dict with fields text, decoded, detected, size, rendered_lines; main() prints at most one concise result"
+    ],
+    [
+      "Protocol tests",
+      "tests/test_main.py",
+      "Exactly three tests: demo contract; Unicode roundtrip and render lines; corruption/malformed rejection and detection failure"
+    ]
+  ],
+  "File list": [
+    "requirements.txt",
+    "qr_code/payload.py",
+    "qr_code/matrix.py",
+    "qr_code/codec.py",
+    "qr_code/render.py",
+    "qr_code/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Implementation approach": "Preserve protocol files exactly; keep Main.py thin and put reusable logic in a lowercase snake_case package named qr_code. Use Python 3.10-only features and avoid external dependencies beyond pytest. Design an acyclic import graph: qr_code/payload.py and qr_code/matrix.py are foundational and import no project modules; qr_code/codec.py composes payload and matrix; qr_code/render.py imports only validate_matrix from qr_code/matrix.py; qr_code/__init__.py explicitly re-exports the canonical API. Implement a deterministic QR-like codec: payload encodes UTF-8 bytes with an 8-bit length header, MSB-first data bits, and an 8-bit checksum; matrix uses a fixed 21x21 grid with three 5x5 finder patterns and row-major data placement; codec composes the flow; render produces a 21-line ASCII string; detect probes safely. Automated tests are deterministic, headless, and cover demo wiring, Unicode roundtrip including strict trailing-zero padding validation, rendering dimensions, and corruption/malformed rejections. Ensure every function signature and behavior matches the non-negotiable checklist, including direct extract_bits-to-unpack_payload decoding and exact counts (366 non-finder bits) and constraints (max 40-byte payload).",
+  "Normative Architecture Requirements": "Binding QR Python task contract: use exactly, in dependency order, requirements.txt; qr_code/payload.py; qr_code/matrix.py; qr_code/codec.py; qr_code/render.py; qr_code/__init__.py; Main.py; tests/test_main.py. payload owns UTF-8 bytes plus length and checksum packing; matrix owns fixed 21 by 21 storage and three fixed 5 by 5 finder markers; codec composes payload and matrix; render depends only on matrix; init exports only real symbols; Main and exactly three deterministic tests are last. bytes is a Python built-in and is never imported from typing. The 366 extracted data bits go directly to unpack_payload, which parses the length-determined prefix and accepts only zero trailing matrix padding; codec must not regroup them. Preserve the detailed APIs from the system design; the complete original requirement is injected as authoritative task Full API after this JSON stage.",
+  "Program call flow": "sequenceDiagram\n    participant Main as Main.run_demo\n    participant Codec as qr_code.codec\n    participant Payload as qr_code.payload\n    participant Matrix as qr_code.matrix\n    participant Render as qr_code.render\n    Main->>Codec: generate(text=\"CodeWM\")\n    Codec->>Payload: encode_text(text)\n    Payload-->>Codec: bytes\n    Codec->>Payload: pack_payload(data)\n    Payload-->>Codec: list[int] bits\n    Codec->>Matrix: build_matrix(bits)\n    Matrix-->>Codec: 21x21 matrix\n    Main->>Codec: decode(matrix)\n    Codec->>Matrix: extract_bits(matrix)\n    Matrix-->>Codec: 366 bits\n    Codec->>Payload: unpack_payload(bits)\n    Payload-->>Codec: bytes\n    Codec-->>Main: decoded str\n    Main->>Codec: detect(matrix)\n    Codec-->>Main: bool\n    Main->>Render: render(matrix)\n    Render-->>Main: 21-line string\n    Main-->>Main: assemble demo dict and return",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: requirements.txt. Runtime entry: Main.py. Test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "Main.run_demo",
+      "qr_code.generate",
+      "qr_code.decode",
+      "qr_code.detect",
+      "qr_code.render",
+      "qr_code.validate_matrix",
+      "qr_code.extract_bits",
+      "qr_code.unpack_payload"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "pure_logic_modules": [
+      "qr_code/payload.py",
+      "qr_code/matrix.py",
+      "qr_code/codec.py",
+      "qr_code/render.py",
+      "qr_code/__init__.py"
+    ],
+    "test_targets_should_focus_on": [
+      "End-to-end generate/decode/detect wiring with strict contracts",
+      "Unicode roundtrip path including direct bits->unpack route and strict zero padding",
+      "Rendering dimensions (21 lines) and invalid matrix rejection via validate_matrix/detect"
+    ]
+  }
+}

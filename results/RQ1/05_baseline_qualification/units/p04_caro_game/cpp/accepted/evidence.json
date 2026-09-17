@@ -1,0 +1,39 @@
+{
+  "accepted_at": "2026-09-13T12:47:41.763555+00:00",
+  "accepted_repository_tree_sha256": "bc2d07912f185a5dedb8b431a916ed059a1e19091dce4e37bf99149465a98380",
+  "architecture_epoch": {
+    "architecture_attempt": 3,
+    "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+    "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+    "prompt_sha256": "1fa04782d04b562ea1e1fef9ef37eee977e911a9e786708f2e647d037e9ef321"
+  },
+  "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "attempt": 6,
+  "attempt_evaluator_log": "units/p04_caro_game/cpp/attempts/0006_seed_1922813371/evaluator.log",
+  "attempt_evidence": "units/p04_caro_game/cpp/attempts/0006_seed_1922813371/evidence.json",
+  "attempt_generation_report": "units/p04_caro_game/cpp/attempts/0006_seed_1922813371/generation_report.json",
+  "completed_at": "2026-09-13T12:47:41.751064+00:00",
+  "evaluator_elapsed_seconds": 2.665,
+  "evaluator_log_sha256": "e4a17d13d0786fea6b635f47095e0f571b4d31cff76ba333e7901a100bad3cdb",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p04_caro_game/cpp/attempts/0006_seed_1922813371/p04_caro_game_cpp/p04_caro_game_cpp",
+  "generated_repository_tree_sha256": "e79c288bfbb4d0651ce0c10743cee6651b6d2d79b58b7d934ba074eca453218a",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1922813371,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "a98210f63bdfa35b71d629c5788c001553811656e16cfc99fb53b914ff6ea07f",
+  "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+  "passed": true,
+  "rng_seed": 1922813371,
+  "started_at": "2026-09-13T12:40:29.709847+00:00",
+  "truncated_files": [],
+  "unit_id": "p04_caro_game_cpp",
+  "valid_for_current_architecture": true
+}

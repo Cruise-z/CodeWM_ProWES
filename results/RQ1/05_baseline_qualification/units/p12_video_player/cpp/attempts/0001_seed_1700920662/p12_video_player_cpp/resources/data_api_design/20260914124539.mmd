@@ -1,0 +1,84 @@
+classDiagram
+    namespace Time {
+      class IClock {
+        <<interface>>
+        +now_ms() std::int64_t
+      }
+      class ManualClock {
+        -current_ms: std::int64_t
+        +ManualClock(start_ms: std::int64_t)
+        +set_now(ms: std::int64_t) void
+        +advance(delta_ms: std::int64_t) void
+        +now_ms() std::int64_t
+      }
+      class MonotonicClock {
+        +MonotonicClock()
+        +now_ms() std::int64_t
+      }
+      IClock <|.. ManualClock
+      IClock <|.. MonotonicClock
+    }
+    namespace Media {
+      class MediaMetadata {
+        -title_: std::string
+        -duration_ms_: std::int64_t
+        +MediaMetadata(title: std::string, duration_ms: std::int64_t)
+        +title() std::string
+        +duration_ms() std::int64_t
+      }
+    }
+    namespace Playlist {
+      class Playlist {
+        -items_: std::vector<Media::MediaMetadata>
+        -current_index_: int
+        +add(item: const Media::MediaMetadata&) void
+        +size() std::size_t
+        +get(index: std::size_t) const Media::MediaMetadata*
+        +current() const Media::MediaMetadata*
+        +current_index() const int
+        +select(index: std::size_t) bool
+        +next() bool
+        +prev() bool
+      }
+    }
+    namespace Player {
+      class PlaybackState {
+      }
+      class Player {
+        -clock_: const Time::IClock&
+        -state_: PlaybackState
+        -current_media_: const Media::MediaMetadata*
+        -position_ms_: std::int64_t
+        -last_tick_ms_: std::int64_t
+        -volume_: int
+        -muted_: bool
+        +Player(clock: const Time::IClock&)
+        +set_current_media(media: const Media::MediaMetadata*) void
+        +current_media() const const Media::MediaMetadata*
+        +state() const PlaybackState
+        +position_ms() const std::int64_t
+        +duration_ms() const std::int64_t
+        +play() bool
+        +pause() void
+        +stop() void
+        +seek(ms: std::int64_t) void
+        +update_to_now() void
+        +set_volume(v: int) int
+        +volume() const int
+        +mute(m: bool) void
+        +muted() const bool
+        +effective_volume() const int
+      }
+    }
+    namespace Runtime {
+      class App {
+        +App()
+        +run_demo() int
+      }
+    }
+    Player::Player --> Time::IClock
+    Player::Player --> Media::MediaMetadata
+    Runtime::App --> Time::ManualClock
+    Runtime::App --> Playlist::Playlist
+    Runtime::App --> Player::Player
+    Runtime::App --> Media::MediaMetadata

@@ -1,0 +1,56 @@
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260912_231632/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 25%] Building CXX object CMakeFiles/tankgame_core.dir/src/Game.cpp.o
+[ 25%] Building CXX object CMakeFiles/tankgame_core.dir/src/Geometry.cpp.o
+[ 37%] Building CXX object CMakeFiles/tankgame_core.dir/src/Entities.cpp.o
+/workspace/proj_20260912_231632/src/Entities.cpp:3:6: error: redefinition of ‘bool Arena::isObstacle(Point) const’
+    3 | bool Arena::isObstacle(Point point) const {
+      |      ^~~~~
+In file included from /workspace/proj_20260912_231632/src/Entities.cpp:1:
+/workspace/proj_20260912_231632/include/Entities.h:49:10: note: ‘bool Arena::isObstacle(Point) const’ previously defined here
+   49 |     bool isObstacle(Point point) const {
+      |          ^~~~~~~~~~
+/workspace/proj_20260912_231632/src/Entities.cpp:12:6: error: redefinition of ‘void Tank::rotateLeft()’
+   12 | void Tank::rotateLeft() {
+      |      ^~~~
+In file included from /workspace/proj_20260912_231632/src/Entities.cpp:1:
+/workspace/proj_20260912_231632/include/Entities.h:108:10: note: ‘void Tank::rotateLeft()’ previously defined here
+  108 |     void rotateLeft() {
+      |          ^~~~~~~~~~
+/workspace/proj_20260912_231632/src/Entities.cpp:16:6: error: redefinition of ‘void Tank::rotateRight()’
+   16 | void Tank::rotateRight() {
+      |      ^~~~
+In file included from /workspace/proj_20260912_231632/src/Entities.cpp:1:
+/workspace/proj_20260912_231632/include/Entities.h:115:10: note: ‘void Tank::rotateRight()’ previously defined here
+  115 |     void rotateRight() {
+      |          ^~~~~~~~~~~
+/workspace/proj_20260912_231632/src/Entities.cpp:20:6: error: redefinition of ‘void Projectile::step()’
+   20 | void Projectile::step() {
+      |      ^~~~~~~~~~
+In file included from /workspace/proj_20260912_231632/src/Entities.cpp:1:
+/workspace/proj_20260912_231632/include/Entities.h:142:10: note: ‘void Projectile::step()’ previously defined here
+  142 |     void step() {
+      |          ^~~~
+gmake[2]: *** [CMakeFiles/tankgame_core.dir/build.make:90: CMakeFiles/tankgame_core.dir/src/Entities.cpp.o] Error 1
+gmake[2]: *** Waiting for unfinished jobs....
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/tankgame_core.dir/all] Error 2
+gmake: *** [Makefile:101: all] Error 2

@@ -1,0 +1,50 @@
+Generate a complete medium-size C++17 repository architecture for: Custom press releases.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 31 functions or methods
+- about 698 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- press-release templates
+- custom fields and placeholder substitution
+- draft review published lifecycle
+- validation of headline body and contact
+- audience tags and search
+- plain-text rendering and version history
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+

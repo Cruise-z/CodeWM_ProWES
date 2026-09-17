@@ -1,0 +1,88 @@
+classDiagram
+    class ProcessingReport {
+        -int rowsRead
+        -int rowsKept
+        -int rowsWritten
+        -LinkedHashMap~String,Integer~ invalidCounts
+        +ProcessingReport()
+        +void incrementRowsRead()
+        +void incrementRowsKept()
+        +void incrementRowsWritten()
+        +void recordInvalid(String column)
+        +int getRowsRead()
+        +int getRowsKept()
+        +int getRowsWritten()
+        +LinkedHashMap~String,Integer~ invalidCounts()
+    }
+    class Cell {
+        -String raw
+        +static Cell of(String raw)
+        +String raw()
+        +boolean isBlank()
+    }
+    class Row {
+        -List~String~ header
+        -List~Cell~ cells
+        +Row(List~String~, List~Cell~)
+        +List~String~ header()
+        +List~Cell~ cells()
+        +Cell get(String column)
+        +LinkedHashMap~String,String~ asStringMap()
+    }
+    class Sorters {
+        class Order {
+            -String column
+            -boolean ascending
+            +Order(String, boolean)
+            +String column()
+            +boolean ascending()
+        }
+        +Comparator~Row~ comparator(List~Order~)
+    }
+    class Sheet {
+        -String name
+        -List~String~ header
+        -List~Row~ rows
+        +Sheet(String, List~String~, List~Row~)
+        +String name()
+        +List~String~ header()
+        +List~Row~ rows()
+        +Sheet filter(Predicate~Row~, ProcessingReport)
+        +Sheet sort(List~Sorters.Order~)
+    }
+    class Workbook {
+        -LinkedHashMap~String,Sheet~ sheets
+        +Workbook()
+        +void addSheet(Sheet)
+        +Optional~Sheet~ getSheet(String)
+        +Set~String~ sheetNames()
+    }
+    class ValueParser {
+        +static Double toDouble(String raw, String column, ProcessingReport report)
+    }
+    class Filters {
+        +static Predicate~Row~ equals(String column, String value)
+        +static Predicate~Row~ contains(String column, String fragment)
+        +static Predicate~Row~ numericGreaterThan(String column, double threshold, ProcessingReport report)
+    }
+    class Aggregations {
+        +static int count(Sheet)
+        +static double sum(Sheet, String column, ProcessingReport report)
+        +static double average(Sheet, String column, ProcessingReport report)
+        +static Double min(Sheet, String column, ProcessingReport report)
+        +static Double max(Sheet, String column, ProcessingReport report)
+    }
+    class CsvIO {
+        +static Sheet importCsvFromString(String name, String csv, ProcessingReport report)
+        +static String toCsvString(Sheet sheet, ProcessingReport report)
+    }
+    class Main {
+        +static void main(String[] args)
+    }
+    Sheet o-- Row
+    Row o-- Cell
+    Sorters ..> Row
+    Filters ..> Row
+    Aggregations ..> ValueParser
+    CsvIO ..> Sheet
+    Workbook o-- Sheet

@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant M as Main
+    participant S as InMemoryTaskStore
+    participant TM as TaskManager
+    participant Q as Query
+    participant D as DateRules
+    M->>S: construct()
+    M->>TM: construct(store)
+    M->>TM: create_task(...)
+    TM->>TM: validate title (Task::IsValidTitle)
+    TM->>D: is_valid_iso_date(due_date)
+    TM->>TM: normalize tags (Task::NormalizeTags)
+    TM->>S: add(task)
+    M->>TM: list(filters, SortOrder::ByDueThenPriority)
+    TM->>S: get_all()
+    TM->>Q: matches(task, filters)
+    Q->>D: compare_dates for range filtering
+    TM->>Q: less_due_priority(a,b)
+    Q->>D: compare_dates(a.due_date,b.due_date)
+    TM-->>M: vector<Task>
+    M->>TM: summarize()
+    TM->>S: get_all()
+    TM-->>M: pair<completed_count,pending_count>

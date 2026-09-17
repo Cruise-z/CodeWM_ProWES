@@ -1,0 +1,83 @@
+classDiagram
+    class DomainError {
+        <<exception>>
+    }
+    class InvalidTransitionError {
+        <<exception>>
+    }
+    DomainError <|-- InvalidTransitionError
+
+    class State {
+        <<enum>>
+        DRAFT
+        REVIEW
+        PUBLISHED
+    }
+
+    class Contact {
+        <<dataclass frozen>>
+        +name: str
+        +email: str
+    }
+
+    class VersionEntry {
+        <<dataclass frozen>>
+        +number: int
+        +rendered_text: str
+    }
+
+    class Template {
+        <<dataclass frozen>>
+        +name: str
+        +content: str
+        +render(fields: dict[str,str] | None): str
+    }
+
+    class PressRelease {
+        -_id: str
+        -_headline: str
+        -_body: str
+        -_contact: Contact
+        -_template: Template
+        -_custom_fields: dict[str,str]
+        -_state: State
+        -_tags_list: list[str]
+        -_tags_set: set[str]
+        -_versions: list[VersionEntry]
+        +id: str
+        +headline: str
+        +body: str
+        +contact: Contact
+        +state: State
+        +validate(): bool
+        +submit_for_review(): None
+        +publish(): None
+        +add_tag(tag: str): None
+        +tags(): list[str]
+        +render_plain_text(): str
+        +version_history(): list[VersionEntry]
+    }
+
+    class search_by_tag {
+        +search_by_tag(releases: list[PressRelease], tag: str): list[PressRelease]
+    }
+
+    class search_text {
+        +search_text(releases: list[PressRelease], query: str): list[PressRelease]
+    }
+
+    class Main {
+        +run_demo(): dict[str, object]
+    }
+
+    PressRelease --> Template
+    PressRelease --> Contact
+    PressRelease --> VersionEntry
+    PressRelease --> State
+    search_by_tag --> PressRelease
+    search_text --> PressRelease
+    Main --> PressRelease
+    Main --> Template
+    Main --> Contact
+    Main --> search_by_tag
+    Main --> search_text

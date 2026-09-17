@@ -1,0 +1,138 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (8.2.2)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=1.5 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+..FFF.F                                                                  [100%]
+=================================== FAILURES ===================================
+___________________________ test_scoring_integration ___________________________
+
+    def test_scoring_integration() -> None:
+        """Test scoring integration: strict-left rule and single-pass guarantee."""
+        config = Config()
+    
+        # Create a pipe that will be scored
+        pipe = Pipe(x=80.0, gap_y=100.0, width=config.pipe_width, gap_height=config.gap_height)
+    
+        # Create game with the pipe
+        game = Game(config, [pipe])
+    
+        # Start the game
+        game.flap()
+    
+        # Step until bird passes the pipe
+        # Bird starts at x=100, pipe starts at x=80, width=50 => right edge at 130
+        # Bird needs to move left past x=130 to trigger scoring
+        for _ in range(10):
+            game.step()
+    
+        # Check that pipe was scored
+        status = game.status()
+>       assert status["score"] == 1
+E       assert 0 == 1
+
+tests/test_main.py:92: AssertionError
+___________________________ test_collision_detection ___________________________
+
+    def test_collision_detection() -> None:
+        """Test collision detection logic with boundary and pipe collisions."""
+        config = Config()
+    
+        # Test boundary collision (falling off floor)
+        game = Game(config)
+        game.flap()
+    
+        # Move bird down to hit floor
+        for _ in range(100):
+            game.step()
+    
+        # Should be game over
+        assert game.status()["state"] == "game_over"
+    
+        # Reset
+        game.reset()
+    
+        # Test pipe collision
+        # Create a pipe that will collide with bird
+        pipe = Pipe(x=config.bird_x, gap_y=200.0, width=config.pipe_width, gap_height=config.gap_height)
+        game = Game(config, [pipe])
+    
+        # Start the game
+        game.flap()
+    
+        # Step until bird collides with pipe
+        for _ in range(10):
+            game.step()
+    
+        # Should be game over due to collision
+>       assert game.status()["state"] == "game_over"
+E       AssertionError: assert 'running' == 'game_over'
+E         
+E         - game_over
+E         + running
+
+tests/test_main.py:147: AssertionError
+_________________________ test_game_state_transitions __________________________
+
+    def test_game_state_transitions() -> None:
+        """Test correct handling of game state transitions."""
+        config = Config()
+        game = Game(config)
+    
+        # Initial state should be 'ready'
+        assert game.status()["state"] == "ready"
+    
+        # Flap from ready should transition to running
+        game.flap()
+        assert game.status()["state"] == "running"
+    
+        # Flap from running should stay running
+        game.flap()
+        assert game.status()["state"] == "running"
+    
+        # Game over state should not respond to flap
+        game.reset()
+        game.flap()
+        game.step()  # Make it game over
+        game.status()["state"] = "game_over"  # Manually set to game over
+        game.flap()  # Should not change state
+>       assert game.status()["state"] == "game_over"
+E       AssertionError: assert 'running' == 'game_over'
+E         
+E         - game_over
+E         + running
+
+tests/test_main.py:172: AssertionError
+________________________ test_pipe_movement_and_removal ________________________
+
+    def test_pipe_movement_and_removal() -> None:
+        """Test pipe horizontal movement and removal after scoring."""
+        config = Config()
+    
+        # Create a pipe that will be scored and removed
+        pipe = Pipe(x=100.0, gap_y=100.0, width=config.pipe_width, gap_height=config.gap_height)
+        game = Game(config, [pipe])
+    
+        game.flap()
+    
+        # Step until pipe moves off screen
+        # Bird x is 100, pipe starts at 100, width 50 => right edge at 150
+        # Move pipe left by pipe_speed * ticks until it disappears
+>       while pipe.right_edge() >= 0:
+E       AttributeError: 'NoneType' object has no attribute 'right_edge'
+
+tests/test_main.py:214: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_scoring_integration - assert 0 == 1
+FAILED tests/test_main.py::test_collision_detection - AssertionError: assert ...
+FAILED tests/test_main.py::test_game_state_transitions - AssertionError: asse...
+FAILED tests/test_main.py::test_pipe_movement_and_removal - AttributeError: '...
+4 failed, 3 passed in 0.06s

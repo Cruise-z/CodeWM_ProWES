@@ -1,0 +1,33 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 5,
+    "architecture_team_sha256": "da4a37654887038ce7dc3fc4b83f333bfff1d56348a47628b99f2956a8136b40",
+    "initial_repository_tree_sha256": "9bbba450b32b0bf0b72c7445559de5e4701b1ea091d54db2ac7e85e36a64d156",
+    "prompt_sha256": "efe7aedadbd2109947b62ee068a1aa759e059f1aa1e278b1bbcda2bec154ab10"
+  },
+  "architecture_team_sha256": "da4a37654887038ce7dc3fc4b83f333bfff1d56348a47628b99f2956a8136b40",
+  "attempt": 1,
+  "completed_at": "2026-09-14T20:18:57.406439+00:00",
+  "evaluator_elapsed_seconds": 2.492,
+  "evaluator_log_sha256": "6ff41cac5ce19f8d2936bf672988ce7818639f07ac4b8f4d55a903bd60f09fad",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/python/attempts/0001_seed_4207199519/p14_todo_list_app_python/p14_todo_list_app_python",
+  "generated_repository_tree_sha256": "42830e86e4f570f6ffda3978abd2db3be91da5e0728bd8fc2ea79ed5cdb63c54",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 4207199519,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "b025779542abf839ae9722dc1bf9779c0a857adf0e50cda87d4a8ee795843cd8",
+  "initial_repository_tree_sha256": "9bbba450b32b0bf0b72c7445559de5e4701b1ea091d54db2ac7e85e36a64d156",
+  "passed": true,
+  "rng_seed": 4207199519,
+  "started_at": "2026-09-14T20:12:27.714910+00:00",
+  "truncated_files": [],
+  "unit_id": "p14_todo_list_app_python"
+}

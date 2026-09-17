@@ -1,0 +1,212 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 11,
+  "expected_file_count": 11,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 1418,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "pom.xml",
+      "finish_reason": "stop",
+      "generated_code_sha256": "a9ae85d2ba5c2e90a4aa66e4f6979a9eb53277bfd60b6f957b942ede27050853",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "68eee05e0771ef2ce36f48ddb2b45f6d16ba638f84b582eb8f9ad0fa41a4b579",
+      "response_id": "chatcmpl-1789274511179",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 375,
+        "prompt_tokens": 5682,
+        "total_tokens": 6057
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 2016,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/Position.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "59eaf9d6ceca4abf39ba9d6019d552b52b169e6db22d532b4999ad53a0a76ad4",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "72d0a46eb46b6dd89134d6903f7b94177a9f78161ba9c9ed59fb5860e9fd5773",
+      "response_id": "chatcmpl-1789274541976",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 476,
+        "prompt_tokens": 6065,
+        "total_tokens": 6541
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 2043,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/Direction.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "45c2f83561254c68d47a4785cf7d4fecb6eb6e70f56fd3ce6696a3f6b55e05b7",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "2fb523dc78d737c43da08104a06eb9ec4d9df27dfa07cc3d7a42d956e3dfb97e",
+      "response_id": "chatcmpl-1789274571604",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 461,
+        "prompt_tokens": 6536,
+        "total_tokens": 6997
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 604,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/RandomSource.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "5b5e1d3cf0074ee29d93bcb6e744be1ec02ef8d260c838ef134c27e6b275d91c",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "8fa35d6aee20e04f2643bbe5f75bd03fc4dfc998a165b9cb50d559123a522d85",
+      "response_id": "chatcmpl-1789274580321",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 124,
+        "prompt_tokens": 6995,
+        "total_tokens": 7119
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 417,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/MoveOutcome.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "5bf8f71ef68b879a0b9278b2fb1777837e19646129c94367cf5a9e9c9c4ad177",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c1a4ac9a588b5205b0cd3c0c6b4e87ef02ab2833f13fb56d69b928a75ed05195",
+      "response_id": "chatcmpl-1789274587249",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 97,
+        "prompt_tokens": 7114,
+        "total_tokens": 7211
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 3584,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/Snake.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "7f6c6d4d4a63c896a10ee5bd601231bbcba88b98ffdf86b35615cd72781f3654",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "b8237033ecb821e5388e409090353a1f828f193aa173a1a025163962e1edfd88",
+      "response_id": "chatcmpl-1789274633992",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 755,
+        "prompt_tokens": 7206,
+        "total_tokens": 7961
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 3792,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/GameSnapshot.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "c832cf7a15f15fdc45cbde455b9e3d146a309681b8cc393b05857d677bbefad3",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "bfb579c740ee57530483f9c03b272a94d25c3fb573a7fd67386b092281d8ec2a",
+      "response_id": "chatcmpl-1789274684675",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 820,
+        "prompt_tokens": 7953,
+        "total_tokens": 8773
+      }
+    },
+    {
+      "action_index": 8,
+      "content_character_count": 1185,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/JavaUtilRandomSource.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "20047aa8ae685610697753bce16dd7c975680fb9c1c9b6714cb86b3c7823ef19",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "1561e22eb6851d474e8d17068c35eaf1412a140d358ba1046aaaeac947842f9a",
+      "response_id": "chatcmpl-1789274701264",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 249,
+        "prompt_tokens": 8777,
+        "total_tokens": 9026
+      }
+    },
+    {
+      "action_index": 9,
+      "content_character_count": 7928,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/SnakeGame.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "21beff5edac20b4f49a1faee2e5120fde2cb9fe7db06162d9bace751255ca810",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "2212f2fffb8c6bae62663098b04e1ce27d4b07d6652e1aeae0c615eb392a5884",
+      "response_id": "chatcmpl-1789274805661",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1670,
+        "prompt_tokens": 9018,
+        "total_tokens": 10688
+      }
+    },
+    {
+      "action_index": 10,
+      "content_character_count": 1644,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/main/java/Main.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "8518b8c5cb641eaba9701782fd662547c57a3122623fe2a1851707b61e1ce8fa",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c4deeec6269657dbe2fb26cb452842dc5ebfd5f14efe45a246686d24fa923ab1",
+      "response_id": "chatcmpl-1789274827439",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 332,
+        "prompt_tokens": 10674,
+        "total_tokens": 11006
+      }
+    },
+    {
+      "action_index": 11,
+      "content_character_count": 4384,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/test/java/MainTest.java",
+      "finish_reason": "stop",
+      "generated_code_sha256": "90138b39c3deb6668bc66155efebc42d96fbb2a69b9b328f20ee6034f44d20a9",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "d55885a2f87ef35e4239d78a5fc22962c39b4021df4558b84c003d79fc0b4d6f",
+      "response_id": "chatcmpl-1789274885697",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 912,
+        "prompt_tokens": 11004,
+        "total_tokens": 11916
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8001/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/attempts/0007_seed_1332723230/p01_snake_game_java",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 11,
+  "truncated_files": []
+}

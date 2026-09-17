@@ -1,0 +1,106 @@
+===== BEGIN @ 20260914_155351 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260914_155351
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351/host_wrapper_20260914_155351.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          ::1,localhost,127.0.0.1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java -> CodeWM-DT:/workspace/proj_20260914_155351
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: java
+>>> Protocol detected: JAVA
+>>> Running Maven tests
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Original: hello-世界
+Decoded:  hello-世界
+Match:    true
+Rendered matrix:
+#######.......#######
+#########.....#######
+#######...##.########
+#######.##....#######
+#######.#.#.#########
+########...##.#######
+########.##...#######
+#..####.##.#..####.##
+..#.###...#..#.##.###
+..##...##.#.#..####..
+#....###.............
+.....................
+.....................
+.....................
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+>>> Packaging Java project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+>>> Copy Java artifacts
+>>> Java packaged artifacts:
+/workspace/proj_20260914_155351/DTResults/artifacts/qr-code-generator-1.0-SNAPSHOT.jar
+>>> Running Java project via Maven exec:java
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: mvn -q -DskipTests exec:java -Dexec.mainClass=Main  
+[INFO] Runtime output is captured in: /workspace/proj_20260914_155351/DTResults/runtime/java.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260914_155351/DTResults/runtime/java.log
+----- BEGIN runtime log tail (40 lines) -----
+Original: hello-世界
+Decoded:  hello-世界
+Match:    true
+Rendered matrix:
+#######.......#######
+#########.....#######
+#######...##.########
+#######.##....#######
+#######.#.#.#########
+########...##.#######
+########.##...#######
+#..####.##.#..####.##
+..#.###...#..#.##.###
+..##...##.#.#..####..
+#....###.............
+.....................
+.....................
+.....................
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+#######..............
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":540,"output_lines":25,"max_same_line":7,"max_consecutive_same_line":7,"cpu_busy_samples":7}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260914_155351/DTResults/artifacts
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java/DTResults/out_20260914_155351/host_wrapper_20260914_155351.log

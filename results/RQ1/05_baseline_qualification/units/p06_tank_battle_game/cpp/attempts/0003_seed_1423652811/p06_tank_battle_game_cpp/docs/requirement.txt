@@ -1,0 +1,40 @@
+Generate a complete medium-size C++17 repository architecture for: Tank battle game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies.
+
+Medium-size target from MetaProjectDev (an approximate architecture target, not permission to violate the protocol):
+- about 9 repository files
+- about 46 functions or methods
+- about 727 lines of code
+
+File-count quality gate:
+- the complete Task list MUST contain between 8 and 10 files inclusive
+- count build, runtime, test, package markers, headers, and implementation files in that total
+- combine closely related small types instead of exceeding this budget
+
+Required domain behavior:
+- tank movement and orientation
+- bounded arena and obstacles
+- projectile creation and movement
+- projectile collision and damage
+- score or winner state
+- deterministic tick and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

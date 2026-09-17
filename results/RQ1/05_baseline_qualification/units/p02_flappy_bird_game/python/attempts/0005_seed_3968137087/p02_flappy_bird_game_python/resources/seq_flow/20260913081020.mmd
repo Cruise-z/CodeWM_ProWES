@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant M as Main.py
+    participant G as Game
+    participant P as Physics
+    participant S as Scoring
+    participant C as Collision
+
+    M->>G: __init__(config)
+    M->>G: flap()
+    loop few ticks
+        M->>G: step()
+        G->>P: integrate_vy(vy, gravity, max_vy)
+        P-->>G: new_vy
+        G->>G: update y by vy
+        G->>G: move pipes by -pipe_speed
+        G->>S: is_pipe_scored(bird_x, pipe.right_edge(), pipe.passed)
+        S-->>G: bool (score now?)
+        alt collision check needed
+            G->>C: hits_bounds(y, ceiling, floor) or hits_pipe(bird_x, y, pipe)
+            C-->>G: bool
+            alt collision
+                G->>G: state := 'game_over'
+            end
+        end
+        G->>G: remove pipes off-screen (after scoring)
+    end
+    M->>G: status()
+    G-->>M: {state, y, vy, score, pipes}

@@ -1,0 +1,33 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 41,
+    "architecture_team_sha256": "eccf1d8d0c25fc9135ec4977f6c34f89c8d889962f86b0a5ee02346c5b6aea66",
+    "initial_repository_tree_sha256": "f2fdc4e833ef90520909a0fc2cc6fa88887200260784d2709f26e4605dd8d515",
+    "prompt_sha256": "c62d83103922b253e1843436379e8cf78f8ec5f0f4e85fbcf08d0de3d4f93e64"
+  },
+  "architecture_team_sha256": "eccf1d8d0c25fc9135ec4977f6c34f89c8d889962f86b0a5ee02346c5b6aea66",
+  "attempt": 2,
+  "completed_at": "2026-09-14T13:17:02.601744+00:00",
+  "evaluator_elapsed_seconds": 2.504,
+  "evaluator_log_sha256": "0f01f849917ea8592509c358ddb27b39cff1c4cf91e394214fa569bdfaa5376d",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/python/attempts/0002_seed_2408978515/p06_tank_battle_game_python/p06_tank_battle_game_python",
+  "generated_repository_tree_sha256": "b3f92e2b6404b4ebe9e2564a80f30f946c821a1520c98b6c43a1e24a176a6a4c",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2408978515,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "5e5c947ff137b743554e71e4b36356b59f3aacc3cd9d6185b745e73283ec1d96",
+  "initial_repository_tree_sha256": "f2fdc4e833ef90520909a0fc2cc6fa88887200260784d2709f26e4605dd8d515",
+  "passed": true,
+  "rng_seed": 2408978515,
+  "started_at": "2026-09-14T13:09:26.023984+00:00",
+  "truncated_files": [],
+  "unit_id": "p06_tank_battle_game_python"
+}

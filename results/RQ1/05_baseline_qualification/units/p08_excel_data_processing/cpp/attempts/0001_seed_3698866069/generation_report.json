@@ -1,0 +1,140 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 7,
+  "expected_file_count": 7,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 644,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "CMakeLists.txt",
+      "finish_reason": "stop",
+      "generated_code_sha256": "531d343f1c09dbc5c6a2aeb5ac4df74a9897f79fabc39a8e5d95eb2f54aa0f96",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "761fcbec8188d8a9fd93efaa68d6d5d804fb5cdeb40107e9b35745b6fe0d88b8",
+      "response_id": "chatcmpl-1789263504431",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 162,
+        "prompt_tokens": 4667,
+        "total_tokens": 4829
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 5960,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "include/ExcelCore.h",
+      "finish_reason": "stop",
+      "generated_code_sha256": "fdd6751d1486396aa48f4328d78f383908c75fcb8c8f5d318071b3e813279ace",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "7e017c75770259c82932adc4caaeddb5ca5ad49208b971e35fe6e95dbb359c86",
+      "response_id": "chatcmpl-1789263590955",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1401,
+        "prompt_tokens": 4827,
+        "total_tokens": 6228
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 4243,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "include/ExcelOps.h",
+      "finish_reason": "stop",
+      "generated_code_sha256": "6dd1c48182d4f2b5c10bed5a8e013c5c5b3146e9f2c092258a3c997583c32f43",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "48003b0b7eb373e18ac004c11bf63e9fcbae913e67a776aca4c2617bfc4d8e16",
+      "response_id": "chatcmpl-1789263650685",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 943,
+        "prompt_tokens": 6224,
+        "total_tokens": 7167
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 12782,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/ExcelCore.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "2be607bf980f2e501417b8577291398524d8f74c481dd4407f2052aa6edbab9e",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "e7472987cdeadc46e24cfa05bec323c3b0408beae391042d801301b617bf1287",
+      "response_id": "chatcmpl-1789263820305",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 2783,
+        "prompt_tokens": 7163,
+        "total_tokens": 9946
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 9871,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/ExcelOps.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "898a10dcf92b8ea648295624ddaf0fd2bb6dba5625e9890e425f57029c8dd05d",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c1272b4d340042bb1dd7580c45922b6eca33cc1b8354eef126683d653645b832",
+      "response_id": "chatcmpl-1789263958248",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 2227,
+        "prompt_tokens": 9942,
+        "total_tokens": 12169
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 1822,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/Main.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "86613dfacb4811bc779d87d9f332811cde6b81e24fc1a57b1c3cff3c4a35282d",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "ce75271639f58fa6ca0e64e980f488ce3e3339897630b3e7a3df6a07da22956c",
+      "response_id": "chatcmpl-1789263989181",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 478,
+        "prompt_tokens": 12159,
+        "total_tokens": 12637
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 5054,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "tests/test_main.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "a97abb36070c2d60e6f0e07a5e1820db78190b23b7dc58608fc1c0681c559d64",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "abaa2c4131bf4e353ad69c89727aa257d210ee7f4b90bdc5dcd9f805dd873d5e",
+      "response_id": "chatcmpl-1789264067321",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1254,
+        "prompt_tokens": 12636,
+        "total_tokens": 13890
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8000/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/cpp/attempts/0001_seed_3698866069/p08_excel_data_processing_cpp",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/cpp/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 7,
+  "truncated_files": []
+}

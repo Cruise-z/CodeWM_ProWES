@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant M as Main
+    participant G as SnakeGame
+    participant R as RandomSource
+    participant S as Snake
+    M->>R: new JavaUtilRandomSource(seed)
+    M->>G: new SnakeGame(w,h,R)
+    M->>G: snapshot()
+    M->>G: setDirection(Down)
+    loop demo ticks (few steps)
+        M->>G: tick()
+        G->>S: head()/moveTo()/growTo()
+        G->>R: nextInt(bound) (when placing food)
+        G-->>M: MoveOutcome
+    end
+    M->>G: snapshot()
+    M-->>M: print summaries and exit

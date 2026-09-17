@@ -1,0 +1,63 @@
+classDiagram
+    class Calculator {
+        +Calculator()
+        +Calculator(int historyCapacity)
+        +CalculationResult evaluate(String expression)
+        +java.util.List~HistoryEntry~ history()
+        +void clearHistory()
+        +int historyCapacity()
+    }
+    class Tokenizer {
+        +java.util.List~Token~ tokenize(String input) throws TokenizationException
+    }
+    class Parser {
+        +double evaluate(java.util.List~Token~ tokens) throws ParseException, EvaluationException
+    }
+    class Token {
+        +TokenType type
+        +String text
+        +Double numericValue
+        +Token(TokenType type, String text, Double numericValue)
+    }
+    enum TokenType {
+        NUMBER, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, EOF
+    }
+    class CalculationResult {
+        +boolean isSuccess()
+        +double getResult()  // valid if isSuccess
+        +String getErrorMessage()  // non-null if !isSuccess
+    }
+    class CalculationHistory {
+        +CalculationHistory(int capacity)
+        +void add(HistoryEntry entry)
+        +java.util.List~HistoryEntry~ getAll()
+        +void clear()
+        +int capacity()
+        +int size()
+    }
+    class HistoryEntry {
+        +String getExpression()
+        +boolean isSuccess()
+        +Double getNumericResult()  // may be null if error
+        +String getErrorMessage()   // may be null if success
+    }
+    class CalculatorException extends Exception {
+        +CalculatorException(String message)
+    }
+    class TokenizationException extends CalculatorException {
+        +TokenizationException(String message)
+    }
+    class ParseException extends CalculatorException {
+        +ParseException(String message)
+    }
+    class EvaluationException extends CalculatorException {
+        +EvaluationException(String message)
+    }
+    class DivisionByZeroException extends EvaluationException {
+        +DivisionByZeroException()
+    }
+    Calculator --> Tokenizer
+    Calculator --> Parser
+    Calculator --> CalculationHistory
+    Tokenizer --> Token
+    Token --> TokenType

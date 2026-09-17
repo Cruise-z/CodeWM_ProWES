@@ -1,0 +1,85 @@
+classDiagram
+    %% Contract tokens: #include <cstddef>, std::size_t, #include "Collision.h", #include <cmath>, std::sqrt
+    namespace breakout {
+        class Vector2 {
+            +double x
+            +double y
+            +Vector2()
+            +Vector2(double x, double y)
+            +Vector2 operator+(Vector2) const
+            +Vector2 operator-(Vector2) const
+            +Vector2 operator*(double) const
+        }
+        class Playfield {
+            +double width
+            +double height
+            +Playfield(double w, double h)
+            +double left() const
+            +double right() const
+            +double top() const
+            +double bottom() const
+        }
+        class Ball {
+            +Vector2 position
+            +Vector2 velocity
+            +double radius
+            +Ball(Vector2 p, Vector2 v, double r)
+            +void integrate(double dt)
+        }
+        class Paddle {
+            +Vector2 position
+            +double width
+            +double height
+            +void move(double dx, const Playfield& f)
+            +double left() const
+            +double right() const
+            +double top() const
+            +double bottom() const
+        }
+        class Brick {
+            +Vector2 position
+            +double width
+            +double height
+            +int durability
+            +bool isAlive() const
+            +void hit()
+            +double left() const
+            +double right() const
+            +double top() const
+            +double bottom() const
+        }
+        class Level {
+            +vector<Brick> bricks
+            +Level()
+            +void generateGrid(int rows, int cols, Vector2 origin, Vector2 cellSize, int hp)
+            +std::size_t remaining() const
+        }
+        class Collision {
+            <<static>> +bool circleVsAABB(const Ball& b, double left, double right, double top, double bottom)
+            <<static>> +Vector2 reflect(const Vector2& v, bool flipX, bool flipY)
+        }
+        class GameEngine {
+            +Playfield field
+            +Level level
+            +Ball ball
+            +Paddle paddle
+            +int score
+            +int lives
+            +enum Input { Left, Right, None }
+            +GameEngine(const Playfield&, const Level&, const Ball&, const Paddle&)
+            +void step(double dt, Input input)
+            +bool isLevelCleared() const
+            +std::size_t remainingBricks() const
+            +int getScore() const
+            +int getLives() const
+        }
+        Level --> Brick
+        GameEngine --> Level
+        GameEngine --> Ball
+        GameEngine --> Paddle
+        GameEngine ..> Collision
+        Ball --> Vector2
+        Paddle --> Vector2
+        Brick --> Vector2
+        Playfield --> Vector2
+    }

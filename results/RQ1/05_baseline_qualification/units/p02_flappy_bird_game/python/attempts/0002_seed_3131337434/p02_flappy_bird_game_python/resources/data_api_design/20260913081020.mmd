@@ -1,0 +1,70 @@
+classDiagram
+    class Config {
+        +gravity: float
+        +flap_impulse: float
+        +max_vy: float
+        +bird_x: float
+        +start_y: float
+        +pipe_speed: float
+        +pipe_width: float
+        +gap_height: float
+        +spawn_interval_ticks: int
+        +world_height: float
+        +world_ceiling: float
+        +world_floor: float
+    }
+
+    class Pipe {
+        +x: float
+        +gap_y: float
+        +width: float
+        +gap_height: float
+        +passed: bool
+        +right_edge() float
+        +step(speed: float)
+    }
+
+    class Game {
+        -config: Config
+        -state: str  // 'ready' | 'running' | 'game_over'
+        -bird_y: float
+        -bird_vy: float
+        -tick: int
+        -score: int
+        -_pipes: list~Pipe~
+        +__init__(config: Config, initial_pipes: list~Pipe~ = [])
+        +reset()
+        +flap()
+        +step()
+        +status() dict  // summary snapshot for demo/testing
+        +pipes_readonly() tuple~Pipe~  // includes passed pipes until removed off-screen
+    }
+
+    class Physics {
+        <<module>>
+        +clamp(value: float, lo: float, hi: float) float
+        +integrate_vy(vy: float, gravity: float, max_vy: float) float
+    }
+
+    class Scoring {
+        <<module>>
+        +is_pipe_scored(bird_x: float, pipe_right_edge: float, already_passed: bool) bool
+    }
+
+    class Collision {
+        <<module>>
+        +hits_bounds(y: float, ceiling: float, floor: float) bool
+        +hits_pipe(bird_x: float, bird_y: float, pipe: Pipe) bool
+    }
+
+    Game --> Config
+    Game --> Pipe
+    Game ..> Physics : uses
+    Game ..> Scoring : uses
+    Game ..> Collision : uses
+
+%% Full API behavioral rules (applies to Game, Scoring.is_pipe_scored):
+%% - States: 'ready', 'running', 'game_over' only.
+%% - flap(): in 'ready' atomically sets state to 'running' and immediately applies config.flap_impulse to vy; in 'running' reapplies the impulse; in 'game_over' no-op.
+%% - Step order while 'running': (1) vy := clamp(vy + gravity, -max_vy, max_vy); (2) y := y + vy; (3) move pipes; (4) score every unpassed pipe whose right edge is strictly left of config.bird_x exactly once using is_pipe_scored; 'passed' remains true while pipe remains in pipes_readonly(); (5) remove off-screen pipes only after scoring pass.
+%% - Scoring helper signature is fixed and pure: is_pipe_scored(bird_x: float, pipe_right_edge: float, already_passed: bool) -> bool.

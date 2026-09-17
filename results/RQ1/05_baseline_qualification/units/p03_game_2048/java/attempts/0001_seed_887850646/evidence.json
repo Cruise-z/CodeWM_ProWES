@@ -1,0 +1,35 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+    "initial_repository_tree_sha256": "8427109f247a02d66e4f3de4bb7b59a776c0187140a90720627d292cb178ae8c",
+    "prompt_sha256": "eec4c8ed865355ee8cf979ad3bdbbffa599d0a29280c3d8a6c4ecb5d090a87d7"
+  },
+  "architecture_team_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+  "attempt": 1,
+  "completed_at": "2026-09-13T12:05:15.394582+00:00",
+  "evaluator_elapsed_seconds": 9.586,
+  "evaluator_log_sha256": "00b4d6ab09e7f0d02503baad79dca4bbc6dcba331ffdc16d6b7958285f9b24e4",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/java/attempts/0001_seed_887850646/p03_game_2048_java/p03_game_2048_java",
+  "generated_repository_tree_sha256": "0dd1c2b3880ee6451c550500fc5a5c0fc6da43bc17cbd307109c256aec8ec073",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 887850646,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "dc49c46afc37d50043f47a8738c471d8eb33c1f7bf2aef27d0f06099478a093a",
+  "initial_repository_tree_sha256": "8427109f247a02d66e4f3de4bb7b59a776c0187140a90720627d292cb178ae8c",
+  "original_global_attempt": 29,
+  "passed": true,
+  "rng_seed": 887850646,
+  "started_at": "2026-09-13T11:57:49.169205+00:00",
+  "truncated_files": [],
+  "unit_id": "p03_game_2048_java",
+  "valid_for_current_architecture": true
+}

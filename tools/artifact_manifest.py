@@ -51,7 +51,16 @@ def classify(relative: str) -> tuple[str, str, str, str]:
     else:
         stage = parts[0]
     mapping = ""
-    if "results/RQ1/Applicability" in relative or "tables/rq1/applicability" in relative or "figures/rq1/applicability" in relative:
+    if "05_baseline_qualification" in relative or "tables/rq1/baseline" in relative:
+        mapping = (
+            "RQ1 baseline qualification; 88 attempts, 42 accepted repositories, "
+            "42 verified replays"
+        )
+    elif (
+        "results/RQ1/Applicability" in relative
+        or "tables/rq1/applicability" in relative
+        or "figures/rq1/applicability" in relative
+    ):
         mapping = "RQ1 applicability; medium-project strength-sweep derived outputs"
     elif "results/RQ1/Detectability" in relative or "tables/rq1/detectability" in relative:
         mapping = "RQ1 detectability; per-strength AUROC and FNR@5% FPR"

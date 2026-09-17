@@ -1,0 +1,41 @@
+sequenceDiagram
+    participant Main as Main.py
+    participant Svc as Service
+    participant Repo as Repository
+    participant Clk as FixedClock
+    participant Aud as AuditTrail
+    participant Srch as paginate()
+
+    Main->>Repo: construct()
+    Main->>Clk: construct(base=100.0, step=10.0)
+    Main->>Aud: construct()
+    Main->>Svc: construct(Repo, Aud, Clk)
+
+    Main->>Svc: create("Alpha")
+    Svc->>Clk: now()
+    Clk-->>Svc: 100.0
+    Svc->>Repo: create(name="Alpha", ts=100.0)
+    Repo-->>Svc: Item(id=1,..., created_at=100.0)
+    Svc->>Aud: log(op="create", item_id=1, item_name="Alpha", ts=100.0)
+
+    Main->>Svc: update(1, "Alpha2")
+    Svc->>Clk: now()
+    Clk-->>Svc: 110.0
+    Svc->>Repo: update(1, name="Alpha2", ts=110.0)
+    Repo-->>Svc: Item(id=1, name="Alpha2", updated_at=110.0)
+    Svc->>Aud: log(op="update", item_id=1, item_name="Alpha2", ts=110.0)
+
+    Main->>Svc: search(limit=2, offset=0)
+    Svc->>Repo: list_items()
+    Repo-->>Svc: list[Item]
+    Svc->>Srch: paginate(items, limit=2, offset=0)
+    Srch-->>Svc: Page
+
+    Main->>Svc: delete(1)
+    Svc->>Clk: now()
+    Clk-->>Svc: 120.0
+    Svc->>Repo: delete(1)
+    Repo-->>Svc: ok
+    Svc->>Aud: log(op="delete", item_id=1, item_name="Alpha2", ts=120.0)
+
+    Note right of Svc: Each mutation calls clock.now() exactly once and reuses ts for entity and audit

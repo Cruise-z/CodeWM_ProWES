@@ -1,0 +1,36 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 3,
+    "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+    "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+    "prompt_sha256": "1fa04782d04b562ea1e1fef9ef37eee977e911a9e786708f2e647d037e9ef321"
+  },
+  "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "attempt": 3,
+  "completed_at": "2026-09-13T12:25:44.572424+00:00",
+  "evaluator_elapsed_seconds": 2.337,
+  "evaluator_log_sha256": "ef8221b4a0d35654dfbce9f6cf2672a8efd0b2439dd6e6b04d21a708e607e1a0",
+  "evaluator_return_code": 2,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p04_caro_game/cpp/attempts/0003_seed_4049878797/p04_caro_game_cpp/p04_caro_game_cpp",
+  "generated_repository_tree_sha256": "bd0e9dfeed0267b37bf979e060284f7e9e538c3503db8d55ed0017e6f637f277",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 4049878797,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "024a150d2bbaff88242feb2a20a7645ed9129235f97f709ea041e99de4bc3e7c",
+  "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+  "original_global_attempt": 7,
+  "passed": false,
+  "rng_seed": 4049878797,
+  "started_at": "2026-09-13T12:18:25.172865+00:00",
+  "truncated_files": [],
+  "unit_id": "p04_caro_game_cpp",
+  "valid_for_current_architecture": true
+}

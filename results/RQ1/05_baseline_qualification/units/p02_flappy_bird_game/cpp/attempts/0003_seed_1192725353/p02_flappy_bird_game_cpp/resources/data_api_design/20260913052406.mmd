@@ -1,0 +1,96 @@
+classDiagram
+    class IRandom {
+        <<interface>>
+        +~IRandom()
+        +nextUnit() double
+    }
+    class LcgRandom {
+        -uint64_t state_
+        +LcgRandom(seed: uint64_t)
+        +nextUnit() double
+        +nextUint64() uint64_t
+    }
+    IRandom <|.. LcgRandom
+
+    class GameConfig {
+        +worldWidth: double
+        +worldHeight: double
+        +gravity: double
+        +flapImpulse: double
+        +maxFallSpeed: double
+        +pipeSpeed: double
+        +pipeWidth: double
+        +pipeGapHeight: double
+        +pipeSpawnInterval: double
+        +birdX: double
+        +birdWidth: double
+        +birdHeight: double
+        +Default() GameConfig
+        +validate() void
+    }
+
+    class Bird {
+        -y_: double
+        -v_: double
+        +Bird(y0: double, v0: double)
+        +flap(cfg: GameConfig) void
+        +update(dt: double, cfg: GameConfig) void
+        +y() double
+        +velocity() double
+        +top(cfg: GameConfig) double
+        +bottom(cfg: GameConfig) double
+        +reset(y0: double) void
+    }
+
+    class Pipe {
+        +x: double
+        +gapY: double
+        +scored: bool
+        +Pipe(x0: double, gapY0: double)
+        +update(dt: double, cfg: GameConfig) void
+        +isOffscreen(cfg: GameConfig) bool
+        +hasPassedBird(birdX: double, cfg: GameConfig) bool
+        +collidesWithBird(birdX: double, birdTop: double, birdBottom: double, cfg: GameConfig) bool
+    }
+
+    class GameState {
+        -cfg_: GameConfig
+        -bird_: Bird
+        -pipes_: std::vector<Pipe>
+        -score_: int
+        -gameOver_: bool
+        -timeSinceLastPipe_: double
+        +GameState(cfg: GameConfig)
+        +reset() void
+        +flap() void
+        +update(dt: double, rng: IRandom&) void
+        +score() int
+        +gameOver() bool
+        +pipes() const std::vector<Pipe>&
+        +birdY() double
+        +birdTop() double
+        +birdBottom() double
+    }
+
+    class GameEngine {
+        -cfg_: GameConfig
+        -rng_: std::unique_ptr<IRandom>
+        -state_: GameState
+        +GameEngine(cfg: GameConfig, rng: std::unique_ptr<IRandom>)
+        +reset() void
+        +flap() void
+        +step(dt: double) void
+        +score() int
+        +isGameOver() bool
+        +birdY() double
+        +pipes() const std::vector<Pipe>&
+        +config() const GameConfig&
+    }
+
+    GameState --> Bird
+    GameState --> Pipe
+    GameState --> GameConfig
+    GameState ..> IRandom
+    GameEngine --> GameState
+    GameEngine --> GameConfig
+    GameEngine --> IRandom

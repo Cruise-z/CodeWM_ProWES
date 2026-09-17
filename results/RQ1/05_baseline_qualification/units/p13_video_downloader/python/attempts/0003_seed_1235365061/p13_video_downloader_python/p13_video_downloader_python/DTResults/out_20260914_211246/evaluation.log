@@ -1,0 +1,120 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+.F.F                                                                     [100%]
+=================================== FAILURES ===================================
+____________________________ test_validation_errors ____________________________
+
+    def test_validation_errors():
+        """Test URL and format validation errors."""
+        # Test invalid URL schemes
+        try:
+>           validate_url("ftp://example.com/file")
+
+tests/test_main.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'ftp://example.com/file'
+
+    def validate_url(url: str) -> str:
+        """
+        Validate a URL string.
+    
+        Args:
+            url: The URL to validate.
+    
+        Returns:
+            The validated URL string with surrounding whitespace stripped.
+    
+        Raises:
+            InvalidURLError: If the URL is invalid.
+        """
+        if not isinstance(url, str):
+            raise InvalidURLError("URL must be a string")
+    
+        # Strip surrounding whitespace
+        stripped = url.strip()
+        if not stripped:
+            raise InvalidURLError("URL cannot be empty or contain only whitespace")
+    
+        # Check for embedded whitespace
+        if any(char.isspace() for char in stripped):
+            raise InvalidURLError("URL cannot contain embedded whitespace")
+    
+        # Parse the URL
+        parsed = urllib.parse.urlparse(stripped)
+    
+        # Check scheme
+        if parsed.scheme not in ("http", "https"):
+>           raise InvalidURLError("URL must have http or https scheme")
+E           NameError: name 'InvalidURLError' is not defined
+
+video_downloader/url.py:36: NameError
+________________________ test_synchronous_cancellation _________________________
+
+    def test_synchronous_cancellation():
+        """Test synchronous queue cancellation fixture."""
+        # Setup
+        mapping = {"a": (12, 4), "b": (8, 4)}
+        adapter = FakeTransferAdapter(mapping)
+        queue = DownloadQueue(adapter)
+    
+        # Enqueue two requests
+>       req_a = DownloadRequest(url="a", fmt="mp4")
+
+tests/test_main.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+video_downloader/request.py:26: in __init__
+    self._url = validate_url(url)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'a'
+
+    def validate_url(url: str) -> str:
+        """
+        Validate a URL string.
+    
+        Args:
+            url: The URL to validate.
+    
+        Returns:
+            The validated URL string with surrounding whitespace stripped.
+    
+        Raises:
+            InvalidURLError: If the URL is invalid.
+        """
+        if not isinstance(url, str):
+            raise InvalidURLError("URL must be a string")
+    
+        # Strip surrounding whitespace
+        stripped = url.strip()
+        if not stripped:
+            raise InvalidURLError("URL cannot be empty or contain only whitespace")
+    
+        # Check for embedded whitespace
+        if any(char.isspace() for char in stripped):
+            raise InvalidURLError("URL cannot contain embedded whitespace")
+    
+        # Parse the URL
+        parsed = urllib.parse.urlparse(stripped)
+    
+        # Check scheme
+        if parsed.scheme not in ("http", "https"):
+>           raise InvalidURLError("URL must have http or https scheme")
+E           NameError: name 'InvalidURLError' is not defined
+
+video_downloader/url.py:36: NameError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_validation_errors - NameError: name 'InvalidU...
+FAILED tests/test_main.py::test_synchronous_cancellation - NameError: name 'I...
+2 failed, 2 passed in 0.04s

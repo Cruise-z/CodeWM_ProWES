@@ -1,0 +1,83 @@
+classDiagram
+    class DownloadFormat {
+        +fromExtension(ext String) DownloadFormat
+        +defaultExtension() String
+        <<enumeration>>
+    }
+    class ValidationUtils {
+        +isValidUrl(url String) boolean
+        +sanitizeName(name String) String
+        +withExtension(baseName String, format DownloadFormat) String
+    }
+    class VideoDownloadRequest {
+        -url String
+        -format DownloadFormat
+        -suggestedName String
+        -outputName String
+        +of(url String, format DownloadFormat, suggestedName String) VideoDownloadRequest
+        +getUrl() String
+        +getFormat() DownloadFormat
+        +getSuggestedName() String
+        +getOutputName() String
+    }
+    class DownloadStatus {
+        <<enumeration>> PENDING RUNNING COMPLETED FAILED CANCELLED
+    }
+    class ProgressListener {
+        <<interface>>
+        +onProgress(downloaded long, total long) void
+        +onCompleted() void
+        +onFailed(message String) void
+    }
+    class TransferSession {
+        <<interface>>
+        +step() boolean
+        +cancel() void
+        +getTotalBytes() long
+        +getDownloadedBytes() long
+    }
+    class TransferAdapter {
+        <<interface>>
+        +begin(url String, format DownloadFormat, outputName String, listener ProgressListener) TransferSession
+    }
+    class OfflineDeterministicAdapter {
+        +begin(url String, format DownloadFormat, outputName String, listener ProgressListener) TransferSession
+    }
+    class DownloadTask {
+        -id int
+        -request VideoDownloadRequest
+        -status DownloadStatus
+        -session TransferSession
+        -progress int
+        +DownloadTask(id int, request VideoDownloadRequest)
+        +getId() int
+        +getStatus() DownloadStatus
+        +getProgress() int
+        +getOutputName() String
+        +start(adapter TransferAdapter) void
+        +tick() void
+        +cancel() void
+    }
+    class VideoDownloader {
+        -adapter TransferAdapter
+        -tasks Map~Integer, DownloadTask~
+        -nextId int
+        +VideoDownloader(adapter TransferAdapter)
+        +requestDownload(url String, format DownloadFormat, suggestedName String) int
+        +startPending() void
+        +tick() void
+        +cancel(taskId int) void
+        +getStatus(taskId int) DownloadStatus
+        +getProgress(taskId int) int
+        +getOutputName(taskId int) String
+    }
+    VideoDownloader --> TransferAdapter
+    VideoDownloader --> DownloadTask
+    DownloadTask --> VideoDownloadRequest
+    DownloadTask --> TransferSession
+    OfflineDeterministicAdapter ..|> TransferAdapter
+    TransferSession <|.. OfflineDeterministicAdapter
+    VideoDownloadRequest --> DownloadFormat
+    VideoDownloadRequest --> ValidationUtils
+    TransferAdapter --> ProgressListener
+    DownloadTask --> DownloadStatus

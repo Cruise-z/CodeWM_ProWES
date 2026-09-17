@@ -1,0 +1,945 @@
+{
+  "completed_at": "2026-09-13T14:25:23.434242+00:00",
+  "cumulative_totals": {
+    "accepted_metadata_updates": 24,
+    "archived_obsolete_attempts": 251,
+    "current_attempts": 45,
+    "excluded_interrupted_attempts": 6
+  },
+  "policy": "Seed attempts are valid only for the exact current architecture team and initial-repository hashes; current-epoch attempts are numbered from 1.",
+  "previous_migration_completed_at": "2026-09-13T14:24:14.054895+00:00",
+  "schema_version": 1,
+  "started_at": "2026-09-13T14:25:23.396019+00:00",
+  "totals": {
+    "accepted_metadata_updated": 12,
+    "archived_obsolete_attempts": 0,
+    "current_attempts": 45,
+    "excluded_interrupted_attempts": 6
+  },
+  "units": [
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 11,
+      "architecture_team_sha256": "6d38ed734a9368bde06574600fd9c5343731af32998a6c9fca8094daf7c548a3",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "ef91e3b7365cc187397d5f02934ea6993f8cf5af020d7ffe11b2f340baa13649",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p01_snake_game/cpp/attempts/0001_seed_666643921",
+          "interrupted": false,
+          "rng_seed": 666643921,
+          "to": "units/p01_snake_game/cpp/attempts/0001_seed_666643921"
+        }
+      ],
+      "unit_id": "p01_snake_game_cpp"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 5,
+      "architecture_team_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 4,
+      "excluded_interrupted": [
+        {
+          "from": "units/p01_snake_game/java/attempts/0001_seed_2662081573",
+          "rng_seed": 2662081573,
+          "to": "units/p01_snake_game/java/interrupted_attempts/b87da36a36b6_17b09efc8937/0001_seed_2662081573"
+        },
+        {
+          "from": "units/p01_snake_game/java/attempts/0003_seed_3025818450",
+          "rng_seed": 3025818450,
+          "to": "units/p01_snake_game/java/interrupted_attempts/b87da36a36b6_17b09efc8937/0003_seed_3025818450"
+        }
+      ],
+      "excluded_interrupted_attempt_count": 2,
+      "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p01_snake_game/java/attempts/0002_seed_1332723230",
+          "interrupted": false,
+          "rng_seed": 1332723230,
+          "to": "units/p01_snake_game/java/attempts/0001_seed_1332723230"
+        },
+        {
+          "attempt": 2,
+          "from": "units/p01_snake_game/java/attempts/0004_seed_4227743697",
+          "interrupted": false,
+          "rng_seed": 4227743697,
+          "to": "units/p01_snake_game/java/attempts/0002_seed_4227743697"
+        },
+        {
+          "attempt": 3,
+          "from": "units/p01_snake_game/java/attempts/0005_seed_3746296423",
+          "interrupted": false,
+          "rng_seed": 3746296423,
+          "to": "units/p01_snake_game/java/attempts/0003_seed_3746296423"
+        },
+        {
+          "attempt": 4,
+          "from": "units/p01_snake_game/java/attempts/0006_seed_1082638472",
+          "interrupted": false,
+          "rng_seed": 1082638472,
+          "to": "units/p01_snake_game/java/attempts/0004_seed_1082638472"
+        }
+      ],
+      "unit_id": "p01_snake_game_java"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 8,
+      "architecture_team_sha256": "d950dbbda42eb848e2889512d2584d5ab0ffe0660cc65464df972c66b55fa13f",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "3df97d956cf316cabd5a608b61c85435c8f77ec5217bbae9d50be4d15c01a201",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p01_snake_game/python/attempts/0001_seed_3736547328",
+          "interrupted": false,
+          "rng_seed": 3736547328,
+          "to": "units/p01_snake_game/python/attempts/0001_seed_3736547328"
+        }
+      ],
+      "unit_id": "p01_snake_game_python"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "ced24fb585f3f7def95b013caeedb1913a630242951b199cdc7445e7491d6193",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 3,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "789c1efa82bb2d855bc96a93855d72b96f359cd2e3148d56d0a7055da274e1ea",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p02_flappy_bird_game/cpp/attempts/0001_seed_1944687455",
+          "interrupted": false,
+          "rng_seed": 1944687455,
+          "to": "units/p02_flappy_bird_game/cpp/attempts/0001_seed_1944687455"
+        },
+        {
+          "attempt": 2,
+          "from": "units/p02_flappy_bird_game/cpp/attempts/0002_seed_209523865",
+          "interrupted": false,
+          "rng_seed": 209523865,
+          "to": "units/p02_flappy_bird_game/cpp/attempts/0002_seed_209523865"
+        },
+        {
+          "attempt": 3,
+          "from": "units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353",
+          "interrupted": false,
+          "rng_seed": 1192725353,
+          "to": "units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353"
+        }
+      ],
+      "unit_id": "p02_flappy_bird_game_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "8113e8b6e8d0fe372cd9be3818d56d6e1ff6a19d96066acfb42640386234bf5b",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [
+        {
+          "from": "units/p02_flappy_bird_game/java/attempts/0002_seed_2474547344",
+          "rng_seed": 2474547344,
+          "to": "units/p02_flappy_bird_game/java/interrupted_attempts/8113e8b6e8d0_9b58c382e581/0002_seed_2474547344"
+        }
+      ],
+      "excluded_interrupted_attempt_count": 1,
+      "initial_repository_tree_sha256": "9b58c382e5816c4cd7623314d19eb9222f4ecebc78e61c9ce40cfcf35f39a7ce",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p02_flappy_bird_game/java/attempts/0001_seed_3496880904",
+          "interrupted": false,
+          "rng_seed": 3496880904,
+          "to": "units/p02_flappy_bird_game/java/attempts/0001_seed_3496880904"
+        }
+      ],
+      "unit_id": "p02_flappy_bird_game_java"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "0199e47687655dee3c403fcbe05c29a39e70ded3d5393dadb1ce32edc3b308d5",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 6,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "095bed916afa7128f477c33dd1ec5e3fdb73cb91a6ba31fbacacd301f87f39b0",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p02_flappy_bird_game/python/attempts/0001_seed_2343678053",
+          "interrupted": false,
+          "rng_seed": 2343678053,
+          "to": "units/p02_flappy_bird_game/python/attempts/0001_seed_2343678053"
+        },
+        {
+          "attempt": 2,
+          "from": "units/p02_flappy_bird_game/python/attempts/0002_seed_3131337434",
+          "interrupted": false,
+          "rng_seed": 3131337434,
+          "to": "units/p02_flappy_bird_game/python/attempts/0002_seed_3131337434"
+        },
+        {
+          "attempt": 3,
+          "from": "units/p02_flappy_bird_game/python/attempts/0003_seed_679664151",
+          "interrupted": false,
+          "rng_seed": 679664151,
+          "to": "units/p02_flappy_bird_game/python/attempts/0003_seed_679664151"
+        },
+        {
+          "attempt": 4,
+          "from": "units/p02_flappy_bird_game/python/attempts/0004_seed_359880623",
+          "interrupted": false,
+          "rng_seed": 359880623,
+          "to": "units/p02_flappy_bird_game/python/attempts/0004_seed_359880623"
+        },
+        {
+          "attempt": 5,
+          "from": "units/p02_flappy_bird_game/python/attempts/0005_seed_3968137087",
+          "interrupted": false,
+          "rng_seed": 3968137087,
+          "to": "units/p02_flappy_bird_game/python/attempts/0005_seed_3968137087"
+        },
+        {
+          "attempt": 6,
+          "from": "units/p02_flappy_bird_game/python/attempts/0006_seed_1298988375",
+          "interrupted": false,
+          "rng_seed": 1298988375,
+          "to": "units/p02_flappy_bird_game/python/attempts/0006_seed_1298988375"
+        }
+      ],
+      "unit_id": "p02_flappy_bird_game_python"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "f822e69d7c5c07a133e0431d9c1d70eb643f8378b2cc9e3a3ffda2ad39cb3f1b",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "f210e65cf8384620a9ced892f3f0183a4f5fb6899c6e87d8cbbfaee443125c84",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p03_game_2048/cpp/attempts/0001_seed_1673168053",
+          "interrupted": false,
+          "rng_seed": 1673168053,
+          "to": "units/p03_game_2048/cpp/attempts/0001_seed_1673168053"
+        }
+      ],
+      "unit_id": "p03_game_2048_cpp"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "8427109f247a02d66e4f3de4bb7b59a776c0187140a90720627d292cb178ae8c",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p03_game_2048/java/attempts/0001_seed_887850646",
+          "interrupted": false,
+          "rng_seed": 887850646,
+          "to": "units/p03_game_2048/java/attempts/0001_seed_887850646"
+        }
+      ],
+      "unit_id": "p03_game_2048_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "7206162c3895671359ef5eecf3ad5f797807c75457702451522d92b9bd9d7ef9",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "98519b0093877e9c347c5d7c42952a232d84337e694f95234b642ea67d15d65b",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p03_game_2048/python/attempts/0001_seed_3176410145",
+          "interrupted": false,
+          "rng_seed": 3176410145,
+          "to": "units/p03_game_2048/python/attempts/0001_seed_3176410145"
+        }
+      ],
+      "unit_id": "p03_game_2048_python"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 6,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p04_caro_game/cpp/attempts/0001_seed_3040666590",
+          "interrupted": false,
+          "rng_seed": 3040666590,
+          "to": "units/p04_caro_game/cpp/attempts/0001_seed_3040666590"
+        },
+        {
+          "attempt": 2,
+          "from": "units/p04_caro_game/cpp/attempts/0002_seed_2505762387",
+          "interrupted": false,
+          "rng_seed": 2505762387,
+          "to": "units/p04_caro_game/cpp/attempts/0002_seed_2505762387"
+        },
+        {
+          "attempt": 3,
+          "from": "units/p04_caro_game/cpp/attempts/0003_seed_4049878797",
+          "interrupted": false,
+          "rng_seed": 4049878797,
+          "to": "units/p04_caro_game/cpp/attempts/0003_seed_4049878797"
+        },
+        {
+          "attempt": 4,
+          "from": "units/p04_caro_game/cpp/attempts/0004_seed_3838723605",
+          "interrupted": false,
+          "rng_seed": 3838723605,
+          "to": "units/p04_caro_game/cpp/attempts/0004_seed_3838723605"
+        },
+        {
+          "attempt": 5,
+          "from": "units/p04_caro_game/cpp/attempts/0005_seed_4057175273",
+          "interrupted": false,
+          "rng_seed": 4057175273,
+          "to": "units/p04_caro_game/cpp/attempts/0005_seed_4057175273"
+        },
+        {
+          "attempt": 6,
+          "from": "units/p04_caro_game/cpp/attempts/0006_seed_1922813371",
+          "interrupted": false,
+          "rng_seed": 1922813371,
+          "to": "units/p04_caro_game/cpp/attempts/0006_seed_1922813371"
+        }
+      ],
+      "unit_id": "p04_caro_game_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "daf60be5e6aab98ffa32d179b97f7d766c623e37fbbff4a2d04674d4453eeca4",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "569bf9dc9924ae13b331f3d5564005cbcaa94e339a25ee9425cd80f9da24de8a",
+      "renumbered": [],
+      "unit_id": "p04_caro_game_java"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "8ab8042fa8dc789cad1d74394df431bf9753d27f1d6d5d91c944f6e183c699fe",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "6a84d4151b099130cc1a4fa14cd11745b8252576094922a8fe6deaf5e8d11492",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p04_caro_game/python/attempts/0001_seed_812711061",
+          "interrupted": false,
+          "rng_seed": 812711061,
+          "to": "units/p04_caro_game/python/attempts/0001_seed_812711061"
+        }
+      ],
+      "unit_id": "p04_caro_game_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "f9b865071672103a0544b9dff339d88827eb4423689774c929f52a5c86958d0c",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "3603b1ad95c885f669670426a3820635d4741fdc3f78a094978604245e9fadde",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p05_brick_breaker_game/cpp/attempts/0001_seed_2143683067",
+          "interrupted": false,
+          "rng_seed": 2143683067,
+          "to": "units/p05_brick_breaker_game/cpp/attempts/0001_seed_2143683067"
+        }
+      ],
+      "unit_id": "p05_brick_breaker_game_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "ad39ed3444894078fb0990db4b92f88c75cacbb7d6fabc57d3a2374729f3f4f3",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [
+        {
+          "from": "units/p05_brick_breaker_game/java/attempts/0001_seed_1322889144",
+          "rng_seed": 1322889144,
+          "to": "units/p05_brick_breaker_game/java/interrupted_attempts/ad39ed344489_86469bbe6b23/0001_seed_1322889144"
+        }
+      ],
+      "excluded_interrupted_attempt_count": 1,
+      "initial_repository_tree_sha256": "86469bbe6b2384958d1563b136b23179ddf0ad965c3cab5179b542708b274522",
+      "renumbered": [],
+      "unit_id": "p05_brick_breaker_game_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "fadeedf59f847cb4762b9123932c438227fb9f35e380edc6de336fdb57fd83b8",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "44368c44d323af68fc5810909bdfca755dde4daec77e42120a80d04915dcee40",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p05_brick_breaker_game/python/attempts/0001_seed_4079140401",
+          "interrupted": false,
+          "rng_seed": 4079140401,
+          "to": "units/p05_brick_breaker_game/python/attempts/0001_seed_4079140401"
+        }
+      ],
+      "unit_id": "p05_brick_breaker_game_python"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 2,
+      "architecture_team_sha256": "1dee866f73858b8d671c2bdd6385f3832d968dcab058184d0338e3cffda421d7",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 3,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "a95f2649922d966ddab89d56f3efa2b070fd6fbff54bfda133f5f253b665805f",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p06_tank_battle_game/cpp/attempts/0001_seed_3631673466",
+          "interrupted": false,
+          "rng_seed": 3631673466,
+          "to": "units/p06_tank_battle_game/cpp/attempts/0001_seed_3631673466"
+        },
+        {
+          "attempt": 2,
+          "from": "units/p06_tank_battle_game/cpp/attempts/0002_seed_2867542341",
+          "interrupted": false,
+          "rng_seed": 2867542341,
+          "to": "units/p06_tank_battle_game/cpp/attempts/0002_seed_2867542341"
+        },
+        {
+          "attempt": 3,
+          "from": "units/p06_tank_battle_game/cpp/attempts/0003_seed_1423652811",
+          "interrupted": false,
+          "rng_seed": 1423652811,
+          "to": "units/p06_tank_battle_game/cpp/attempts/0003_seed_1423652811"
+        }
+      ],
+      "unit_id": "p06_tank_battle_game_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "c12c3166bee3db9eb7cfa3d3a5c86614ffd0aca8a86bc9ea5d47f8915ff7d90b",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "be1acc9fda227a993a3e3b3b89b5ede9930a7a29af47ccc43ce276a86e658ae5",
+      "renumbered": [],
+      "unit_id": "p06_tank_battle_game_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "2d57f6b99bb4e366856346f483798de1c9bdd033eb246eafbe4d863cc0afa12c",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "b97144ae4a1ff1ac9b397612f69aa99ff26a9ccb5323aa036ce03a5af8410c10",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p06_tank_battle_game/python/attempts/0001_seed_2346011787",
+          "interrupted": false,
+          "rng_seed": 2346011787,
+          "to": "units/p06_tank_battle_game/python/attempts/0001_seed_2346011787"
+        }
+      ],
+      "unit_id": "p06_tank_battle_game_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "178270eb9a3f12671557678a5823b91e42ad57e9fe610ae534d286742ca9264d",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "3d8dc4e4b9d9f3bd3c149bc80162f840e796c7367014140b2d0cf0374009a863",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p07_calculator/cpp/attempts/0001_seed_2143195039",
+          "interrupted": false,
+          "rng_seed": 2143195039,
+          "to": "units/p07_calculator/cpp/attempts/0001_seed_2143195039"
+        }
+      ],
+      "unit_id": "p07_calculator_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "ead4087f8f756d712e6d1a8fbdf58718b92ce8b31dc86ae41200b78bc6457acf",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "5d51d8f10539eceb110ab8f15583fd3687174b78d301c6ef8734609d26e159f1",
+      "renumbered": [],
+      "unit_id": "p07_calculator_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "68619aa0732562bd8feab210d9999d6b6bb94c0ab4c92146ebc7b6ba40453e33",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "69110e0832778f2eae8623636c0c7a54a0f78337f6dca5fd8faa808b9a413cb2",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p07_calculator/python/attempts/0001_seed_4187111008",
+          "interrupted": false,
+          "rng_seed": 4187111008,
+          "to": "units/p07_calculator/python/attempts/0001_seed_4187111008"
+        }
+      ],
+      "unit_id": "p07_calculator_python"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "ba0b641569ac16a5d80e47d25a412b770de8095e130b9a26b33ec5aaf8c2bfe7",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "5a5753d175b32152824f3ccb39979593d0cae1b40a7e636fe57ed5cf54460583",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p08_excel_data_processing/cpp/attempts/0001_seed_3698866069",
+          "interrupted": false,
+          "rng_seed": 3698866069,
+          "to": "units/p08_excel_data_processing/cpp/attempts/0001_seed_3698866069"
+        }
+      ],
+      "unit_id": "p08_excel_data_processing_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "23b3e7458de680e71a7d08dda27b614dbc703b179e5f76146ab7f10b5764d5cd",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "bb911b4f61b1c3d7a3134fefafcc0a6bf1cf277ca826796e5ae4d7d0bd29b6d6",
+      "renumbered": [],
+      "unit_id": "p08_excel_data_processing_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "18e6cf600675cdba03504189c23be50516ca027bb4d590c7626f9de4a521064d",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "5852d14d9d984bb5acd48f98db5f5260caa5953e1032c1355071522bc7f8dd12",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p08_excel_data_processing/python/attempts/0001_seed_1844407107",
+          "interrupted": false,
+          "rng_seed": 1844407107,
+          "to": "units/p08_excel_data_processing/python/attempts/0001_seed_1844407107"
+        }
+      ],
+      "unit_id": "p08_excel_data_processing_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "bee817e64cf8e6c33a374a3cf292d2277c1ca642594987faebcaaf2baa934f7d",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "35aafdd5df617b3cf4ea0f158b4baca6f47d3042f006927c9ebc0794eb172dbb",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1172482927",
+          "interrupted": false,
+          "rng_seed": 1172482927,
+          "to": "units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1172482927"
+        }
+      ],
+      "unit_id": "p09_qr_code_gen_det_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "ba9964d2e7afaa02201803e094116a44d485316e5b9fc6a43a2834f6eb6fc653",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "49e41af5d246f69a51613b8621f245dce950520830ef78d8627197ff4f0db1b5",
+      "renumbered": [],
+      "unit_id": "p09_qr_code_gen_det_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "da8c1c2b281448dfbe967d1204f49dd81e89ea152a4e3ab432590faf2c7006be",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "c474a7ad76abb67364392a52be0e4ba41296433c72379bc0c3b48a2a8fa8f379",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p09_qr_code_gen_det/python/attempts/0001_seed_3428608432",
+          "interrupted": false,
+          "rng_seed": 3428608432,
+          "to": "units/p09_qr_code_gen_det/python/attempts/0001_seed_3428608432"
+        }
+      ],
+      "unit_id": "p09_qr_code_gen_det_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "cabe461b3c645b1a6203905db06244c283225e9fd32bc31f7e0025b95ac08593",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "4b13b3b19a3066cdd3205a6ab223a449a0a9e6f590c253208a4076b19f5c8b8f",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p10_crud_system/cpp/attempts/0001_seed_273450604",
+          "interrupted": false,
+          "rng_seed": 273450604,
+          "to": "units/p10_crud_system/cpp/attempts/0001_seed_273450604"
+        }
+      ],
+      "unit_id": "p10_crud_system_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 5,
+      "architecture_team_sha256": "3ecb2d2edc943d5ff68295ebae64fdee4895c0db48f186d6f42e2bc7f9daddc9",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "d07c8433d9f3989839edf1a77d39fa712cd19f8155315039036a0ea0296b73b3",
+      "renumbered": [],
+      "unit_id": "p10_crud_system_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "952c9d00086bd6288319c0f84642793c94f652c92d308f03197dfb4994907343",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "4454855acd3a419a9e2ee5525d322b6689f5631a19b4d742641e39c395ef7165",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p10_crud_system/python/attempts/0001_seed_3696600150",
+          "interrupted": false,
+          "rng_seed": 3696600150,
+          "to": "units/p10_crud_system/python/attempts/0001_seed_3696600150"
+        }
+      ],
+      "unit_id": "p10_crud_system_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "f3633b1d2360201dc3b1cf24800458edc27cfcd28d42aee0a7abe676b30be111",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "b0d8b32cf19d5b2ff1c3dd37736c43a3cc6673886ede3a4377ab40e59432cd1c",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p11_custom_press_releases/cpp/attempts/0001_seed_2134370775",
+          "interrupted": false,
+          "rng_seed": 2134370775,
+          "to": "units/p11_custom_press_releases/cpp/attempts/0001_seed_2134370775"
+        }
+      ],
+      "unit_id": "p11_custom_press_releases_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "5852c99f651210feac5ecb785441f09556413bfb2a078e2f3d5ded5894dcafca",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "b260a701506113bfe4b8d9e76a8c764ac18f251304dc90133b280cccdea5f532",
+      "renumbered": [],
+      "unit_id": "p11_custom_press_releases_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "d58fde9593666c935a9090a16912361e272f442427287601bc5ffbdf40579169",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [
+        {
+          "from": "units/p11_custom_press_releases/python/attempts/0001_seed_2246799425",
+          "rng_seed": 2246799425,
+          "to": "units/p11_custom_press_releases/python/interrupted_attempts/d58fde959366_d7da958bfd1a/0001_seed_2246799425"
+        }
+      ],
+      "excluded_interrupted_attempt_count": 1,
+      "initial_repository_tree_sha256": "d7da958bfd1ab8a26b638b409c859acd91a2da3d524485fb42138921f3318160",
+      "renumbered": [],
+      "unit_id": "p11_custom_press_releases_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "3f40892d3127648f0b52bdaec497ef8b3f20b2ebfb0e098052107e3e1afacc53",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "763a34b02ebddc2af279ad723200aa637d6ea5286c7362fe6ae8ea2ef8973d8c",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p12_video_player/cpp/attempts/0001_seed_799780078",
+          "interrupted": false,
+          "rng_seed": 799780078,
+          "to": "units/p12_video_player/cpp/attempts/0001_seed_799780078"
+        }
+      ],
+      "unit_id": "p12_video_player_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "94e2075efbff95b969a308c4edf41e13da4de135ec31b2640b1085cef54cfaa5",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "a28df86a0d7e9bcf7a19983b28db05dcf053e14a8b363ef1ef42197161126d0b",
+      "renumbered": [],
+      "unit_id": "p12_video_player_java"
+    },
+    {
+      "accepted_metadata_updated": true,
+      "architecture_attempt": 4,
+      "architecture_team_sha256": "5689fda1678c63d031d808493ff4ab224d6ef87f515fcfeca55df4cf7112d5bb",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "3bed2840b33f0d5854fc3b5ac45d9ac6981b66c72992557e17d797fb87c18166",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p12_video_player/python/attempts/0001_seed_769100576",
+          "interrupted": false,
+          "rng_seed": 769100576,
+          "to": "units/p12_video_player/python/attempts/0001_seed_769100576"
+        }
+      ],
+      "unit_id": "p12_video_player_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "67bd4198c6f613ddacbe6159fb93b2e6e29500e0102c9367f9f713cf83667bc0",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "eb553ebce962330550a0930c19423f69ef9cb0b8d0026f0903506c93d96ca4da",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p13_video_downloader/cpp/attempts/0001_seed_857055131",
+          "interrupted": false,
+          "rng_seed": 857055131,
+          "to": "units/p13_video_downloader/cpp/attempts/0001_seed_857055131"
+        }
+      ],
+      "unit_id": "p13_video_downloader_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 6,
+      "architecture_team_sha256": "3b66032ad17178bf944782d1a76a9ee96eac3b70c78e15b6b35d2019abae0ab3",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "fa59d80b8cc1301669f6d9916792e35794b5a2f61492d06abf3958b6a8b93633",
+      "renumbered": [],
+      "unit_id": "p13_video_downloader_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "64c2e2fb56221764f9176daeeaea75639c28d20f0483400cf4f3503ecbdd589e",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "817e43cf5caac9a85e7835b9913d85008bfd95a26e13f637ab3c5291ec9841fa",
+      "renumbered": [],
+      "unit_id": "p13_video_downloader_python"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "719451012e4763888ed2ea724bfce66ff1a8393fefb3830867e3496f28e74cb8",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 1,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "867af8973d268109bd0bff4b129e96b691d43d9593c25bc5c15a60a5f8e2f0ec",
+      "renumbered": [
+        {
+          "attempt": 1,
+          "from": "units/p14_todo_list_app/cpp/attempts/0001_seed_1239021402",
+          "interrupted": false,
+          "rng_seed": 1239021402,
+          "to": "units/p14_todo_list_app/cpp/attempts/0001_seed_1239021402"
+        }
+      ],
+      "unit_id": "p14_todo_list_app_cpp"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "1d91d4ab3d289d9d2ff6538820cb805ac8d629aece755bd37f4a58845364f785",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [],
+      "excluded_interrupted_attempt_count": 0,
+      "initial_repository_tree_sha256": "7288032ce478252114276c84e5b35fbb7b8cea3039f9e9eb115fbd6ba8df009e",
+      "renumbered": [],
+      "unit_id": "p14_todo_list_app_java"
+    },
+    {
+      "accepted_metadata_updated": false,
+      "architecture_attempt": 3,
+      "architecture_team_sha256": "0150cf81342b78a190b70d5c18866b670dd958d6338bc3781571eb6c71d8735e",
+      "archived": [],
+      "archived_obsolete_attempt_count": 0,
+      "current_attempt_count": 0,
+      "excluded_interrupted": [
+        {
+          "from": "units/p14_todo_list_app/python/attempts/0001_seed_3425922338",
+          "rng_seed": 3425922338,
+          "to": "units/p14_todo_list_app/python/interrupted_attempts/0150cf81342b_99bf1858c0e9/0001_seed_3425922338"
+        }
+      ],
+      "excluded_interrupted_attempt_count": 1,
+      "initial_repository_tree_sha256": "99bf1858c0e99026df2cae96321735b1304727931c8c056d1614602b13d3b31b",
+      "renumbered": [],
+      "unit_id": "p14_todo_list_app_python"
+    }
+  ]
+}

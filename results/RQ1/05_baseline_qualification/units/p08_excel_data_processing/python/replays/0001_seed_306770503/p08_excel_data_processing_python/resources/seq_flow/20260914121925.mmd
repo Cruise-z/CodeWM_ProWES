@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main.run_demo
+    participant S as Sheet
+    participant O1 as operations.filter_rows
+    participant O2 as operations.sort_rows
+    participant O3 as operations.aggregate_column
+    participant R as report.build_report
+    M->>S: Sheet.from_values([[...]] )
+    M->>O1: filter_rows(sheet, predicate)
+    O1-->>M: new Sheet(filtered)
+    M->>O2: sort_rows(other_sheet, key)
+    O2-->>M: new Sheet(sorted)
+    M->>O3: aggregate_column(sheet, column=0)
+    O3-->>M: {count, missing, numeric_count, sum, min, max}
+    M->>R: build_report(sheet)
+    R-->>M: {row_count, column_count, missing_cells}
+    M-->>M: assemble dict and return
+    M-->>Console: print once under __name__ guard

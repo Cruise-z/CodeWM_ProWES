@@ -1,0 +1,95 @@
+{
+  "Anything UNCLEAR": "",
+  "Competitive Analysis": [
+    "bc and dc (Unix calculators): reliable CLI calculators with precedence handling",
+    "Windows Calculator: comprehensive UI calculator with history",
+    "expr (shell built-in): limited but demonstrates tokenization and precedence",
+    "TinyExpr (C library): embeddable expression evaluator without external deps"
+  ],
+  "Competitive Quadrant Chart": "quadrantChart\n    title \"Calculator positioning\"\n    x-axis \"Low Capability\" --> \"High Capability\"\n    y-axis \"Low Maintainability\" --> \"High Maintainability\"\n    \"expr\": [0.4, 0.6]\n    \"Windows Calculator\": [0.9, 0.7]\n    \"bc/dc\": [0.7, 0.7]\n    \"Our Calculator\": [0.6, 0.85]",
+  "Domain Expectations": [
+    "Lexer breaks input strings into tokens: number, operator, parenthesis; ignores permissible whitespace",
+    "Parser converts tokens into an evaluable form (e.g., RPN) using the shunting-yard algorithm",
+    "Evaluator computes a double result with correct operator precedence",
+    "Parentheses correctly alter evaluation order",
+    "Error reporting includes type and position for invalid input or syntax errors",
+    "Division by zero yields a descriptive error without crashing",
+    "History records successful calculations with expression and result",
+    "Public API exposes a single evaluate function and history accessors"
+  ],
+  "Domain Reasoning": [
+    "Tokenization must support numbers (integers and decimals), operators (+ - * /), and parentheses",
+    "Parsing should respect operator precedence and associativity; parentheses override precedence",
+    "Evaluation must handle division with double precision and report divide-by-zero errors clearly",
+    "Error handling must detect invalid characters, malformed expressions, and mismatched parentheses",
+    "History management should maintain an ordered record of evaluated expressions and results",
+    "Domain logic should be deterministic and pure where possible to ease testing",
+    "Boundary: Runtime I/O and formatting separated from core calculation to maintain testability"
+  ],
+  "Interface Protocol": "C++: build_file=CMakeLists.txt, runtime_entry=src/Main.cpp, test_target=tests/test_main.cpp, test_command=ctest.",
+  "Language": "en_us",
+  "Language Convention Requirements": [
+    "Use CMake with C++17",
+    "Use include/*.h and src/*.cpp pairs for reusable modules",
+    "Headers must be self-contained with necessary standard-library includes",
+    "tests/test_main.cpp must include public headers only",
+    "Keep src/Main.cpp thin and separate pure domain logic",
+    "No external dependencies beyond the standard library"
+  ],
+  "Normative Architecture Requirements": "Generate a complete medium-size C++17 repository architecture for: Calculator.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 6 repository files\n- about 22 functions or methods\n- about 468 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tokenization of arithmetic expressions\n- operator precedence and parentheses\n- addition subtraction multiplication and division\n- decimal values\n- clear error reporting\n- calculation history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Original Requirements": "Generate a complete medium-size C++17 repository architecture for: Calculator.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 6 repository files\n- about 22 functions or methods\n- about 468 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tokenization of arithmetic expressions\n- operator precedence and parentheses\n- addition subtraction multiplication and division\n- decimal values\n- clear error reporting\n- calculation history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Product Goals": [
+    "Deliver a correct, testable arithmetic expression evaluator with clear errors",
+    "Provide a simple runtime demo and minimal but reliable automated tests",
+    "Keep the architecture clean with a stable, documented public API"
+  ],
+  "Programming Language": "C++",
+  "Protocol Contract": {
+    "build_file": "CMakeLists.txt",
+    "required_files_exact": [
+      "CMakeLists.txt",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "runtime_entry": "src/Main.cpp",
+    "test_command": "ctest",
+    "test_target": "tests/test_main.cpp"
+  },
+  "Requirement Analysis": "We must deliver a C++17 project with normative files CMakeLists.txt, src/Main.cpp, and a single tests/test_main.cpp. The core behavior includes tokenization, parsing with operator precedence and parentheses, arithmetic operations (+ - * /) with decimals, error reporting, and a calculation history. Architecture must separate pure domain logic from runtime concerns: headers and implementation pairs in include/ and src/ respectively. Tests must be minimal, deterministic, and import only the public headers. The public API should expose a simple evaluate function and history querying. The runtime entry should demonstrate evaluation and exit cleanly without loops. Implementation must validate inputs and handle boundary cases like malformed expressions and division by zero. The build and tests must run via ctest.",
+  "Requirement Pool": [
+    [
+      "P0",
+      "Preserve protocol-required files exactly (CMakeLists.txt, src/Main.cpp, tests/test_main.cpp)"
+    ],
+    [
+      "P0",
+      "Implement tokenizer, parser (precedence and parentheses), and evaluator with decimals"
+    ],
+    [
+      "P0",
+      "Provide clear error reporting for invalid inputs and divide-by-zero"
+    ],
+    [
+      "P1",
+      "Maintain calculation history accessible via API"
+    ],
+    [
+      "P1",
+      "Provide minimal automated tests covering wiring and a representative core rule"
+    ]
+  ],
+  "Testing Constraints": [
+    "Exactly one protocol-level test file",
+    "No manual interaction, GUI, network, or OS-specific behavior",
+    "Minimal core-rule coverage with 2-4 tests",
+    "Tests include headers only; do not include implementation .cpp files"
+  ],
+  "UI / UX / Interaction Design draft": "Console-based demonstration in src/Main.cpp that evaluates a few fixed expressions and prints results and errors, then exits. No interactive input or loops to keep runtime deterministic for tests. History is printed with expressions and results to illustrate usage. Tests avoid any real I/O reliance and focus on API behavior.",
+  "User Stories": [
+    "As a user, I can enter an arithmetic expression like \"3 + 4 * 2\" and get 11",
+    "As a user, I can include decimals and parentheses, e.g., \"(1.5 + 2.5) / 2\"",
+    "As a user, I receive a helpful error message for invalid input or divide-by-zero",
+    "As a user, I can review a short history of recent calculations",
+    "As a developer, I can use a stable API to evaluate expressions programmatically"
+  ]
+}

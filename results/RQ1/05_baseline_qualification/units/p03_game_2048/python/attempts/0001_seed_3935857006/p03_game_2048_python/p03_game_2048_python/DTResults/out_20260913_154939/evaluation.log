@@ -1,0 +1,63 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_________________________ test_move_line_left_fixtures _________________________
+
+    def test_move_line_left_fixtures():
+        """Test the canonical move_line_left function with various inputs."""
+        # Test case 1: No merge needed
+        result, score = move_line_left([2, 4, 8, 16])
+        assert result == [2, 4, 8, 16]
+        assert score == 0
+    
+        # Test case 2: Single merge
+        result, score = move_line_left([2, 2, 4, 8])
+        assert result == [4, 4, 8, 0]
+        assert score == 4
+    
+        # Test case 3: Multiple merges
+        result, score = move_line_left([2, 2, 2, 2])
+        assert result == [4, 4, 0, 0]
+        assert score == 8
+    
+        # Test case 4: Merge with gaps
+        result, score = move_line_left([4, 0, 4, 0])
+        assert result == [8, 0, 0, 0]
+        assert score == 8
+    
+        # Test case 5: Merge and shift
+        result, score = move_line_left([0, 0, 2, 2])
+        assert result == [4, 0, 0, 0]
+        assert score == 4
+    
+        # Test case 6: Padding to length 4
+        result, score = move_line_left([2, 2])
+        assert result == [4, 0, 0, 0]
+        assert score == 4
+    
+        # Test case 7: All zeros
+        result, score = move_line_left([0, 0, 0, 0])
+        assert result == [0, 0, 0, 0]
+        assert score == 0
+    
+        # Test case 8: Single element
+        result, score = move_line_left([4])
+        assert result == [4, 0, 0, 0]
+        assert score == 0
+    
+        # Test case 9: Skip after merge (consecutive equal elements)
+        result, score = move_line_left([2, 2, 4, 4])
+>       assert result == [4, 4, 4, 0]
+E       assert [4, 8, 0, 0] == [4, 4, 4, 0]
+E         At index 1 diff: 8 != 4
+E         Use -v to get more diff
+
+tests/test_main.py:52: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_move_line_left_fixtures - assert [4, 8, 0, 0]...
+1 failed, 1 passed in 0.04s

@@ -1,0 +1,34 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "dc0c4677df912f39dc9ab08d5364a3fc7e9f333e50bc4b33b4f3a0ad8589577a",
+    "initial_repository_tree_sha256": "e4a0f80a91dee6a2acc2075f923d890b07041bf7e01b5125c4b4cc3149373901",
+    "prompt_sha256": "c9a89c4b19adcf94bd169a31edb077f0951d78080372f76581010ad02ce3dfb2"
+  },
+  "architecture_team_sha256": "dc0c4677df912f39dc9ab08d5364a3fc7e9f333e50bc4b33b4f3a0ad8589577a",
+  "attempt": 1,
+  "completed_at": "2026-09-13T15:49:41.986724+00:00",
+  "evaluator_elapsed_seconds": 2.177,
+  "evaluator_log_sha256": "69dc3410a4c5a3cbb4a3831626cb77aae4431e5746137559002bcf9ab0b5f221",
+  "evaluator_return_code": 1,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0001_seed_3935857006/p03_game_2048_python/p03_game_2048_python",
+  "generated_repository_tree_sha256": "4a3c79a958135c5c4ebc157d8377303b180430915c099cffdf59739b0ea79e69",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3935857006,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "faa762e02140cd50d356c85275661f70e5ddcac6385b84d2ded3a4bc41dddf36",
+  "initial_repository_tree_sha256": "e4a0f80a91dee6a2acc2075f923d890b07041bf7e01b5125c4b4cc3149373901",
+  "passed": false,
+  "rng_seed": 3935857006,
+  "started_at": "2026-09-13T15:45:37.533679+00:00",
+  "truncated_files": [],
+  "unit_id": "p03_game_2048_python"
+}

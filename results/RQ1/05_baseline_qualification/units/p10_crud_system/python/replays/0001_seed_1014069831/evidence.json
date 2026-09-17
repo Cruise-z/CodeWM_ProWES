@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "2720cec94671a817b5e818ed83ac9d9df0dee663dc0c6b2d5ff1973633648ec1",
+  "architecture_team_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+  "completed_at": "2026-09-14T18:08:53.860805+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 2.33,
+  "evaluator_log_sha256": "7021968caefa178196374b7cb946fd6a8afadb17025b43aecd623a1f5432b9fc",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/python/replays/0001_seed_1014069831/p10_crud_system_python/p10_crud_system_python",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1014069831,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "4c45a8ed00245a00a4631941d30945bac92327848e90db12ca3fb2dc925d2070",
+  "initial_repository_tree_sha256": "9be0e4ee67a772ec44a30bea9a466aea77c9a415c5eebf7c94665ab5720a1153",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "2720cec94671a817b5e818ed83ac9d9df0dee663dc0c6b2d5ff1973633648ec1",
+  "rng_seed": 1014069831,
+  "started_at": "2026-09-14T18:04:11.365196+00:00",
+  "truncated_files": [],
+  "unit_id": "p10_crud_system_python"
+}

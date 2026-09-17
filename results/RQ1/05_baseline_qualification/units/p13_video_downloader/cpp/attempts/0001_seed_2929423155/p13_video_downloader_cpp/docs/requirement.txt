@@ -1,0 +1,72 @@
+Generate a complete medium-size C++17 repository architecture for: Video Downloader.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+
+Project-specific C++17 downloader contract with deliberately small boundary interfaces:
+- use exactly these files and no substitutes, in dependency order: CMakeLists.txt, include/DownloadTypes.h, include/Url.h, src/Url.cpp, include/SafeNamer.h, src/SafeNamer.cpp, include/Transfer.h, src/Transfer.cpp, include/DownloadQueue.h, src/DownloadQueue.cpp, src/Main.cpp, tests/test_main.cpp. Do not create Format.h, TransferAdapter.h, FakeTransfer.h, ExistingFiles.h, InMemoryExistingFiles.h, or any other source/header/test file
+- DownloadTypes.h is self-contained and directly includes <cstddef>, <cstdint>, and <string>. It solely defines global enum class Format { MP4, WEBM, AUDIO }, enum class DownloadState { QUEUED, DOWNLOADING, COMPLETED, CANCELED, FAILED }, struct Progress { std::size_t bytes; std::size_t total; }, struct DownloadItem { std::uint64_t id; std::string url; Format format; std::string filename; DownloadState state; Progress progress; std::string error; }, and struct EnqueueResult { bool ok; std::uint64_t id; std::string filename; std::string error; }. No type in this header depends on another project header, so Format is always defined before DownloadItem
+- Url.h directly includes <string> and declares bool is_valid_url(const std::string&), bool parse_format(const std::string&, Format&), and std::string extension_for(Format); it directly includes "DownloadTypes.h" because it names Format. Url.cpp directly includes "Url.h" and <algorithm>/<cctype> as used. URL validation rejects whitespace anywhere, finds a literal :// separator, requires its scheme to be exactly http or https, sets host_begin to separator+3, finds the next slash from host_begin (or uses url.size), and requires host_end>host_begin; a path is NOT required. Therefore both `https://` and `http:///path` are invalid, while BOTH `https://example.com` and `https://example.com/clip` are valid. Treating a host-only URL as invalid is forbidden. Format parsing accepts case-insensitive mp4, webm, audio; extensions are .mp4, .webm, .mp3
+- SafeNamer.h directly includes <string>, <unordered_set>, <vector>. It fully declares class IExistingFiles with virtual destructor and pure virtual bool exists(const std::string&) const, then class InMemoryExistingFiles final with a private unordered_set<string>, an explicit zero-argument `InMemoryExistingFiles() = default;`, a separate `explicit InMemoryExistingFiles(const std::vector<std::string>& initial);` with NO default argument, exists override, and add. It also declares sanitize_base and unique_name(base, extension, files, reserved). `InMemoryExistingFiles files({});` is forbidden because braces are ambiguous with copy/move construction; empty instances MUST be spelled exactly `InMemoryExistingFiles files;`. SafeNamer.cpp directly includes "SafeNamer.h", <algorithm>, <cctype>, and <utility> before using std::move. It never calls a method through an incomplete forward-declared type. sanitize_base keeps alphanumeric, dash, underscore, converts other runs to one underscore, trims edge underscores, and falls back to "download"; unique_name returns base+extension or base_2+extension, base_3+extension, etc. while either files.exists or reserved contains the candidate
+- Transfer.h directly includes <cstddef> and <string>. It fully declares class ITransferAdapter with virtual destructor and pure virtual std::size_t total_bytes(const std::string& url) const, and class FakeTransferAdapter final whose explicit constructor takes std::size_t total_bytes=12 and whose override returns that fixed value for every URL. Transfer.cpp directly includes "Transfer.h" and validates the constructor total is positive. There is no TransferSession and no bytesTransferred accessor; progress mutation belongs solely to DownloadQueue
+- DownloadQueue.h directly includes <cstddef>, <cstdint>, <string>, <unordered_set>, <vector>, plus "DownloadTypes.h", "SafeNamer.h", and "Transfer.h". It defines class DownloadQueue holding ITransferAdapter&, const IExistingFiles&, vector<DownloadItem>, unordered_set<string> reserved_names, next_id starting at 1, and chunk_size. Public API is exact: DownloadQueue(ITransferAdapter&,const IExistingFiles&,std::size_t chunk_size=4); EnqueueResult enqueue(const std::string& url,const std::string& format_text,const std::string& desired_base); bool cancel(std::uint64_t); const DownloadItem* get(std::uint64_t) const; std::vector<DownloadItem> list() const; void tick(). DownloadQueue.cpp MUST directly include both "DownloadQueue.h" and "Url.h" before calling is_valid_url, parse_format, or extension_for, then directly include <algorithm> and <stdexcept>; relying on an undeclared URL function or a transitive include is forbidden
+- enqueue rejects invalid URL/format by returning ok=false without adding an item; otherwise reserves a safe unique filename and appends a QUEUED item with progress {0, adapter.total_bytes(url)}. tick deterministically processes only the first QUEUED or DOWNLOADING item: transitions QUEUED to DOWNLOADING, then increments item.progress.bytes directly by min(chunk_size, total-bytes), and marks COMPLETED when bytes==total. It never tries to assign through an accessor return value. cancel returns false for absent/terminal ids and otherwise sets CANCELED; future ticks do not change canceled progress. get returns a pointer into the queue or nullptr; list returns a defensive copy
+- CMakeLists.txt enables C++17 with extensions off; builds downloader_core from exactly src/Url.cpp, src/SafeNamer.cpp, src/Transfer.cpp, src/DownloadQueue.cpp; publishes include; builds downloader_app from src/Main.cpp and downloader_tests from tests/test_main.cpp; links both to downloader_core; calls enable_testing and add_test. No package lookup, fetch, external dependency, network, real filesystem, GUI, thread, clock, sleep, or randomness
+- src/Main.cpp constructs an empty existing-files boundary with the literal unambiguous declaration `InMemoryExistingFiles files;`, then constructs FakeTransferAdapter and DownloadQueue, enqueues one fixed https URL, ticks a bounded number of times, and returns 0 without input or a long loop. It never writes `files({})`. tests/test_main.cpp includes only <cassert>, <vector>, "DownloadQueue.h", and "Url.h", defines exactly one int main with exactly four concise blocks: URL/format rules where host-only https://example.com is valid; safe naming with an existing "clip.mp4" yielding "clip_2.mp4"; progress 0->4->8->12 and COMPLETED for total 12/chunk 4; cancellation freezes progress. Empty InMemoryExistingFiles objects in tests also use the zero-argument declaration. Tests never include a .cpp or access private members
+- repeat the exact 12-file list, sole DownloadTypes ownership, every direct include including Url.h in DownloadQueue.cpp and <utility> in SafeNamer.cpp, the exact URL host-boundary algorithm and host-only-valid rule, fully declared IExistingFiles, the separate no-argument and vector constructors, forbidden `files({})` form, literal empty declaration, fixed-size ITransferAdapter without sessions/accessor mutation, exact queue signatures/progress algorithm, exact filenames and progress fixtures, CMake targets, four independent test blocks, and all forbidden alias files in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 30 functions or methods
+- about 665 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- URL validation
+- download request and format selection
+- queue lifecycle
+- progress and cancellation
+- safe output naming
+- offline deterministic transfer adapter for tests
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE VIDEO-DOWNLOADER C++17 CHECKLIST:
+- Task filenames are exactly: CMakeLists.txt; include/DownloadTypes.h; include/Url.h; src/Url.cpp; include/SafeNamer.h; src/SafeNamer.cpp; include/Transfer.h; src/Transfer.cpp; include/DownloadQueue.h; src/DownloadQueue.cpp; src/Main.cpp; tests/test_main.cpp. Format.h, TransferAdapter.h, FakeTransfer.h, ExistingFiles.h, and InMemoryExistingFiles.h are forbidden.
+- DownloadTypes.h solely owns and defines Format before DownloadItem. SafeNamer.h fully defines IExistingFiles before any caller invokes exists; no incomplete-type call is allowed. Transfer.h defines only the total_bytes adapter boundary, has no TransferSession and no bytesTransferred accessor. DownloadQueue alone mutates item.progress.bytes directly by min(chunk_size,total-bytes).
+- DownloadQueue.cpp directly includes "Url.h" before calling is_valid_url/parse_format/extension_for; SafeNamer.cpp directly includes <utility> before std::move. URL host parsing begins after ://, so https:// and http:///path are invalid while https://example.com/clip is valid.
+- SafeNamer.h defines a separate zero-argument InMemoryExistingFiles constructor and a vector constructor with no default argument. Empty objects are declared exactly `InMemoryExistingFiles files;`; `InMemoryExistingFiles files({});` is forbidden. Host-only https://example.com is valid and tests must not reject it.
+- Every header is self-contained with its specified direct includes. CMake builds downloader_core/downloader_app/downloader_tests and registers the test without external packages. tests/test_main.cpp contains exactly one int main and four independent deterministic blocks for URL/format including the empty-host cases, clip_2.mp4 safe naming, 0/4/8/12 progress completion, and cancellation freeze. Repeat these literal ownership/API/fixture constraints in Full API, Logic Analysis, Shared Knowledge, C++ Build Link Audit, and affected tasks.
+

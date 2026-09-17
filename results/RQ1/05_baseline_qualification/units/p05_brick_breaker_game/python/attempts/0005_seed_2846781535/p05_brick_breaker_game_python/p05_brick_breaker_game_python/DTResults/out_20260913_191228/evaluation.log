@@ -1,0 +1,50 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+____________________ test_run_demo_returns_stable_snapshot _____________________
+
+    def test_run_demo_returns_stable_snapshot() -> None:
+        """Test that Main.run_demo returns a stable snapshot without side effects."""
+        # Run the demo multiple times to ensure deterministic output
+>       result1 = Main.Main.run_demo()
+
+tests/test_main.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+Main.py:17: in run_demo
+    game = Game()
+brick_breaker/game.py:25: in __init__
+    self.level = make_grid_level(self.config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = <brick_breaker.config.GameConfig object at 0x7f7845c8d600>
+
+    def make_grid_level(config: GameConfig) -> Level:
+        """Create a grid of bricks based on the game configuration.
+    
+        Args:
+            config: Game configuration containing brick layout parameters
+    
+        Returns:
+            Level object containing the brick grid
+        """
+        # Calculate brick width if not explicitly provided
+        if config.brick_width is None:
+>           total_width = config.brick_cols * config.brick_width + (config.brick_cols - 1) * config.brick_padding
+E           TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'
+
+brick_breaker/level.py:38: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_run_demo_returns_stable_snapshot - TypeError:...
+1 failed, 2 passed in 0.04s

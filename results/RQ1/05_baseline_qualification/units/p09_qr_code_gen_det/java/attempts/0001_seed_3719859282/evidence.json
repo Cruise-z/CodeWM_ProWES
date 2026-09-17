@@ -1,0 +1,33 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 9,
+    "architecture_team_sha256": "49e3f2f3b934092fc1361464575fd7ab23559ff70bda598db86644cb239fc920",
+    "initial_repository_tree_sha256": "d86648d2a22937c9bf96217d2f7525afb794c37a250f789453638cbbcff79856",
+    "prompt_sha256": "c723d3cf8356c98212098310acd29538bdbb7465e779b9bed7cf1f5da8ae2474"
+  },
+  "architecture_team_sha256": "49e3f2f3b934092fc1361464575fd7ab23559ff70bda598db86644cb239fc920",
+  "attempt": 1,
+  "completed_at": "2026-09-14T15:46:35.178255+00:00",
+  "evaluator_elapsed_seconds": 9.792,
+  "evaluator_log_sha256": "2b7161aaa67700c7f0b62409c27df55d601fc22cb027a6f053a5c53d358f0fd0",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/attempts/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java",
+  "generated_repository_tree_sha256": "358b85bcec0198b5c80783ba1099410c66fc5a24fc5943a84e1e9f625b18793e",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3719859282,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "cdaeb3bf0b8b4ca2648363ef115e7c961cd78b390d042df1c90aa8b76df553fe",
+  "initial_repository_tree_sha256": "d86648d2a22937c9bf96217d2f7525afb794c37a250f789453638cbbcff79856",
+  "passed": true,
+  "rng_seed": 3719859282,
+  "started_at": "2026-09-14T15:39:30.776817+00:00",
+  "truncated_files": [],
+  "unit_id": "p09_qr_code_gen_det_java"
+}

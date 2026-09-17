@@ -1,0 +1,176 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 9,
+  "expected_file_count": 9,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 718,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "CMakeLists.txt",
+      "finish_reason": "stop",
+      "generated_code_sha256": "2ee3a08a86dab4254daa117b7172e19c1013c582e384d3edeac66ad661a8b587",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "d9274529dff8f691067d6e3a08c56ffd9d212452ab7bbbd30844cd04880c73e2",
+      "response_id": "chatcmpl-1789247177380",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 174,
+        "prompt_tokens": 3285,
+        "total_tokens": 3459
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 1484,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/Main.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "bed8638ef0f1697a5402cfe69a03cfc1ac730a8058530c10819a9b466706c117",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "e7027395476b5191db5e351522054b62fa2e870afe310647cdbc3d6052eff308",
+      "response_id": "chatcmpl-1789247204018",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 429,
+        "prompt_tokens": 3451,
+        "total_tokens": 3880
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 5299,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "tests/test_main.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "66a8ec237ed409b6b9f5e6173c09459195d87f077f13433f635da590c773bc86",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "669c52dfe359e80960994419a796591280a0d4f405a98a59ab4dd94943d66a2e",
+      "response_id": "chatcmpl-1789247292104",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1413,
+        "prompt_tokens": 3879,
+        "total_tokens": 5292
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 2359,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "include/Geometry.h",
+      "finish_reason": "stop",
+      "generated_code_sha256": "1dff7ff8f1c37794884460f105a1d4ee1b2b94e17fa7493b0b2f1ae69c05f14f",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "21241f21c98f8b5e95cc6cd8586db6be95d5877d020c00959d99906dde84c123",
+      "response_id": "chatcmpl-1789247328326",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 575,
+        "prompt_tokens": 5283,
+        "total_tokens": 5858
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 869,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/Geometry.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "ad556820ef1c6f9cbc4f7f1c7de09c750dd3c3242c950de8fb59a97bff4c2a7f",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "56f3a585f5ae1f2fec89998c06aa909c34756d03ed65db56fb6b192b61a390c9",
+      "response_id": "chatcmpl-1789247341672",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 199,
+        "prompt_tokens": 5854,
+        "total_tokens": 6053
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 6905,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "include/Entities.h",
+      "finish_reason": "stop",
+      "generated_code_sha256": "61001d8a4a0b7b535396dffe71816cf2548d981aa20d209ace57fe1d54708421",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "51845905ecc81ece8deb8139bfecd2840fc74e77814ea198e0ab74e775035207",
+      "response_id": "chatcmpl-1789247445212",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1641,
+        "prompt_tokens": 6049,
+        "total_tokens": 7690
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 2045,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/Entities.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "cc71151371182de7e5cfaf747a1d3a4d8db2d64b11d91f23043fed0682e16c33",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "607a4a374ceea8bcc37b224daabc60f13f809e406c1d1ca47a775cc6887d5788",
+      "response_id": "chatcmpl-1789247479286",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 526,
+        "prompt_tokens": 7686,
+        "total_tokens": 8212
+      }
+    },
+    {
+      "action_index": 8,
+      "content_character_count": 2118,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "include/Game.h",
+      "finish_reason": "stop",
+      "generated_code_sha256": "298b595e8ccbb19de5c8e04fa887685dd01a443357ed50747298d251ccd8f849",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "ae76174ea2d96c4628d60de20146621117796a03886c45e5eed40b42dc953592",
+      "response_id": "chatcmpl-1789247513156",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 536,
+        "prompt_tokens": 8205,
+        "total_tokens": 8741
+      }
+    },
+    {
+      "action_index": 9,
+      "content_character_count": 5209,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "src/Game.cpp",
+      "finish_reason": "stop",
+      "generated_code_sha256": "323aed3a007714e8237b0cbb0e4057eb15daa563e006075f3f442bb32132ddcc",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "155f3874c6037c3507477e86777fe4a67c793777726057bd64f5a27c0cbab95f",
+      "response_id": "chatcmpl-1789247586449",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1185,
+        "prompt_tokens": 8737,
+        "total_tokens": 9922
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8001/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/attempts/0001_seed_3631673466/p06_tank_battle_game_cpp",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 9,
+  "truncated_files": []
+}

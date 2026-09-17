@@ -1,0 +1,148 @@
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "calculator/errors.py",
+    "calculator/history.py",
+    "calculator/tokenizer.py",
+    "calculator/engine.py",
+    "calculator/api.py",
+    "calculator/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.py. Single test target: tests/test_main.py. The runtime entry is headless and non-interactive. Tests are deterministic and offline, execute core rules and runtime wiring, and avoid GUI, network, filesystem, clock, threads, or randomness. Exactly one protocol-level test file is present; no additional tests are introduced; protocol files are preserved.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 9,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 9,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 9,
+    "task_list_count": 9
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size Python 3.10 repository architecture for: Calculator.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python 3.10 calculator ownership and deterministic-test contract:\n- use exactly these files and no substitutes, in dependency order: requirements.txt, calculator/errors.py, calculator/history.py, calculator/tokenizer.py, calculator/engine.py, calculator/api.py, calculator/__init__.py, Main.py, tests/test_main.py\n- calculator/errors.py solely defines CalculatorError, TokenizationError, ParseError, and EvaluationError. calculator/history.py solely defines History with add(expression:str,result:float), records()->list[tuple[str,float]], and __len__(), and imports no project module\n- calculator/tokenizer.py solely defines Token, NumberToken, OpToken, LParenToken, RParenToken, and Tokenizer. It may import only standard-library modules and the literal line `from .errors import TokenizationError`; it MUST NEVER import `calculator.tokenizer`, `.tokenizer`, or any symbol from itself, including under TYPE_CHECKING. The literal strings `from .tokenizer import` and `from calculator.tokenizer import` are forbidden inside calculator/tokenizer.py\n- token types are real constructible classes, never aliases to object: define a marker `class Token:`, immutable NumberToken(Token) with required float value, immutable OpToken(Token) with required operator value, and zero-argument LParenToken(Token) and RParenToken(Token). `NumberToken = object`, `OpToken = object`, `Token = object`, and every similar reassignment are forbidden\n- Tokenizer.tokenize(expression:str)->list[Token] ignores whitespace, emits decimal numbers and +,-,*,/ parentheses tokens, folds unary signs at the start or after an operator/left parenthesis into the immediately following number, and raises TokenizationError for invalid characters or malformed numbers. Every scan branch advances its index or returns/raises; no input loop can stall\n- calculator/engine.py literally imports the token classes with `from .tokenizer import Token, NumberToken, OpToken, LParenToken, RParenToken`, imports ParseError and EvaluationError from .errors, and defines to_rpn plus eval_rpn using shunting-yard and a float stack. It never imports api or calculator.__init__\n- calculator/api.py imports Tokenizer/Token from .tokenizer, to_rpn/eval_rpn from .engine, History from .history, and ParseError from .errors. evaluate(expression,history=None) rejects blank input with ParseError, evaluates deterministically, appends one history record only on success, and propagates domain exceptions; tokenize is a thin Tokenizer().tokenize wrapper\n- calculator/__init__.py explicitly re-exports evaluate, tokenize, History, CalculatorError, TokenizationError, ParseError, and EvaluationError. Main.py uses the absolute import `from calculator import evaluate, History`, defines run_demo()->dict with one fixed expression and history result, prints at most one concise value under the __name__ guard, and performs no input/network/filesystem/GUI/thread work\n- tests/test_main.py contains exactly three concise pytest tests using only `from calculator import evaluate, tokenize, History, CalculatorError, TokenizationError, ParseError, EvaluationError` and `from Main import run_demo`: (1) run_demo returns a dict and `evaluate(\"2 + 3 * 4\") == 14.0`; (2) one History records exactly `(\"(1 + 2) * 3\",9.0)` and `len(tokenize(\"1 + 2.5\")) == 3`, with no isinstance, reflection, internal-token import, token constructor call, or expression such as `type(tokens[0])()`; (3) division by zero raises EvaluationError, `evaluate(\"1 @ 2\")` raises TokenizationError, and blank input raises ParseError\n- repeat the exact file list, sole tokenizer type ownership, both forbidden self-import strings, real token-class declarations, one-way import graph, canonical public exports, exact three tests, and the ban on token construction/type introspection in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 6 repository files\n- about 22 functions or methods\n- about 468 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tokenization of arithmetic expressions\n- operator precedence and parentheses\n- addition subtraction multiplication and division\n- decimal values\n- clear error reporting\n- calculation history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE CALCULATOR PYTHON OWNERSHIP CHECKLIST:\n- Task filenames are exactly: requirements.txt; calculator/errors.py; calculator/history.py; calculator/tokenizer.py; calculator/engine.py; calculator/api.py; calculator/__init__.py; Main.py; tests/test_main.py.\n- tokenizer.py solely defines Token, NumberToken, OpToken, LParenToken, RParenToken, and Tokenizer. Its sole project import is `from .errors import TokenizationError`; `from .tokenizer import` and `from calculator.tokenizer import` are forbidden inside tokenizer.py, and token classes are never reassigned to object.\n- engine.py literally imports `from .tokenizer import Token, NumberToken, OpToken, LParenToken, RParenToken`; dependencies remain errors/history -> tokenizer -> engine -> api -> __init__/Main/tests with no reverse edge.\n- MainTest contains exactly three tests with the fixed arithmetic/history/error fixtures. It may assert only `len(tokenize(\"1 + 2.5\")) == 3`; token isinstance checks, internal token imports, reflection, token construction, and `type(tokens[0])()` are forbidden. Do not summarize or substitute these ownership, import, or test constraints.\n\n",
+  "Logic Analysis": [
+    [
+      "requirements.txt",
+      "dependency/build; declares pytest as the only external test dependency"
+    ],
+    [
+      "calculator/errors.py",
+      "package; foundational error hierarchy: CalculatorError (base), TokenizationError, ParseError, EvaluationError; no project imports"
+    ],
+    [
+      "calculator/history.py",
+      "package; immutable append-only History with add, records (returns a copy), and __len__; no project imports"
+    ],
+    [
+      "calculator/tokenizer.py",
+      "package; sole ownership of Token, NumberToken, OpToken, LParenToken, RParenToken and a deterministic Tokenizer.tokenize; only project import allowed: from .errors import TokenizationError; recognizes numbers, + - * /, parentheses; folds unary signs; raises TokenizationError for malformed input"
+    ],
+    [
+      "calculator/engine.py",
+      "pure-rule; implements to_rpn (shunting-yard) and eval_rpn (stack-based evaluation); literally imports token classes via 'from .tokenizer import Token, NumberToken, OpToken, LParenToken, RParenToken' and errors (ParseError, EvaluationError)"
+    ],
+    [
+      "calculator/api.py",
+      "interface; public API glue: tokenize delegates to Tokenizer; evaluate validates non-blank (ParseError), composes tokenizer->engine pipeline, optionally appends to History, propagates domain exceptions"
+    ],
+    [
+      "calculator/__init__.py",
+      "package; canonical public exports: evaluate, tokenize, History, CalculatorError, TokenizationError, ParseError, EvaluationError; no extra aliases"
+    ],
+    [
+      "Main.py",
+      "runtime/bootstrap; thin, headless entrypoint defining run_demo()->dict; uses 'from calculator import evaluate, History'; prints at most one concise value under __name__ guard"
+    ],
+    [
+      "tests/test_main.py",
+      "automated-test; exactly three concise pytest tests using only public API and run_demo; cover runtime wiring, precedence, tokenization count, and error pathways"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "calculator/errors.py",
+      "calculator/history.py",
+      "calculator/tokenizer.py",
+      "calculator/engine.py",
+      "calculator/api.py",
+      "calculator/__init__.py"
+    ],
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "Only pytest is required; no network, filesystem, or time dependencies; tests are deterministic and headless.",
+    "not_applicable": false,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [],
+  "Required packages": [
+    "pytest"
+  ],
+  "Shared Knowledge": "This repository is a Python 3.10 calculator package with a strict acyclic import graph and a single protocol-level test file. File responsibilities and imports:\n- calculator/errors.py: defines CalculatorError, TokenizationError, ParseError, EvaluationError; imports only builtins.\n- calculator/history.py: defines History; imports no project modules.\n- calculator/tokenizer.py: defines Token, NumberToken, OpToken, LParenToken, RParenToken, and Tokenizer; only project import allowed is 'from .errors import TokenizationError'; forbidden: 'from .tokenizer import', 'from calculator.tokenizer import'.\n- calculator/engine.py: implements to_rpn and eval_rpn; literally imports tokens via 'from .tokenizer import Token, NumberToken, OpToken, LParenToken, RParenToken'; imports ParseError and EvaluationError.\n- calculator/api.py: composes Tokenizer, Engine, History; exposes evaluate and tokenize; rejects blank input; appends to history only on success.\n- calculator/__init__.py: re-exports evaluate, tokenize, History, CalculatorError, TokenizationError, ParseError, EvaluationError.\n- Main.py: thin demo entrypoint with run_demo(); prints at most one value under __name__ guard.\n- tests/test_main.py: exactly three tests; imports only public API and run_demo; no token construction or internal-module imports; asserts only public behaviors (evaluate results, tokenization count, error raising, and history behavior).\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "requirements.txt",
+    "calculator/errors.py",
+    "calculator/history.py",
+    "calculator/tokenizer.py",
+    "calculator/engine.py",
+    "calculator/api.py",
+    "calculator/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.py",
+      "from calculator import evaluate, tokenize, History, CalculatorError, TokenizationError, ParseError, EvaluationError"
+    ],
+    [
+      "tests/test_main.py",
+      "from Main import run_demo"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.py",
+      "runtime/arithmetic: run_demo returns dict; evaluate(\"2 + 3 * 4\") equals 14.0"
+    ],
+    [
+      "tests/test_main.py",
+      "history/token count: one History records exactly (\"(1 + 2) * 3\",9.0); len(tokenize(\"1 + 2.5\")) == 3; no token construction or reflection"
+    ],
+    [
+      "tests/test_main.py",
+      "domain errors: division by zero raises EvaluationError, 1 @ 2 raises TokenizationError, blank input raises ParseError"
+    ]
+  ]
+}

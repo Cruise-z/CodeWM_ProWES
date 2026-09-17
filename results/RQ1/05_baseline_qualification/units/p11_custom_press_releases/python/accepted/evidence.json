@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T19:40:01.618099+00:00",
+  "accepted_repository_tree_sha256": "b7c58d8acb206fed75e01f3020e0d1d2f5062087b2692cf57f40560977abc89f",
+  "architecture_epoch": {
+    "architecture_attempt": 7,
+    "architecture_team_sha256": "f67bc069acc08232a21476897a035b276f762ab6e664e520d25d4debc7c7ac7b",
+    "initial_repository_tree_sha256": "5926a5482cd07fbcd9e466e450a1e95777917b1b28e4edaf4eed6a224f622eda",
+    "prompt_sha256": "37ad8a7a881d93854229911f6eb6bd1f23689a72741055f941162e3a8fe40a94"
+  },
+  "architecture_team_sha256": "f67bc069acc08232a21476897a035b276f762ab6e664e520d25d4debc7c7ac7b",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p11_custom_press_releases/python/attempts/0001_seed_2037595148/evaluator.log",
+  "attempt_evidence": "units/p11_custom_press_releases/python/attempts/0001_seed_2037595148/evidence.json",
+  "attempt_generation_report": "units/p11_custom_press_releases/python/attempts/0001_seed_2037595148/generation_report.json",
+  "completed_at": "2026-09-14T19:40:01.603462+00:00",
+  "evaluator_elapsed_seconds": 2.413,
+  "evaluator_log_sha256": "0931980df68328df0642e8947839f1527af5c53aa21e7984eb344c87e228f27e",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p11_custom_press_releases/python/attempts/0001_seed_2037595148/p11_custom_press_releases_python/p11_custom_press_releases_python",
+  "generated_repository_tree_sha256": "a753fef06d7699b92596d2f840aecf9f2d30ece62c9b81df19577d15a75294c6",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2037595148,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "efaa4285c24c2ccd634f7afdb7a77737973b01a8d8ab6431895850848f251e76",
+  "initial_repository_tree_sha256": "5926a5482cd07fbcd9e466e450a1e95777917b1b28e4edaf4eed6a224f622eda",
+  "passed": true,
+  "rng_seed": 2037595148,
+  "started_at": "2026-09-14T19:35:48.436496+00:00",
+  "truncated_files": [],
+  "unit_id": "p11_custom_press_releases_python"
+}

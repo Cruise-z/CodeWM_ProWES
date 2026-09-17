@@ -1,0 +1,74 @@
+classDiagram
+    class Main {
+        +main(String[] args)
+    }
+    class Direction {
+        <<enum>>
+        LEFT
+        RIGHT
+        UP
+        DOWN
+    }
+    class MoveResult {
+        -boolean changed
+        -int scoreGained
+        +MoveResult(boolean changed, int scoreGained)
+        +changed() boolean
+        +scoreGained() int
+    }
+    class Spawn {
+        -int row
+        -int col
+        -int value
+        +Spawn(int row, int col, int value)
+        +row() int
+        +col() int
+        +value() int
+    }
+    class Spawner {
+        +nextSpawn() Spawn
+    }
+    class SequenceSpawner {
+        -java.util.List~Spawn~ sequence
+        -int index
+        +SequenceSpawner(java.util.List~Spawn~ seq)
+        +nextSpawn() Spawn
+        +static defaultSequence() SequenceSpawner
+    }
+    class GameStatus {
+        <<enum>>
+        IN_PROGRESS
+        WON
+        LOST
+    }
+    class Board {
+        -int[][] grid
+        +Board()
+        +clear() void
+        +getGridCopy() int[][]
+        +setCell(int row, int col, int value) void
+        +move(Direction dir) MoveResult
+        +hasTileAtLeast(int value) boolean
+        +hasAnyMoves() boolean
+    }
+    class Game {
+        -Board board
+        -Spawner spawner
+        -int score
+        -GameStatus status
+        +Game(Board board, Spawner spawner)
+        +reset() void
+        +move(Direction dir) MoveResult
+        +getScore() int
+        +getStatus() GameStatus
+        +getGridCopy() int[][]
+    }
+    Main --> Game
+    Game --> Board
+    Game --> Spawner
+    Spawner <|.. SequenceSpawner
+    Board --> MoveResult
+    Board --> Direction
+    Game --> GameStatus
+    SequenceSpawner --> Spawn
+    Game --> Spawn

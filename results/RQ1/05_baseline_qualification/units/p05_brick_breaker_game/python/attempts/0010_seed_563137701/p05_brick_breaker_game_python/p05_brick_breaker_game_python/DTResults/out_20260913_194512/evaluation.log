@@ -1,0 +1,226 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+.FF....F                                                                 [100%]
+=================================== FAILURES ===================================
+_________ test_ball_brick_collision_increments_score_and_removes_brick _________
+
+    def test_ball_brick_collision_increments_score_and_removes_brick():
+        """Test that a ball-brick collision increments score and removes the brick at zero durability."""
+        # Create a custom config for predictable testing
+        config = GameConfig(
+            width=300,
+            height=400,
+            lives=3,
+            ball_speed=120.0,
+            ball_radius=4.0,
+            paddle_width=60.0,
+            paddle_speed=180.0,
+            brick_rows=1,
+            brick_cols=1,
+            brick_width=50.0,
+            brick_height=14.0,
+            brick_padding=2.0,
+            top_margin=40.0,
+            points_per_brick=100
+        )
+    
+        # Create a game instance
+        game = Game(config)
+    
+        # Move the ball to hit the brick
+        # Position ball directly above the brick to simulate a direct hit
+        game.ball.x = 25  # Center of the brick
+        game.ball.y = 45  # Just above the brick
+        game.ball.vx = 0.0
+        game.ball.vy = 120.0  # Moving downward
+    
+        # Perform one tick to trigger collision
+>       result = game.tick('none')
+
+tests/test_main.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+brick_breaker/game.py:91: in tick
+    collision_axis = collide_ball_with_rect(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ball = <brick_breaker.ball.Ball object at 0x7fc59c3f6fb0>, rx = 2.0, ry = 40.0
+rw = 50.0, rh = 14.0
+
+    def collide_ball_with_rect(ball: Ball, rx: float, ry: float, rw: float, rh: float) -> str | None:
+        """Detect collision between the ball and a rectangle, and respond appropriately.
+    
+        This function implements circle-AABB (Axis-Aligned Bounding Box) collision
+        detection. When a collision occurs, it determines the axis of minimum
+        penetration and reflects the ball accordingly, adjusting the ball's
+        position to resolve the overlap.
+    
+        Args:
+            ball: The ball object to check and modify.
+            rx: X-coordinate of the rectangle's top-left corner.
+            ry: Y-coordinate of the rectangle's top-left corner.
+            rw: Width of the rectangle.
+            rh: Height of the rectangle.
+    
+        Returns:
+            The axis ('x' or 'y') along which the ball was reflected, or None
+            if there was no collision.
+        """
+        # Find the closest point on the rectangle to the ball center
+        closest_x = max(rx, min(ball.x, rx + rw))
+        closest_y = max(ry, min(ball.y, ry + rh))
+    
+        # Calculate distance from ball center to closest point
+        dist_x = ball.x - closest_x
+        dist_y = ball.y - closest_y
+    
+        # Check if collision occurred
+        if dist_x**2 + dist_y**2 <= ball.radius**2:
+            # Determine which axis has the minimum penetration
+            pen_x = ball.radius - abs(dist_x)
+            pen_y = ball.radius - abs(dist_y)
+    
+            # Reflect on the axis with minimum penetration
+            if pen_x < pen_y:
+                # Reflect on x-axis
+                ball.x = closest_x + (dist_x / abs(dist_x)) * ball.radius
+                ball.bounce_x()
+                return 'x'
+            else:
+                # Reflect on y-axis
+>               ball.y = closest_y + (dist_y / abs(dist_y)) * ball.radius
+E               ZeroDivisionError: float division by zero
+
+brick_breaker/collision.py:114: ZeroDivisionError
+______________ test_bottom_out_decrements_lives_and_resets_level _______________
+
+    def test_bottom_out_decrements_lives_and_resets_level():
+        """Test that a bottom-out decrements lives and resets level when lives remain."""
+        # Create a game instance
+        game = Game()
+    
+        # Move the ball below the screen to trigger bottom-out
+        game.ball.y = 450  # Beyond the bottom of the screen
+        game.ball.vy = 120.0  # Moving downward
+    
+        # Perform one tick to trigger bottom-out
+        result = game.tick('none')
+    
+        # Verify lives decreased
+        assert result['lives'] == 2  # One life lost
+    
+        # Verify game is still running (since lives > 0)
+        assert result['status'] == 'running'
+    
+        # Verify bricks are reset
+        assert result['bricks_remaining'] == 15  # Should be reset to initial count
+    
+        # Verify ball is reset
+>       assert result['ball']['y'] == 360  # Just above paddle
+E       assert 370 == 360
+
+tests/test_main.py:115: AssertionError
+____________________ test_brick_removal_after_multiple_hits ____________________
+
+    def test_brick_removal_after_multiple_hits():
+        """Test that bricks are properly removed after multiple hits."""
+        # Create a config with single-durability bricks
+        config = GameConfig(
+            width=300,
+            height=400,
+            lives=3,
+            ball_speed=120.0,
+            ball_radius=4.0,
+            paddle_width=60.0,
+            paddle_speed=180.0,
+            brick_rows=1,
+            brick_cols=1,
+            brick_width=50.0,
+            brick_height=14.0,
+            brick_padding=2.0,
+            top_margin=40.0,
+            points_per_brick=100
+        )
+    
+        # Create a game instance
+        game = Game(config)
+    
+        # Make the brick have durability of 3
+        game.level.bricks[0].durability = 3
+    
+        # First hit
+        game.ball.x = 25
+        game.ball.y = 45
+        game.ball.vx = 0.0
+        game.ball.vy = 120.0
+>       result1 = game.tick('none')
+
+tests/test_main.py:265: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+brick_breaker/game.py:91: in tick
+    collision_axis = collide_ball_with_rect(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+ball = <brick_breaker.ball.Ball object at 0x7fc59c43de70>, rx = 2.0, ry = 40.0
+rw = 50.0, rh = 14.0
+
+    def collide_ball_with_rect(ball: Ball, rx: float, ry: float, rw: float, rh: float) -> str | None:
+        """Detect collision between the ball and a rectangle, and respond appropriately.
+    
+        This function implements circle-AABB (Axis-Aligned Bounding Box) collision
+        detection. When a collision occurs, it determines the axis of minimum
+        penetration and reflects the ball accordingly, adjusting the ball's
+        position to resolve the overlap.
+    
+        Args:
+            ball: The ball object to check and modify.
+            rx: X-coordinate of the rectangle's top-left corner.
+            ry: Y-coordinate of the rectangle's top-left corner.
+            rw: Width of the rectangle.
+            rh: Height of the rectangle.
+    
+        Returns:
+            The axis ('x' or 'y') along which the ball was reflected, or None
+            if there was no collision.
+        """
+        # Find the closest point on the rectangle to the ball center
+        closest_x = max(rx, min(ball.x, rx + rw))
+        closest_y = max(ry, min(ball.y, ry + rh))
+    
+        # Calculate distance from ball center to closest point
+        dist_x = ball.x - closest_x
+        dist_y = ball.y - closest_y
+    
+        # Check if collision occurred
+        if dist_x**2 + dist_y**2 <= ball.radius**2:
+            # Determine which axis has the minimum penetration
+            pen_x = ball.radius - abs(dist_x)
+            pen_y = ball.radius - abs(dist_y)
+    
+            # Reflect on the axis with minimum penetration
+            if pen_x < pen_y:
+                # Reflect on x-axis
+                ball.x = closest_x + (dist_x / abs(dist_x)) * ball.radius
+                ball.bounce_x()
+                return 'x'
+            else:
+                # Reflect on y-axis
+>               ball.y = closest_y + (dist_y / abs(dist_y)) * ball.radius
+E               ZeroDivisionError: float division by zero
+
+brick_breaker/collision.py:114: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_ball_brick_collision_increments_score_and_removes_brick
+FAILED tests/test_main.py::test_bottom_out_decrements_lives_and_resets_level
+FAILED tests/test_main.py::test_brick_removal_after_multiple_hits - ZeroDivis...
+3 failed, 5 passed in 0.09s

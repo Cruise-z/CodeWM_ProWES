@@ -1,0 +1,20 @@
+Submitted for review: true
+Published: true
+
+Rendered Output:
+Press Release ID: PR-001
+Headline: Company Announces Q4 Results
+Body: The company reported strong financial performance for the fourth quarter...
+Contact: {{contact.name}} ({{contact.email}}, {{contact.phone}})
+Tags: finance
+
+Search Results (1 found):
+- ID: PR-001, Headline: Company Announces Q4 Results
+
+Version History:
+2024-01-02T10:00:00Z - set headline
+2024-01-02T10:00:00Z - set body
+2024-01-02T10:00:00Z - set contact
+2024-01-02T10:00:00Z - add tag
+2024-01-02T10:00:00Z - submit for review
+2024-01-02T10:00:00Z - publish

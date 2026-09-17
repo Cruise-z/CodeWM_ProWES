@@ -1,0 +1,72 @@
+Generate a complete medium-size Python 3.10 repository architecture for: Excel data processing.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python workbook API and acyclic-import contract:
+- use exactly these files and no substitutes: requirements.txt, excel_processor/model.py, excel_processor/operations.py, excel_processor/csv_io.py, excel_processor/report.py, excel_processor/__init__.py, Main.py, tests/test_main.py
+- the project import graph is strictly one-way: model.py imports no project module; operations.py, csv_io.py, and report.py may import only from .model; __init__.py imports those four modules only to re-export their public names; Main.py and tests import from excel_processor; no lower module imports __init__, Main, or another operation module, and TYPE_CHECKING imports must not create a reverse edge
+- model.py is the sole definition site for Cell, Row, and Sheet. Cell(value:object=None) exposes mutable value. Row(cells:list[Cell]) defensively copies the list and exposes values()->list[object]. Sheet(rows:list[Row]) defensively copies rows and exposes classmethod from_values(values:list[list[object]])->Sheet, to_values()->list[list[object]], row_count()->int, column_count()->int, get_cell(row:int,column:int)->Cell, and set_cell(row:int,column:int,value:object)->None; from_values rejects ragged non-empty rows, and indexed operations reject negative/out-of-range indices
+- operations.py defines only filter_rows(sheet:Sheet,predicate:Callable[[Row],bool])->Sheet, sort_rows(sheet:Sheet,key:Callable[[Row],object],reverse:bool=False)->Sheet, and aggregate_column(sheet:Sheet,column:int)->dict[str,object]; every result is a new Sheet with new Row/Cell objects and never mutates the input
+- aggregate_column reports exactly keys count, missing, numeric_count, sum, min, max; None and the empty string are missing, numeric values exclude bool, sum is 0 when there are no numeric values, and min/max are None when there are no numeric values
+- csv_io.py uses only csv and io.StringIO and defines loads_csv(text:str)->Sheet and dumps_csv(sheet:Sheet)->str; CSV cells remain strings, empty cells remain empty strings, malformed ragged CSV raises ValueError, and neither function accesses the filesystem
+- report.py defines build_report(sheet:Sheet)->dict[str,object] returning exactly row_count, column_count, and missing_cells, where missing means None or the empty string
+- excel_processor/__init__.py explicitly re-exports Cell, Row, Sheet, filter_rows, sort_rows, aggregate_column, loads_csv, dumps_csv, and build_report; wildcard imports and nonexistent aliases such as Filter, Sorter, ReportGenerator, or CSVUtils are forbidden
+- Main.py uses the absolute import `from excel_processor import Sheet, filter_rows, sort_rows, aggregate_column, build_report`, exposes run_demo()->dict, performs a small in-memory deterministic demonstration, and main() prints at most one result under the __name__ guard; no input, filesystem, network, GUI, threads, or loops that wait for input
+- tests/test_main.py contains exactly three concise pytest tests using absolute imports: (1) run_demo returns a dict; (2) Sheet.from_values([[3,"c"],[1,"a"],[2,"b"],[None,""]]) calls the literal `filter_rows(sheet, lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2)` and therefore keeps exactly [[3,"c"],[2,"b"]], a separate Sheet.from_values([[3],[1],[2]]) sorted ascending yields [[1],[2],[3]], and aggregate_column on the four-row sheet yields count4, missing1, numeric_count3, sum6, min1, max3; (3) loads_csv("name,value\nA,1\nB,\n") yields exactly [["name","value"],["A","1"],["B",""]], dumps_csv round-trips through loads_csv, and build_report reports row_count3, column_count2, missing_cells1
+- tests never import old-module names sheet.py, row.py, cell.py, filter.py, sort.py, csv_utils.py, or classes Filter/Sorter/ReportGenerator/CSVUtils; tests call only the canonical API above and do not inspect private attributes
+- repeat the exact file list, sole model ownership, one-way import graph, canonical signatures, aggregate schema, CSV fixture, three-test limit, and literal deterministic fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 27 functions or methods
+- about 617 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- workbook-like sheets rows and cells
+- CSV import and export as a portable interchange
+- column selection and filtering
+- sorting and aggregation
+- missing and invalid value handling
+- deterministic processing reports
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE EXCEL-PROCESSING PYTHON IMPORT CHECKLIST:
+- Task filenames are exactly: requirements.txt; excel_processor/model.py; excel_processor/operations.py; excel_processor/csv_io.py; excel_processor/report.py; excel_processor/__init__.py; Main.py; tests/test_main.py.
+- model.py is the sole owner of Cell, Row, and Sheet and imports no project module. operations.py, csv_io.py, and report.py may import only `.model`; model.py must never import those modules. The old split modules sheet.py/row.py/cell.py/filter.py/sort.py and wrapper classes Filter/Sorter/ReportGenerator/CSVUtils are forbidden.
+- Tests contain exactly three cases and preserve the literal four-row operation fixture, the predicate `lambda row: isinstance(row.values()[0], (int, float)) and row.values()[0] >= 2`, and `loads_csv("name,value\nA,1\nB,\n")` round-trip fixture. Do not summarize or substitute these ownership, import, API, and fixture rules.
+

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant M as Main
+    participant C as calc::Calculator
+    participant L as calc::Lexer
+    participant P as calc::Parser
+    participant E as calc::Evaluator
+    participant H as calc::History
+    M->>C: evaluate("(1.5+2.5)/2")
+    C->>L: tokenize(expr)
+    L-->>C: LexResult(tokens)
+    C->>P: toRPN(tokens)
+    P-->>C: ParseResult(rpn)
+    C->>E: evaluateRPN(rpn)
+    E-->>C: EvalResult(value)
+    C->>H: record(expr, value)
+    H-->>C: ok
+    C-->>M: EvaluationOutcome(success=true, value)
+    M->>C: history()
+    C-->>M: vector<HistoryEntry>

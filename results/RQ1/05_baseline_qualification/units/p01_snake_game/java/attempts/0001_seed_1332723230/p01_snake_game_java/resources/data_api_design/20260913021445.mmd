@@ -1,0 +1,83 @@
+classDiagram
+    class Position {
+        +Position(int x, int y)
+        +int getX()
+        +int getY()
+        +Position plus(int dx, int dy)
+        +boolean equals(Object)
+        +int hashCode()
+        +String toString()
+    }
+    class Direction {
+        <<enum>>
+        UP
+        DOWN
+        LEFT
+        RIGHT
+        +int dx()
+        +int dy()
+        +boolean isOpposite(Direction other)
+    }
+    class RandomSource {
+        <<interface>>
+        +int nextInt(int bound)
+    }
+    class JavaUtilRandomSource {
+        -java.util.Random rnd
+        +JavaUtilRandomSource(long seed)
+        +int nextInt(int bound)
+    }
+    class MoveOutcome {
+        <<enum>> MOVED, ATE_FOOD, GAME_OVER
+    }
+    class Snake {
+        -java.util.Deque<Position> body
+        +Snake(Position start)
+        +Position head()
+        +Position tail()
+        +int length()
+        +boolean occupies(Position p)
+        +void moveTo(Position nextHead)
+        +void growTo(Position nextHead)
+        +java.util.List<Position> bodyAsList()
+    }
+    class GameSnapshot {
+        +GameSnapshot(int w, int h, java.util.List<Position> body, Position food, int score, boolean gameOver, Direction dir)
+        +int getWidth()
+        +int getHeight()
+        +java.util.List<Position> getSnakeBody()
+        +Position getFood()
+        +int getScore()
+        +boolean isGameOver()
+        +Direction getDirection()
+        +String toString()
+    }
+    class SnakeGame {
+        -int width
+        -int height
+        -Snake snake
+        -RandomSource rng
+        -Direction direction
+        -Position food
+        -int score
+        -boolean gameOver
+        +SnakeGame(int width, int height, RandomSource rng)
+        +void reset()
+        +boolean setDirection(Direction dir)
+        +Direction getDirection()
+        +MoveOutcome tick()
+        +boolean isGameOver()
+        +int getScore()
+        +int getWidth()
+        +int getHeight()
+        +GameSnapshot snapshot()
+        +void placeFoodAt(Position p)
+        -void placeFoodRandomly()
+        -boolean inBounds(Position p)
+    }
+    SnakeGame --> Snake
+    SnakeGame --> RandomSource
+    SnakeGame --> GameSnapshot
+    SnakeGame --> Direction
+    SnakeGame --> Position
+    JavaUtilRandomSource ..|> RandomSource

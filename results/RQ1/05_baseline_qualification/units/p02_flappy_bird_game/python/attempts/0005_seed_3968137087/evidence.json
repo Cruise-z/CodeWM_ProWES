@@ -1,0 +1,36 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 4,
+    "architecture_team_sha256": "0199e47687655dee3c403fcbe05c29a39e70ded3d5393dadb1ce32edc3b308d5",
+    "initial_repository_tree_sha256": "095bed916afa7128f477c33dd1ec5e3fdb73cb91a6ba31fbacacd301f87f39b0",
+    "prompt_sha256": "e61c9b1aa0e357137a21db8492736f8c82f963cfb39495b7ac4edff3b0efda07"
+  },
+  "architecture_team_sha256": "0199e47687655dee3c403fcbe05c29a39e70ded3d5393dadb1ce32edc3b308d5",
+  "attempt": 5,
+  "completed_at": "2026-09-13T08:38:31.188271+00:00",
+  "evaluator_elapsed_seconds": 2.089,
+  "evaluator_log_sha256": "26790d4711a994d06f9e64192b688fe4c485780b25c87654c6c9d6c8b0171c5e",
+  "evaluator_return_code": 1,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/python/attempts/0005_seed_3968137087/p02_flappy_bird_game_python/p02_flappy_bird_game_python",
+  "generated_repository_tree_sha256": "29e8032d7781404090ef3acb8d3df1dcb41ee9b15cc5a7d2865b94b4185618b6",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3968137087,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "ce1799ca138f3321c0fb4ddea4911fd47bc6a635cd2de67863702ddf563ca709",
+  "initial_repository_tree_sha256": "095bed916afa7128f477c33dd1ec5e3fdb73cb91a6ba31fbacacd301f87f39b0",
+  "original_global_attempt": 28,
+  "passed": false,
+  "rng_seed": 3968137087,
+  "started_at": "2026-09-13T08:33:06.666752+00:00",
+  "truncated_files": [],
+  "unit_id": "p02_flappy_bird_game_python",
+  "valid_for_current_architecture": true
+}

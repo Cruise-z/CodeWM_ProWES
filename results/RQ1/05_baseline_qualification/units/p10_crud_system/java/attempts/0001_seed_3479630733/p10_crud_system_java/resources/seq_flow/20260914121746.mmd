@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant M as Main
+    participant R as InMemoryUserRepository
+    participant S as SearchService
+    M->>R: new InMemoryUserRepository()
+    M->>R: save(new User("1","Alice Smith","alice@example.com"))
+    M->>R: save(new User("2","Bob Jones","bob@example.com"))
+    M->>S: new SearchService()
+    M->>S: searchService.search(repository.findAll(), "alice")
+    Note right of M: Standalone call; no collection variable declared
+    M->>R: deleteById("2")
+    M-->>M: exit without loop

@@ -1,0 +1,66 @@
+Generate a complete medium-size Python 3.10 repository architecture for: Brick breaker game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python import-graph contract:
+- use exactly these files: requirements.txt, brick_breaker/config.py, brick_breaker/ball.py, brick_breaker/paddle.py, brick_breaker/brick.py, brick_breaker/level.py, brick_breaker/collision.py, brick_breaker/game.py, brick_breaker/__init__.py, Main.py, tests/test_main.py
+- brick_breaker/config.py is the sole definition site for GameConfig; its task and Full API entry must literally contain `brick_breaker/config.py: class GameConfig`
+- brick_breaker/level.py must literally use `from .config import GameConfig`; it must never import brick_breaker.game or `.game`, at runtime or under TYPE_CHECKING
+- brick_breaker/game.py must literally use `from .config import GameConfig` and may import make_grid_level from level.py; config.py must import no project module, so the graph config -> entities/level -> collision/game is acyclic
+- brick_breaker/__init__.py re-exports GameConfig from `.config`, not from `.game`; Main.py and tests import public names from brick_breaker
+- repeat the exact file list, sole GameConfig ownership, both literal `.config` import lines, and the prohibition on level importing game in Full API specification, Logic Analysis, Shared Knowledge, and every config/level/game implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 39 functions or methods
+- about 628 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- ball motion
+- paddle control
+- wall paddle and brick collision
+- brick durability or removal
+- score and lives
+- level completion and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE BRICK-BREAKER PYTHON IMPORT CHECKLIST:
+- Task filenames are exactly: requirements.txt; brick_breaker/config.py; brick_breaker/ball.py; brick_breaker/paddle.py; brick_breaker/brick.py; brick_breaker/level.py; brick_breaker/collision.py; brick_breaker/game.py; brick_breaker/__init__.py; Main.py; tests/test_main.py.
+- Full API must literally contain `brick_breaker/config.py: class GameConfig` and `from .config import GameConfig` for both level.py and game.py.
+- config.py is the sole GameConfig owner and imports no project module; level.py never imports `.game` or brick_breaker.game; __init__.py imports GameConfig from `.config`. The architecture is invalid if these ownership/import rules are summarized away.
+

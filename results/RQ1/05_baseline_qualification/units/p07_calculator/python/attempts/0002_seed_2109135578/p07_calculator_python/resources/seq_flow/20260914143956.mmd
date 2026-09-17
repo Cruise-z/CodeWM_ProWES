@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant T as tests
+    participant M as Main
+    participant API as calculator.api
+    participant Tok as Tokenizer
+    participant Eng as Engine
+    participant H as History
+
+    M->>API: evaluate(expr, history)
+    API->>API: validate non-blank else ParseError
+    API->>Tok: tokenize(expr)
+    Tok-->>API: tokens
+    API->>Eng: to_rpn(tokens)
+    Eng-->>API: rpn_tokens
+    API->>Eng: eval_rpn(rpn_tokens)
+    Eng-->>API: result(float)
+    API->>H: add(expr, result)
+    API-->>M: result(float)
+    T->>M: run_demo()
+    M-->>T: {"expression": str, "result": float, "history_len": int}

@@ -1,0 +1,27 @@
+Evaluating: -3 + 4*2/(1-5)
+Result: -5.0
+
+Evaluating: 10 / 2
+Result: 5.0
+
+Evaluating: 1/0
+Error: Division by zero
+
+Evaluating: (2 + 3) * 4
+Result: 20.0
+
+Evaluating: invalid expression
+Error: Invalid character 'i' at position 0
+
+Calculation History:
+  Expression: 1/0
+  Error: Division by zero
+
+  Expression: (2 + 3) * 4
+  Result: 20.0
+
+  Expression: invalid expression
+  Error: Invalid character 'i' at position 0
+
+After clearing history:
+History size: 0

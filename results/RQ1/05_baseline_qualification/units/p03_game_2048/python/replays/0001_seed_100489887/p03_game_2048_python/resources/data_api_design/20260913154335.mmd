@@ -1,0 +1,44 @@
+classDiagram
+    class Direction {
+        <<enum>>
+        LEFT
+        RIGHT
+        UP
+        DOWN
+    }
+    class GameStatus {
+        <<enum>>
+        RUNNING
+        WON
+        LOST
+    }
+    class Board {
+        -grid: list[list[int]]
+        +get_grid() list[list[int]]
+        +reset_empty() None
+        +move(direction: Direction) tuple[bool, int]
+        +can_move() bool
+        +has_target(target:int=2048) bool
+        +empty_positions() list[tuple[int,int]]
+        +add_random_tile(rng: random.Random) bool
+    }
+    class Game {
+        -board: Board
+        -score: int
+        -rng: random.Random
+        -status: GameStatus
+        +__init__(seed:int=0)
+        +reset() None
+        +move(direction: Direction) bool
+        +get_status() GameStatus
+        +get_score() int
+        +get_board() Board
+    }
+    class move_module {
+        +move_line_left(line: list[int]) tuple[list[int], int]
+    }
+    Game --> Board
+    Board --> Direction
+    Game --> GameStatus
+    Board ..> move_module : uses
+    

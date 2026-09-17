@@ -1,0 +1,73 @@
+Generate a complete medium-size Python 3.10 repository architecture for: QR Code Gen.&Det..
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python deterministic QR-like codec contract:
+- use exactly these files and no substitutes: requirements.txt, qr_code/payload.py, qr_code/matrix.py, qr_code/codec.py, qr_code/render.py, qr_code/__init__.py, Main.py, tests/test_main.py
+- use Python's built-in bytes type directly in annotations; `from typing import bytes` and every other attempt to import bytes from typing are forbidden. Prefer built-in list/dict annotations and import no typing name unless it actually exists in Python 3.10
+- payload.py imports no project module and defines encode_text(text:str)->bytes using UTF-8, pack_payload(data:bytes)->list[int], and unpack_payload(bits:list[int])->bytes. pack_payload accepts at most 40 bytes and returns exactly an 8-bit unsigned byte length, then every payload byte most-significant-bit first, then an 8-bit checksum sum(data)%256; unpack_payload validates every supplied bit, reads the first 8 bits as byte length N, requires N<=40 and at least 16+8*N supplied bits, reads data and checksum only from that prefix, requires every remaining trailing matrix-padding bit to be zero, ignores that zero padding, and raises ValueError on truncation, nonzero padding, or checksum corruption
+- matrix.py imports no project module and uses exactly SIZE=21 and FINDER_SIZE=5. A finder marker is the exact 5x5 pattern whose border is 1, inner ring is 0, and center is 1; place_finder_patterns(matrix:list[list[int]])->None places it at top-left (0,0), top-right (0,16), and bottom-left (16,0). data_positions()->list[tuple[int,int]] returns all non-finder cells in deterministic row-major order
+- matrix.py also defines build_matrix(bits:list[int])->list[list[int]], extract_bits(matrix:list[list[int]])->list[int], and validate_matrix(matrix:object)->bool. build_matrix rejects non-bits or excess capacity, starts from a 21x21 zero matrix, places all three finder markers, then writes bits through data_positions; extract_bits requires validate_matrix and reads those positions; validate_matrix returns false rather than raising for non-21x21/ragged/non-binary matrices or an incorrect finder marker
+- codec.py imports only from .payload and .matrix and defines generate(text:str)->list[list[int]], decode(matrix:list[list[int]])->str, and detect(matrix:object)->bool. generate returns build_matrix(pack_payload(encode_text(text))); decode uses exactly `unpack_payload(extract_bits(matrix)).decode("utf-8", errors="strict")` after matrix validation, passes extracted bits directly to unpack_payload without first grouping or converting the 366-bit list into bytes, and raises ValueError for every invalid matrix or payload; detect returns true only when decode succeeds and catches validation, checksum, and UTF-8 errors
+- render.py imports only validate_matrix from .matrix and defines render(matrix:list[list[int]],on:str="##",off:str="  ")->str; it rejects an invalid matrix or empty marker strings and returns exactly 21 newline-joined rows without printing
+- qr_code/__init__.py explicitly re-exports encode_text, pack_payload, unpack_payload, place_finder_patterns, data_positions, build_matrix, extract_bits, validate_matrix, generate, decode, detect, and render; no wildcard imports and no alternate validate alias
+- Main.py uses `from qr_code import generate, decode, detect, render`, exposes run_demo()->dict that generates the literal text "CodeWM" and returns exactly text, decoded, detected, size, rendered_lines; decoded is "CodeWM", detected is True, size is 21, and rendered_lines is 21. main() prints at most one concise result under the __name__ guard
+- tests/test_main.py contains exactly three concise pytest tests with absolute imports: (1) run_demo has the exact values above; (2) generate("hello-世界") returns a 21x21 matrix for which validate_matrix and detect are true, decode returns exactly "hello-世界", `unpack_payload(extract_bits(matrix)).decode("utf-8")` also returns exactly "hello-世界" despite the extracted trailing zero padding, and render has 21 lines; (3) copy the matrix by `[row[:] for row in matrix]`, flip corrupted[0][0], then validate_matrix and detect are false and decode raises ValueError, while validate_matrix([[0,1],[1,0]]) is false
+- tests and implementation use only the canonical function names; version arguments, variable matrix sizes, third-party QR libraries, random masks, timestamps, filesystem images, network access, and GUI dependencies are forbidden
+- repeat the exact file list, built-in-bytes rule, 21x21/5x5 constants, payload length/checksum/zero-padding wire format, direct extract_bits-to-unpack_payload decoding rule, function signatures, three-test limit, and all literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 29 functions or methods
+- about 632 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- text-to-binary payload encoding
+- deterministic square module matrix generation
+- finder-pattern placement
+- matrix validation and rendering
+- payload detection from generated matrices
+- invalid or corrupted matrix rejection
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE QR PYTHON CODEC CHECKLIST:
+- Task filenames are exactly: requirements.txt; qr_code/payload.py; qr_code/matrix.py; qr_code/codec.py; qr_code/render.py; qr_code/__init__.py; Main.py; tests/test_main.py.
+- `bytes` is always the Python built-in and must never be imported from typing. SIZE=21 and FINDER_SIZE=5 are fixed; payload bits are length8 + UTF-8 data bits + checksum8, and tests contain exactly three cases.
+- extract_bits returns all 366 non-finder bits; unpack_payload parses the length-determined prefix, requires all trailing matrix padding to be zero, and ignores that zero padding. codec.decode passes extract_bits(matrix) directly to unpack_payload and must never regroup the 366 bits into bytes itself.
+- Tests preserve `generate("hello-世界")`, exact round-trip decoding, 21x21 validation/rendering, `[row[:] for row in matrix]`, corrupted[0][0] finder rejection, and malformed 2x2 rejection. Do not summarize or substitute the wire format, API, or fixtures.
+

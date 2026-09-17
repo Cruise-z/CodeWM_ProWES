@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T20:13:01.713231+00:00",
+  "accepted_repository_tree_sha256": "d24796e73716d68d6dc16745b246a6e87c5cdd8db149d84bf8352c23ca6f6a7c",
+  "architecture_epoch": {
+    "architecture_attempt": 5,
+    "architecture_team_sha256": "55a24988dadc1c0548f81eb53ef5082a36c4b2158dc668c56533c513abcfba20",
+    "initial_repository_tree_sha256": "073d1c4e5b76505aa1c3ee46dc2734e5712d9148b16a70f5cea2d69279f99f18",
+    "prompt_sha256": "b4548a26b7ad512eb5e6f40dbe44f859bf57254d45b450ad7c38b630c3ebb881"
+  },
+  "architecture_team_sha256": "55a24988dadc1c0548f81eb53ef5082a36c4b2158dc668c56533c513abcfba20",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p12_video_player/java/attempts/0001_seed_400582985/evaluator.log",
+  "attempt_evidence": "units/p12_video_player/java/attempts/0001_seed_400582985/evidence.json",
+  "attempt_generation_report": "units/p12_video_player/java/attempts/0001_seed_400582985/generation_report.json",
+  "completed_at": "2026-09-14T20:13:01.700792+00:00",
+  "evaluator_elapsed_seconds": 9.18,
+  "evaluator_log_sha256": "b632f5750aff49a4aaedfe102b2d67af9f82d62edc909ff0eed7b204161a19ef",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p12_video_player/java/attempts/0001_seed_400582985/p12_video_player_java/p12_video_player_java",
+  "generated_repository_tree_sha256": "304392a710856315df6e7e9452aca23521376be5ced947294c8d3bb1c311e39c",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 400582985,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "8f6237f5ab22392ea8e30a74ad329d7a8b1fa1baf60e4a64b42e74c5fb152947",
+  "initial_repository_tree_sha256": "073d1c4e5b76505aa1c3ee46dc2734e5712d9148b16a70f5cea2d69279f99f18",
+  "passed": true,
+  "rng_seed": 400582985,
+  "started_at": "2026-09-14T20:06:38.298708+00:00",
+  "truncated_files": [],
+  "unit_id": "p12_video_player_java"
+}

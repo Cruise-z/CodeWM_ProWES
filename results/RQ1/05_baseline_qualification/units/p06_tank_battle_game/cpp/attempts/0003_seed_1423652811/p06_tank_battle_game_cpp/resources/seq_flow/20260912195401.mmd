@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main (src/Main.cpp)
+    participant G as Game (include/Game.h)
+    participant A as Arena (include/Entities.h)
+    participant T as Tanks (include/Entities.h)
+    participant P as Projectiles (include/Entities.h)
+    M->>G: Game(width,height)
+    M->>G: reset()
+    M->>G: arena().addObstacle(...)
+    M->>G: queueCommand(tank0, Fire/Move/...)
+    loop fixed ticks
+        M->>G: tick()
+        G->>T: apply commands (rotate/move/fire)
+        G->>P: move projectiles
+        G->>T: resolve collisions and apply damage
+        G->>G: update scores/winner
+    end
+    M-->>M: exit deterministically

@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-13T18:07:58.593875+00:00",
+  "accepted_repository_tree_sha256": "f35231bc65882a6f9590c139e55b1d83fb78d7d70fe5f3a746796f6f1cf864b8",
+  "architecture_epoch": {
+    "architecture_attempt": 18,
+    "architecture_team_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+    "initial_repository_tree_sha256": "2ecfdec83a7e479ec5320e6c91bc24d755a2b64f11643a85cd6f7f3aacc86871",
+    "prompt_sha256": "b0681cf6d05babec977a45578bed6c8c1ad9f6f9da015421fb5e8277560d8565"
+  },
+  "architecture_team_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+  "attempt": 2,
+  "attempt_evaluator_log": "units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/evaluator.log",
+  "attempt_evidence": "units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/evidence.json",
+  "attempt_generation_report": "units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/generation_report.json",
+  "completed_at": "2026-09-13T18:07:58.577472+00:00",
+  "evaluator_elapsed_seconds": 2.974,
+  "evaluator_log_sha256": "60d5edd09f3db82a68f403eb9d07eb3846f333baf28b58ede612f99afa16ee9d",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/attempts/0002_seed_1300987923/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp",
+  "generated_repository_tree_sha256": "811246bff959b77781ffba3734f845d4a883bec235806bfbdbd174d2cc092f2a",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1300987923,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "d9b24882e6b371fe907061695b7a86d0cfa47a327f3026cd5bd89795fbeaa868",
+  "initial_repository_tree_sha256": "2ecfdec83a7e479ec5320e6c91bc24d755a2b64f11643a85cd6f7f3aacc86871",
+  "passed": true,
+  "rng_seed": 1300987923,
+  "started_at": "2026-09-13T18:03:05.267839+00:00",
+  "truncated_files": [],
+  "unit_id": "p05_brick_breaker_game_cpp"
+}

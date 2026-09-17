@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 4,
+    "architecture_team_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+    "initial_repository_tree_sha256": "6f1a7f780f3814761685c975b1dcda9beb3e71534bd78e2a49a361fc5d956e80",
+    "prompt_sha256": "0eb104ac294f89777548870a71dc7f0b0f232e15974681a8e411be9130747833"
+  },
+  "attempt": 1,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1221104095,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 1221104095,
+  "selected_at": "2026-09-14T18:32:23.035566+00:00",
+  "unit_id": "p11_custom_press_releases_cpp"
+}

@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 131,
+    "architecture_team_sha256": "9bef45c1de998cdb31b61c312d416b98b97c5a2a95c5f3aa49a65eab42762003",
+    "initial_repository_tree_sha256": "2bb3efc23e129a9e2c76c4a6adc75c5c9861b9365f84bc30a4cb861fb7543f5e",
+    "prompt_sha256": "4714d31d6697e2cfcaea005f1a1b6857465388264be0471823a07a5ab037d793"
+  },
+  "attempt": 1,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3479630733,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 3479630733,
+  "selected_at": "2026-09-14T12:25:13.307248+00:00",
+  "unit_id": "p10_crud_system_java"
+}

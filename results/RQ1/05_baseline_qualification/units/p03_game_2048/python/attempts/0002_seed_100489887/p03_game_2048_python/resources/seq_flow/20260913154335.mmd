@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant M as Main.run_demo
+    participant G as Game
+    participant B as Board
+    participant MM as move_line_left
+    M->>G: Game(seed)
+    M->>G: reset()
+    G->>B: reset_empty(); add_random_tile(rng) x2
+    M->>G: move(LEFT)
+    G->>B: move(Direction.LEFT)
+    B->>MM: move_line_left(row) * 4
+    B-->>G: (changed, gained_score)
+    G->>B: add_random_tile(rng) if changed
+    G-->>M: status, score, tiles_count
+    M-->>M: print one concise line
+    

@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Main
+    participant PL as Playlist
+    participant VC as VolumeControl
+    participant DC as DeterministicClock
+    participant PC as PlaybackController
+    participant PS as PlayerSnapshot
+    Main->>PL: construct and add MediaItem(s)
+    Main->>VC: construct
+    Main->>DC: construct
+    Main->>PC: new PlaybackController(PL, VC, DC)
+    Main->>PC: play()
+    Main->>DC: advance(1000)
+    Main->>PC: onClockAdvanced()
+    PC->>PS: getSnapshot()
+    PS-->>Main: immutable snapshot
+    Main-->>Main: print minimal demo info and exit

@@ -1,0 +1,35 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 11,
+    "architecture_team_sha256": "6d38ed734a9368bde06574600fd9c5343731af32998a6c9fca8094daf7c548a3",
+    "initial_repository_tree_sha256": "ef91e3b7365cc187397d5f02934ea6993f8cf5af020d7ffe11b2f340baa13649",
+    "prompt_sha256": "ba6ad711134ac616b668c7d1c2632e772a870cc665f4a2c81da1e8c58c7bd3d4"
+  },
+  "architecture_team_sha256": "6d38ed734a9368bde06574600fd9c5343731af32998a6c9fca8094daf7c548a3",
+  "attempt": 1,
+  "completed_at": "2026-09-13T12:02:31.214224+00:00",
+  "evaluator_elapsed_seconds": 3.66,
+  "evaluator_log_sha256": "5d2edb6e452587a18c492079e2613fd31ee784b96db8b8e085f6bea2f6991a3f",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/cpp/attempts/0001_seed_666643921/p01_snake_game_cpp/p01_snake_game_cpp",
+  "generated_repository_tree_sha256": "5b5e41b92271f2b077a56f524c2a383b7e49ece90a92c3b3428ec857bcce10d9",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 666643921,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "4a636961b714f3d8bdfefb09c4660acaca7744d1bfd08b2bfd2563fba3cfb033",
+  "initial_repository_tree_sha256": "ef91e3b7365cc187397d5f02934ea6993f8cf5af020d7ffe11b2f340baa13649",
+  "original_global_attempt": 51,
+  "passed": true,
+  "rng_seed": 666643921,
+  "started_at": "2026-09-13T11:56:36.436084+00:00",
+  "truncated_files": [],
+  "unit_id": "p01_snake_game_cpp",
+  "valid_for_current_architecture": true
+}

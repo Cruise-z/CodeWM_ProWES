@@ -1,0 +1,87 @@
+classDiagram
+    class InvalidURLError
+    class InvalidFormatError
+    class TransferError
+    class CancelledError
+
+    class url_module {
+        +validate_url(url: str) str
+    }
+
+    class naming_module {
+        +sanitize_filename(name: str) str
+        +unique_name(base: str, existing: set~str~) str
+    }
+
+    class DownloadRequest {
+        -_url: str
+        -_fmt: str
+        -_output_hint: str|None
+        +__init__(url: str, fmt: str, output_hint: str|None = None)
+        +url: str
+        +fmt: str
+        +output_hint: str|None
+        +extension() str
+    }
+
+    class Progress {
+        -_transferred: int
+        -_total: int|None
+        -_listeners: list
+        +__init__(total: int|None = None)
+        +transferred: int
+        +total: int|None
+        +update(delta: int) void
+        +percent() float|None
+        +add_listener(cb: function) void
+    }
+
+    class CancellationToken {
+        -_cancelled: bool
+        +cancel() void
+        +is_cancelled() bool
+    }
+
+    class TransferResult {
+        +bytes_transferred: int
+        +final_name: str
+        +completed: bool
+    }
+
+    class TransferAdapter {
+        <<abstract>>
+        +total_bytes(req: DownloadRequest) int
+        +transfer(req: DownloadRequest, progress: Progress, cancel: CancellationToken) TransferResult
+    }
+
+    class FakeTransferAdapter {
+        -_mapping: dict~str, tuple~int,int~~
+        -_reserved: set~str~
+        +__init__(mapping: dict~str, tuple~int,int~~)
+        +total_bytes(req: DownloadRequest) int
+        +transfer(req: DownloadRequest, progress: Progress, cancel: CancellationToken) TransferResult
+    }
+
+    class DownloadQueue {
+        -_adapter: TransferAdapter
+        -_jobs: list
+        -_next_id: int
+        +__init__(adapter: TransferAdapter)
+        +enqueue(req: DownloadRequest) int
+        +cancel(job_id: int) bool
+        +process_next() void
+        +process_all() void
+        +get_status(job_id: int) dict
+    }
+
+    url_module ..> InvalidURLError
+    DownloadRequest ..> InvalidFormatError
+    DownloadRequest ..> url_module
+    DownloadRequest ..> naming_module
+    FakeTransferAdapter ..|> TransferAdapter
+    FakeTransferAdapter ..> naming_module
+    FakeTransferAdapter ..> CancelledError
+    FakeTransferAdapter ..> TransferError
+    DownloadQueue ..> TransferAdapter
+    DownloadQueue ..> Progress
+    DownloadQueue ..> CancellationToken

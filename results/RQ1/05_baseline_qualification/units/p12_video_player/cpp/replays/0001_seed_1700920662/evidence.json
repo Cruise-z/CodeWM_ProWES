@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "f7d4b6a1296dc89f3c2091ecede451ce2bfc6521aaba269884ebdd3f9dfd993b",
+  "architecture_team_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+  "completed_at": "2026-09-14T13:01:36.805418+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 2.975,
+  "evaluator_log_sha256": "cf4db249e97efaaa4f90161428d7ce0b219441881d19143ca7ef28e8369b9639",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p12_video_player/cpp/replays/0001_seed_1700920662/p12_video_player_cpp/p12_video_player_cpp",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1700920662,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "72347db5b1422de1202c90c63b93f332e29c1c0df38abee2de2ee487facd5601",
+  "initial_repository_tree_sha256": "d933d509969d471303e0b30edc616b2bcd9acc345e68e669cc84c6c7d7f55d72",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "f7d4b6a1296dc89f3c2091ecede451ce2bfc6521aaba269884ebdd3f9dfd993b",
+  "rng_seed": 1700920662,
+  "started_at": "2026-09-14T12:56:12.320497+00:00",
+  "truncated_files": [],
+  "unit_id": "p12_video_player_cpp"
+}

@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "a571f97c0b54eec843ada9cad74e1705f51451680c716fd0841fd8455045b592",
+  "architecture_team_sha256": "6f7e137031b1f55acf336cea35297407e6ab234e3faac823f7b26911d2ea96ef",
+  "completed_at": "2026-09-14T14:22:29.322682+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 2.975,
+  "evaluator_log_sha256": "3140e643a1234999484e4721e772aaa1c70d531f6f45598ba334435365f2381d",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/cpp/replays/0001_seed_3978176900/p07_calculator_cpp/p07_calculator_cpp",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3978176900,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "53fbf5c60f07f7d6ea5caeb60f7fe7a1047bb0be79e3501336e9a511b38ff91d",
+  "initial_repository_tree_sha256": "87e941936ed77433f9fdea506620d7928fbbd71c834e4905443b6a080c556b54",
+  "model_base_url": "http://127.0.0.1:8000",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "a571f97c0b54eec843ada9cad74e1705f51451680c716fd0841fd8455045b592",
+  "rng_seed": 3978176900,
+  "started_at": "2026-09-14T14:18:40.168169+00:00",
+  "truncated_files": [],
+  "unit_id": "p07_calculator_cpp"
+}

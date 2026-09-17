@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "source_repository": "CodeWM_ProWES_Logits",
+  "source_remote": "git@github.com:Cruise-z/CodeWM_ProWES_Logits.git",
+  "source_commit": "9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa",
+  "source_root": "reproduct",
+  "imported_utc_date": "2026-09-17",
+  "campaign_id": "metaprojectdev-medium-42-prowes-logits",
+  "scope": {
+    "unit_summary_rows": 42,
+    "attempts": 88,
+    "passed_attempts": 42,
+    "failed_attempts": 46,
+    "accepted_repositories": 42,
+    "verified_replays": 42,
+    "languages": {
+      "cpp": 14,
+      "java": 14,
+      "python": 14
+    },
+    "included_unit_subtrees": [
+      "units/*/*/attempts",
+      "units/*/*/accepted",
+      "units/*/*/replays"
+    ],
+    "excluded_historical_subtrees": [
+      "units/*/*/architecture_failures",
+      "units/*/*/interrupted_attempts"
+    ],
+    "excluded_packaging_metadata": [
+      "nested .git/.git-local-metadata directories (excluded by the campaign tree-hash policy)"
+    ]
+  },
+  "original_report_sha256": {
+    "reproduct/results.csv": "52d574610cbaa72f833beb0a8bfff432e7cc40cdee3eb40b355d239385a1ecc2",
+    "reproduct/results.json": "c834b522ca6fe152db81977298a0c9203ed265ae8d136bb94dbec4fff572bf37",
+    "reproduct/audit.json": "ebd78d9f1d9a6e6ae9853cd9b0f2cd3645eb8c80b523280e4eddd2c3087fa18c",
+    "reproduct/campaign_state.json": "8f359b591848f519202fee43760f83eac84af72eab8154c591ae21b22b889e6d",
+    "reproduct/manifest.json": "8f0c8511f91eca8787dd766034766cc303d935fe7f309832f8934ae3212722d0"
+  },
+  "worker_log_sha256": {
+    "reproduct/logs/seed_worker_shard0.log": "539ebb0744388dd65aec83a4fa5862dcd7a474ff34189e83086025849589feea",
+    "reproduct/logs/seed_worker_shard1.log": "9405dc221da829cc494ef92d8dffb969a8243d6f95d0249d1c065d7c997f63b3",
+    "reproduct/logs/replay_worker_shard0.log": "cd36d6b818ef07aaa4d48f6f89c7cec56106b89c25af3608359498773f42a3a0",
+    "reproduct/logs/replay_worker_shard1.log": "eaf5cea4277f0185530eb95f582aa7bb2cb3f6a21e92480358ec9139f31526f3"
+  },
+  "implementation_traceability": {
+    "campaign_runner_sha256_recorded_by_audit": "6927c0dd5951d13ef20b327061c16e63e93da4c09e97de35edfa58ccd53c8c38",
+    "reviewer_facing_english_campaign_path": "RQ1/source/reproduct/campaign.py",
+    "reviewer_facing_english_campaign_sha256": "33c4aac60594366475d157a3f380a8db8d19916111bcf47e883e16d18c04d255",
+    "language_only_change_record": "00_common/patches/LANGUAGE_NORMALIZATION.md"
+  }
+}

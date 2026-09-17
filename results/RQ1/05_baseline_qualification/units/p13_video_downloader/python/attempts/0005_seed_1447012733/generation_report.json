@@ -1,0 +1,212 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 11,
+  "expected_file_count": 11,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 72,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "requirements.txt",
+      "finish_reason": "stop",
+      "generated_code_sha256": "e2bd74411a0fbdfb3116a0b91772bb2375e26f9afa848c2c8517201a891bdb54",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "e76d5c5b2bbdf15afa61c767d7c9bf230e5a4d87186e01d2e67b23379554c991",
+      "response_id": "chatcmpl-1789420687964",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 21,
+        "prompt_tokens": 8874,
+        "total_tokens": 8895
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 448,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/errors.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "eee4bb074f5eb48e7ebc4f2a60f3288fd639d9b9b9d7589a38333add535e9fe9",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c2c111b29a940aa2dbd77f5dffa9545e5e0e4d040699f7fad1fe5e81f9faaea7",
+      "response_id": "chatcmpl-1789420694722",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 91,
+        "prompt_tokens": 8899,
+        "total_tokens": 8990
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 1314,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/url.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "8821e048c3e71960cb94d47e7c8e9a498750d3aa810ca457772f320ccf468097",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c0b5d513728d1c2774b87a0be6b53c9e220f1008270ba75a8163f99197377fb1",
+      "response_id": "chatcmpl-1789420713672",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 291,
+        "prompt_tokens": 8986,
+        "total_tokens": 9277
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 1632,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/naming.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "64be54a36064d33b5cb96c999ea015705dc6b24b3864afdb1da1075e53ab1edc",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "8f08d0b56eb9e541f1912a24376df60e84d7b85438161001d0b5b05bdd3afa08",
+      "response_id": "chatcmpl-1789420738052",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 377,
+        "prompt_tokens": 9275,
+        "total_tokens": 9652
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 1873,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/request.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "8ab71a4e524d736f38d7be3aaffe598b32bcfcb53e39e955ff5cdad2f3894a7c",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "a3c6085f2c4c85c54e9ab1e02d966dd32b868893bbe1ca086dd7ae99efc60099",
+      "response_id": "chatcmpl-1789420764401",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 411,
+        "prompt_tokens": 9644,
+        "total_tokens": 10055
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 2607,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/progress.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "4f207e46587de2bd784cdc11f3fdde8877c484bc1b606f98d578b1753fe7a2fb",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "ceabc29404de3ad164c21eae03e9af8ea816499cb4b6290e9264db98f754b4a7",
+      "response_id": "chatcmpl-1789420799022",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 546,
+        "prompt_tokens": 10054,
+        "total_tokens": 10600
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 4775,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/transfer.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "08559981a282c01d21481cd34612b86eecadc4402452fa88aa9ad9eee5e3952a",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "0a92291410cdf9b9c4cffa2c12d1abf9c9ecacf5823d591c34876c858c557cd9",
+      "response_id": "chatcmpl-1789420855888",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 908,
+        "prompt_tokens": 10596,
+        "total_tokens": 11504
+      }
+    },
+    {
+      "action_index": 8,
+      "content_character_count": 5205,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/queue.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "013d4416c5a596de1ba1547148a869314d1e9c451a23d46f04e52f614f5cbb8a",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "fd6233cc72a64b978ed0423dce1f4e6860c3bcf45224d019a284a6ad0e9f2923",
+      "response_id": "chatcmpl-1789420920609",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1041,
+        "prompt_tokens": 11500,
+        "total_tokens": 12541
+      }
+    },
+    {
+      "action_index": 9,
+      "content_character_count": 717,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "video_downloader/__init__.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "f437cd4cba77e2be790a803d9154204ea8ed0beae7ae7f7671f3c7a2a3d27b33",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "6710665265f98d20081c28f675b249276f430504e785125e32a5d5ffa2b46f13",
+      "response_id": "chatcmpl-1789420931282",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 149,
+        "prompt_tokens": 12540,
+        "total_tokens": 12689
+      }
+    },
+    {
+      "action_index": 10,
+      "content_character_count": 1065,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "Main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "1a932b2b6158ad28df61629992d112aae724109fc99b583bcea98bcce2b1b7f5",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "7dca80dba921403e8885d5622fe9a45cbe339b8cbc495f4540aa8c44d75cf2a5",
+      "response_id": "chatcmpl-1789420948058",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 247,
+        "prompt_tokens": 12669,
+        "total_tokens": 12916
+      }
+    },
+    {
+      "action_index": 11,
+      "content_character_count": 2732,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "tests/test_main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "65579d76cbea40c9406caba5d2319c674df8f9e2b14aaceb5105cf47a1c17898",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "ce0bafb603d5deaa54f10d18972f798a58f52a3b18d36e9101146331dd8a9a36",
+      "response_id": "chatcmpl-1789420989442",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 650,
+        "prompt_tokens": 12918,
+        "total_tokens": 13568
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8000/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0005_seed_1447012733/p13_video_downloader_python",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 11,
+  "truncated_files": []
+}

@@ -1,0 +1,1 @@
+{'score': 0, 'lives': 3, 'status': 'running', 'bricks_remaining': 15, 'ball': {'x': 150.0, 'y': 368.0, 'vx': 0.0, 'vy': 10.0}, 'paddle': {'x': 150.0, 'y': 380}}

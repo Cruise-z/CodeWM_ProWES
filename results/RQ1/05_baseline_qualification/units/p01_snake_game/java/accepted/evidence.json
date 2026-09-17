@@ -1,0 +1,39 @@
+{
+  "accepted_at": "2026-09-13T05:41:55.037898+00:00",
+  "accepted_repository_tree_sha256": "489b8bc56e580ef8ef3e618a30a27efaa120a6ab10e90b56a9294e5e9e66aac0",
+  "architecture_epoch": {
+    "architecture_attempt": 5,
+    "architecture_team_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+    "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+    "prompt_sha256": "d82504ceaf8e14537540c352704b83eb031ed48e5a21aae1e6a872f1794d97fb"
+  },
+  "architecture_team_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+  "attempt": 4,
+  "attempt_evaluator_log": "units/p01_snake_game/java/attempts/0004_seed_1082638472/evaluator.log",
+  "attempt_evidence": "units/p01_snake_game/java/attempts/0004_seed_1082638472/evidence.json",
+  "attempt_generation_report": "units/p01_snake_game/java/attempts/0004_seed_1082638472/generation_report.json",
+  "completed_at": "2026-09-13T05:41:55.023507+00:00",
+  "evaluator_elapsed_seconds": 9.921,
+  "evaluator_log_sha256": "58bec5fbc6e8e74b4535f87997c97f729a75bc0dfaab91442544a921d5ce2d17",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/attempts/0004_seed_1082638472/p01_snake_game_java/p01_snake_game_java",
+  "generated_repository_tree_sha256": "a31e4695b9294bffc9600ec841d3add954a1159d39c13562273fa34a8df65024",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1082638472,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "5bb325ad74a9bc7fae97da08f50deeaa2bcb8d7c2c482c502e84e907238bf746",
+  "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+  "passed": true,
+  "rng_seed": 1082638472,
+  "started_at": "2026-09-13T05:33:46.262725+00:00",
+  "truncated_files": [],
+  "unit_id": "p01_snake_game_java",
+  "valid_for_current_architecture": true
+}

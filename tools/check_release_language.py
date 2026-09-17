@@ -63,6 +63,9 @@ CHECK_FILES = [
     "RQ2/source/build_llm_pilot_report.py",
     "RQ2/source/build_rq2_deliverables.py",
     "results/RQ1/README.md",
+    "results/RQ1/05_baseline_qualification/README.md",
+    "results/RQ1/05_baseline_qualification/PROVENANCE.json",
+    "RQ1/05_baseline_qualification/README.md",
 ]
 
 

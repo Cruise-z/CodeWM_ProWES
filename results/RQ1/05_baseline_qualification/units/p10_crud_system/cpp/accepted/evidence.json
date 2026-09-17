@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T17:17:26.095482+00:00",
+  "accepted_repository_tree_sha256": "2e9694bad4af240c080784aed00251accd79fad5c8adf48058dc44527f8d2fdc",
+  "architecture_epoch": {
+    "architecture_attempt": 8,
+    "architecture_team_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+    "initial_repository_tree_sha256": "4a6087b309b5452c27a8b145142274d7f3b006bd405ab04b2bae42336e5b3a20",
+    "prompt_sha256": "e86a29a6941a9f4cb8ffae30681aa4f82cd23070f3c4f3c30464f1a5b76dde70"
+  },
+  "architecture_team_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p10_crud_system/cpp/attempts/0001_seed_252729447/evaluator.log",
+  "attempt_evidence": "units/p10_crud_system/cpp/attempts/0001_seed_252729447/evidence.json",
+  "attempt_generation_report": "units/p10_crud_system/cpp/attempts/0001_seed_252729447/generation_report.json",
+  "completed_at": "2026-09-14T17:17:26.080859+00:00",
+  "evaluator_elapsed_seconds": 2.967,
+  "evaluator_log_sha256": "62abd70cabafe41e4829ac1f0fddabeef275427a7201688d9cde628dc4b57789",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/cpp/attempts/0001_seed_252729447/p10_crud_system_cpp/p10_crud_system_cpp",
+  "generated_repository_tree_sha256": "1f0c3e0e2049533c4b59720a3ee02f917b0dfaf01ba69e6885658a0ec5b594f3",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 252729447,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "f649add0a3225502ec65db3ddfc61f645ed297dd0efa3c3de4ce553afd4d128e",
+  "initial_repository_tree_sha256": "4a6087b309b5452c27a8b145142274d7f3b006bd405ab04b2bae42336e5b3a20",
+  "passed": true,
+  "rng_seed": 252729447,
+  "started_at": "2026-09-14T17:14:20.288051+00:00",
+  "truncated_files": [],
+  "unit_id": "p10_crud_system_cpp"
+}

@@ -1,0 +1,60 @@
+classDiagram
+    class Common {
+        <<enum>> Player
+        <<enum>> CellState
+        <<enum>> GameStatus
+        <<enum>> MoveError
+    }
+    class Board {
+        -size_t width
+        -size_t height
+        -std::vector<CellState> cells
+        +Board(size_t w=15, size_t h=15)
+        +size_t getWidth() const
+        +size_t getHeight() const
+        +bool inBounds(size_t r, size_t c) const
+        +CellState get(size_t r, size_t c) const
+        +bool set(size_t r, size_t c, CellState s)
+        +bool isFull() const
+        +void clear()
+    }
+    class Move {
+        +size_t row
+        +size_t col
+        +Player player
+        +Move(size_t r, size_t c, Player p)
+        +bool operator==(const Move& other) const
+    }
+    class MoveHistory {
+        -std::vector<Move> history
+        +void push(const Move& m)
+        +bool undo(Move& out)
+        +const std::vector<Move>& all() const
+        +void clear()
+        +size_t size() const
+    }
+    class WinDetector {
+        +static std::optional<Player> checkWin(const Board& b)
+        +static bool hasFiveFrom(const Board& b, size_t r, size_t c, int dr, int dc)
+    }
+    class GameEngine {
+        -Board board
+        -Player current
+        -GameStatus status
+        -MoveHistory history
+        +GameEngine(size_t w=15, size_t h=15)
+        +const Board& getBoard() const
+        +Player getCurrentPlayer() const
+        +GameStatus getStatus() const
+        +const MoveHistory& getHistory() const
+        +MoveError applyMove(size_t r, size_t c)
+        +void reset()
+    }
+    GameEngine --> Board
+    GameEngine --> MoveHistory
+    WinDetector ..> Board
+    MoveHistory --> Move
+    Board ..> Common
+    Move ..> Common
+    GameEngine ..> WinDetector
+    GameEngine ..> Common

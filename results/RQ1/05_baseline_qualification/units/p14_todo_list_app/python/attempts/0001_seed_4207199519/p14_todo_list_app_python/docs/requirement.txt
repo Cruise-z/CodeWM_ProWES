@@ -1,0 +1,69 @@
+Generate a complete medium-size Python 3.10 repository architecture for: To-Do List App.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python 3.10 to-do priority/error and deterministic-date contract:
+- use exactly these files and no substitutes, in dependency order: requirements.txt, todo_app/errors.py, todo_app/priority.py, todo_app/entities.py, todo_app/filtering.py, todo_app/sorting.py, todo_app/repository.py, todo_app/clock.py, todo_app/service.py, todo_app/__init__.py, Main.py, tests/test_main.py. Do not add models.py, types.py, exceptions.py, utils.py, or additional source/test files
+- errors.py solely defines class ValidationError(Exception) with an ordinary message constructor and class NotFoundError(ValidationError). priority.py directly contains `from .errors import ValidationError`, uses enum.Enum (not IntEnum), and defines Priority members LOW, MEDIUM, HIGH plus order_value()->int returning 0/1/2. Priority.from_value accepts an existing Priority unchanged or a string after strip/lower; low maps LOW, med/medium maps MEDIUM, high maps HIGH; every other value raises ValidationError, never ValueError, TypeError, KeyError, or another built-in exception
+- entities.py defines mutable dataclass Task with id:int, title:str, optional description, Priority, optional datetime.date due_date, normalized list[str] tags, completed=False, completed_at=None. Title is stripped and nonblank or ValidationError. Tags are stripped, lowercased, empty removed, deduplicated, and sorted. mark_complete_on(day) is idempotent and preserves the first completed_at; mark_incomplete clears it
+- filtering.py defines TagMatchMode ANY/ALL, FilterCriteria, and pure filter_tasks. sorting.py defines SortKey DUE_DATE/PRIORITY/TITLE/COMPLETED, SortDirection ASC/DESC, and pure stable sort_tasks with final id-ascending tie break; for DUE_DATE, real dates precede None in ascending order. No function mutates input tasks
+- repository.py defines TaskRepository ABC and InMemoryTaskRepository with sequential ids starting at 1, deterministic id-sorted list_all, duplicate ValidationError, and missing-id NotFoundError. clock.py defines Clock ABC, SystemClock, and FixedClock(fixed:date); tests use only FixedClock and never wall time
+- service.py directly imports ValidationError and Priority. ApplicationService.create_task calls Priority.from_value for strings and propagates its ValidationError, assigns repo.next_id, stores and returns Task. It provides edit/complete/uncomplete/delete/list_tasks/summary; complete is idempotent. summary returns exactly total, completed, pending, by_priority with uppercase LOW/MEDIUM/HIGH string keys, and completed_today using clock.today
+- __init__.py explicitly re-exports ValidationError, NotFoundError, Priority, Task, TagMatchMode, FilterCriteria, filter_tasks, SortKey, SortDirection, sort_tasks, TaskRepository, InMemoryTaskRepository, Clock, SystemClock, FixedClock, and ApplicationService. Main.py uses absolute imports from todo_app, exposes run_demo()->dict with a fixed date and exits without input/network/filesystem/GUI/thread activity. requirements.txt lists a Python-3.10-compatible pytest only
+- tests/test_main.py has exactly four concise pytest tests using only public todo_app imports plus datetime.date and run_demo from Main: (1) run_demo is a dict and ordinary create/complete/list works with FixedClock(date(2023,10,15)); (2) `service.create_task("Test", priority="invalid")` raises ValidationError specifically; (3) equal due date tasks sort by id ascending; (4) completing twice preserves completed_at and summary has total1/completed1/pending0/completed_today1 plus uppercase priority counts. Tests never catch ValueError as an alternative
+- repeat the exact 12-file list, direct priority-to-errors import, Enum/non-IntEnum rule, exact from_value mapping and ValidationError-only failure, task normalization/idempotence, deterministic sorting/repository/clock, exact summary keys, public exports, four-test limit and literal fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 29 functions or methods
+- about 613 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- task creation editing and deletion
+- completion state
+- priority due date and tags
+- filtering and sorting
+- in-memory persistence boundary
+- validation and deterministic summaries
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE TO-DO PYTHON 3.10 ERROR CHECKLIST:
+- Task filenames are exactly requirements.txt; todo_app/errors.py; priority.py; entities.py; filtering.py; sorting.py; repository.py; clock.py; service.py; __init__.py; Main.py; tests/test_main.py at the specified paths.
+- priority.py directly imports ValidationError from .errors, declares Priority with Enum rather than IntEnum, accepts Priority or low/med/medium/high strings, and raises only ValidationError for every invalid value. ValueError/TypeError/KeyError are forbidden outcomes. service.create_task propagates that ValidationError.
+- Tests contain exactly four cases and specifically require ValidationError for priority="invalid", id-stable due-date sorting, completion idempotence, fixed-date summary, and public imports. Repeat these literal rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and affected tasks.
+

@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "519442f780ff3742e3fa37d686b4536501a4894fcfb4543036e4c6512b2f1c0a",
+  "architecture_team_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+  "completed_at": "2026-09-14T18:40:16.400870+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 6.373,
+  "evaluator_log_sha256": "8cf56a44514f664c85f2201abbd2ff3b9646fdf5b1f00c5f0725d3ee14f22a1d",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p11_custom_press_releases/cpp/replays/0001_seed_1221104095/p11_custom_press_releases_cpp/p11_custom_press_releases_cpp",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1221104095,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "96232c5b20b85f896159228d695d756764ef990394fd3ac2384d9b33ef079c18",
+  "initial_repository_tree_sha256": "6f1a7f780f3814761685c975b1dcda9beb3e71534bd78e2a49a361fc5d956e80",
+  "model_base_url": "http://127.0.0.1:8000",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "519442f780ff3742e3fa37d686b4536501a4894fcfb4543036e4c6512b2f1c0a",
+  "rng_seed": 1221104095,
+  "started_at": "2026-09-14T18:32:33.929872+00:00",
+  "truncated_files": [],
+  "unit_id": "p11_custom_press_releases_cpp"
+}

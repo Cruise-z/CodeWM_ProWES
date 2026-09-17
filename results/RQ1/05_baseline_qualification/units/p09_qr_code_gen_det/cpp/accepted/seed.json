@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 11,
+    "architecture_team_sha256": "e45b9a7c66533f526b9dd5fbad1980d56e48f6e2a9e19381edc6ecf107c46fcc",
+    "initial_repository_tree_sha256": "a9386ca25780fedc7ba5c7635a3628f7610bf5c2f6c7666dc541485879fe7e8f",
+    "prompt_sha256": "36215389762f38f30a06b73189bee1254596070a25a49ad949db41f1123e2498"
+  },
+  "attempt": 3,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 779839335,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 779839335,
+  "selected_at": "2026-09-14T18:07:48.932181+00:00",
+  "unit_id": "p09_qr_code_gen_det_cpp"
+}

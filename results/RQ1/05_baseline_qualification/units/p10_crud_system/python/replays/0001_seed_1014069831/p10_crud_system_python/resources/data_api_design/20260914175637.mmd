@@ -1,0 +1,80 @@
+classDiagram
+    class ValidationError
+    class DuplicateNameError
+    class NotFoundError
+    class PaginationError
+
+    class Item {
+        +id: int
+        +name: str
+        +created_at: float
+        +updated_at: float
+    }
+    class AuditEvent {
+        +op: str
+        +item_id: int
+        +item_name: str
+        +ts: float
+    }
+    class Page {
+        +items: list~Item~
+        +total: int
+        +limit: int
+        +offset: int
+    }
+
+    class FixedClock {
+        -_current: float
+        -_step: float
+        +__init__(base: float=100.0, step: float=10.0)
+        +now() float
+    }
+
+    class Repository {
+        -_items: dict~int, Item~
+        -_name_index: dict~str, int~
+        -_next_id: int
+        +create(name: str, ts: float) Item
+        +get(item_id: int) Item
+        +update(item_id: int, name: str, ts: float) Item
+        +delete(item_id: int) None
+        +list_items() list~Item~
+        +exists_name(name: str) bool
+    }
+
+    class AuditTrail {
+        -_events: list~AuditEvent~
+        +log(op: str, item_id: int, item_name: str, ts: float) None
+        +events() list~AuditEvent~
+    }
+
+    class Service {
+        -repo: Repository
+        -audit: AuditTrail
+        -clock: FixedClock
+        +create(name: str) Item
+        +read(item_id: int) Item
+        +update(item_id: int, name: str) Item
+        +delete(item_id: int) None
+        +search(name_contains: str|None=None, limit: int|None=None, offset: int=0) Page
+        +audit_events() list~AuditEvent~
+    }
+
+    class search_module {
+        +paginate(items: list~Item~, limit: int|None=None, offset: int=0) Page
+    }
+
+    Repository --> Item
+    AuditTrail --> AuditEvent
+    Service --> Repository
+    Service --> AuditTrail
+    Service --> FixedClock
+    Service --> Item
+    Service --> Page
+    search_module --> Page
+    search_module --> Item
+    FixedClock ..> Service : provides timestamp
+    ValidationError <.. validation
+    DuplicateNameError <.. Repository
+    NotFoundError <.. Repository
+    PaginationError <.. search_module

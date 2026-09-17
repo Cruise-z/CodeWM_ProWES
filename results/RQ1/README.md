@@ -1,7 +1,25 @@
 # RQ1 results
 
-This directory contains the two author-supplied RQ1 result bundles and their
-expanded, reviewer-readable payloads.
+This directory contains the RQ1 baseline qualification evidence and the two
+author-supplied result bundles, all in reviewer-readable form.
+
+## Baseline qualification
+
+`05_baseline_qualification/` closes the released baseline path:
+
+```text
+42 architecture checkpoints
+  -> 88 generation attempts and evaluator logs
+  -> 42 accepted seeds and repository snapshots
+  -> 42 same-seed replays
+  -> canonical repository hashes and final campaign audit
+```
+
+The original campaign reports are retained under `ledger/`; three flattened
+CSV indexes expose every attempt, accepted repository, and replay. The raw
+directories preserve generation reports, execution artifacts, and evaluator
+logs. See the package README and `PROVENANCE.json` for the exact final-epoch
+import boundary.
 
 ## Applicability
 
@@ -50,7 +68,10 @@ repair made to the expanded Applicability checksum ledger are documented in
 
 ## Scope boundary
 
-The Applicability bundle contains the final point-level table and 298 retained
+The baseline qualification chain is complete for the reported 88 current-epoch
+attempts, 42 accepted repositories, and 42 verified replays. Historical
+architecture-failure epochs are explicitly outside that reported count. The
+Applicability bundle contains the final point-level table and 298 retained
 batch summaries. It does not contain the 9,141 referenced Docker
 `evaluation.log` files or repository snapshots. The point labels are therefore
 auditable against the released aggregate summaries, but individual Docker

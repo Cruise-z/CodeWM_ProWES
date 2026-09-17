@@ -1,0 +1,55 @@
+classDiagram
+    class QRMatrix {
+        +QRMatrix(int size)
+        +int getSize()
+        +boolean get(int row, int col)
+        +void set(int row, int col, boolean val)
+        +boolean[][] copyCells()
+    }
+    class Checksum {
+        +static int sumMod256(byte[] data)
+    }
+    class ZigZag {
+        +static int[][] traversal(int size, boolean[][] reserved)
+    }
+    class FinderPattern {
+        +static boolean[][] reservedMask(int size)
+        +static void place(QRMatrix matrix)
+        +static void verify(QRMatrix matrix)
+    }
+    class TextEncoder {
+        +static byte[] encodePayload(String text)
+        +static String decodePayload(byte[] frame)
+        +static boolean[] bytesToBits(byte[] bytes)
+        +static byte[] bitsToBytes(boolean[] bits)
+    }
+    class MatrixValidator {
+        +static void ensureValidSize(int size)
+        +static int capacityBits(int size)
+    }
+    class QRDetector {
+        +static boolean[] readDataBits(QRMatrix matrix)
+        +static byte[] extractPayloadBytes(QRMatrix matrix)
+    }
+    class QRCodec {
+        +QRMatrix encode(String text)
+        +QRMatrix encode(String text, int size)
+        +String decode(QRMatrix matrix)
+    }
+    class QRRenderer {
+        +static String render(QRMatrix matrix)
+    }
+    class Main {
+        +static void main(String[] args)
+    }
+    QRCodec --> TextEncoder
+    QRCodec --> MatrixValidator
+    QRCodec --> ZigZag
+    QRCodec --> FinderPattern
+    QRCodec --> QRMatrix
+    QRDetector --> TextEncoder
+    QRDetector --> ZigZag
+    QRDetector --> FinderPattern
+    QRRenderer --> QRMatrix
+    Main --> QRCodec
+    Main --> QRRenderer

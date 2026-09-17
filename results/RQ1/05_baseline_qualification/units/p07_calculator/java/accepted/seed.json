@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 8,
+    "architecture_team_sha256": "5ac9209cf64e5f3ee76152de30272816532264cc2344a68cf2de98661dfd6e39",
+    "initial_repository_tree_sha256": "f9f69c3db2124382ef683f3c011826ae6aac36bf0136f84e3e8971d594030310",
+    "prompt_sha256": "1ce82ea36dc01d90e406b00473cede289e6d4da9df398d61f0c0c17e9edc632c"
+  },
+  "attempt": 1,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1570566783,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 1570566783,
+  "selected_at": "2026-09-14T13:32:13.474625+00:00",
+  "unit_id": "p07_calculator_java"
+}

@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant M as Main
+    participant A as Runtime::App
+    participant C as Time::ManualClock
+    participant L as Playlist::Playlist
+    participant P as Player::Player
+    participant MD as Media::MediaMetadata
+    M->>A: run_demo()
+    A->>C: construct ManualClock(start_ms)
+    A->>L: construct Playlist
+    A->>MD: create MediaMetadata(title, duration_ms)
+    A->>L: add(MD)
+    A->>L: select(0)
+    A->>P: construct Player(clock=C)
+    A->>P: set_current_media(L.current())
+    A->>P: play()
+    A->>C: advance(1000)
+    A->>P: update_to_now()
+    A->>P: pause()/stop()
+    A-->>M: return 0

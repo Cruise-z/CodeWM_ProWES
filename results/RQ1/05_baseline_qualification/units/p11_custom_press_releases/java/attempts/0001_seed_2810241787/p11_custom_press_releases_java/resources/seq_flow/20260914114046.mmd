@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main
+    participant T as Template
+    participant PR as PressRelease
+    participant RS as RenderService
+    M->>T: new Template("basic", "{{headline}}|{{body}}|{{contact}}")
+    M->>PR: new PressRelease(id, headline, body, contact, T, customFields)
+    M->>PR: validate()
+    alt valid
+      M->>PR: submitForReview()
+      M->>PR: publish()
+      M->>RS: toPlainText(PR)
+      RS->>PR: renderPlainText()
+      PR-->>RS: rendered text
+      RS-->>M: rendered text
+    else invalid
+      M->>M: handle exception or skip publish
+    end

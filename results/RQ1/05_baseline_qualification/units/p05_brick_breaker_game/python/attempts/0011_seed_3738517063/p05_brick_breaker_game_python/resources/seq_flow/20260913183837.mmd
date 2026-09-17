@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant C as Collision
+    participant L as Level
+    M->>G: construct(GameConfig())
+    G->>L: make_grid_level(config)
+    M->>G: tick(input_action='none')
+    G->>G: move paddle per input
+    G->>G: ball.step()
+    G->>C: reflect_off_walls(ball, width, height)
+    G->>C: collide_ball_with_paddle(ball, paddle)
+    G->>L: iterate bricks
+    G->>C: collide_ball_with_rect(ball, brick.x, brick.y, brick.w, brick.h)
+    C-->>G: axis of reflection or none
+    G->>G: update score/lives/status
+    G-->>M: return snapshot dict

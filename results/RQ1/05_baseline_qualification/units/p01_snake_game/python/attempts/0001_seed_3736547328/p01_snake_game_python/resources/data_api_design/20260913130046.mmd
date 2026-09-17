@@ -1,0 +1,65 @@
+classDiagram
+    class Direction {
+        +delta() tuple[int,int]
+        +is_opposite(other: Direction) bool
+        <<Enum>>
+    }
+    class Position {
+        +x: int
+        +y: int
+        <<immutable>>
+    }
+    class Grid {
+        -_width: int
+        -_height: int
+        +__init__(width: int, height: int)
+        +width() int
+        +height() int
+        +in_bounds(pos: Position) bool
+    }
+    class Snake {
+        -_body: list[Position]
+        -direction: Direction
+        +__init__(start: Position, direction: Direction)
+        +turn(requested: Direction) bool
+        +head() Position
+        +next_head() Position
+        +advance(grow: bool) None
+        +body() list[Position]
+    }
+    class RandomProvider {
+        -_queue: list[Position]
+        -_seed: int
+        +__init__(sequence: Optional[list[Position]] = None, seed: Optional[int] = None)
+        +next_position(grid: Grid) Position
+    }
+    class Game {
+        -_grid: Grid
+        -_rng: RandomProvider
+        -_snake: Snake
+        -_food: Position
+        -_score: int
+        -_over: bool
+        +__init__(grid: Grid, rng: RandomProvider, start: Position, direction: Direction)
+        +turn(requested: Direction) bool
+        +step() None
+        +reset() None
+        +state() dict
+        +is_over() bool
+        +score_get() int
+    }
+    Direction <.. Snake : uses
+    Position <.. Snake : uses
+    Grid <.. Game : uses
+    Snake <.. Game : orchestrates
+    RandomProvider <.. Game : uses
+    Position <.. RandomProvider : produces
+    class collision {
+        +hit_wall(grid: Grid, pos: Position) bool
+        +hit_self(body: list[Position], next_head: Position, grow: bool) bool
+    }
+    class food {
+        +place_food(grid: Grid, rng: RandomProvider, occupied: set[Position]) Position
+    }
+    Game --> collision : checks
+    Game --> food : places

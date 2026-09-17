@@ -14,9 +14,10 @@ initial repository. The campaign resets CPU/CUDA RNG state behind a global
 generation lock. Strict cross-hardware byte identity is not claimed because
 the Qwen3-MoE `_histc` path lacks a deterministic CUDA implementation. The
 released applicability bundle includes its realized seed inventory and seed
-fields in the point table. The complete 42-baseline attempt ledger, accepted
-repository hashes, and replay logs were not present in either supplied RQ1
-archive.
+fields in the point table. The baseline campaign evidence is released
+separately at `results/RQ1/05_baseline_qualification/`: all 88 final-epoch
+attempt seeds, 42 accepted seeds and repository hashes, and 42 same-seed replay
+records and logs are retained there.
 
 ## RQ2
 

@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 8,
+    "architecture_team_sha256": "a6227045543c639189a87850281882afa83629637f2f74f48dff418627f61cda",
+    "initial_repository_tree_sha256": "4a6087b309b5452c27a8b145142274d7f3b006bd405ab04b2bae42336e5b3a20",
+    "prompt_sha256": "e86a29a6941a9f4cb8ffae30681aa4f82cd23070f3c4f3c30464f1a5b76dde70"
+  },
+  "attempt": 1,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 252729447,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 252729447,
+  "selected_at": "2026-09-14T17:17:26.095115+00:00",
+  "unit_id": "p10_crud_system_cpp"
+}

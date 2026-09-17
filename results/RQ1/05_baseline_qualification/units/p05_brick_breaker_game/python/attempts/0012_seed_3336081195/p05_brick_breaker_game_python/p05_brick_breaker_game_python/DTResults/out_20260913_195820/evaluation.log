@@ -1,0 +1,65 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+.F.                                                                      [100%]
+=================================== FAILURES ===================================
+______________ test_brick_hit_increments_score_and_removes_brick _______________
+
+    def test_brick_hit_increments_score_and_removes_brick():
+        """Test that a ball-brick collision increments score and removes the brick."""
+        # Create a custom config for predictable testing
+        config = GameConfig(
+            width=300,
+            height=400,
+            lives=3,
+            ball_speed=120.0,
+            ball_radius=4.0,
+            paddle_width=60.0,
+            paddle_speed=180.0,
+            brick_rows=1,
+            brick_cols=1,
+            brick_width=50.0,
+            brick_height=14.0,
+            brick_padding=2.0,
+            top_margin=40.0,
+            points_per_brick=100
+        )
+    
+        # Create a game with one brick
+        game = GameClass(config)
+    
+        # Verify initial state
+        assert game.level.remaining() == 1
+        assert game.score == 0
+    
+        # Simulate a ball hitting the brick from below (top of brick)
+        # Position ball above the brick so it will collide
+        game.ball.x = 25.0  # Center of brick
+        game.ball.y = 30.0  # Just above brick
+        game.ball.vx = 0.0
+        game.ball.vy = 120.0  # Moving downward
+    
+        # Perform one tick to trigger collision
+        snapshot = game.tick('none')
+    
+        # Verify the brick was hit and removed
+>       assert game.level.remaining() == 0
+E       assert 1 == 0
+E        +  where 1 = <bound method Level.remaining of <brick_breaker.level.Level object at 0x7f6d4393b6d0>>()
+E        +    where <bound method Level.remaining of <brick_breaker.level.Level object at 0x7f6d4393b6d0>> = <brick_breaker.level.Level object at 0x7f6d4393b6d0>.remaining
+E        +      where <brick_breaker.level.Level object at 0x7f6d4393b6d0> = <brick_breaker.game.Game object at 0x7f6d4393b4c0>.level
+
+tests/test_main.py:85: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_brick_hit_increments_score_and_removes_brick
+1 failed, 2 passed in 0.04s

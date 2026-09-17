@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "5ebf0bd9abe406aec04f715b18861d18d34c7fd5f37bf1a0d0b540d9d7825dee",
+  "architecture_team_sha256": "8b0e52ae4c7090b792426c2e147b798b0d72baea83f9a3a8004de06284cf07a6",
+  "completed_at": "2026-09-13T15:02:30.391513+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 9.854,
+  "evaluator_log_sha256": "4c1cbc69028e7f08fdfd823549c43a461786559d77fd40fed1e55e592d0fe949",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/java/replays/0001_seed_2540127563/p02_flappy_bird_game_java/p02_flappy_bird_game_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2540127563,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "29fc71aa58535bbedf753c28d377e614fe30518a9eb4bef910b2e046dbb6e2e5",
+  "initial_repository_tree_sha256": "ca2e767a2d612062c7dd90f65673ebe261073c15968abe9b81979e8054181e5d",
+  "model_base_url": "http://127.0.0.1:8000",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "5ebf0bd9abe406aec04f715b18861d18d34c7fd5f37bf1a0d0b540d9d7825dee",
+  "rng_seed": 2540127563,
+  "started_at": "2026-09-13T14:50:04.031203+00:00",
+  "truncated_files": [],
+  "unit_id": "p02_flappy_bird_game_java"
+}

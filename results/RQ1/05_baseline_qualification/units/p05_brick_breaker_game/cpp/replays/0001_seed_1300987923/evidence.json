@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "f35231bc65882a6f9590c139e55b1d83fb78d7d70fe5f3a746796f6f1cf864b8",
+  "architecture_team_sha256": "ca42b769e11a04a99e246503fb81f240028f04967e3cc3b602cc2a2993e71f10",
+  "completed_at": "2026-09-13T18:13:13.463313+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 3.394,
+  "evaluator_log_sha256": "9acf0061cd64adad326ee81b9f9be59d22ed2cbb5ba8a54dbcc907e841a9cf7b",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/cpp/replays/0001_seed_1300987923/p05_brick_breaker_game_cpp/p05_brick_breaker_game_cpp",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1300987923,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "0f09f1ff217299f26ce7ebbf5132b3dd7657ac7b0c43ce5b172335b79eee189c",
+  "initial_repository_tree_sha256": "2ecfdec83a7e479ec5320e6c91bc24d755a2b64f11643a85cd6f7f3aacc86871",
+  "model_base_url": "http://127.0.0.1:8000",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "f35231bc65882a6f9590c139e55b1d83fb78d7d70fe5f3a746796f6f1cf864b8",
+  "rng_seed": 1300987923,
+  "started_at": "2026-09-13T18:08:13.701369+00:00",
+  "truncated_files": [],
+  "unit_id": "p05_brick_breaker_game_cpp"
+}

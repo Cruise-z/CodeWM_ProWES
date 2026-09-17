@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "199d396717305eb492048a10d67389077232c4dbdbc619bc67ea839c654f0d6a",
+  "architecture_team_sha256": "ffd84b34deb72ac8b8cca4a83df026458047e882d4d6b81a1c38f6e441008c6b",
+  "completed_at": "2026-09-14T14:14:19.378973+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 10.203,
+  "evaluator_log_sha256": "5a15f1995e606aea0927f4554946a1938320940450758ee71857d78c1c9201d1",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/java/replays/0001_seed_573870900/p06_tank_battle_game_java/p06_tank_battle_game_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 573870900,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "4398f9373c53e3f8b86160e1551ae0afd0120e08ca00f3a890fad6393b3fa6f2",
+  "initial_repository_tree_sha256": "1153b64a6e6f4932afddc146fd8b710c0329067a713e6bbea73cff37100ffc9c",
+  "model_base_url": "http://127.0.0.1:8000",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "199d396717305eb492048a10d67389077232c4dbdbc619bc67ea839c654f0d6a",
+  "rng_seed": 573870900,
+  "started_at": "2026-09-14T14:05:51.110979+00:00",
+  "truncated_files": [],
+  "unit_id": "p06_tank_battle_game_java"
+}

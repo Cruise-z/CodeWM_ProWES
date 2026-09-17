@@ -1,0 +1,70 @@
+Generate a complete medium-size Python 3.10 repository architecture for: Video Downloader.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python 3.10 synchronous downloader and cancellation contract:
+- use exactly these files and no substitutes, in dependency order: requirements.txt, video_downloader/errors.py, video_downloader/url.py, video_downloader/naming.py, video_downloader/request.py, video_downloader/progress.py, video_downloader/transfer.py, video_downloader/queue.py, video_downloader/__init__.py, Main.py, tests/test_main.py. Do not create models.py, types.py, adapters.py, downloader.py, service.py, or additional source/test files
+- errors.py solely defines InvalidURLError(ValueError), InvalidFormatError(ValueError), TransferError(RuntimeError), and CancelledError(RuntimeError). url.py defines validate_url(url:str)->str: require a string, strip only surrounding whitespace, reject embedded whitespace, accept only http/https with nonempty netloc and path, and raise InvalidURLError for every invalid input
+- naming.py defines sanitize_filename(name:str)->str and unique_name(base:str,existing:set[str])->str. sanitize_filename strips, changes whitespace runs to underscore, removes path separators and characters outside letters/digits/dot/dash/underscore, trims edge dots/underscores, and falls back to "download". unique_name returns base when free and otherwise appends ` (1)`, ` (2)`, and so on before the extension. The literal fixture unique_name("clip.mp4", {"clip.mp4"}) is exactly "clip (1).mp4"
+- request.py defines DownloadRequest with constructor (url:str,fmt:str,output_hint:Optional[str]=None), read-only url/fmt/output_hint properties, and extension()->str. It validates through validate_url, accepts case-insensitive mp4/webm/mkv and stores the lower-case format, raises InvalidFormatError for anything else, sanitizes a supplied output hint, and maps formats to .mp4/.webm/.mkv
+- progress.py defines Progress(total:Optional[int]=None) with transferred initially zero, read-only transferred/total properties, update(delta:int), percent()->Optional[float], and add_listener(callback). update rejects negative delta, clamps at total, and synchronously notifies listeners with (transferred,total). It also defines CancellationToken with cancel() and is_cancelled(). No thread, sleep, clock, filesystem, network, or randomness is used
+- transfer.py defines frozen dataclass TransferResult(bytes_transferred:int,final_name:str,completed:bool), abstract TransferAdapter with total_bytes(req:DownloadRequest)->int and transfer(req,progress,cancel)->TransferResult, and FakeTransferAdapter(mapping:dict[str,tuple[int,int]]). mapping values are (positive total_bytes, positive chunk_size). total_bytes raises TransferError for an absent URL. transfer derives a sanitized base from output_hint or the URL's final path segment, adds req.extension unless already present, chooses a unique name against an adapter-owned deterministic set, loops in fixed chunks while checking cancellation before each chunk, raises CancelledError if canceled, updates Progress, reserves the completed name, and returns a completed result. It never performs real I/O
+- queue.py defines internal mutable _Job and DownloadQueue(adapter). enqueue(req)->int creates sequential ids from 1, a pending job, and Progress(adapter.total_bytes(req)). cancel(job_id)->bool marks a pending job cancelled with zero progress, cancels a running token, and returns false for absent or terminal jobs. process_next()->None processes the first pending job only and skips already-cancelled jobs; it changes pending to running, invokes the synchronous adapter, and records completed/cancelled/failed. process_all()->None repeats until no pending jobs remain. get_status(job_id)->dict returns exactly state, transferred, total, final_name; states are lower-case pending/running/completed/failed/cancelled. Pre-start cancellation is the normative deterministic cancellation fixture; tests MUST NOT demand an impossible external mid-transfer action during a synchronous process_next call
+- __init__.py re-exports only the four exceptions, validate_url, sanitize_filename, unique_name, DownloadRequest, Progress, CancellationToken, TransferAdapter, TransferResult, FakeTransferAdapter, and DownloadQueue. Main.py uses absolute imports from video_downloader, exposes run_demo()->dict, uses mapping {"https://example.com/clip": (12,4)}, processes one mp4 request, returns its completed status, and performs no input/network/filesystem/thread activity or mandatory printing. requirements.txt lists only a Python-3.10-compatible pytest requirement
+- tests/test_main.py uses exactly four concise tests: (1) run_demo returns a dict with state completed and transferred/total 12/12; (2) validate_url accepts https and rejects ftp/blank with InvalidURLError, and DownloadRequest rejects an invalid format with InvalidFormatError; (3) sanitize_filename("my clip") is "my_clip" and unique_name("clip.mp4", {"clip.mp4"}) is "clip (1).mp4"; (4) use mapping a:(12,4), b:(8,4), enqueue two requests, cancel the first while pending before any process call, process_all, and assert first cancelled with 0/12 and second completed with 8/8 and final_name "b.mp4". Tests never use a real URL transfer and never try to cancel from another execution context
+- repeat the exact 11-file list, error ownership, exact URL/naming/request/progress/adapter/queue signatures, pre-start synchronous cancellation rule, exact lowercase states, literal mappings and status fixtures, four-test limit, Python 3.10 compatibility, and absence of external effects in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 30 functions or methods
+- about 665 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- URL validation
+- download request and format selection
+- queue lifecycle
+- progress and cancellation
+- safe output naming
+- offline deterministic transfer adapter for tests
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE VIDEO-DOWNLOADER PYTHON 3.10 CHECKLIST:
+- Task filenames are exactly requirements.txt; video_downloader/errors.py; url.py; naming.py; request.py; progress.py; transfer.py; queue.py; __init__.py; Main.py; tests/test_main.py at the specified paths.
+- DownloadQueue is synchronous. Its deterministic cancellation test cancels the first pending job before process_all, expects 0/12 cancelled, and lets the second job complete at 8/8 with final_name b.mp4. A test requiring external mid-transfer cancellation is forbidden because process_next has no concurrent callback API.
+- Tests contain exactly four cases with run_demo completed 12/12, InvalidURLError/InvalidFormatError, exact my_clip and clip (1).mp4 naming, and the exact two-job pre-start cancellation fixture. Repeat these literal rules in Full API, Logic Analysis, Test Scope Plan, Shared Knowledge, and affected tasks.
+

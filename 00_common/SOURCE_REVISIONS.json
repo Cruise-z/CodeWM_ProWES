@@ -6,6 +6,15 @@
     "remote": "git@github.com:Cruise-z/CodeWM_ProWES_Logits.git",
     "commit": "9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa",
     "commit_subject": "Add metaProjectDEV reproducibility campaign",
+    "baseline_qualification": {
+      "source_root": "reproduct",
+      "result_ledger_sha256": "52d574610cbaa72f833beb0a8bfff432e7cc40cdee3eb40b355d239385a1ecc2",
+      "audit_sha256": "ebd78d9f1d9a6e6ae9853cd9b0f2cd3645eb8c80b523280e4eddd2c3087fa18c",
+      "attempts": 88,
+      "accepted_repositories": 42,
+      "verified_replays": 42,
+      "artifact_path": "results/RQ1/05_baseline_qualification"
+    },
     "result_archives": {
       "Applicability.zip": "e00122d3458826f8963e2b6f98753556b6e464bea981e3ea003bc4d6eef88183",
       "Detectability.zip": "36e18dd3df140da91e6b447a0fde7cd3c217bdf662a71230e99ee8ef01fc6601"

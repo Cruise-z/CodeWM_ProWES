@@ -1,0 +1,121 @@
+===== BEGIN @ 20260913_014352 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260913_014352
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352/host_wrapper_20260913_014352.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          localhost,::1,127.0.0.1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp -> CodeWM-DT:/workspace/proj_20260913_014352
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260913_014352/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 12%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Game.cpp.o
+[ 25%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Geometry.cpp.o
+[ 37%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Entities.cpp.o
+[ 50%] Linking CXX static library libtankbattle_core.a
+[ 50%] Built target tankbattle_core
+[ 62%] Building CXX object CMakeFiles/tankbattle_test.dir/tests/test_main.cpp.o
+[ 75%] Building CXX object CMakeFiles/tankbattle_runtime.dir/src/Main.cpp.o
+[ 87%] Linking CXX executable tankbattle_test
+[ 87%] Built target tankbattle_test
+[100%] Linking CXX executable tankbattle_runtime
+[100%] Built target tankbattle_runtime
+>>> Running CTest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Internal ctest changing into directory: /workspace/proj_20260913_014352/build
+Test project /workspace/proj_20260913_014352/build
+    Start 1: tankbattle_test
+1/1 Test #1: tankbattle_test ..................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+>>> Packaging C++ runnable binary
+>>> C++ packaged artifact:
+-rwxr-xr-x 1 root root 23400 Sep 13 01:43 /workspace/proj_20260913_014352/DTResults/artifacts/proj_20260913_014352
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: '/workspace/proj_20260913_014352/DTResults/artifacts/proj_20260913_014352'
+[INFO] Runtime output is captured in: /workspace/proj_20260913_014352/DTResults/runtime/cpp.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260913_014352/DTResults/runtime/cpp.log
+----- BEGIN runtime log tail (40 lines) -----
+Tick 0:
+  Winner: -1
+  Scores - Tank 0: 0, Tank 1: 0
+  Tank 0: (1,0) facing 0
+  Tank 1: (8,7) facing 0
+
+Tick 1:
+  Winner: -1
+  Scores - Tank 0: 0, Tank 1: 0
+  Tank 0: (1,0) facing 0
+  Tank 1: (8,7) facing 0
+
+Tick 2:
+  Winner: -1
+  Scores - Tank 0: 0, Tank 1: 0
+  Tank 0: (1,0) facing 0
+  Tank 1: (8,7) facing 0
+
+Tick 3:
+  Winner: -1
+  Scores - Tank 0: 0, Tank 1: 0
+  Tank 0: (1,0) facing 0
+  Tank 1: (8,7) facing 0
+
+Tick 4:
+  Winner: -1
+  Scores - Tank 0: 0, Tank 1: 0
+  Tank 0: (1,0) facing 0
+  Tank 1: (8,7) facing 0
+
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":520,"output_lines":30,"max_same_line":5,"max_consecutive_same_line":1,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260913_014352/DTResults/artifacts
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/p06_tank_battle_game_cpp/p06_tank_battle_game_cpp/DTResults/out_20260913_014352/host_wrapper_20260913_014352.log

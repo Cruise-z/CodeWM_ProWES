@@ -1,0 +1,39 @@
+{
+  "accepted_at": "2026-09-13T06:02:43.742744+00:00",
+  "accepted_repository_tree_sha256": "e35ac1d9cf6d5ce4d7aa4a5ff1dbd69ba89a2671ce8f112ec0d53509f3362666",
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "ced24fb585f3f7def95b013caeedb1913a630242951b199cdc7445e7491d6193",
+    "initial_repository_tree_sha256": "789c1efa82bb2d855bc96a93855d72b96f359cd2e3148d56d0a7055da274e1ea",
+    "prompt_sha256": "194ec11c842c70e30283076df6c7b9472638dd0fba641f364ac3d04375e6a484"
+  },
+  "architecture_team_sha256": "ced24fb585f3f7def95b013caeedb1913a630242951b199cdc7445e7491d6193",
+  "attempt": 3,
+  "attempt_evaluator_log": "units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353/evaluator.log",
+  "attempt_evidence": "units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353/evidence.json",
+  "attempt_generation_report": "units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353/generation_report.json",
+  "completed_at": "2026-09-13T06:02:43.728807+00:00",
+  "evaluator_elapsed_seconds": 3.191,
+  "evaluator_log_sha256": "11a791028b27ef3970a0cb8e4a536a3ca59f8bdb06051f1e11b4d7dc1f20d963",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p02_flappy_bird_game/cpp/attempts/0003_seed_1192725353/p02_flappy_bird_game_cpp/p02_flappy_bird_game_cpp",
+  "generated_repository_tree_sha256": "e2d040aa189501202d472665d813df5adeb01e9c26cff3d91e42a55a049bd4b6",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1192725353,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "0d39c25337141fd3509df8e58238334366c4be34ebb9e885741fd1c39c6848c2",
+  "initial_repository_tree_sha256": "789c1efa82bb2d855bc96a93855d72b96f359cd2e3148d56d0a7055da274e1ea",
+  "passed": true,
+  "rng_seed": 1192725353,
+  "started_at": "2026-09-13T05:56:42.587411+00:00",
+  "truncated_files": [],
+  "unit_id": "p02_flappy_bird_game_cpp",
+  "valid_for_current_architecture": true
+}

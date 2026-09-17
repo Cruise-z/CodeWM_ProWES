@@ -1,0 +1,55 @@
+===== BEGIN @ 20260913_155348 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260913_155348
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348/host_wrapper_20260913_155348.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          127.0.0.1,::1,localhost
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python -> CodeWM-DT:/workspace/proj_20260913_155348
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+..                                                                       [100%]
+2 passed in 0.02s
+>>> Packaging Python project into zipapp
+>>> Python packaged artifact:
+/workspace/proj_20260913_155348/DTResults/artifacts/proj_20260913_155348.pyz
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: PYTHONUNBUFFERED=1 python -u  '/workspace/proj_20260913_155348/DTResults/artifacts/proj_20260913_155348.pyz'
+[INFO] Runtime output is captured in: /workspace/proj_20260913_155348/DTResults/runtime/python.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log is empty: /workspace/proj_20260913_155348/DTResults/runtime/python.log
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":0,"output_lines":0,"max_same_line":0,"max_consecutive_same_line":0,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260913_155348/DTResults/artifacts
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/python/attempts/0002_seed_100489887/p03_game_2048_python/p03_game_2048_python/DTResults/out_20260913_155348/host_wrapper_20260913_155348.log

@@ -1,0 +1,150 @@
+===== BEGIN @ 20260914_214855 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260914_214855
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855/host_wrapper_20260914_214855.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          127.0.0.1,localhost,::1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python -> CodeWM-DT:/workspace/proj_20260914_214855
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+.F.F                                                                     [100%]
+=================================== FAILURES ===================================
+____________________________ test_validation_errors ____________________________
+
+    def test_validation_errors() -> None:
+        """Test URL and format validation errors."""
+        # Test invalid URL schemes
+        try:
+>           validate_url("ftp://example.com/file")
+
+tests/test_main.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'ftp://example.com/file'
+
+    def validate_url(url: str) -> str:
+        """Validate a URL string.
+    
+        Args:
+            url: The URL to validate.
+    
+        Returns:
+            The validated URL string with surrounding whitespace stripped.
+    
+        Raises:
+            InvalidURLError: If the URL is invalid.
+        """
+        if not isinstance(url, str):
+            raise InvalidURLError("URL must be a string")
+    
+        # Strip surrounding whitespace
+        stripped = url.strip()
+        if not stripped:
+            raise InvalidURLError("URL cannot be empty or only whitespace")
+    
+        # Check for embedded whitespace
+        if any(char.isspace() for char in stripped):
+            raise InvalidURLError("URL cannot contain embedded whitespace")
+    
+        # Parse the URL
+        parsed = urllib.parse.urlparse(stripped)
+        if parsed.scheme not in ("http", "https"):
+>           raise InvalidURLError("URL must have http or https scheme")
+E           NameError: name 'InvalidURLError' is not defined
+
+video_downloader/url.py:33: NameError
+___________________________ test_queue_cancellation ____________________________
+
+    def test_queue_cancellation() -> None:
+        """Test synchronous queue cancellation fixture."""
+        # Setup
+        mapping = {"a": (12, 4), "b": (8, 4)}
+        adapter = FakeTransferAdapter(mapping)
+        queue = DownloadQueue(adapter)
+    
+        # Enqueue two requests
+>       job_a = queue.enqueue(DownloadRequest("a", "mp4"))
+
+tests/test_main.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+video_downloader/request.py:25: in __init__
+    self._url = validate_url(url)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = 'a'
+
+    def validate_url(url: str) -> str:
+        """Validate a URL string.
+    
+        Args:
+            url: The URL to validate.
+    
+        Returns:
+            The validated URL string with surrounding whitespace stripped.
+    
+        Raises:
+            InvalidURLError: If the URL is invalid.
+        """
+        if not isinstance(url, str):
+            raise InvalidURLError("URL must be a string")
+    
+        # Strip surrounding whitespace
+        stripped = url.strip()
+        if not stripped:
+            raise InvalidURLError("URL cannot be empty or only whitespace")
+    
+        # Check for embedded whitespace
+        if any(char.isspace() for char in stripped):
+            raise InvalidURLError("URL cannot contain embedded whitespace")
+    
+        # Parse the URL
+        parsed = urllib.parse.urlparse(stripped)
+        if parsed.scheme not in ("http", "https"):
+>           raise InvalidURLError("URL must have http or https scheme")
+E           NameError: name 'InvalidURLError' is not defined
+
+video_downloader/url.py:33: NameError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_validation_errors - NameError: name 'InvalidU...
+FAILED tests/test_main.py::test_queue_cancellation - NameError: name 'Invalid...
+2 failed, 2 passed in 0.04s
+[WARN] Evaluation failed with exit code: 1
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0010_seed_826734193/p13_video_downloader_python/p13_video_downloader_python/DTResults/out_20260914_214855/host_wrapper_20260914_214855.log

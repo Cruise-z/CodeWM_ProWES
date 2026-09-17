@@ -1,0 +1,18 @@
+Processed sheet with 3 rows
+Aggregation result: sum=451.5, avg=150.500000
+Processing Report:
+Processing Report:
+  Rows read: 3
+  Rows kept: 3
+  Rows dropped: 2
+  Invalid cells: 0
+  Missing cells: 0
+  Operations:
+    - Filtered rows
+    - Sorted rows by Age
+    - Aggregated numeric column 'Amount': valid=3, missing=0, invalid=0, sum=451.50, avg=150.50
+Exported CSV:
+Name,Age,Amount
+John,25,100.50
+Alice,28,150.25
+Jane,"",200.75

@@ -1,0 +1,1 @@
+{'width': 10, 'height': 10, 'snake': [(7, 5)], 'food': (1, 1), 'score': 0, 'over': False, 'direction': 'RIGHT'}

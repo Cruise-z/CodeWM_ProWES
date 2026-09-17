@@ -1,0 +1,67 @@
+classDiagram
+    class ReleaseState {
+        <<enum>>
+        DRAFT
+        REVIEW
+        PUBLISHED
+    }
+    class Version {
+        +Version(int number, String renderedText)
+        +int getNumber()
+        +String getRenderedText()
+        +boolean equals(Object)
+        +int hashCode()
+        +String toString()
+    }
+    class Template {
+        -String name
+        -String content
+        +Template(String name, String content)
+        +String getName()
+        +String getContent()
+        +String applyCustomFields(Map~String,String~ fields)
+    }
+    class Validator {
+        +static boolean validateHeadline(String text)
+        +static boolean validateBody(String text)
+        +static boolean validateContact(String text)
+    }
+    class PressRelease {
+        -String id
+        -String headline
+        -String body
+        -String contact
+        -Template template
+        -Map~String,String~ customFields
+        -ReleaseState state
+        -Set~String~ tags
+        -List~Version~ versionHistory
+        +PressRelease(String id, String headline, String body, String contact, Template template, Map~String,String~ customFields)
+        +String getId()
+        +String getHeadline()
+        +String getBody()
+        +String getContact()
+        +ReleaseState getState()
+        +boolean validate()
+        +void submitForReview()
+        +void publish()
+        +void addTag(String tag)
+        +List~String~ getTags()
+        +String renderPlainText()
+        +List~Version~ getVersionHistory()
+    }
+    class TaggingSystem {
+        +static List~PressRelease~ searchByTag(List~PressRelease~ releases, String tag)
+    }
+    class RenderService {
+        +static String toPlainText(PressRelease release)
+    }
+    class Main {
+        +static void main(String[] args)
+    }
+
+    PressRelease --> ReleaseState
+    PressRelease --> Template
+    PressRelease --> Version
+    TaggingSystem --> PressRelease
+    RenderService --> PressRelease

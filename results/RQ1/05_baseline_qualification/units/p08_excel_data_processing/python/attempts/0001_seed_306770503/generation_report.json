@@ -1,0 +1,158 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 8,
+  "expected_file_count": 8,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 66,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "requirements.txt",
+      "finish_reason": "stop",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "705db6b95d2c6fd143889883a4dc171c2b09539f57d8b4985ca51b9e49d5b11c",
+      "response_id": "chatcmpl-1789393119334",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 17,
+        "prompt_tokens": 8683,
+        "total_tokens": 8700
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 5590,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "excel_processor/model.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "0beea512ff90a550a881dbe3726ad68332e256adf604099051a600875ee946a8",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "2a70483209272fba63183bfd2b2b74eebed6a8a033f548eae5ddd683cbd0d2b9",
+      "response_id": "chatcmpl-1789393194783",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 1193,
+        "prompt_tokens": 8701,
+        "total_tokens": 9894
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 3277,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "excel_processor/operations.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "e8f47adc918ad973b69c5bb23a0428373369683580a07b2505a84e12f03cb65f",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c21adf7bf7d583cd37bb48492ed58cf7192c202ecf431bcbc188e482b9b9cbed",
+      "response_id": "chatcmpl-1789393241914",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 729,
+        "prompt_tokens": 9892,
+        "total_tokens": 10621
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 2041,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "excel_processor/csv_io.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "e001277a15055583291a05f95ce1bfdbf258cd6fd319d8489ca3ac8eb5bda35b",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "908cceb2eb2bdbcba03bb758db12a60855976e1a434ad896e5cd201e891c0599",
+      "response_id": "chatcmpl-1789393272372",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 467,
+        "prompt_tokens": 10617,
+        "total_tokens": 11084
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 1221,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "excel_processor/report.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "b93b49aa520211347e9d9e8872a0c55a3d3fb9f0e31219978ae09293a77645fb",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "d4ef7046596022db20e85fc07b9eeee36f8ab26ceb0f91388f853eeff047bbcb",
+      "response_id": "chatcmpl-1789393289647",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 255,
+        "prompt_tokens": 11077,
+        "total_tokens": 11332
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 619,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "excel_processor/__init__.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "2fcc8d255b95a987d54734bfd31ddc1924c2bc3a144ff3cc460a8df3a61370b5",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "9fe7b6fbb7eaaf3b6af52021217e03ed415d4389b008b650b2199e49ad82055e",
+      "response_id": "chatcmpl-1789393300467",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 150,
+        "prompt_tokens": 11334,
+        "total_tokens": 11484
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 1747,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "Main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "11ccc7413fab1639bc67174ce8eb5b9a7be149c62f34395fb90dc8f818728863",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "17f555191feed9530c38ed5d1228b4a7255ee1085f6520b4b9036b773219bbcb",
+      "response_id": "chatcmpl-1789393325617",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 383,
+        "prompt_tokens": 11468,
+        "total_tokens": 11851
+      }
+    },
+    {
+      "action_index": 8,
+      "content_character_count": 2385,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "tests/test_main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "2e3e41b6ba9b21f30909ab9e016913a20ceb3689e4a765b430fae501b8f09ef6",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "c306352a4ed2c4be640719d4140ebaee58380183281d3643553a0cebafa2f20d",
+      "response_id": "chatcmpl-1789393363536",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 584,
+        "prompt_tokens": 11853,
+        "total_tokens": 12437
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8001/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 8,
+  "truncated_files": []
+}

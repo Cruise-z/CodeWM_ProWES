@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant Main as Main.cpp
+    participant G as Game
+    participant M as Move
+    participant S as Spawner
+    Main->>G: Game g; g.reset()
+    Note right of G: Reset clears board and calls S.initialFill()
+    G->>S: initialFill(board)
+    S-->>G: board with two 2s (deterministic)
+    Main->>G: g.move(Left)
+    G->>M: applyMove(board, Left)
+    M-->>G: BoardMoveResult{moved, scoreGained}
+    alt moved == true
+        G->>S: spawn(board)
+        S-->>G: spawn success/failure
+        G->>G: update score, check win/loss via board.maxTile and M.hasLegalMove
+    else moved == false
+        G->>G: no spawn, no score change
+    end
+    Main-->>Main: print board/score/state and exit

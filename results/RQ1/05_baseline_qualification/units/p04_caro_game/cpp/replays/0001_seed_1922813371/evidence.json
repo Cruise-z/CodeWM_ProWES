@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "bc2d07912f185a5dedb8b431a916ed059a1e19091dce4e37bf99149465a98380",
+  "architecture_team_sha256": "fd330e36d71a5ce72db57a15088c1b3196b620a3efb3f93baf9314a424c5925f",
+  "completed_at": "2026-09-13T13:01:55.942704+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 3.089,
+  "evaluator_log_sha256": "0ebff8db31269b483fdf5fbc7df144d70441dc7b1e8bf9c54db5c00aee203179",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p04_caro_game/cpp/replays/0001_seed_1922813371/p04_caro_game_cpp/p04_caro_game_cpp",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1922813371,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "71d15270cfca2a1a7a3c823e60293cc359e1e4a70431842d3772acdd0e389274",
+  "initial_repository_tree_sha256": "553108e7eab6a4db093e04c9f9d1f7434fa4012d12d330c44e0987511f9513a1",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "bc2d07912f185a5dedb8b431a916ed059a1e19091dce4e37bf99149465a98380",
+  "rng_seed": 1922813371,
+  "started_at": "2026-09-13T12:47:57.590924+00:00",
+  "truncated_files": [],
+  "unit_id": "p04_caro_game_cpp"
+}

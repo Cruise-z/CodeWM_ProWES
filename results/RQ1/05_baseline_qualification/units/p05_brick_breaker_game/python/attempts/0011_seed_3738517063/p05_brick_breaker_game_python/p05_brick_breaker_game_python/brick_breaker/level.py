@@ -1,0 +1,60 @@
+"""Level module for the brick breaker game.
+
+This module defines the Level class and the make_grid_level function
+which creates a grid of bricks based on the game configuration.
+"""
+
+from .config import GameConfig
+from .brick import Brick
+
+
+class Level:
+    """Represents a level in the brick breaker game containing bricks."""
+
+    def __init__(self, bricks: list[Brick]):
+        """Initialize a level with a list of bricks.
+
+        Args:
+            bricks: List of Brick objects in the level
+        """
+        self.bricks = bricks
+
+    def remaining(self) -> int:
+        """Count the number of alive bricks in the level.
+
+        Returns:
+            Number of bricks that are still alive (have durability > 0)
+        """
+        return sum(1 for brick in self.bricks if brick.alive())
+
+
+def make_grid_level(config: GameConfig) -> Level:
+    """Create a grid of bricks based on the game configuration.
+
+    Args:
+        config: Game configuration containing brick layout parameters
+
+    Returns:
+        Level object containing the grid of bricks
+    """
+    # Calculate brick width if not provided
+    if config.brick_width is None:
+        total_width = config.width - 2 * config.brick_padding
+        brick_width = (total_width - (config.brick_cols - 1) * config.brick_padding) / config.brick_cols
+    else:
+        brick_width = config.brick_width
+    
+    # Create bricks in a grid pattern
+    bricks = []
+    for row in range(config.brick_rows):
+        for col in range(config.brick_cols):
+            # Calculate brick position
+            x = config.brick_padding + col * (brick_width + config.brick_padding)
+            y = config.top_margin + row * (config.brick_height + config.brick_padding)
+            
+            # Create brick with appropriate durability
+            durability = 1  # Default durability
+            brick = Brick(x, y, brick_width, config.brick_height, durability)
+            bricks.append(brick)
+    
+    return Level(bricks)

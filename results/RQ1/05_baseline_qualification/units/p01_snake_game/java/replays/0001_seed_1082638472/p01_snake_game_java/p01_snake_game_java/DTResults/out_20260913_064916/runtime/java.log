@@ -1,0 +1,16 @@
+Initial state:
+GameSnapshot{width=10, height=10, body=[Position{x=5, y=5}], food=Position{x=6, y=3}, score=0, gameOver=false, direction=UP}
+
+Gameplay:
+Tick result: MOVED
+State after tick:
+GameSnapshot{width=10, height=10, body=[Position{x=5, y=4}], food=Position{x=6, y=3}, score=0, gameOver=false, direction=UP}
+Tick result: MOVED
+State after tick:
+GameSnapshot{width=10, height=10, body=[Position{x=6, y=4}], food=Position{x=6, y=3}, score=0, gameOver=false, direction=RIGHT}
+Tick result: MOVED
+State after tick:
+GameSnapshot{width=10, height=10, body=[Position{x=6, y=5}], food=Position{x=6, y=3}, score=0, gameOver=false, direction=DOWN}
+
+Final state:
+GameSnapshot{width=10, height=10, body=[Position{x=6, y=5}], food=Position{x=6, y=3}, score=0, gameOver=false, direction=DOWN}

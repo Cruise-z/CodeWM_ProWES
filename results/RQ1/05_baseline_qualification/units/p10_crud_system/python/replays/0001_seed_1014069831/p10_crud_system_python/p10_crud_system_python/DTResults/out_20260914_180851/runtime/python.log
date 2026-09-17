@@ -1,0 +1,5 @@
+CRUD demonstration completed successfully.
+Created item: Item(id=1, name='Alpha', created_at=100.0, updated_at=100.0)
+Updated item: Item(id=1, name='Alpha2', created_at=100.0, updated_at=110.0)
+Search result page: Page(items=[Item(id=1, name='Alpha2', created_at=100.0, updated_at=110.0)], total=1, limit=2, offset=0)
+Audit events: [AuditEvent(op='create', item_id=1, item_name='Alpha', ts=100.0), AuditEvent(op='update', item_id=1, item_name='Alpha2', ts=110.0), AuditEvent(op='delete', item_id=1, item_name='Alpha2', ts=120.0)]

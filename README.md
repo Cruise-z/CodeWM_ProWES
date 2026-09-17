@@ -44,7 +44,7 @@ experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 | `RQ1/` | Latest logits-bias implementation, task specifications, rendered Stage-0 prompts, serialized architecture checkpoints, initial repositories, and evaluator. |
 | `RQ2/` | Fresh-training, rule attack, MBXP, LLM+RAG, detector, and statistics source code. |
 | `RQ3/` | Timing hooks plus an explicit disclosure of the missing raw timing bundle. |
-| `results/RQ1/` | Original RQ1 archives plus expanded applicability and detectability evidence. |
+| `results/RQ1/` | Complete baseline qualification evidence plus expanded applicability and detectability evidence. |
 | `results/RQ2/` | Formal RQ2 datasets/splits, checkpoints, logs, raw attacks, predictions, MBXP executions, LLM manifests/responses, statistics, tables, and figures. |
 | `paper_reproduction/` | Reviewer entry points for rebuilding paper outputs. |
 | `ARTIFACT_MANIFEST.csv/json` | Machine-readable file-to-RQ/evidence map. |
@@ -56,11 +56,13 @@ missing observation was synthesized.
 
 ## Scope and important boundaries
 
-- RQ1 contains 9,141 point-level applicability rows, 298 batch summaries, four
-  aggregate detectability logs, and reproducible derived tables/figures. The
-  supplied bundles do not contain per-point Docker logs/repository snapshots,
-  the complete baseline-attempt/replay ledger, or per-sample detector scores;
-  those portions of the ideal evidence chain remain explicitly incomplete.
+- RQ1 contains all 88 current-epoch baseline attempts, 42 accepted repository
+  snapshots, 42 verified replays, 9,141 point-level applicability rows, 298
+  batch summaries, four aggregate detectability logs, and reproducible derived
+  tables/figures. The strength-sweep bundles do not contain their referenced
+  per-point Docker logs/repository snapshots, and the detectability bundle does
+  not contain per-sample detector scores; those portions remain explicitly
+  incomplete.
 - RQ2 is complete for the paper's formal fresh-checkpoint, rule-based, MBXP,
   and 1,000-request LLM+RAG analyses. The supplied CSN training corpora were
   not present in the release workspace; stable test observations and cohort
@@ -91,6 +93,8 @@ LFS objects.
 
 RQ1:
 
+- 88 baseline generation attempts: 42 accepted and 46 failed attempts.
+- 42 accepted canonical repositories and 42 successful same-seed/hash replays.
 - 9,141 applicability points: 9,068 evaluated and 73 explicitly excluded,
   across 302 parameter runs.
 - 298 retained batch summaries.

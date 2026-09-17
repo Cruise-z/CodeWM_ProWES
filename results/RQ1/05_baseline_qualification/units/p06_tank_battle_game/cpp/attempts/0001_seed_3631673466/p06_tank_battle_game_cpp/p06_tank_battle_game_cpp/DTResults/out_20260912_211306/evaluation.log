@@ -1,0 +1,249 @@
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260912_211306/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 12%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Entities.cpp.o
+[ 37%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Game.cpp.o
+[ 37%] Building CXX object CMakeFiles/tankbattle_core.dir/src/Geometry.cpp.o
+In file included from /workspace/proj_20260912_211306/include/Game.h:5,
+                 from /workspace/proj_20260912_211306/src/Game.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h: In member function ‘bool Arena::isObstacle(Point) const’:
+/workspace/proj_20260912_211306/include/Entities.h:52:30: error: no match for ‘operator==’ (operand types are ‘const Point’ and ‘Point’)
+   52 |             if (obstacle.pos == point) {
+      |                 ~~~~~~~~~~~~ ^~ ~~~~~
+      |                          |      |
+      |                          |      Point
+      |                          const Point
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h: In member function ‘bool Arena::isObstacle(Point) const’:
+/workspace/proj_20260912_211306/include/Entities.h:52:30: error: no match for ‘operator==’ (operand types are ‘const Point’ and ‘Point’)
+   52 |             if (obstacle.pos == point) {
+      |                 ~~~~~~~~~~~~ ^~ ~~~~~
+      |                          |      |
+      |                          |      Point
+      |                          const Point
+/workspace/proj_20260912_211306/src/Entities.cpp: At global scope:
+/workspace/proj_20260912_211306/src/Entities.cpp:3:6: error: redefinition of ‘bool Arena::inBounds(Point) const’
+    3 | bool Arena::inBounds(Point point) const {
+      |      ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:41:10: note: ‘bool Arena::inBounds(Point) const’ previously defined here
+   41 |     bool inBounds(Point point) const {
+      |          ^~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:7:6: error: redefinition of ‘bool Arena::isObstacle(Point) const’
+    7 | bool Arena::isObstacle(Point point) const {
+      |      ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:50:10: note: ‘bool Arena::isObstacle(Point) const’ previously defined here
+   50 |     bool isObstacle(Point point) const {
+      |          ^~~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:16:6: error: redefinition of ‘void Arena::clearObstacles()’
+   16 | void Arena::clearObstacles() {
+      |      ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:62:10: note: ‘void Arena::clearObstacles()’ previously defined here
+   62 |     void clearObstacles() {
+      |          ^~~~~~~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:20:6: error: redefinition of ‘bool Arena::addObstacle(Point)’
+   20 | bool Arena::addObstacle(Point pos) {
+      |      ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:71:10: note: ‘bool Arena::addObstacle(Point)’ previously defined here
+   71 |     bool addObstacle(Point pos) {
+      |          ^~~~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:28:13: error: redefinition of ‘const Size& Arena::size() const’
+   28 | const Size& Arena::size() const {
+      |             ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:83:17: note: ‘const Size& Arena::size() const’ previously defined here
+   83 |     const Size& size() const {
+      |                 ^~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:32:30: error: redefinition of ‘const std::vector<Obstacle>& Arena::obstacles() const’
+   32 | const std::vector<Obstacle>& Arena::obstacles() const {
+      |                              ^~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:91:34: note: ‘const std::vector<Obstacle>& Arena::obstacles() const’ previously defined here
+   91 |     const std::vector<Obstacle>& obstacles() const {
+      |                                  ^~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:36:6: error: redefinition of ‘void Tank::rotateLeft()’
+   36 | void Tank::rotateLeft() {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:121:10: note: ‘void Tank::rotateLeft()’ previously defined here
+  121 |     void rotateLeft() {
+      |          ^~~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:40:6: error: redefinition of ‘void Tank::rotateRight()’
+   40 | void Tank::rotateRight() {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:128:10: note: ‘void Tank::rotateRight()’ previously defined here
+  128 |     void rotateRight() {
+      |          ^~~~~~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:44:6: error: redefinition of ‘bool Tank::move(const Arena&)’
+   44 | bool Tank::move(const Arena& arena) {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:137:10: note: ‘bool Tank::move(const Arena&)’ previously defined here
+  137 |     bool move(const Arena& arena) {
+      |          ^~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:53:5: error: redefinition of ‘int Tank::id() const’
+   53 | int Tank::id() const {
+      |     ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:150:9: note: ‘int Tank::id() const’ previously defined here
+  150 |     int id() const {
+      |         ^~
+/workspace/proj_20260912_211306/src/Entities.cpp:57:14: error: redefinition of ‘const Point& Tank::pos() const’
+   57 | const Point& Tank::pos() const {
+      |              ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:158:18: note: ‘const Point& Tank::pos() const’ previously defined here
+  158 |     const Point& pos() const {
+      |                  ^~~
+/workspace/proj_20260912_211306/src/Entities.cpp:61:11: error: redefinition of ‘Direction Tank::dir() const’
+   61 | Direction Tank::dir() const {
+      |           ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:166:15: note: ‘Direction Tank::dir() const’ previously defined here
+  166 |     Direction dir() const {
+      |               ^~~
+/workspace/proj_20260912_211306/src/Entities.cpp:65:5: error: redefinition of ‘int Tank::health() const’
+   65 | int Tank::health() const {
+      |     ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:174:9: note: ‘int Tank::health() const’ previously defined here
+  174 |     int health() const {
+      |         ^~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:69:6: error: redefinition of ‘bool Tank::alive() const’
+   69 | bool Tank::alive() const {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:182:10: note: ‘bool Tank::alive() const’ previously defined here
+  182 |     bool alive() const {
+      |          ^~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:73:6: error: redefinition of ‘void Tank::damage()’
+   73 | void Tank::damage() {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:189:10: note: ‘void Tank::damage()’ previously defined here
+  189 |     void damage() {
+      |          ^~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:80:6: error: redefinition of ‘void Tank::reset(Point, Direction, int)’
+   80 | void Tank::reset(Point pos, Direction dir, int health) {
+      |      ^~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:202:10: note: ‘void Tank::reset(Point, Direction, int)’ previously defined here
+  202 |     void reset(Point pos, Direction dir, int health = 3) {
+      |          ^~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:87:6: error: redefinition of ‘void Projectile::step()’
+   87 | void Projectile::step() {
+      |      ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:233:10: note: ‘void Projectile::step()’ previously defined here
+  233 |     void step() {
+      |          ^~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:93:5: error: redefinition of ‘int Projectile::ownerId() const’
+   93 | int Projectile::ownerId() const {
+      |     ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:243:9: note: ‘int Projectile::ownerId() const’ previously defined here
+  243 |     int ownerId() const {
+      |         ^~~~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:97:14: error: redefinition of ‘const Point& Projectile::pos() const’
+   97 | const Point& Projectile::pos() const {
+      |              ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:251:18: note: ‘const Point& Projectile::pos() const’ previously defined here
+  251 |     const Point& pos() const {
+      |                  ^~~
+/workspace/proj_20260912_211306/src/Entities.cpp:101:11: error: redefinition of ‘Direction Projectile::dir() const’
+  101 | Direction Projectile::dir() const {
+      |           ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:259:15: note: ‘Direction Projectile::dir() const’ previously defined here
+  259 |     Direction dir() const {
+      |               ^~~
+/workspace/proj_20260912_211306/src/Entities.cpp:105:6: error: redefinition of ‘bool Projectile::alive() const’
+  105 | bool Projectile::alive() const {
+      |      ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:267:10: note: ‘bool Projectile::alive() const’ previously defined here
+  267 |     bool alive() const {
+      |          ^~~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:109:6: error: redefinition of ‘void Projectile::kill()’
+  109 | void Projectile::kill() {
+      |      ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:274:10: note: ‘void Projectile::kill()’ previously defined here
+  274 |     void kill() {
+      |          ^~~~
+/workspace/proj_20260912_211306/src/Entities.cpp:113:6: error: redefinition of ‘void Projectile::reset(int, Point, Direction)’
+  113 | void Projectile::reset(int ownerId, Point pos, Direction dir) {
+      |      ^~~~~~~~~~
+In file included from /workspace/proj_20260912_211306/src/Entities.cpp:1:
+/workspace/proj_20260912_211306/include/Entities.h:284:10: note: ‘void Projectile::reset(int, Point, Direction)’ previously defined here
+  284 |     void reset(int ownerId, Point pos, Direction dir) {
+      |          ^~~~~
+/workspace/proj_20260912_211306/src/Game.cpp: In member function ‘void Game::tick()’:
+/workspace/proj_20260912_211306/src/Game.cpp:90:66: error: no match for ‘operator==’ (operand types are ‘const Point’ and ‘Point’)
+   90 |                         if (otherTank.alive() && otherTank.pos() == muzzlePos) {
+      |                                                  ~~~~~~~~~~~~~~~ ^~ ~~~~~~~~~
+      |                                                               |     |
+      |                                                               |     Point
+      |                                                               const Point
+/workspace/proj_20260912_211306/src/Game.cpp:101:27: error: jump to case label
+  101 |             case Command::None:
+      |                           ^~~~
+/workspace/proj_20260912_211306/src/Game.cpp:85:23: note:   crosses initialization of ‘Point muzzlePos’
+   85 |                 Point muzzlePos = Geometry::advance(tank.pos(), tank.dir());
+      |                       ^~~~~~~~~
+/workspace/proj_20260912_211306/src/Game.cpp:117:14: error: ‘remove_if’ is not a member of ‘std’; did you mean ‘remove_cv’?
+  117 |         std::remove_if(projectiles_.begin(), projectiles_.end(),
+      |              ^~~~~~~~~
+      |              remove_cv
+gmake[2]: *** [CMakeFiles/tankbattle_core.dir/build.make:90: CMakeFiles/tankbattle_core.dir/src/Entities.cpp.o] Error 1
+/workspace/proj_20260912_211306/src/Game.cpp:137:28: error: no match for ‘operator==’ (operand types are ‘const Point’ and ‘Point’)
+  137 |             if (tank.pos() == projPos && tank.id() != ownerId) {
+      |                 ~~~~~~~~~~ ^~ ~~~~~~~
+      |                         |     |
+      |                         |     Point
+      |                         const Point
+gmake[2]: *** Waiting for unfinished jobs....
+/workspace/proj_20260912_211306/src/Game.cpp:152:14: error: ‘remove_if’ is not a member of ‘std’; did you mean ‘remove_cv’?
+  152 |         std::remove_if(projectiles_.begin(), projectiles_.end(),
+      |              ^~~~~~~~~
+      |              remove_cv
+/workspace/proj_20260912_211306/src/Game.cpp:161:10: error: ‘size_t’ was not declared in this scope; did you mean ‘std::size_t’?
+  161 |     for (size_t i = 0; i < tanks_.size(); ++i) {
+      |          ^~~~~~
+      |          std::size_t
+In file included from /usr/include/c++/11/bits/stl_algobase.h:59,
+                 from /usr/include/c++/11/vector:60,
+                 from /workspace/proj_20260912_211306/include/Game.h:4,
+                 from /workspace/proj_20260912_211306/src/Game.cpp:1:
+/usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:280:33: note: ‘std::size_t’ declared here
+  280 |   typedef __SIZE_TYPE__         size_t;
+      |                                 ^~~~~~
+/workspace/proj_20260912_211306/src/Game.cpp:161:24: error: ‘i’ was not declared in this scope
+  161 |     for (size_t i = 0; i < tanks_.size(); ++i) {
+      |                        ^
+gmake[2]: *** [CMakeFiles/tankbattle_core.dir/build.make:104: CMakeFiles/tankbattle_core.dir/src/Game.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/tankbattle_core.dir/all] Error 2
+gmake: *** [Makefile:101: all] Error 2

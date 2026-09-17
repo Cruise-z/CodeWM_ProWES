@@ -1,0 +1,33 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 4,
+    "architecture_team_sha256": "83470ec0963573472d5b4d87fbfa6614e29466a9a4e7fb10ab31cbc86f357dbc",
+    "initial_repository_tree_sha256": "d4df2bd8474f2b79674e7e963e8ea20b078b3816051193e47472146e8e7d38a0",
+    "prompt_sha256": "4f9de3672c1bd93f57b7ba00faf2c46b5b2bce54dbe86a0891cd3942cdee1b81"
+  },
+  "architecture_team_sha256": "83470ec0963573472d5b4d87fbfa6614e29466a9a4e7fb10ab31cbc86f357dbc",
+  "attempt": 12,
+  "completed_at": "2026-09-14T21:59:13.320550+00:00",
+  "evaluator_elapsed_seconds": 2.348,
+  "evaluator_log_sha256": "8baa534374cb9c43f70a7013f1504f447e7bad58f3f48aeb5aa416de9ca3ad57",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/python/attempts/0012_seed_872520481/p13_video_downloader_python/p13_video_downloader_python",
+  "generated_repository_tree_sha256": "79264d4b05eb1cd774d810c2fc8c66f3785d182e40aac13e7e7e168c932f5cf4",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 872520481,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "22a080eeea8339db30584d6ab9ddf79b705350edca07ad8be78404b8044f3fc0",
+  "initial_repository_tree_sha256": "d4df2bd8474f2b79674e7e963e8ea20b078b3816051193e47472146e8e7d38a0",
+  "passed": true,
+  "rng_seed": 872520481,
+  "started_at": "2026-09-14T21:54:08.039707+00:00",
+  "truncated_files": [],
+  "unit_id": "p13_video_downloader_python"
+}

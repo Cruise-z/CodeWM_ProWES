@@ -1,0 +1,33 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 7,
+    "architecture_team_sha256": "306fbfbd9341437f7f9047d8a21c3b01a199fa95a267f35e2c149a2b60e96ee9",
+    "initial_repository_tree_sha256": "c1598dd12b3951e34e1f1adf712022e597a4c2949fa6eca2c67f65379042efeb",
+    "prompt_sha256": "f7de564e90847b25d3b0fc3e0878edaefdfe1948e33c41b2f0cd49b7c9f00df9"
+  },
+  "architecture_team_sha256": "306fbfbd9341437f7f9047d8a21c3b01a199fa95a267f35e2c149a2b60e96ee9",
+  "attempt": 1,
+  "completed_at": "2026-09-14T16:08:18.357075+00:00",
+  "evaluator_elapsed_seconds": 10.256,
+  "evaluator_log_sha256": "161ee765ecc4ee4c69aa1d1c01ab75116cf7d180f16dc56ad24f847153e3135c",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/java/attempts/0001_seed_290543147/p08_excel_data_processing_java/p08_excel_data_processing_java",
+  "generated_repository_tree_sha256": "34299218afed51c58d11ec3dbd88b0fc9981130a4dc29dab8730ec3dfa55238b",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 290543147,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "7dc49362e29c44e6b922f099c4b86a51a492616cf8f5b89fb3979eca0281035b",
+  "initial_repository_tree_sha256": "c1598dd12b3951e34e1f1adf712022e597a4c2949fa6eca2c67f65379042efeb",
+  "passed": true,
+  "rng_seed": 290543147,
+  "started_at": "2026-09-14T16:03:40.758964+00:00",
+  "truncated_files": [],
+  "unit_id": "p08_excel_data_processing_java"
+}

@@ -1,0 +1,65 @@
+===== BEGIN @ 20260914_134243 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260914_134243
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243/host_wrapper_20260914_134243.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          localhost,::1,127.0.0.1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python -> CodeWM-DT:/workspace/proj_20260914_134243
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+...                                                                      [100%]
+3 passed in 0.02s
+>>> Packaging Python project into zipapp
+>>> Python packaged artifact:
+/workspace/proj_20260914_134243/DTResults/artifacts/proj_20260914_134243.pyz
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: PYTHONUNBUFFERED=1 python -u  '/workspace/proj_20260914_134243/DTResults/artifacts/proj_20260914_134243.pyz'
+[INFO] Runtime output is captured in: /workspace/proj_20260914_134243/DTResults/runtime/python.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260914_134243/DTResults/runtime/python.log
+----- BEGIN runtime log tail (40 lines) -----
+{'filtered_rows': [[3, 'c'], [2, 'b']], 'sorted_rows': [[1], [2], [3]], 'aggregated_column_0': {'count': 4, 'missing': 1, 'numeric_count': 3, 'sum': 6, 'min': 1, 'max': 3}, 'report': {'row_count': 4, 'column_count': 2, 'missing_cells': 2}}
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":240,"output_lines":1,"max_same_line":1,"max_consecutive_same_line":1,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260914_134243/DTResults/artifacts
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/python/attempts/0001_seed_306770503/p08_excel_data_processing_python/p08_excel_data_processing_python/DTResults/out_20260914_134243/host_wrapper_20260914_134243.log

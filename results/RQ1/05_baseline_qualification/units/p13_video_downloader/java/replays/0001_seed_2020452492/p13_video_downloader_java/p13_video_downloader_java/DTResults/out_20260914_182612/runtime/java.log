@@ -1,0 +1,19 @@
+Task 0 Status: RUNNING, Progress: 10%
+Task 1 Status: RUNNING, Progress: 10%
+---
+Task 0 Status: RUNNING, Progress: 20%
+Task 1 Status: RUNNING, Progress: 20%
+---
+Task 0 Status: RUNNING, Progress: 30%
+Task 1 Status: RUNNING, Progress: 30%
+---
+Task 0 Status: RUNNING, Progress: 40%
+Task 1 Status: RUNNING, Progress: 40%
+---
+Task 0 Status: RUNNING, Progress: 50%
+Task 1 Status: RUNNING, Progress: 50%
+---
+Task 0 Status after cancellation: CANCELLED
+Task 1 Final Status: RUNNING
+Task 0 Output Name: My Video File.mp4
+Task 1 Output Name: Another Video File.txt.webm

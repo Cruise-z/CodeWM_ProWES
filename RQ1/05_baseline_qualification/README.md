@@ -4,5 +4,11 @@ Implementation: `../source/reproduct/campaign.py`.
 
 The code enforces complete generation, no truncation, evaluator return code 0,
 architecture-epoch scoping, accepted-seed capture, and same-seed/hash replay.
-Per-attempt observations and accepted repositories must be added to
-`../../results/RQ1/` with the separately prepared RQ1 result bundle.
+The complete final-epoch evidence is released at
+`../../results/RQ1/05_baseline_qualification/`: 88 per-attempt records, 42
+accepted repositories, and 42 verified replays, together with generation
+reports, evaluator logs, hashes, and flattened reviewer indexes.
+
+Run `python3 ../../tools/verify_rq1_evidence.py` from this directory, or
+`python3 tools/verify_rq1_evidence.py` from the artifact root, to validate the
+full ledger and replay chain.

@@ -1,0 +1,538 @@
+{
+  "accepted_count": 42,
+  "accepted_repository_hashes": {
+    "p01_snake_game_cpp": "35102df7bf0d0263f4079d7ced3caf238a9685788b7f85d1742879e0136061ea",
+    "p01_snake_game_java": "489b8bc56e580ef8ef3e618a30a27efaa120a6ab10e90b56a9294e5e9e66aac0",
+    "p01_snake_game_python": "8ce7f443b58d4e22acae98cf115e877be069600932949cb00ce6126baae947f2",
+    "p02_flappy_bird_game_cpp": "e35ac1d9cf6d5ce4d7aa4a5ff1dbd69ba89a2671ce8f112ec0d53509f3362666",
+    "p02_flappy_bird_game_java": "5ebf0bd9abe406aec04f715b18861d18d34c7fd5f37bf1a0d0b540d9d7825dee",
+    "p02_flappy_bird_game_python": "12ef0464c31ff38d596ade645f1752b68ab86703b2602b51318f7bbe3e86e78d",
+    "p03_game_2048_cpp": "7e74c4eacdbe7fd8a30a89cb3c8782b16117ba4ff2132aa458b9174f791468b5",
+    "p03_game_2048_java": "8039ee8715f0a75831a03f39f79680d3b18da505cdfcc0228af3698a5998ed76",
+    "p03_game_2048_python": "bbffa20a26a8edda6016f18736649edf5ac35cbf2aee15f4187cf35164594f8d",
+    "p04_caro_game_cpp": "bc2d07912f185a5dedb8b431a916ed059a1e19091dce4e37bf99149465a98380",
+    "p04_caro_game_java": "ef5bdd54c2ac79257d251740a897f691b4617e2c6614309f628a9011aebdbcff",
+    "p04_caro_game_python": "3e8469ca925c93fc71f38fdb09df72f9ac8d56882437dd585585e9da2bea336d",
+    "p05_brick_breaker_game_cpp": "f35231bc65882a6f9590c139e55b1d83fb78d7d70fe5f3a746796f6f1cf864b8",
+    "p05_brick_breaker_game_java": "eecb2a541b35b9b12e5df069b3d081fda0e482f893df8d76b9a219101173f1d3",
+    "p05_brick_breaker_game_python": "3471219da70c372c6918e6712921c49c61dd70fdf4987fd4250e82a14eb940df",
+    "p06_tank_battle_game_cpp": "22df3b3410b55cdfd0ce1f4eb1c05bc3ec8d881ed964f4cf7cfdf89850301995",
+    "p06_tank_battle_game_java": "199d396717305eb492048a10d67389077232c4dbdbc619bc67ea839c654f0d6a",
+    "p06_tank_battle_game_python": "e16593bf47205d61bbae3047df50beda3a049465c8d8f570ae0a885786604cf1",
+    "p07_calculator_cpp": "a571f97c0b54eec843ada9cad74e1705f51451680c716fd0841fd8455045b592",
+    "p07_calculator_java": "ba11834e7c992028e30c90cc9f9737bda9575ea7fbae96e84b946f82e65a4e4b",
+    "p07_calculator_python": "02838137aa05d4b3bbcd454884191d84a8bc723c92f36bcd3cebaf6c598e036b",
+    "p08_excel_data_processing_cpp": "f549c2fa932677668de0d3955a41eea0911691b643ff69e6552c3697af367ea4",
+    "p08_excel_data_processing_java": "ec7f11f93655c9c2db53994566010208678669ba91dd501edacc818d4de171ab",
+    "p08_excel_data_processing_python": "02190e73e5d915b5ff92d3a6d972128a2ed0b2a3271928bb18ef6a3c284c7526",
+    "p09_qr_code_gen_det_cpp": "26177037d368df03c1dc9921aeb222caf09512b245b92cffe0279f84f031c47f",
+    "p09_qr_code_gen_det_java": "a17171e33bd4f92107f8f954d2d6f3a7221c1bd86efe0331c1ffa6dc9c33144e",
+    "p09_qr_code_gen_det_python": "f44bcad99d14a21d5e59fa5d654a08339a7fc64c316d23ab70738714fd183df7",
+    "p10_crud_system_cpp": "2e9694bad4af240c080784aed00251accd79fad5c8adf48058dc44527f8d2fdc",
+    "p10_crud_system_java": "dd307d38189762dc5148323620a7ff357bf0eacdaaf387282f4a76755fc83499",
+    "p10_crud_system_python": "2720cec94671a817b5e818ed83ac9d9df0dee663dc0c6b2d5ff1973633648ec1",
+    "p11_custom_press_releases_cpp": "519442f780ff3742e3fa37d686b4536501a4894fcfb4543036e4c6512b2f1c0a",
+    "p11_custom_press_releases_java": "d5ba102fb88913da474632c4532b08424495759545bfccd4409839e74c927fac",
+    "p11_custom_press_releases_python": "b7c58d8acb206fed75e01f3020e0d1d2f5062087b2692cf57f40560977abc89f",
+    "p12_video_player_cpp": "f7d4b6a1296dc89f3c2091ecede451ce2bfc6521aaba269884ebdd3f9dfd993b",
+    "p12_video_player_java": "d24796e73716d68d6dc16745b246a6e87c5cdd8db149d84bf8352c23ca6f6a7c",
+    "p12_video_player_python": "7fd3f2fc46a139c2ad8e52ab13797a1e99518758bb5925f1202224bca1aba0a4",
+    "p13_video_downloader_cpp": "68d4a5e9d3694f237851bad0798e85272e101f9fe23959d07788137628d7d6dc",
+    "p13_video_downloader_java": "481cb409e06f670bd969de1383ac37276501959e90d730e6b7a4dbfe66d47c34",
+    "p13_video_downloader_python": "baab6e989ba0f5748153e0dde0ff8af3bcd0cbeb0b9137e454653c5b91bc23d5",
+    "p14_todo_list_app_cpp": "7cba979fa7272c42bb024d2fd85b3b84d0191ca6eb21d0210ded8c54bfba04ee",
+    "p14_todo_list_app_java": "296a4303040ca2979912bcf51eb5131f6ab23484b8fb18f156461fbe9897dad2",
+    "p14_todo_list_app_python": "9dc60b01b214681d8c85635cf28e5b54f130b8b693427245213ba32d1f012755"
+  },
+  "accepted_seeds": {
+    "p01_snake_game_cpp": 666643921,
+    "p01_snake_game_java": 1082638472,
+    "p01_snake_game_python": 3736547328,
+    "p02_flappy_bird_game_cpp": 1192725353,
+    "p02_flappy_bird_game_java": 2540127563,
+    "p02_flappy_bird_game_python": 1298988375,
+    "p03_game_2048_cpp": 1673168053,
+    "p03_game_2048_java": 887850646,
+    "p03_game_2048_python": 100489887,
+    "p04_caro_game_cpp": 1922813371,
+    "p04_caro_game_java": 3365300451,
+    "p04_caro_game_python": 812711061,
+    "p05_brick_breaker_game_cpp": 1300987923,
+    "p05_brick_breaker_game_java": 2697919693,
+    "p05_brick_breaker_game_python": 432197098,
+    "p06_tank_battle_game_cpp": 1423652811,
+    "p06_tank_battle_game_java": 573870900,
+    "p06_tank_battle_game_python": 2408978515,
+    "p07_calculator_cpp": 3978176900,
+    "p07_calculator_java": 1570566783,
+    "p07_calculator_python": 2109135578,
+    "p08_excel_data_processing_cpp": 3698866069,
+    "p08_excel_data_processing_java": 290543147,
+    "p08_excel_data_processing_python": 306770503,
+    "p09_qr_code_gen_det_cpp": 779839335,
+    "p09_qr_code_gen_det_java": 3719859282,
+    "p09_qr_code_gen_det_python": 3206008263,
+    "p10_crud_system_cpp": 252729447,
+    "p10_crud_system_java": 3479630733,
+    "p10_crud_system_python": 1014069831,
+    "p11_custom_press_releases_cpp": 1221104095,
+    "p11_custom_press_releases_java": 2810241787,
+    "p11_custom_press_releases_python": 2037595148,
+    "p12_video_player_cpp": 1700920662,
+    "p12_video_player_java": 400582985,
+    "p12_video_player_python": 769100576,
+    "p13_video_downloader_cpp": 2929423155,
+    "p13_video_downloader_java": 2020452492,
+    "p13_video_downloader_python": 872520481,
+    "p14_todo_list_app_cpp": 3861770267,
+    "p14_todo_list_app_java": 461912478,
+    "p14_todo_list_app_python": 4207199519
+  },
+  "architecture_complete_count": 42,
+  "architecture_model_provenance": {
+    "p01_snake_game_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 11,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p01_snake_game_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 5,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p01_snake_game_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 8,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p02_flappy_bird_game_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p02_flappy_bird_game_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 8,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p02_flappy_bird_game_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 4,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p03_game_2048_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p03_game_2048_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p03_game_2048_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p04_caro_game_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 3,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p04_caro_game_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p04_caro_game_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 4,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p05_brick_breaker_game_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 18,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p05_brick_breaker_game_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 9,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p05_brick_breaker_game_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 9,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p06_tank_battle_game_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 2,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p06_tank_battle_game_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 11,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch10_attempts1_5_reused_same_tank_copy_across_current_and_initial_maps"
+    },
+    "p06_tank_battle_game_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 41,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill"
+    },
+    "p07_calculator_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 5,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill"
+    },
+    "p07_calculator_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 8,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill"
+    },
+    "p07_calculator_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch5_attempts2_4_repeated_tokenizer_self_import_and_attempt1_invalid_token_reflection_test"
+    },
+    "p08_excel_data_processing_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 3,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p08_excel_data_processing_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch6_attempts1_2_repeated_direct_row_raw_compile_error"
+    },
+    "p08_excel_data_processing_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill"
+    },
+    "p09_qr_code_gen_det_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 11,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch5_attempts1_2_3_header_self_containment_attempt4_finder_layout_mismatch"
+    },
+    "p09_qr_code_gen_det_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 9,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch8_attempts2_3_5_prefix_checksum_mismatch_attempts4_6_invalid_default_package_imports_attempt1_private_min_size_access"
+    },
+    "p09_qr_code_gen_det_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 12,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill"
+    },
+    "p10_crud_system_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 8,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch5_attempts1_2_3_5_missing_direct_record_clock_includes_attempt4_include_path_mismatch"
+    },
+    "p10_crud_system_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 131,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch130_attempts1_3_repeated_missing_java_util_list_import_in_main"
+    },
+    "p10_crud_system_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt6_seed_attempts1_2_double_clock_advance_and_missing_direct_error_import"
+    },
+    "p11_custom_press_releases_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 4,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "automatic_stale_input_rebuild_p11_custom_press_releases_cpp"
+    },
+    "p11_custom_press_releases_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 123,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch4_attempt1_undefined_release_state_and_version_types"
+    },
+    "p11_custom_press_releases_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt6_seed_attempts1_2_repeated_wrong_run_demo_import_and_invalid_transition_sequence"
+    },
+    "p12_video_player_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "epoch5_attempts1_4_repeated_unavailable_gtest_dependency"
+    },
+    "p12_video_player_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 5,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt4_seed_attempts1_2_repeated_playerstate_minus_one_and_muted_volume_restore"
+    },
+    "p12_video_player_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 4,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": null
+    },
+    "p13_video_downloader_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 6,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt5_seed_attempt1_ambiguous_empty_constructor_and_host_only_test_conflict"
+    },
+    "p13_video_downloader_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "automatic_stale_input_rebuild_p13_video_downloader_java"
+    },
+    "p13_video_downloader_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 4,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "automatic_stale_input_rebuild_p13_video_downloader_python"
+    },
+    "p14_todo_list_app_cpp": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 8,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt7_seed_attempt1_undeclared_date_helper_and_cross_block_local_id"
+    },
+    "p14_todo_list_app_java": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 7,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt6_seed_attempts1_2_repeated_missing_literal_imports_and_private_normalizer_call"
+    },
+    "p14_todo_list_app_python": {
+      "api_type": "LLMType.OPENAI",
+      "architecture_attempt": 5,
+      "base_url": "https://api.chatanywhere.tech/v1",
+      "model": "gpt-5",
+      "rebuild_reason": "architecture_attempt4_seed_attempts1_2_repeated_builtin_valueerror_instead_of_validationerror"
+    }
+  },
+  "audited_at": "2026-09-15T02:12:09.277841+00:00",
+  "campaign_id": "metaprojectdev-medium-42-prowes-logits",
+  "campaign_runner_sha256": "6927c0dd5951d13ef20b327061c16e63e93da4c09e97de35edfa58ccd53c8c38",
+  "complete": true,
+  "expected_units": 42,
+  "frozen_evaluator": {
+    "protocol_sha256": "e35cf3a5d2fd2ae4a16caafccc6607fe28867ec44adbf685b77242c993eea5c0",
+    "test_script_sha256": "d94185454bc98d776786e0123d2316af95a3cd6a574ba2d786879a695ef19bb4"
+  },
+  "frozen_framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "frozen_model_runtime_tree_sha256": "8081b6f3ec595e2af7ae8be44ed8138a45ae78d7cea0c110f990853a081d414b",
+  "issues": [],
+  "manifest_sha256": "8f0c8511f91eca8787dd766034766cc303d935fe7f309832f8934ae3212722d0",
+  "model_weight_manifest_sha256": "80a5ee3f70f5a5e9bcbca246b0d8122690332f9c2e90a1ecae71212021c55c02",
+  "preflight_sha256": "ef1ea4c8aa2276b4fb8c0f9a7b83673610a06153a8039f71858e05f25df68d0d",
+  "required_architecture_generation": {
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5",
+    "required_backend_type": "remote_openai_compatible_api"
+  },
+  "required_replay_confirmations": 1,
+  "verified_replay_count": 42,
+  "verified_replay_evidence": {
+    "p01_snake_game_cpp": [
+      "units/p01_snake_game/cpp/replays/0001_seed_666643921/evidence.json"
+    ],
+    "p01_snake_game_java": [
+      "units/p01_snake_game/java/replays/0001_seed_1082638472/evidence.json"
+    ],
+    "p01_snake_game_python": [
+      "units/p01_snake_game/python/replays/0001_seed_3736547328/evidence.json"
+    ],
+    "p02_flappy_bird_game_cpp": [
+      "units/p02_flappy_bird_game/cpp/replays/0001_seed_1192725353/evidence.json"
+    ],
+    "p02_flappy_bird_game_java": [
+      "units/p02_flappy_bird_game/java/replays/0001_seed_2540127563/evidence.json"
+    ],
+    "p02_flappy_bird_game_python": [
+      "units/p02_flappy_bird_game/python/replays/0001_seed_1298988375/evidence.json"
+    ],
+    "p03_game_2048_cpp": [
+      "units/p03_game_2048/cpp/replays/0001_seed_1673168053/evidence.json"
+    ],
+    "p03_game_2048_java": [
+      "units/p03_game_2048/java/replays/0001_seed_887850646/evidence.json"
+    ],
+    "p03_game_2048_python": [
+      "units/p03_game_2048/python/replays/0001_seed_100489887/evidence.json"
+    ],
+    "p04_caro_game_cpp": [
+      "units/p04_caro_game/cpp/replays/0001_seed_1922813371/evidence.json"
+    ],
+    "p04_caro_game_java": [
+      "units/p04_caro_game/java/replays/0001_seed_3365300451/evidence.json"
+    ],
+    "p04_caro_game_python": [
+      "units/p04_caro_game/python/replays/0001_seed_812711061/evidence.json"
+    ],
+    "p05_brick_breaker_game_cpp": [
+      "units/p05_brick_breaker_game/cpp/replays/0001_seed_1300987923/evidence.json"
+    ],
+    "p05_brick_breaker_game_java": [
+      "units/p05_brick_breaker_game/java/replays/0001_seed_2697919693/evidence.json"
+    ],
+    "p05_brick_breaker_game_python": [
+      "units/p05_brick_breaker_game/python/replays/0001_seed_432197098/evidence.json"
+    ],
+    "p06_tank_battle_game_cpp": [
+      "units/p06_tank_battle_game/cpp/replays/0001_seed_1423652811/evidence.json"
+    ],
+    "p06_tank_battle_game_java": [
+      "units/p06_tank_battle_game/java/replays/0001_seed_573870900/evidence.json"
+    ],
+    "p06_tank_battle_game_python": [
+      "units/p06_tank_battle_game/python/replays/0001_seed_2408978515/evidence.json"
+    ],
+    "p07_calculator_cpp": [
+      "units/p07_calculator/cpp/replays/0001_seed_3978176900/evidence.json"
+    ],
+    "p07_calculator_java": [
+      "units/p07_calculator/java/replays/0001_seed_1570566783/evidence.json"
+    ],
+    "p07_calculator_python": [
+      "units/p07_calculator/python/replays/0001_seed_2109135578/evidence.json"
+    ],
+    "p08_excel_data_processing_cpp": [
+      "units/p08_excel_data_processing/cpp/replays/0001_seed_3698866069/evidence.json"
+    ],
+    "p08_excel_data_processing_java": [
+      "units/p08_excel_data_processing/java/replays/0001_seed_290543147/evidence.json"
+    ],
+    "p08_excel_data_processing_python": [
+      "units/p08_excel_data_processing/python/replays/0001_seed_306770503/evidence.json"
+    ],
+    "p09_qr_code_gen_det_cpp": [
+      "units/p09_qr_code_gen_det/cpp/replays/0001_seed_779839335/evidence.json"
+    ],
+    "p09_qr_code_gen_det_java": [
+      "units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/evidence.json"
+    ],
+    "p09_qr_code_gen_det_python": [
+      "units/p09_qr_code_gen_det/python/replays/0001_seed_3206008263/evidence.json"
+    ],
+    "p10_crud_system_cpp": [
+      "units/p10_crud_system/cpp/replays/0001_seed_252729447/evidence.json"
+    ],
+    "p10_crud_system_java": [
+      "units/p10_crud_system/java/replays/0001_seed_3479630733/evidence.json"
+    ],
+    "p10_crud_system_python": [
+      "units/p10_crud_system/python/replays/0001_seed_1014069831/evidence.json"
+    ],
+    "p11_custom_press_releases_cpp": [
+      "units/p11_custom_press_releases/cpp/replays/0001_seed_1221104095/evidence.json"
+    ],
+    "p11_custom_press_releases_java": [
+      "units/p11_custom_press_releases/java/replays/0001_seed_2810241787/evidence.json"
+    ],
+    "p11_custom_press_releases_python": [
+      "units/p11_custom_press_releases/python/replays/0001_seed_2037595148/evidence.json"
+    ],
+    "p12_video_player_cpp": [
+      "units/p12_video_player/cpp/replays/0001_seed_1700920662/evidence.json"
+    ],
+    "p12_video_player_java": [
+      "units/p12_video_player/java/replays/0001_seed_400582985/evidence.json"
+    ],
+    "p12_video_player_python": [
+      "units/p12_video_player/python/replays/0001_seed_769100576/evidence.json"
+    ],
+    "p13_video_downloader_cpp": [
+      "units/p13_video_downloader/cpp/replays/0001_seed_2929423155/evidence.json"
+    ],
+    "p13_video_downloader_java": [
+      "units/p13_video_downloader/java/replays/0001_seed_2020452492/evidence.json"
+    ],
+    "p13_video_downloader_python": [
+      "units/p13_video_downloader/python/replays/0001_seed_872520481/evidence.json"
+    ],
+    "p14_todo_list_app_cpp": [
+      "units/p14_todo_list_app/cpp/replays/0001_seed_3861770267/evidence.json"
+    ],
+    "p14_todo_list_app_java": [
+      "units/p14_todo_list_app/java/replays/0001_seed_461912478/evidence.json"
+    ],
+    "p14_todo_list_app_python": [
+      "units/p14_todo_list_app/python/replays/0001_seed_4207199519/evidence.json"
+    ]
+  }
+}

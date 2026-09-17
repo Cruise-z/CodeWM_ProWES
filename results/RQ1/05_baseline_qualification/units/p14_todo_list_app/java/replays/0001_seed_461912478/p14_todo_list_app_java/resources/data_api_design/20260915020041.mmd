@@ -1,0 +1,68 @@
+classDiagram
+    class Priority {
+      +LOW
+      +MEDIUM
+      +HIGH
+      +rank() int
+    }
+    class Task {
+      -int id
+      -String title
+      -String description
+      -Priority priority
+      -LocalDate dueDate
+      -LinkedHashSet~String~ tags
+      -boolean completed
+      +Task(int id, String title, String description, Priority priority, LocalDate dueDate, Set~String~ tags)
+      +getId() int
+      +getTitle() String
+      +getDescription() String
+      +getPriority() Priority
+      +getDueDate() LocalDate
+      +getTags() Set~String~
+      +isCompleted() boolean
+      +edit(String,String,Priority,LocalDate,Set~String~) void
+      +setCompleted(boolean) void
+    }
+    class TaskRepository {
+      <<interface>>
+      +add(Task) void
+      +findById(int) Task
+      +save(Task) void
+      +deleteById(int) boolean
+      +findAll() List~Task~
+    }
+    class InMemoryTaskRepository {
+      -LinkedHashMap~Integer,Task~ store
+      +add(Task) void
+      +findById(int) Task
+      +save(Task) void
+      +deleteById(int) boolean
+      +findAll() List~Task~
+    }
+    class TaskFilter {
+      +filter(List~Task~, Boolean, Priority, Set~String~) List~Task~
+    }
+    class TaskSorter {
+      +sort(List~Task~) List~Task~
+    }
+    class TodoService {
+      -TaskRepository repository
+      -int nextId
+      +createTask(String,String,Priority,LocalDate,Set~String~) Task
+      +editTask(int,String,String,Priority,LocalDate,Set~String~) Task
+      +deleteTask(int) boolean
+      +setCompleted(int,boolean) Task
+      +listTasks(Boolean,Priority,Set~String~) List~Task~
+      +summary(LocalDate) Map~String,Integer~
+    }
+    class Main {
+      +runDemo() Map~String,Integer~
+      +main(String[]) void
+    }
+    TodoService --> TaskRepository
+    InMemoryTaskRepository ..|> TaskRepository
+    TodoService --> TaskFilter
+    TodoService --> TaskSorter
+    TodoService --> Task
+    Main --> TodoService

@@ -1,0 +1,59 @@
+classDiagram
+    class User {
+        -String id
+        -String name
+        -String email
+        +User(id: String, name: String, email: String)
+        +getId(): String
+        +getName(): String
+        +getEmail(): String
+        +equals(Object): boolean
+        +hashCode(): int
+        +toString(): String
+    }
+    class AuditEvent {
+        -long timestamp
+        -String action
+        -String userId
+        +AuditEvent(timestamp: long, action: String, userId: String)
+        +getTimestamp(): long
+        +getAction(): String
+        +getUserId(): String
+        +equals(Object): boolean
+        +hashCode(): int
+        +toString(): String
+    }
+    class UserValidator {
+        +isValid(user: User): boolean
+    }
+    class SearchService {
+        +search(users: List<User>, query: String): List<User>
+    }
+    class AuditLogService {
+        -events: List<AuditEvent>
+        +log(event: AuditEvent): void
+        +getAllEvents(): List<AuditEvent>
+    }
+    class UserRepository {
+        <<interface>>
+        +findById(id: String): User
+        +findAll(): List<User>
+        +save(user: User): User
+        +deleteById(id: String): boolean
+    }
+    class InMemoryUserRepository {
+        -store: LinkedHashMap<String, User>
+        -validator: UserValidator
+        +InMemoryUserRepository()
+        +findById(id: String): User
+        +findAll(): List<User>
+        +save(user: User): User
+        +deleteById(id: String): boolean
+    }
+    class Main {
+        +main(args: String[]): void
+    }
+    InMemoryUserRepository ..|> UserRepository
+    InMemoryUserRepository --> UserValidator
+    SearchService --> User
+    AuditLogService --> AuditEvent

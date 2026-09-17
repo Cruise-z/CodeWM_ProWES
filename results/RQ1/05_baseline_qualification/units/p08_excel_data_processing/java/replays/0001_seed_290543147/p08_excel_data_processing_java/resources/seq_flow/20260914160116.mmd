@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant R as Runtime
+    participant M as Main
+    participant C as CsvIO
+    participant S as Sheet
+    participant F as Filters
+    participant So as Sorters
+    participant A as Aggregations
+    participant PR as ProcessingReport
+    R->>M: main([])
+    M->>PR: new ProcessingReport (import)
+    M->>C: importCsvFromString(name, csv, reportImport)
+    C-->>M: Sheet
+    M->>PR: new ProcessingReport (filter)
+    M->>S: filter(F.equals("Country","US"), reportFilter)
+    S-->>M: filtered Sheet
+    M->>S: sort(desc Name)
+    S-->>M: sorted Sheet
+    M->>PR: new ProcessingReport (sum)
+    M->>A: sum(sorted Sheet, "Sales", reportAggregation)
+    A-->>M: double
+    M->>PR: new ProcessingReport (export)
+    M->>C: toCsvString(sorted Sheet, reportExport)
+    C-->>M: String CSV
+    M-->>R: prints concise summary and returns

@@ -1,0 +1,2 @@
+# Minimal requirements file as per protocol
+# No third-party dependencies required

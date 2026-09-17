@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T18:04:11.326584+00:00",
+  "accepted_repository_tree_sha256": "2720cec94671a817b5e818ed83ac9d9df0dee663dc0c6b2d5ff1973633648ec1",
+  "architecture_epoch": {
+    "architecture_attempt": 7,
+    "architecture_team_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+    "initial_repository_tree_sha256": "9be0e4ee67a772ec44a30bea9a466aea77c9a415c5eebf7c94665ab5720a1153",
+    "prompt_sha256": "3d32d743985a98bdc137297f25732182e22f21647debbdf9ce11cc71a2ed89e5"
+  },
+  "architecture_team_sha256": "ad3cf2956b5a629e646643466da4d71a6906947ac492c610e1276e1000d7de88",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p10_crud_system/python/attempts/0001_seed_1014069831/evaluator.log",
+  "attempt_evidence": "units/p10_crud_system/python/attempts/0001_seed_1014069831/evidence.json",
+  "attempt_generation_report": "units/p10_crud_system/python/attempts/0001_seed_1014069831/generation_report.json",
+  "completed_at": "2026-09-14T18:04:11.310803+00:00",
+  "evaluator_elapsed_seconds": 2.249,
+  "evaluator_log_sha256": "2a97d68a8f8b65c0c89dd1fcc3a5068e34a5bdb6b45a7b18ebc37130f504c86b",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/python/attempts/0001_seed_1014069831/p10_crud_system_python/p10_crud_system_python",
+  "generated_repository_tree_sha256": "751d7a89b17551ccf4f93a75f2c71291db30b86d290ca7b5cb5294e31147fb65",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1014069831,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "d0c199f1ac760454617764adf9bcaf5604b0d9e8b45aeb526000609a513e18af",
+  "initial_repository_tree_sha256": "9be0e4ee67a772ec44a30bea9a466aea77c9a415c5eebf7c94665ab5720a1153",
+  "passed": true,
+  "rng_seed": 1014069831,
+  "started_at": "2026-09-14T17:59:28.277138+00:00",
+  "truncated_files": [],
+  "unit_id": "p10_crud_system_python"
+}

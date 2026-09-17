@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant M as Main
+    participant S as TodoService
+    participant R as InMemoryTaskRepository
+    participant F as TaskFilter
+    participant O as TaskSorter
+    M->>S: runDemo()
+    activate S
+    S->>R: add(Task#1)
+    S->>R: add(Task#2)
+    S->>R: findById(1) / save(Task#1 completed)
+    S->>S: summary(today=2023-10-15)
+    S->>R: findAll()
+    S->>F: filter(all, null, null, null)
+    F-->>S: filtered list
+    S->>O: sort(filtered)
+    O-->>S: sorted list
+    S-->>M: Map{total,completed,pending,overdue}
+    deactivate S
+    M-->>M: return from main()

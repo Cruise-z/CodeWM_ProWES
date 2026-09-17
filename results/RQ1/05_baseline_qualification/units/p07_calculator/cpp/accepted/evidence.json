@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T14:18:21.253021+00:00",
+  "accepted_repository_tree_sha256": "a571f97c0b54eec843ada9cad74e1705f51451680c716fd0841fd8455045b592",
+  "architecture_epoch": {
+    "architecture_attempt": 5,
+    "architecture_team_sha256": "6f7e137031b1f55acf336cea35297407e6ab234e3faac823f7b26911d2ea96ef",
+    "initial_repository_tree_sha256": "87e941936ed77433f9fdea506620d7928fbbd71c834e4905443b6a080c556b54",
+    "prompt_sha256": "be525c0343dace7a77c873decf78fa48d9ce8443f6df0b3aa8da25f19ec054fa"
+  },
+  "architecture_team_sha256": "6f7e137031b1f55acf336cea35297407e6ab234e3faac823f7b26911d2ea96ef",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p07_calculator/cpp/attempts/0001_seed_3978176900/evaluator.log",
+  "attempt_evidence": "units/p07_calculator/cpp/attempts/0001_seed_3978176900/evidence.json",
+  "attempt_generation_report": "units/p07_calculator/cpp/attempts/0001_seed_3978176900/generation_report.json",
+  "completed_at": "2026-09-14T14:18:21.240106+00:00",
+  "evaluator_elapsed_seconds": 3.251,
+  "evaluator_log_sha256": "b357fbd89d1c0a279f9f48c43f7dd06d52b322dba328384727a7942a3a611417",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/cpp/attempts/0001_seed_3978176900/p07_calculator_cpp/p07_calculator_cpp",
+  "generated_repository_tree_sha256": "867f4841a29a22debe0bbc2043e4fcb8231282cecceac8d29fb4374b71067d26",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3978176900,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "aca1b16c6b152af99e19bf2c999a43144e6ce69cc64e19100f783bc2d89a5916",
+  "initial_repository_tree_sha256": "87e941936ed77433f9fdea506620d7928fbbd71c834e4905443b6a080c556b54",
+  "passed": true,
+  "rng_seed": 3978176900,
+  "started_at": "2026-09-14T14:14:32.521419+00:00",
+  "truncated_files": [],
+  "unit_id": "p07_calculator_cpp"
+}

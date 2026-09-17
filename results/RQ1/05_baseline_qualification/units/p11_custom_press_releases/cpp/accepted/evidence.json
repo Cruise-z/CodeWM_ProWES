@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T18:32:23.035944+00:00",
+  "accepted_repository_tree_sha256": "519442f780ff3742e3fa37d686b4536501a4894fcfb4543036e4c6512b2f1c0a",
+  "architecture_epoch": {
+    "architecture_attempt": 4,
+    "architecture_team_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+    "initial_repository_tree_sha256": "6f1a7f780f3814761685c975b1dcda9beb3e71534bd78e2a49a361fc5d956e80",
+    "prompt_sha256": "0eb104ac294f89777548870a71dc7f0b0f232e15974681a8e411be9130747833"
+  },
+  "architecture_team_sha256": "7477675543c8222b512b02a3fabad429a1856d9620cdc10af3de397cea4d444e",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/evaluator.log",
+  "attempt_evidence": "units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/evidence.json",
+  "attempt_generation_report": "units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/generation_report.json",
+  "completed_at": "2026-09-14T18:32:23.020438+00:00",
+  "evaluator_elapsed_seconds": 6.245,
+  "evaluator_log_sha256": "a464f782bcd1d918d391f8ea9240ab1f98207ac4dd5659527c16ff2d1a15191e",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p11_custom_press_releases/cpp/attempts/0001_seed_1221104095/p11_custom_press_releases_cpp/p11_custom_press_releases_cpp",
+  "generated_repository_tree_sha256": "d0fe7b4a29f86b214976b2a69dab9e3f86f662661e87d58fcfc7c5c479ce9d16",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1221104095,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "f7f26775557069d2103169ca62c6639a9f3d766b8e0cd12bc1d4373900a50e12",
+  "initial_repository_tree_sha256": "6f1a7f780f3814761685c975b1dcda9beb3e71534bd78e2a49a361fc5d956e80",
+  "passed": true,
+  "rng_seed": 1221104095,
+  "started_at": "2026-09-14T18:24:42.694213+00:00",
+  "truncated_files": [],
+  "unit_id": "p11_custom_press_releases_cpp"
+}

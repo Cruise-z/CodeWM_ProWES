@@ -1,0 +1,34 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 3,
+    "architecture_team_sha256": "ba0b641569ac16a5d80e47d25a412b770de8095e130b9a26b33ec5aaf8c2bfe7",
+    "initial_repository_tree_sha256": "5a5753d175b32152824f3ccb39979593d0cae1b40a7e636fe57ed5cf54460583",
+    "prompt_sha256": "33fa58cb19d4a427957e1a4e2429d42cd4135b69abe8d5a3ebf44045f8205700"
+  },
+  "architecture_team_sha256": "ba0b641569ac16a5d80e47d25a412b770de8095e130b9a26b33ec5aaf8c2bfe7",
+  "attempt": 1,
+  "completed_at": "2026-09-13T01:47:51.725421+00:00",
+  "evaluator_elapsed_seconds": 4.373,
+  "evaluator_log_sha256": "5a3d6089a2fa08251ed04ce7dcd538b16af152dbe694bb3c761bb735899a8e99",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/cpp/attempts/0001_seed_3698866069/p08_excel_data_processing_cpp/p08_excel_data_processing_cpp",
+  "generated_repository_tree_sha256": "b9d65674dc5d9d5fc4432e0462eac2d38b8db0c3d3f63db3556b3272ceb28a10",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3698866069,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "74243db41985500934722d6e6ce168c8e1f94901f4d1c721ff28ca10a05bf153",
+  "initial_repository_tree_sha256": "5a5753d175b32152824f3ccb39979593d0cae1b40a7e636fe57ed5cf54460583",
+  "passed": true,
+  "rng_seed": 3698866069,
+  "started_at": "2026-09-13T01:37:34.585679+00:00",
+  "truncated_files": [],
+  "unit_id": "p08_excel_data_processing_cpp",
+  "valid_for_current_architecture": true
+}

@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "campaign_id": "metaprojectdev-medium-42-prowes-logits",
+  "benchmark": "CodeWM_ProWES_Logits",
+  "size_tier": "medium",
+  "size_tier_rationale": "The requested total is 14 projects x 3 languages = 42, so this campaign uses one size tier. Medium is selected as the complete-repository tier; the table values are architecture targets, not pass/fail thresholds.",
+  "languages": ["cpp", "java", "python"],
+  "generation": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 4096,
+    "watermark_detect": false,
+    "internal_processor_names": [],
+    "external_processor_names": []
+  },
+  "architecture_generation": {
+    "required_backend_type": "remote_openai_compatible_api",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "acceptance": {
+    "generation_complete": true,
+    "no_truncated_files": true,
+    "evaluator_return_code": 0,
+    "evaluator": "reproduct/evaluator/test_podman.sh",
+    "container": "CodeWM-DT",
+    "required_replay_confirmations": 1
+  },
+  "projects": [
+    {
+      "project_id": 1,
+      "slug": "snake_game",
+      "task_name": "Snake game",
+      "category": "Games",
+      "targets": {"files": 7, "functions": 31, "loc": 590},
+      "features": ["grid-based snake movement", "direction rules that reject immediate reversal", "food placement and consumption", "growth and score updates", "wall and self collision", "game-over and reset"]
+    },
+    {
+      "project_id": 2,
+      "slug": "flappy_bird_game",
+      "task_name": "Flappy bird game",
+      "category": "Games",
+      "targets": {"files": 8, "functions": 35, "loc": 700},
+      "features": ["bird position and flap physics", "gravity and deterministic ticks", "pipe movement and gaps", "collision rules", "score updates when pipes pass", "game-over and reset"]
+    },
+    {
+      "project_id": 3,
+      "slug": "game_2048",
+      "task_name": "2048 game",
+      "category": "Games",
+      "targets": {"files": 7, "functions": 33, "loc": 650},
+      "features": ["4x4 board", "left right up and down moves", "single-merge-per-move rule", "score accumulation", "deterministic tile spawning", "win loss and reset states"]
+    },
+    {
+      "project_id": 4,
+      "slug": "caro_game",
+      "task_name": "Caro game",
+      "category": "Games",
+      "targets": {"files": 8, "functions": 38, "loc": 776},
+      "features": ["two-player board", "legal move validation", "alternating turns", "five-in-a-row detection in all directions", "draw state", "reset and move history"]
+    },
+    {
+      "project_id": 5,
+      "slug": "brick_breaker_game",
+      "task_name": "Brick breaker game",
+      "category": "Games",
+      "targets": {"files": 7, "functions": 39, "loc": 628},
+      "features": ["ball motion", "paddle control", "wall paddle and brick collision", "brick durability or removal", "score and lives", "level completion and reset"]
+    },
+    {
+      "project_id": 6,
+      "slug": "tank_battle_game",
+      "task_name": "Tank battle game",
+      "category": "Games",
+      "targets": {"files": 9, "functions": 46, "loc": 727},
+      "features": ["tank movement and orientation", "bounded arena and obstacles", "projectile creation and movement", "projectile collision and damage", "score or winner state", "deterministic tick and reset"]
+    },
+    {
+      "project_id": 7,
+      "slug": "calculator",
+      "task_name": "Calculator",
+      "category": "Utilities",
+      "targets": {"files": 6, "functions": 22, "loc": 468},
+      "features": ["tokenization of arithmetic expressions", "operator precedence and parentheses", "addition subtraction multiplication and division", "decimal values", "clear error reporting", "calculation history"]
+    },
+    {
+      "project_id": 8,
+      "slug": "excel_data_processing",
+      "task_name": "Excel data processing",
+      "category": "Utilities",
+      "targets": {"files": 7, "functions": 27, "loc": 617},
+      "features": ["workbook-like sheets rows and cells", "CSV import and export as a portable interchange", "column selection and filtering", "sorting and aggregation", "missing and invalid value handling", "deterministic processing reports"]
+    },
+    {
+      "project_id": 9,
+      "slug": "qr_code_gen_det",
+      "task_name": "QR Code Gen.&Det.",
+      "category": "Utilities",
+      "targets": {"files": 7, "functions": 29, "loc": 632},
+      "features": ["text-to-binary payload encoding", "deterministic square module matrix generation", "finder-pattern placement", "matrix validation and rendering", "payload detection from generated matrices", "invalid or corrupted matrix rejection"]
+    },
+    {
+      "project_id": 10,
+      "slug": "crud_system",
+      "task_name": "CRUD system",
+      "category": "Application",
+      "targets": {"files": 11, "functions": 47, "loc": 983},
+      "features": ["typed records with stable identifiers", "create read update and delete operations", "validation and duplicate handling", "search filtering and pagination", "in-memory repository boundary", "audit events and deterministic tests"]
+    },
+    {
+      "project_id": 11,
+      "slug": "custom_press_releases",
+      "task_name": "Custom press releases",
+      "category": "Application",
+      "targets": {"files": 8, "functions": 31, "loc": 698},
+      "features": ["press-release templates", "custom fields and placeholder substitution", "draft review published lifecycle", "validation of headline body and contact", "audience tags and search", "plain-text rendering and version history"]
+    },
+    {
+      "project_id": 12,
+      "slug": "video_player",
+      "task_name": "Video player",
+      "category": "Application",
+      "targets": {"files": 9, "functions": 37, "loc": 786},
+      "features": ["media metadata", "playlist navigation", "play pause and stop state", "seek and duration bounds", "volume and mute", "headless deterministic playback clock"]
+    },
+    {
+      "project_id": 13,
+      "slug": "video_downloader",
+      "task_name": "Video Downloader",
+      "category": "Application",
+      "targets": {"files": 8, "functions": 30, "loc": 665},
+      "features": ["URL validation", "download request and format selection", "queue lifecycle", "progress and cancellation", "safe output naming", "offline deterministic transfer adapter for tests"]
+    },
+    {
+      "project_id": 14,
+      "slug": "todo_list_app",
+      "task_name": "To-Do List App",
+      "category": "Application",
+      "targets": {"files": 8, "functions": 29, "loc": 613},
+      "features": ["task creation editing and deletion", "completion state", "priority due date and tags", "filtering and sorting", "in-memory persistence boundary", "validation and deterministic summaries"]
+    }
+  ]
+}

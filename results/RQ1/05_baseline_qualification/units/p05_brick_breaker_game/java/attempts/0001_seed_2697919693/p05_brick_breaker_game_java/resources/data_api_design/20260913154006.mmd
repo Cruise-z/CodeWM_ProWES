@@ -1,0 +1,83 @@
+classDiagram
+    class Game {
+      -double width
+      -double height
+      -Paddle paddle
+      -Ball ball
+      -java.util.List~Brick~ bricks
+      -private int lives
+      -int score
+      -boolean levelCompleted
+      -boolean lifeLost
+      +Game(double width, double height, Paddle paddle, Ball ball, java.util.List~Brick~ bricks, int lives)
+      +int getLives()
+      +boolean isLifeLost()
+      +boolean isLevelCompleted()
+      +int getScore()
+      +java.util.List~Brick~ getBricks()
+      +Paddle getPaddle()
+      +Ball getBall()
+      +void tick(double dt)
+    }
+    class Ball {
+      -double x
+      -double y
+      -double vx
+      -double vy
+      -double radius
+      +Ball(double x, double y, double vx, double vy, double radius)
+      +double getX()
+      +double getY()
+      +double getVx()
+      +double getVy()
+      +double getRadius()
+      ~void setPosition(double x, double y)
+      ~void setVelocity(double vx, double vy)
+    }
+    class Paddle {
+      -double x
+      -double y
+      -double width
+      -double height
+      -double maxX
+      +Paddle(double x, double y, double width, double height, double maxX)
+      +double getX()
+      +double getY()
+      +double getWidth()
+      +double getHeight()
+      +void setX(double x)
+      +Rect asRect()
+    }
+    class Brick {
+      -Rect rect
+      -int hitPoints
+      -boolean breakable
+      +Brick(Rect rect, int hitPoints, boolean breakable)
+      +Rect getRect()
+      +int getHitPoints()
+      +boolean isBreakable()
+      +void hit()
+      +boolean isDestroyed()
+    }
+    class Rect {
+      +double x
+      +double y
+      +double width
+      +double height
+      +Rect(double x, double y, double width, double height)
+      +double left()
+      +double top()
+      +double right()
+      +double bottom()
+    }
+    class Collision {
+      <<static>>
+      +boolean circleIntersectsRect(double cx, double cy, double r, Rect rect)
+      +double[] penetration(double cx, double cy, double r, Rect rect)%% returns {penX, penY} magnitudes
+    }
+    Game --> Paddle
+    Game --> Ball
+    Game --> Brick
+    Brick --> Rect
+    Paddle --> Rect
+    Game ..> Collision : uses

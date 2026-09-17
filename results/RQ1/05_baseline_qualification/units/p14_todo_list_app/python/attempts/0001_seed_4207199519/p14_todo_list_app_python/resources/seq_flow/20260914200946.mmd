@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant Main as Main.run_demo
+    participant Repo as InMemoryTaskRepository
+    participant Clock as FixedClock
+    participant Svc as ApplicationService
+    participant Sort as sort_tasks
+
+    Main->>Repo: create instance
+    Main->>Clock: create FixedClock(date=2023-10-15)
+    Main->>Svc: construct(repo, clock)
+    Main->>Svc: create_task(title="Buy milk", priority="high", due_date)
+    Main->>Svc: create_task(title="Read", priority="med")
+    Main->>Svc: complete_task(task_id=1)
+    Main->>Svc: list_tasks(criteria=None, sort_keys=[DUE_DATE], direction=ASC)
+    Svc->>Repo: list_all()
+    Svc->>Sort: sort_tasks(tasks, keys, direction)
+    Sort-->>Svc: sorted tasks
+    Svc-->>Main: tasks
+    Main->>Svc: summary()
+    Svc->>Clock: today()
+    Svc-->>Main: summary dict
+    Main-->>Main: assemble and return dict

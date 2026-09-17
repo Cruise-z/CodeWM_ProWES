@@ -1,0 +1,39 @@
+{
+  "accepted_at": "2026-09-13T13:06:11.103929+00:00",
+  "accepted_repository_tree_sha256": "3e8469ca925c93fc71f38fdb09df72f9ac8d56882437dd585585e9da2bea336d",
+  "architecture_epoch": {
+    "architecture_attempt": 4,
+    "architecture_team_sha256": "8ab8042fa8dc789cad1d74394df431bf9753d27f1d6d5d91c944f6e183c699fe",
+    "initial_repository_tree_sha256": "6a84d4151b099130cc1a4fa14cd11745b8252576094922a8fe6deaf5e8d11492",
+    "prompt_sha256": "c002cc7ea607daf05c568c913459044a66bdd2b9eb9e2198f5aa3dd7ffa1b832"
+  },
+  "architecture_team_sha256": "8ab8042fa8dc789cad1d74394df431bf9753d27f1d6d5d91c944f6e183c699fe",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p04_caro_game/python/attempts/0001_seed_812711061/evaluator.log",
+  "attempt_evidence": "units/p04_caro_game/python/attempts/0001_seed_812711061/evidence.json",
+  "attempt_generation_report": "units/p04_caro_game/python/attempts/0001_seed_812711061/generation_report.json",
+  "completed_at": "2026-09-13T13:06:11.074726+00:00",
+  "evaluator_elapsed_seconds": 2.445,
+  "evaluator_log_sha256": "f05d3a65c9fbf786374224d6eb8cfa72e72c763112741c78b6ecf75de9ae968d",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p04_caro_game/python/attempts/0001_seed_812711061/p04_caro_game_python/p04_caro_game_python",
+  "generated_repository_tree_sha256": "072e62e72219ae7e60f8d5af8d3c486dd876ea10236fd00ad20a2449eb77edcf",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 812711061,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "0b6ab9ab6110ecf4d248004b2e01e0fe494cdcf82a84d61cc2547352f3b156f6",
+  "initial_repository_tree_sha256": "6a84d4151b099130cc1a4fa14cd11745b8252576094922a8fe6deaf5e8d11492",
+  "passed": true,
+  "rng_seed": 812711061,
+  "started_at": "2026-09-13T13:00:48.973882+00:00",
+  "truncated_files": [],
+  "unit_id": "p04_caro_game_python",
+  "valid_for_current_architecture": true
+}

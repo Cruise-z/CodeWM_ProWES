@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "8039ee8715f0a75831a03f39f79680d3b18da505cdfcc0228af3698a5998ed76",
+  "architecture_team_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+  "completed_at": "2026-09-13T12:16:13.257421+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 9.623,
+  "evaluator_log_sha256": "ad266c3a473e6f65a8d64b6888a5f6a4760c9abcc12db937906a3e07d7d99f2a",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/java/replays/0001_seed_887850646/p03_game_2048_java/p03_game_2048_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 887850646,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "011f8b8c80cf575ee34c742bb1e126313ce8194e65528a615e23166bfecf3cd9",
+  "initial_repository_tree_sha256": "8427109f247a02d66e4f3de4bb7b59a776c0187140a90720627d292cb178ae8c",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "8039ee8715f0a75831a03f39f79680d3b18da505cdfcc0228af3698a5998ed76",
+  "rng_seed": 887850646,
+  "started_at": "2026-09-13T12:05:24.091626+00:00",
+  "truncated_files": [],
+  "unit_id": "p03_game_2048_java"
+}

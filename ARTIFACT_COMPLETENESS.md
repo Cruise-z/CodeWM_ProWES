@@ -15,10 +15,10 @@ three supplied inputs and was not fabricated.
 | RQ1 42 serialized architecture checkpoints | Present | Each unit has `architecture/team/team.json` and provenance evidence. |
 | RQ1 current initial repositories | Present | Beside each architecture checkpoint. |
 | RQ1 frozen generator/framework/evaluator | Present | `RQ1/source/`, `RQ1/04_docker/` |
-| RQ1 baseline attempts, accepted repositories, replay logs | Missing | The supplied archives contain seed inventory and result rows, but not the full 42-baseline attempt/replay ledger or accepted repository snapshots. |
+| RQ1 baseline attempts, accepted repositories, replay logs | Present | `results/RQ1/05_baseline_qualification/` contains 88 attempts, 42 accepted snapshots, 42 verified replays, worker/evaluator logs, hashes, and reviewer indexes. |
 | RQ1 applicability observations | Partial | `results/RQ1/Applicability/` has 9,141 point rows and 298 aggregate batch summaries, but not the referenced per-point Docker logs or repository snapshots. |
 | RQ1 detectability observations | Partial | `results/RQ1/Detectability/` has four aggregate raw logs and audited values, but not per-sample detector-score CSVs. |
-| RQ1 supplied-result reproduction | Present | `paper_reproduction/reproduce_rq1.sh` verifies both archives and regenerates six tables, 18 figures, and three detectability outputs. |
+| RQ1 supplied-result reproduction | Present | `paper_reproduction/reproduce_rq1.sh` verifies the baseline plus both archives and regenerates three baseline ledgers, six applicability tables, 18 figures, and three detectability outputs. |
 | RQ1 complete main-paper table reproduction | Partial | The archives cover the supplied medium-project applicability and aggregate detectability outputs; small-project rows and all paper bootstrap/sensitivity intermediates were not supplied. |
 | RQ2 GitHub/MBXP splits and stable LLM cohort | Present | `results/RQ2/01_datasets/`, `results/RQ2/05_llm_rag/cohort/` |
 | RQ2 CSN train/validation source files | Missing | Upstream download/preprocessing instructions are in the SrcMarker README; test observations and UIDs are present. |

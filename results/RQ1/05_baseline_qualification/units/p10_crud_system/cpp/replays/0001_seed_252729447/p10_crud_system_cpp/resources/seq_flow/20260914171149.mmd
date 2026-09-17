@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Main as Main
+    participant Service as CrudService
+    participant Repo as Repository
+    participant Clock as ManualClock
+    Main->>Service: create("1", "Alice", "alice@example.com")
+    Service->>Clock: now()
+    Clock-->>Service: 100
+    Service->>Repo: insert(Record{id, name, email, revision=1, updated_at=100})
+    Repo-->>Service: true
+    Service-->>Main: Record{id="1", ...}
+    Main->>Service: get("1")
+    Service->>Repo: find("1")
+    Repo-->>Service: optional{Record}
+    Service-->>Main: optional{Record}
+    Main-->>Main: print concise value
+    Main-->>Main: return 0

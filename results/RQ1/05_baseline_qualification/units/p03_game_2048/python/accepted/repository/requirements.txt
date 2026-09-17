@@ -1,0 +1,2 @@
+# Minimal dependencies required for the 2048 game implementation
+# Only standard library modules are used

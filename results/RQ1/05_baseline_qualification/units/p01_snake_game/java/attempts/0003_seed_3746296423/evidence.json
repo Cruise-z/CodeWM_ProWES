@@ -1,0 +1,36 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 5,
+    "architecture_team_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+    "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+    "prompt_sha256": "d82504ceaf8e14537540c352704b83eb031ed48e5a21aae1e6a872f1794d97fb"
+  },
+  "architecture_team_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+  "attempt": 3,
+  "completed_at": "2026-09-13T05:33:43.823829+00:00",
+  "evaluator_elapsed_seconds": 4.618,
+  "evaluator_log_sha256": "62afd0615d932876dd7d2fc9f8f644a585d40442c65dd1ad6b1c4ac71d879615",
+  "evaluator_return_code": 1,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/attempts/0003_seed_3746296423/p01_snake_game_java/p01_snake_game_java",
+  "generated_repository_tree_sha256": "cc9d9a7529af2ad07b1427a5117e6010361a27da91596c3bae0bc14b75254adb",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3746296423,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "cde34fc9327c23f93c53e56365c20ef52cdcf1a11abe7ba967e6a2982d5820d7",
+  "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+  "original_global_attempt": 5,
+  "passed": false,
+  "rng_seed": 3746296423,
+  "started_at": "2026-09-13T05:26:49.778745+00:00",
+  "truncated_files": [],
+  "unit_id": "p01_snake_game_java",
+  "valid_for_current_architecture": true
+}

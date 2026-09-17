@@ -1,0 +1,20 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+..                                                                       [100%]
+2 passed in 0.03s
+>>> Packaging Python project into zipapp
+>>> Python packaged artifact:
+/workspace/proj_20260913_160225/DTResults/artifacts/proj_20260913_160225.pyz
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: PYTHONUNBUFFERED=1 python -u  '/workspace/proj_20260913_160225/DTResults/artifacts/proj_20260913_160225.pyz'
+[INFO] Runtime output is captured in: /workspace/proj_20260913_160225/DTResults/runtime/python.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log is empty: /workspace/proj_20260913_160225/DTResults/runtime/python.log
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":0,"output_lines":0,"max_same_line":0,"max_consecutive_same_line":0,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260913_160225/DTResults/artifacts

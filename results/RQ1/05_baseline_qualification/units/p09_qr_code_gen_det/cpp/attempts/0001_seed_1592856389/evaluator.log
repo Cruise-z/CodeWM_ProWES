@@ -1,0 +1,79 @@
+===== BEGIN @ 20260914_175847 =====
+[INFO] Project dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp
+[INFO] Container name:    CodeWM-DT
+[INFO] In-container dir:  /workspace/proj_20260914_175847
+[INFO] Output dir:        /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847
+[INFO] Wrapper log:       /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847/host_wrapper_20260914_175847.log
+[INFO] Time limit:        300s (kill-after 5s)
+[INFO] Install limit:     300s
+[INFO] Build limit:       300s
+[INFO] Test limit:        30s
+[INFO] Run check:         5s (kill-after 2s)
+[INFO] Runtime output thresholds: bytes=262144, lines=200, same_line=30, consecutive_same_line=10
+[INFO] CPU busy check:    1
+[INFO] Hard eval timeout: 420s (kill-after 10s)
+[INFO] HTTP_PROXY:        http://127.0.0.1:7890
+[INFO] HTTPS_PROXY:       http://127.0.0.1:7890
+[INFO] NO_PROXY:          localhost,::1,127.0.0.1
+[INFO] PIP_INDEX_URL:     <empty>
+[INFO] ENABLE_MAVEN_PROXY_CONFIG: 1
+[INFO] MAVEN_PROXY_HTTP:  192.168.129.183:7897
+[INFO] MAVEN_PROXY_HTTPS: 192.168.129.183:7897
+
+[INFO] Xvfb is ready in container 'CodeWM-DT'.
+>>> Copy project into container: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp -> CodeWM-DT:/workspace/proj_20260914_175847
+>>> Write Maven proxy config to container
+>>> Run evaluator in container
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260914_175847/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 25%] Building CXX object CMakeFiles/qr_core.dir/src/QRRenderer.cpp.o
+[ 25%] Building CXX object CMakeFiles/qr_core.dir/src/QRCodec.cpp.o
+[ 37%] Building CXX object CMakeFiles/qr_core.dir/src/QRMatrix.cpp.o
+[ 50%] Linking CXX static library libqr_core.a
+[ 50%] Built target qr_core
+[ 62%] Building CXX object CMakeFiles/qr_app.dir/src/Main.cpp.o
+[ 75%] Building CXX object CMakeFiles/qr_tests.dir/tests/test_main.cpp.o
+[ 87%] Linking CXX executable qr_tests
+[ 87%] Built target qr_tests
+[100%] Linking CXX executable qr_app
+[100%] Built target qr_app
+>>> Running CTest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Internal ctest changing into directory: /workspace/proj_20260914_175847/build
+Test project /workspace/proj_20260914_175847/build
+    Start 1: qr_tests
+1/1 Test #1: qr_tests .........................Subprocess aborted***Exception:   0.10 sec
+terminate called after throwing an instance of 'std::runtime_error'
+  what():  Finder pattern mismatch
+
+
+0% tests passed, 1 tests failed out of 1
+
+Total Test time (real) =   0.10 sec
+
+The following tests FAILED:
+	  1 - qr_tests (Subprocess aborted)
+Errors while running CTest
+[WARN] Evaluation failed with exit code: 8
+>>> Cleanup possible leftover processes in container
+[INFO] No leftover project-scoped processes found.
+>>> Copy evaluation results back to host
+
+===== DONE =====
+Artifacts in: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847
+Packaged runnable artifacts should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847/artifacts
+Container evaluation log should be under: /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847/evaluation.log
+Wrapper log : /home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/attempts/0001_seed_1592856389/p09_qr_code_gen_det_cpp/p09_qr_code_gen_det_cpp/DTResults/out_20260914_175847/host_wrapper_20260914_175847.log

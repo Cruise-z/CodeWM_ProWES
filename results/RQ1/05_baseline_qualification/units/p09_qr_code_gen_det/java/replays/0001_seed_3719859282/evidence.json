@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "a17171e33bd4f92107f8f954d2d6f3a7221c1bd86efe0331c1ffa6dc9c33144e",
+  "architecture_team_sha256": "49e3f2f3b934092fc1361464575fd7ab23559ff70bda598db86644cb239fc920",
+  "completed_at": "2026-09-14T15:54:01.096971+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 9.896,
+  "evaluator_log_sha256": "e17c8a01cf7bfe61130462ad8374154e238835678c04dc5a9858bc2ad2034257",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/java/replays/0001_seed_3719859282/p09_qr_code_gen_det_java/p09_qr_code_gen_det_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3719859282,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "6e13dee08c38c56640cace3e68bd14083509cc2db85eea38654364d58764f644",
+  "initial_repository_tree_sha256": "d86648d2a22937c9bf96217d2f7525afb794c37a250f789453638cbbcff79856",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "a17171e33bd4f92107f8f954d2d6f3a7221c1bd86efe0331c1ffa6dc9c33144e",
+  "rng_seed": 3719859282,
+  "started_at": "2026-09-14T15:46:50.631555+00:00",
+  "truncated_files": [],
+  "unit_id": "p09_qr_code_gen_det_java"
+}

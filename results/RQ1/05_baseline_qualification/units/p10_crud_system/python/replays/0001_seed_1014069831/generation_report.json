@@ -1,0 +1,230 @@
+{
+  "aborted_on_truncation": false,
+  "completed_file_count": 12,
+  "expected_file_count": 12,
+  "files": [
+    {
+      "action_index": 1,
+      "content_character_count": 66,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "requirements.txt",
+      "finish_reason": "stop",
+      "generated_code_sha256": "4ab5ae75ce01d7f22f3db1439db42d36fb820ef0f103030b2eb2707a9a9cef17",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "705db6b95d2c6fd143889883a4dc171c2b09539f57d8b4985ca51b9e49d5b11c",
+      "response_id": "chatcmpl-1789409053799",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 17,
+        "prompt_tokens": 9281,
+        "total_tokens": 9298
+      }
+    },
+    {
+      "action_index": 2,
+      "content_character_count": 517,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/errors.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "8f30c3d4590bc3fd9e6fba8095a46fbbf75f7deacf54eb1ec654be72a88a29ff",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "b31b377c1d447597032544d5fb8ca582032b5ac4ac4dd924222a14bb14d91451",
+      "response_id": "chatcmpl-1789409061163",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 99,
+        "prompt_tokens": 9299,
+        "total_tokens": 9398
+      }
+    },
+    {
+      "action_index": 3,
+      "content_character_count": 673,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/types.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "e470fbc7f298402fca7c33e45938c4ae20cb2e9bdae1b5f9c46e06cccb5098a2",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "d189cb57ca76b1bc77df21d822823d9f5cdda8e2cb7fa583912421c1e8753f88",
+      "response_id": "chatcmpl-1789409072960",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 170,
+        "prompt_tokens": 9394,
+        "total_tokens": 9564
+      }
+    },
+    {
+      "action_index": 4,
+      "content_character_count": 888,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/clock.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "17736c8fac393a6ab3a2357e81e4fa8f7490909d250255d9e701cd9e252de110",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "bc95756dbee8d1bcc17bae8d3dbac53389847a7691c5a5e986da667b2cfbcb2d",
+      "response_id": "chatcmpl-1789409086573",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 200,
+        "prompt_tokens": 9562,
+        "total_tokens": 9762
+      }
+    },
+    {
+      "action_index": 5,
+      "content_character_count": 426,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/validation.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "55b2eb257852371238ce25adf4075b8dd94b8ac9690083e3426f611ec79cbf6d",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "268dda4268efc75634b4be64e1ea65b5624b9cdf765efa077c1e6257367f261b",
+      "response_id": "chatcmpl-1789409093607",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 92,
+        "prompt_tokens": 9754,
+        "total_tokens": 9846
+      }
+    },
+    {
+      "action_index": 6,
+      "content_character_count": 3975,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/repository.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "4540ae6e774be6c063ad311d3364fb1b559f59c2e15f58d9e980357cae1280d6",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "7ab7dd9eb0268a5ea7c05289a92755b0a1b1f85054dffe2dfeb336eb5e249efa",
+      "response_id": "chatcmpl-1789409149377",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 878,
+        "prompt_tokens": 9842,
+        "total_tokens": 10720
+      }
+    },
+    {
+      "action_index": 7,
+      "content_character_count": 1357,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/search.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "6800359dd5ffc7e046470c5158f008af1a75da1bed945dbcdf0e3ffb79ccd108",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "6ce36f9d8af4bb4c3ff2276cc215f12757bc12c69ca7f0dea735c459529d0fc8",
+      "response_id": "chatcmpl-1789409169455",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 301,
+        "prompt_tokens": 10715,
+        "total_tokens": 11016
+      }
+    },
+    {
+      "action_index": 8,
+      "content_character_count": 1145,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/audit.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "dc5df2953ed554bcd3f878b95587fad2c1e784b8518299af4f2181a69f330658",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "765e768b91f33d265441f4e792ac3cfdd4105f32e9fb6f8888096363587e03bf",
+      "response_id": "chatcmpl-1789409186812",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 261,
+        "prompt_tokens": 11015,
+        "total_tokens": 11276
+      }
+    },
+    {
+      "action_index": 9,
+      "content_character_count": 4328,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/service.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "0a2ad21c5beaf8cf3b7a7fa3caec9caa5357c82057864f1db9bc6dbdc2db8ab3",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "9be4bccd3299b89b2149409a63c05dd8b37e603243695f4c1d8d38db90dc4653",
+      "response_id": "chatcmpl-1789409244882",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 913,
+        "prompt_tokens": 11268,
+        "total_tokens": 12181
+      }
+    },
+    {
+      "action_index": 10,
+      "content_character_count": 676,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "crud_system/__init__.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "90d7a53876a344c68e09b4576a84d28cbb9c7fdbbe164a5d360092da2362956d",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "8c8e512dd48f4ed15893389ba8645ec5960a9f4ad1c1c52a3f8353e47b4b9a55",
+      "response_id": "chatcmpl-1789409256510",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 162,
+        "prompt_tokens": 12183,
+        "total_tokens": 12345
+      }
+    },
+    {
+      "action_index": 11,
+      "content_character_count": 1172,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "Main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "9e1e7f2219b135b0d4100febbbdc48ac7a73414f992e6c7b1efbc691d8c399c3",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "0f0ef48d2a967d4f309d626713c01eee8972b178aea32aef5e6ddd929538d2c4",
+      "response_id": "chatcmpl-1789409275767",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 283,
+        "prompt_tokens": 12329,
+        "total_tokens": 12612
+      }
+    },
+    {
+      "action_index": 12,
+      "content_character_count": 3397,
+      "detection_payload_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "filename": "tests/test_main.py",
+      "finish_reason": "stop",
+      "generated_code_sha256": "8382960fecb2befd462b47ca192bbf61c970be03c073d6b257c254d9c8495dee",
+      "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "response_content_sha256": "68cb11cd117a0da6abae60250efefb97d3e14dfa3299d9deb5a58d3dce44c9bb",
+      "response_id": "chatcmpl-1789409331493",
+      "saved": true,
+      "truncated": false,
+      "usage": {
+        "completion_tokens": 878,
+        "prompt_tokens": 12614,
+        "total_tokens": 13492
+      }
+    }
+  ],
+  "generation_complete": true,
+  "model_base_url": "http://127.0.0.1:8001/v1",
+  "project_path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/python/replays/0001_seed_1014069831/p10_crud_system_python",
+  "recover_root": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/python/architecture/team",
+  "request_succeeded": true,
+  "saved_file_count": 12,
+  "truncated_files": []
+}

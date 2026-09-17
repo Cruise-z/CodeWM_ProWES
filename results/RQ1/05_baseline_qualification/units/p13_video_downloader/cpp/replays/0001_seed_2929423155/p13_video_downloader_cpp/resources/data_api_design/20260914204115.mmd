@@ -1,0 +1,76 @@
+classDiagram
+    class Format {
+    <<enumeration>>
+    +MP4
+    +WEBM
+    +AUDIO
+    }
+    class DownloadState {
+    <<enumeration>>
+    +QUEUED
+    +DOWNLOADING
+    +COMPLETED
+    +CANCELED
+    +FAILED
+    }
+    class Progress {
+    +std::size_t bytes
+    +std::size_t total
+    }
+    class DownloadItem {
+    +std::uint64_t id
+    +std::string url
+    +Format format
+    +std::string filename
+    +DownloadState state
+    +Progress progress
+    +std::string error
+    }
+    class EnqueueResult {
+    +bool ok
+    +std::uint64_t id
+    +std::string filename
+    +std::string error
+    }
+    class UrlApi {
+    +is_valid_url(url: std::string) bool
+    +parse_format(text: std::string, out: Format&) bool
+    +extension_for(fmt: Format) std::string
+    }
+    class IExistingFiles {
+    <<interface>>
+    +exists(name: std::string) const bool
+    }
+    class InMemoryExistingFiles {
+    +InMemoryExistingFiles()
+    +InMemoryExistingFiles(initial: std::vector<std::string>)
+    +exists(name: std::string) const bool
+    +add(name: std::string) void
+    }
+    class SafeNamer {
+    +sanitize_base(base: std::string) std::string
+    +unique_name(base: std::string, ext: std::string, files: IExistingFiles, reserved: unordered_set) std::string
+    }
+    class ITransferAdapter {
+    <<interface>>
+    +total_bytes(url: std::string) const std::size_t
+    }
+    class FakeTransferAdapter {
+    +FakeTransferAdapter(total_bytes: std::size_t=12)
+    +total_bytes(url: std::string) const std::size_t
+    }
+    class DownloadQueue {
+    +DownloadQueue(adapter: ITransferAdapter&, files: IExistingFiles&, chunk_size: std::size_t=4)
+    +enqueue(url: std::string, format_text: std::string, desired_base: std::string) EnqueueResult
+    +cancel(id: std::uint64_t) bool
+    +get(id: std::uint64_t) const DownloadItem*
+    +list() const std::vector<DownloadItem>
+    +tick() void
+    }
+    InMemoryExistingFiles ..|> IExistingFiles
+    FakeTransferAdapter ..|> ITransferAdapter
+    DownloadQueue --> ITransferAdapter
+    DownloadQueue --> IExistingFiles
+    DownloadQueue --> DownloadItem
+    SafeNamer ..> IExistingFiles
+    UrlApi ..> Format

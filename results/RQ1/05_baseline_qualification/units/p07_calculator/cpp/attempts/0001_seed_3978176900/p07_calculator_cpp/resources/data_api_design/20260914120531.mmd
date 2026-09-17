@@ -1,0 +1,46 @@
+classDiagram
+    namespace calc {
+    class Token {
+        +TokenType type
+        +double numberValue
+        +char op
+        +size_t position
+    }
+    class Lexer {
+        +LexResult tokenize(input: std::string) const
+    }
+    class Parser {
+        +ParseResult toRPN(tokens: std::vector<Token>) const
+    }
+    class Evaluator {
+        +EvalResult evaluateRPN(rpn: std::vector<Token>) const
+    }
+    class HistoryEntry {
+        +std::string expression
+        +double result
+    }
+    class History {
+        +void record(expr: std::string, value: double)
+        +const std::vector<HistoryEntry>& entries() const
+        +void clear()
+    }
+    class EvaluationOutcome {
+        +bool success
+        +double value
+        +std::string errorMessage
+        +size_t errorPosition
+    }
+    class Calculator {
+        +Calculator()
+        +EvaluationOutcome evaluate(expression: std::string)
+        +const std::vector<HistoryEntry>& history() const
+        +void clearHistory()
+    }
+    Calculator --> Lexer
+    Calculator --> Parser
+    Calculator --> Evaluator
+    Calculator --> History
+    Parser --> Token
+    Lexer --> Token
+    Evaluator --> Token
+    }

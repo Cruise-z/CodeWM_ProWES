@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T12:55:53.997624+00:00",
+  "accepted_repository_tree_sha256": "f7d4b6a1296dc89f3c2091ecede451ce2bfc6521aaba269884ebdd3f9dfd993b",
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+    "initial_repository_tree_sha256": "d933d509969d471303e0b30edc616b2bcd9acc345e68e669cc84c6c7d7f55d72",
+    "prompt_sha256": "8b9354da28a62d4e08c7bca8a640e3672e78c745e29aecf0c6f582a5be2d0ae4"
+  },
+  "architecture_team_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p12_video_player/cpp/attempts/0001_seed_1700920662/evaluator.log",
+  "attempt_evidence": "units/p12_video_player/cpp/attempts/0001_seed_1700920662/evidence.json",
+  "attempt_generation_report": "units/p12_video_player/cpp/attempts/0001_seed_1700920662/generation_report.json",
+  "completed_at": "2026-09-14T12:55:53.952334+00:00",
+  "evaluator_elapsed_seconds": 3.031,
+  "evaluator_log_sha256": "d0d873d0c57fd5af1eda9c32aa21ffa588afa49633bdcc7a6a1409888b334230",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p12_video_player/cpp/attempts/0001_seed_1700920662/p12_video_player_cpp/p12_video_player_cpp",
+  "generated_repository_tree_sha256": "9fb053bf3c83b7553b0eefdf5f834fccff6a1948393544095995c35c5d381259",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1700920662,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "b7f450bc1ad99461945b1c36c70ddab1e470eb85c7c0a220aaabff87a3a20535",
+  "initial_repository_tree_sha256": "d933d509969d471303e0b30edc616b2bcd9acc345e68e669cc84c6c7d7f55d72",
+  "passed": true,
+  "rng_seed": 1700920662,
+  "started_at": "2026-09-14T12:49:40.291844+00:00",
+  "truncated_files": [],
+  "unit_id": "p12_video_player_cpp"
+}

@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant Main as Main.py
+    participant VP as video_player (API)
+    participant C as ManualClock
+    participant P as Player
+    participant PL as Playlist
+    participant M as Media
+
+    Main->>M: construct Media(id, title, duration)
+    Main->>PL: construct Playlist([Media,...])
+    Main->>C: construct ManualClock()
+    Main->>P: construct Player(playlist=PL, clock=C)
+    Main->>P: play()
+    Main->>C: tick(1.0)
+    C-->>P: on_tick(delta=1.0)
+    P->>P: advance position; clamp; maybe stop at end
+    Main->>P: seek(5.0)
+    Main->>P: pause()
+    Main->>C: tick(2.0)
+    C-->>P: on_tick(delta=2.0) (no-op while paused)
+    Main->>P: next_media(); play()
+    Main->>C: tick(999.0)
+    C-->>P: on_tick(delta=999.0) (stop at end)
+    Main-->>Main: exit

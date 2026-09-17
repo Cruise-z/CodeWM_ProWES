@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant R as runtime (src/Main.cpp)
+    participant G as Game
+    participant S as Snake
+    participant B as Board
+    participant RNG as IRandom/DefaultRandom
+    R->>RNG: construct(seed)
+    R->>G: construct(width,height,RNG)
+    G->>B: init bounds
+    G->>S: init centered length=3 dir=Right
+    G->>G: placeFood()
+    loop ticks
+        R->>G: setDirection(optional)
+        R->>G: tick()
+        G->>S: apply pending direction
+        G->>S: compute next head
+        G->>B: inBounds(next)
+        G->>S: wouldSelfCollide(next, grow?)
+        alt eating food
+            G->>S: advanceTo(next,grow=true)
+            G->>G: score++ and placeFood()
+        else normal move
+            G->>S: advanceTo(next,grow=false)
+        end
+    end
+    R-->>R: print summary and exit

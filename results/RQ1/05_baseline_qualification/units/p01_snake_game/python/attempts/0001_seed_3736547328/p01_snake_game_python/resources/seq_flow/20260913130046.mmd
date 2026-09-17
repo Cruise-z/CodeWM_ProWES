@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as Snake
+    participant C as collision
+    participant F as food
+    participant RP as RandomProvider
+    M->>G: __init__(Grid(10,10), rng, start=(5,5), dir=RIGHT)
+    G->>RP: next_position(grid)
+    RP-->>G: initial food Position
+    M->>G: step()
+    G->>S: next_head()
+    S-->>G: Position(x+dx, y+dy)
+    G->>C: hit_wall(grid, next_head)
+    C-->>G: False (safe)
+    G->>C: hit_self(body, next_head, grow)
+    C-->>G: False (safe)
+    G->>S: advance(grow)
+    alt food consumed
+        G->>F: place_food(grid, rng, occupied)
+        F->>RP: next_position(grid)
+        RP-->>F: new food Position
+        F-->>G: new food Position
+        G->>G: score += 1
+    end
+    M->>G: state()
+    G-->>M: {width,height,snake,food,score,over,direction}
+    M-->>M: print snapshot
+    M-->>M: exit

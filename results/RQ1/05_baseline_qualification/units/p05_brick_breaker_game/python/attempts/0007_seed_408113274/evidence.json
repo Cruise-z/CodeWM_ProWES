@@ -1,0 +1,34 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 9,
+    "architecture_team_sha256": "a4cefc0c1231e6b901c0ac7efe530e1ef103e3dc4a7a104cf50bfa87d77ddf18",
+    "initial_repository_tree_sha256": "ad7d539e617ae41522af8511de831af3c6c6228ab8e18e2637278083d67113bd",
+    "prompt_sha256": "32d6963cf68d67b735fb1331315924b6dd5023d51087340047a2c5763e7b169f"
+  },
+  "architecture_team_sha256": "a4cefc0c1231e6b901c0ac7efe530e1ef103e3dc4a7a104cf50bfa87d77ddf18",
+  "attempt": 7,
+  "completed_at": "2026-09-13T19:26:06.250456+00:00",
+  "evaluator_elapsed_seconds": 2.247,
+  "evaluator_log_sha256": "e55b09f721f3f38ab95e9e567006fbc08c9abd9ffdd8fb6825b933488f618e84",
+  "evaluator_return_code": 1,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/python/attempts/0007_seed_408113274/p05_brick_breaker_game_python/p05_brick_breaker_game_python",
+  "generated_repository_tree_sha256": "c25fda66003b6c10d8b05f36a7a65f181095b25da5662edc43213ec14748f8c0",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 408113274,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "c85c7a7522a9b2db99827e3fbe4e1baa3a665fe7ae54a3cd0ba650d5d837be4e",
+  "initial_repository_tree_sha256": "ad7d539e617ae41522af8511de831af3c6c6228ab8e18e2637278083d67113bd",
+  "passed": false,
+  "rng_seed": 408113274,
+  "started_at": "2026-09-13T19:18:52.183475+00:00",
+  "truncated_files": [],
+  "unit_id": "p05_brick_breaker_game_python"
+}

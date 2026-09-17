@@ -1,0 +1,75 @@
+classDiagram
+    class Priority {
+        <<enumeration>>
+        Low
+        Medium
+        High
+    }
+    class Task {
+        +std::uint64_t id
+        +std::string title
+        +std::string description
+        +std::string due_date
+        +Priority priority
+        +std::vector<std::string> tags
+        +bool completed
+        +static std::string Trim(const std::string&)
+        +static std::string NormalizeTag(const std::string&)
+        +static std::vector<std::string> NormalizeTags(const std::vector<std::string>&)
+        +static bool IsValidTitle(const std::string&)
+    }
+    class DateRules {
+        +static bool is_valid_iso_date(const std::string&)
+        +static int compare_dates(const std::string&, const std::string&)
+    }
+    class SortOrder {
+        <<enumeration>>
+        ByDueThenPriority
+        ByTitle
+    }
+    class FilterOptions {
+        +std::optional<bool> completed
+        +std::optional<Priority> min_priority
+        +std::optional<std::string> due_before
+        +std::optional<std::string> due_after
+        +std::vector<std::string> require_tags
+    }
+    class Query {
+        +static FilterOptions WithTags(const FilterOptions&, const std::vector<std::string>&)
+        +static bool matches(const Task&, const FilterOptions&)
+        +static bool less_due_priority(const Task&, const Task&)
+        +static bool less_title(const Task&, const Task&)
+    }
+    class ITaskStore {
+        <<interface>>
+        +bool add(const Task&)
+        +bool update(const Task&)
+        +bool remove(std::uint64_t)
+        +Task* find(std::uint64_t)
+        +std::vector<Task> get_all() const
+    }
+    class InMemoryTaskStore {
+        -std::map<std::uint64_t, Task> tasks_
+        +bool add(const Task&)
+        +bool update(const Task&)
+        +bool remove(std::uint64_t)
+        +Task* find(std::uint64_t)
+        +std::vector<Task> get_all() const
+    }
+    class TaskManager {
+        -ITaskStore& store_
+        -std::uint64_t next_id_
+        +explicit TaskManager(ITaskStore&)
+        +std::uint64_t create_task(const std::string&, const std::string&, const std::string&, Priority, const std::vector<std::string>&)
+        +bool edit_task(std::uint64_t, const std::string&, const std::string&, const std::string&, Priority, const std::vector<std::string>&)
+        +bool delete_task(std::uint64_t)
+        +bool set_completed(std::uint64_t, bool)
+        +std::vector<Task> list(const FilterOptions&, SortOrder) const
+        +std::pair<std::size_t, std::size_t> summarize() const
+    }
+    InMemoryTaskStore ..|> ITaskStore
+    TaskManager --> ITaskStore
+    Query --> DateRules
+    Query --> Task
+    TaskManager --> Query
+    TaskManager --> Task

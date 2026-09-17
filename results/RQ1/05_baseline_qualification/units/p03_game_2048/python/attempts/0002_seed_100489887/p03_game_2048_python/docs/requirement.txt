@@ -1,0 +1,63 @@
+Generate a complete medium-size Python 3.10 repository architecture for: 2048 game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python 3.10 import and deterministic-test contract:
+- Main.py is a top-level module imported by pytest as from Main import run_demo; therefore Main.py MUST use absolute imports beginning with from twenty48, specifically from twenty48.game import Game and from twenty48.types import Direction, and MUST NEVER use from .twenty48, any leading-dot import, or assume the repository root is a package
+- modules inside the twenty48 package may use explicit package-relative imports such as from .types import Direction; twenty48/__init__.py may re-export Board, Game, Direction, and GameStatus with package-relative imports
+- expose exactly run_demo(seed: int = 0) -> dict in Main.py; it creates Game(seed), calls reset once, applies Direction.LEFT once, returns a dictionary containing status, score, and tiles, prints at most one concise line, performs no input/network/GUI work, and Main.py invokes it only under the if __name__ == "__main__": guard
+- keep the canonical pure function move_line_left(line: list[int]) -> tuple[list[int], int]; it validates length four, compacts zeroes, merges each tile at most once from left to right, and reports the sum of newly merged values
+- move_line_left MUST use the unambiguous output-list algorithm literally: set values=[v for v in line if v!=0] (not line[:] and not any copy retaining zeroes), output=[], score=0, i=0; while i<len(values), if i+1<len(values) and values[i]==values[i+1], append values[i]*2, add that merged value to score, and execute i+=2, otherwise append values[i] and execute i+=1; finally append zeroes until output has length four and return (output,score)
+- an in-place pop algorithm is forbidden: never merge by replacing values[i] and popping values[i+1], never increment i twice after a merge, and never leave i unchanged after a merge, because either pattern skips an independent pair or lets a newly merged tile merge again in the same move
+- tests/test_main.py contains exactly 2--4 concise tests and uses only absolute imports: from Main import run_demo and from twenty48.move import move_line_left; leading-dot imports and dynamically changing sys.path are forbidden
+- the exact pure fixtures are move_line_left([2,2,2,0]) == ([4,2,0,0],4), move_line_left([2,2,4,4]) == ([4,8,0,0],12), and the mandatory gap-compaction fixture move_line_left([2,0,2,0]) == ([4,0,0,0],4); tests must include all three so an implementation that scans an uncompressed copy cannot pass; a smoke test calls run_demo(0) and only checks that the result is a dict with keys status, score, and tiles, avoiding brittle random-position expectations
+- requirements.txt contains only a Python-3.10-compatible pytest requirement; never list the standard library or the local twenty48 package as an external dependency
+- repeat the top-level absolute-import rule, forbidden leading-dot Main import, exact run_demo API, exact zero-filtering output-list merge pseudocode with i+=2/i+=1, forbidden in-place-pop and zero-retaining implementations, all three exact pure fixtures including gap compaction, and test imports in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and the Main.py/twenty48/move.py/tests/test_main.py implementation tasks; merely saying that Main depends on twenty48 or that tiles merge once is insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 33 functions or methods
+- about 650 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- 4x4 board
+- left right up and down moves
+- single-merge-per-move rule
+- score accumulation
+- deterministic tile spawning
+- win loss and reset states
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

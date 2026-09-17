@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant M as Main
+    participant Q as DownloadQueue
+    participant U as UrlApi
+    participant N as SafeNamer
+    participant F as ITransferAdapter
+    participant E as IExistingFiles
+    M->>Q: enqueue(url, "mp4", "clip")
+    Q->>U: is_valid_url(url)
+    U-->>Q: bool
+    Q->>U: parse_format("mp4", out)
+    U-->>Q: ok, Format::MP4
+    Q->>U: extension_for(Format::MP4)
+    U-->>Q: ".mp4"
+    Q->>N: sanitize_base("clip")
+    N-->>Q: "clip"
+    Q->>E: exists("clip.mp4")
+    E-->>Q: bool
+    Q->>N: unique_name("clip", ".mp4", E, reserved)
+    N-->>Q: "clip.mp4" or "clip_2.mp4"
+    Q->>F: total_bytes(url)
+    F-->>Q: 12
+    Q-->>M: EnqueueResult{ok=true, id, filename}
+    loop bounded ticks
+        M->>Q: tick()
+        Q->>Q: find first QUEUED/DOWNLOADING
+        Q->>Q: state=DOWNLOADING (if was QUEUED)
+        Q->>Q: bytes += min(chunk, remaining)
+        Q->>Q: if bytes==total then COMPLETED
+    end

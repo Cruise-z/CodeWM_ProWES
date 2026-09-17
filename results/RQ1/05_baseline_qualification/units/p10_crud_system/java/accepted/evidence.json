@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T12:25:13.307589+00:00",
+  "accepted_repository_tree_sha256": "dd307d38189762dc5148323620a7ff357bf0eacdaaf387282f4a76755fc83499",
+  "architecture_epoch": {
+    "architecture_attempt": 131,
+    "architecture_team_sha256": "9bef45c1de998cdb31b61c312d416b98b97c5a2a95c5f3aa49a65eab42762003",
+    "initial_repository_tree_sha256": "2bb3efc23e129a9e2c76c4a6adc75c5c9861b9365f84bc30a4cb861fb7543f5e",
+    "prompt_sha256": "4714d31d6697e2cfcaea005f1a1b6857465388264be0471823a07a5ab037d793"
+  },
+  "architecture_team_sha256": "9bef45c1de998cdb31b61c312d416b98b97c5a2a95c5f3aa49a65eab42762003",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p10_crud_system/java/attempts/0001_seed_3479630733/evaluator.log",
+  "attempt_evidence": "units/p10_crud_system/java/attempts/0001_seed_3479630733/evidence.json",
+  "attempt_generation_report": "units/p10_crud_system/java/attempts/0001_seed_3479630733/generation_report.json",
+  "completed_at": "2026-09-14T12:25:13.290724+00:00",
+  "evaluator_elapsed_seconds": 10.388,
+  "evaluator_log_sha256": "f7ef61d1562a26f938d205091f78e575df4add12713e6cb0806305fbcf6d8a52",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/java/attempts/0001_seed_3479630733/p10_crud_system_java/p10_crud_system_java",
+  "generated_repository_tree_sha256": "214dfc33b57762d1819e95b7467ebf8ecd7f3267f9ff66f82d334aea1318b2ce",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3479630733,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "d843cf067a0b9cf7afde11b8a2a683146fdf2fb23c2401f416d6ffb451c84ba5",
+  "initial_repository_tree_sha256": "2bb3efc23e129a9e2c76c4a6adc75c5c9861b9365f84bc30a4cb861fb7543f5e",
+  "passed": true,
+  "rng_seed": 3479630733,
+  "started_at": "2026-09-14T12:20:06.095346+00:00",
+  "truncated_files": [],
+  "unit_id": "p10_crud_system_java"
+}

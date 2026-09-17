@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant M as Main
+    participant C as Calculator
+    participant T as Tokenizer
+    participant P as Parser
+    participant H as CalculationHistory
+    M->>C: evaluate("-3 + 4*2/(1-5)")
+    C->>T: tokenize(expression)
+    T-->>C: List<Token>
+    C->>P: evaluate(tokens)
+    P-->>C: double result or throws CalculatorException
+    alt success
+        C->>H: add(HistoryEntry success)
+        C-->>M: CalculationResult(success, result)
+    else error
+        C->>H: add(HistoryEntry error)
+        C-->>M: CalculationResult(error, message)
+    end
+    M->>C: history()
+    C-->>M: List<HistoryEntry>

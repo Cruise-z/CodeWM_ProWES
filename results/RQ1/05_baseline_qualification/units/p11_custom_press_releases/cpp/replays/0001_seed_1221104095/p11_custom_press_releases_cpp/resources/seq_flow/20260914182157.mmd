@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant M as Main.cpp
+    participant C as FixedClock
+    participant PR as PressRelease
+    participant V as Validator
+    participant T as TemplateEngine
+    participant R as Renderer
+    participant S as SearchIndex
+    M->>C: construct FixedClock("2024-01-02T10:00:00Z")
+    M->>PR: construct PressRelease("PR-001")
+    M->>PR: setHeadline(..., C, "set headline")
+    M->>PR: setBody(..., C, "set body")
+    M->>PR: setContact(..., C, "set contact")
+    M->>PR: addTag("finance", C, "add tag")
+    M->>V: construct Validator
+    M->>PR: submitForReview(V, C, "submit for review")
+    M->>PR: publish(V, C, "publish")
+    M->>T: construct TemplateEngine
+    M->>R: construct Renderer
+    M->>R: render(template, PR, T)
+    R-->>M: output text
+    M->>S: construct SearchIndex
+    M->>S: add(ReleaseRecord from PR)
+    M->>S: search("headline", {"finance"})
+    S-->>M: results
+    M-->>M: print version history and search results

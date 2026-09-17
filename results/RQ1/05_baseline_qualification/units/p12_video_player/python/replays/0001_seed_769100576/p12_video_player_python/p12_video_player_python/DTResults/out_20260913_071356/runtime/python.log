@@ -1,0 +1,25 @@
+Starting playback...
+State: playing
+Current media: Introduction
+Position after 1 second: 1.0
+Seeked to 5.0 seconds, effective position: 5.0
+State after pause: paused
+Position after 2 seconds while paused: 5.0
+State after resume: playing
+Position after 3 seconds: 8.0
+Next media: Main Content
+State after next: stopped
+Position after next: 0.0
+Seeked to end of media, position: 20.0
+Position after advancing past end: 20.0
+State after reaching end: stopped
+State after playing again: playing
+Position after restart: 0.0
+Volume set to 0.5, effective volume: 0.5
+After muting, effective volume: 0.0
+After unmuting, effective volume: 0.5
+After toggle mute, mute state: True
+After toggle mute, effective volume: 0.0
+Selected media by index 0: Introduction
+State after selecting index: stopped
+Position after selecting index: 0.0

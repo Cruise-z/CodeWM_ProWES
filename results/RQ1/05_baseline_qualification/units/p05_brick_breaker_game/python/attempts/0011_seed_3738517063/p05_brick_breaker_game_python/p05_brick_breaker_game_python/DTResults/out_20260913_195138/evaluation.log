@@ -1,0 +1,105 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+..FF                                                                     [100%]
+=================================== FAILURES ===================================
+______________ test_bottom_out_decrements_lives_and_resets_level _______________
+
+    def test_bottom_out_decrements_lives_and_resets_level():
+        """Test that bottom-out decrements lives and resets level when lives remain."""
+        # Create a game with minimal settings for testing
+        config = GameConfig(
+            width=300,
+            height=400,
+            lives=3,
+            ball_speed=120.0,
+            ball_radius=4.0,
+            paddle_width=60.0,
+            paddle_speed=180.0,
+            brick_rows=1,
+            brick_cols=1,
+            brick_width=50.0,
+            brick_height=14.0,
+            brick_padding=2.0,
+            top_margin=40.0,
+            points_per_brick=100
+        )
+    
+        # Create a game instance
+        game = GameClass(config)
+    
+        # Move ball below the screen to trigger bottom-out
+        game.ball.y = 450.0  # Below the screen
+        game.ball.vx = 0.0
+        game.ball.vy = 120.0  # Moving down
+    
+        # Perform one tick to trigger bottom-out
+        snapshot = game.tick('none')
+    
+        # Verify lives decremented
+        assert snapshot['lives'] == 2
+    
+        # Verify level was reset (same brick count)
+        assert snapshot['bricks_remaining'] == 1
+    
+        # Verify ball was reset
+>       assert snapshot['ball']['y'] == 380.0  # Slightly above paddle
+E       assert 370 == 380.0
+
+tests/test_main.py:120: AssertionError
+__________________________ test_bottom_out_game_over ___________________________
+
+    def test_bottom_out_game_over():
+        """Test that bottom-out results in game over when no lives remain."""
+        # Create a game with one life
+        config = GameConfig(
+            width=300,
+            height=400,
+            lives=1,
+            ball_speed=120.0,
+            ball_radius=4.0,
+            paddle_width=60.0,
+            paddle_speed=180.0,
+            brick_rows=1,
+            brick_cols=1,
+            brick_width=50.0,
+            brick_height=14.0,
+            brick_padding=2.0,
+            top_margin=40.0,
+            points_per_brick=100
+        )
+    
+        # Create a game instance
+        game = GameClass(config)
+    
+        # Move ball below the screen to trigger bottom-out
+        game.ball.y = 450.0  # Below the screen
+        game.ball.vx = 0.0
+        game.ball.vy = 120.0  # Moving down
+    
+        # Perform one tick to trigger bottom-out
+        snapshot = game.tick('none')
+    
+        # Verify game over
+        assert snapshot['lives'] == 0
+        assert snapshot['status'] == 'gameover'
+    
+        # Verify ball position was reset (should be at paddle level)
+>       assert snapshot['ball']['y'] == 380.0  # Slightly above paddle
+E       assert 452.0 == 380.0
+
+tests/test_main.py:163: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_main.py::test_bottom_out_decrements_lives_and_resets_level
+FAILED tests/test_main.py::test_bottom_out_game_over - assert 452.0 == 380.0
+2 failed, 2 passed in 0.04s

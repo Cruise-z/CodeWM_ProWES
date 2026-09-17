@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant P as Paddle
+    participant B as Ball
+    participant C as Collision
+    M->>P: new Paddle(...)
+    M->>B: new Ball(...)
+    M->>G: new Game(width,height,P,B,bricks,lives)
+    M->>G: tick(dt)
+    activate G
+    G->>B: integrate position (x+=vx*dt, y+=vy*dt)
+    G->>G: handle walls (left/right/top reflect; bottom-out life reset)
+    G->>P: asRect() for paddle collision
+    G->>C: circleIntersectsRect(B, P.asRect())
+    C-->>G: boolean + penetration axes
+    G->>B: reflect velocity on min-penetration axis if collided
+    loop for each brick (stop after first hit)
+        G->>C: circleIntersectsRect(B, brick.rect)
+        C-->>G: boolean + penetration axes
+        alt hit
+            G->>B: reflect velocity on min axis
+            G->>brick: hit()
+            G->>G: if brick destroyed & breakable -> remove, score+=100
+        end
+    end
+    G-->>M: state updated (score/lives/flags)
+    deactivate G

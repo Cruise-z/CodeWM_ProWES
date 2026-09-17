@@ -1,0 +1,52 @@
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260914_172039/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 11%] Building CXX object CMakeFiles/crud_core.dir/src/ManualClock.cpp.o
+[ 22%] Building CXX object CMakeFiles/crud_core.dir/src/Record.cpp.o
+[ 33%] Building CXX object CMakeFiles/crud_core.dir/src/CrudService.cpp.o
+[ 44%] Building CXX object CMakeFiles/crud_core.dir/src/Repository.cpp.o
+[ 55%] Linking CXX static library libcrud_core.a
+[ 55%] Built target crud_core
+[ 66%] Building CXX object CMakeFiles/crud_app.dir/src/Main.cpp.o
+[ 77%] Building CXX object CMakeFiles/crud_tests.dir/tests/test_main.cpp.o
+[ 88%] Linking CXX executable crud_app
+[100%] Linking CXX executable crud_tests
+[100%] Built target crud_app
+[100%] Built target crud_tests
+>>> Running CTest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Internal ctest changing into directory: /workspace/proj_20260914_172039/build
+Test project /workspace/proj_20260914_172039/build
+    Start 1: crud_tests
+1/1 Test #1: crud_tests .......................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+>>> Packaging C++ runnable binary
+>>> C++ packaged artifact:
+-rwxr-xr-x 1 root root 37656 Sep 14 17:20 /workspace/proj_20260914_172039/DTResults/artifacts/proj_20260914_172039
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: '/workspace/proj_20260914_172039/DTResults/artifacts/proj_20260914_172039'
+[INFO] Runtime output is captured in: /workspace/proj_20260914_172039/DTResults/runtime/cpp.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260914_172039/DTResults/runtime/cpp.log
+----- BEGIN runtime log tail (40 lines) -----
+Created record with ID: 1, Name: Alice, Email: alice@example.com, Revision: 1, Updated At: 100
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":95,"output_lines":1,"max_same_line":1,"max_consecutive_same_line":1,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260914_172039/DTResults/artifacts

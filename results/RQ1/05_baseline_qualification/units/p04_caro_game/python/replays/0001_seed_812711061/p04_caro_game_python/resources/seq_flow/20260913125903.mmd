@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant M as Main.py
+    participant G as CaroGame
+    participant B as Board
+    participant R as Rules
+    M->>G: construct(size=15, first_player=X)
+    loop Canonical nine-move sequence
+        M->>G: move(row,col)
+        G->>G: validate status IN_PROGRESS else raise GameOverError
+        G->>B: in_bounds(row,col)? else InvalidMoveError
+        G->>B: is_empty(row,col)? else InvalidMoveError
+        G->>B: set_cell(row,col,current_player)
+        G->>R: has_five_or_more(B,row,col,current_player)?
+        alt win
+            G->>G: set status to X_WON/O_WON; set winner; do not toggle
+        else no win
+            G->>B: is_full()? draw if true
+            G->>G: toggle player if still IN_PROGRESS
+        end
+    end
+    M->>M: print single status line and exit

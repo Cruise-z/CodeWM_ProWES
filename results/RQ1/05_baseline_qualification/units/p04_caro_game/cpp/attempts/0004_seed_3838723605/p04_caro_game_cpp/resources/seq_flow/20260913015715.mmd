@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant M as Main
+    participant GE as GameEngine
+    participant B as Board
+    participant WD as WinDetector
+    M->>GE: construct GameEngine(15,15)
+    M->>GE: applyMove(r,c) by Alice (Player X)
+    GE->>B: validate inBounds & cell empty
+    GE->>B: set(r,c,CellState::X)
+    GE->>WD: checkWin(Board)
+    WD-->>GE: none
+    GE-->>M: MoveError::None, status InProgress
+    M->>GE: applyMove(r,c) by Eve (Player O)
+    GE->>B: validate & set
+    GE->>WD: checkWin
+    GE-->>M: MoveError::None
+    M->>GE: repeat deterministic sequence
+    WD-->>GE: winner found (Player X)
+    GE-->>M: status WonX
+    M-->>M: print summary and exit

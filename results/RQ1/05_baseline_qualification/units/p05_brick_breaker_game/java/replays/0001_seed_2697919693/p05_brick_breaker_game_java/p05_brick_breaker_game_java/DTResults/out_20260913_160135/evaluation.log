@@ -1,0 +1,23 @@
+[INFO] Detected protocol: java
+>>> Protocol detected: JAVA
+>>> Running Maven tests
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Lives: 3, Score: 0, Level Completed: false
+>>> Packaging Java project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+>>> Copy Java artifacts
+>>> Java packaged artifacts:
+/workspace/proj_20260913_160135/DTResults/artifacts/arkanoid-game-1.0-SNAPSHOT.jar
+>>> Running Java project via Maven exec:java
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: mvn -q -DskipTests exec:java -Dexec.mainClass=Main  
+[INFO] Runtime output is captured in: /workspace/proj_20260913_160135/DTResults/runtime/java.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260913_160135/DTResults/runtime/java.log
+----- BEGIN runtime log tail (40 lines) -----
+Lives: 3, Score: 0, Level Completed: false
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":43,"output_lines":1,"max_same_line":1,"max_consecutive_same_line":1,"cpu_busy_samples":4}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260913_160135/DTResults/artifacts

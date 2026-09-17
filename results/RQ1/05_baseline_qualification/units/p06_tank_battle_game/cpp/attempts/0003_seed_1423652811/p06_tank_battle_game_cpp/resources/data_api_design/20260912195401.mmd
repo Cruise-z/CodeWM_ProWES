@@ -1,0 +1,86 @@
+classDiagram
+    class Direction {
+    }
+    class Point {
+        +int x
+        +int y
+        +Point(int,int)
+        +bool operator<(const Point&) const
+    }
+    class Size {
+        +int width
+        +int height
+        +Size(int,int)
+    }
+    class Geometry {
+        +bool inBounds(Point, Size)
+        +Point advance(Point, Direction)
+        +Direction rotateLeft(Direction)
+        +Direction rotateRight(Direction)
+    }
+    class Obstacle {
+        +Point pos
+        +Obstacle(Point)
+    }
+    class Arena {
+        +Size size
+        +vector~Obstacle~ obstacles
+        +Arena(int width,int height)
+        +bool inBounds(Point) const
+        +bool isObstacle(Point) const
+        +void clearObstacles()
+        +bool addObstacle(Point)
+    }
+    class Tank {
+        +int id
+        +Point pos
+        +Direction dir
+        +int health
+        +bool alive
+        +Tank(int, Point, Direction, int)
+        +void rotateLeft()
+        +void rotateRight()
+    }
+    class Projectile {
+        +int ownerId
+        +Point pos
+        +Direction dir
+        +bool alive
+        +Projectile(int, Point, Direction)
+        +void step()
+    }
+    class Command {
+        <<enum>> None
+        <<enum>> Move
+        <<enum>> RotateLeft
+        <<enum>> RotateRight
+        <<enum>> Fire
+    }
+    class Game {
+        -Arena arena_
+        -vector~Tank~ tanks_
+        -vector~Projectile~ projectiles_
+        -vector~Command~ pending_
+        -vector~int~ scores_
+        -int tickCount_
+        -int winnerId_ // -1 if none
+        +Game(int width,int height)
+        +void reset()
+        +Arena& arena()
+        +const Arena& arena() const
+        +bool queueCommand(int tankId, Command cmd)
+        +void tick()
+        +const Tank* getTank(int id) const
+        +int getScore(int id) const
+        +int getWinner() const
+        +bool isOver() const
+        +const vector~Projectile~& getProjectiles() const
+    }
+    Geometry ..> Direction
+    Arena o--> Obstacle
+    Game o--> Arena
+    Game o--> Tank
+    Game o--> Projectile
+    Game ..> Command
+    Tank ..> Direction
+    Projectile ..> Direction

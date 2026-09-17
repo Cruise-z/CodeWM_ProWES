@@ -1,0 +1,192 @@
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {
+    "add_test_declared": true,
+    "cmake_contract": "CMakeLists.txt sets CMAKE_CXX_STANDARD 17 with extensions off; adds library todo_core from five non-Main src; target_include_directories for include; adds executable todo_app from src/Main.cpp and todo_tests from tests/test_main.cpp; links both against todo_core; calls enable_testing(); add_test(NAME todo_tests COMMAND todo_tests)",
+    "enable_testing_declared": true,
+    "headers_have_matching_sources": true,
+    "non_main_sources_in_core_library": [
+      "src/Task.cpp",
+      "src/Date.cpp",
+      "src/Query.cpp",
+      "src/TaskStore.cpp",
+      "src/TaskManager.cpp"
+    ],
+    "runtime_links_core_library": true,
+    "special_include_contracts": [
+      "TaskStore.h must include <map> before declaring std::map<std::uint64_t, Task> tasks_",
+      "Query.cpp must include <set> before using std::set",
+      "Date.cpp must declare IsLeapYear before IsValidDay uses it"
+    ],
+    "suspected_build_breakers": [],
+    "test_links_core_library": true,
+    "tests_include_headers_only": true
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "include/Task.h",
+    "src/Task.cpp",
+    "include/Date.h",
+    "src/Date.cpp",
+    "include/Query.h",
+    "src/Query.cpp",
+    "include/TaskStore.h",
+    "src/TaskStore.cpp",
+    "include/TaskManager.h",
+    "src/TaskManager.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Execution Protocol": "Build with CMake, run ctest. Runtime entry is src/Main.cpp (todo_app). Test target is tests/test_main.cpp (todo_tests). Command: ctest --test-dir build --output-on-failure. Exactly one protocol-level test executable is registered. Tests include headers only and link to the core library; both runtime and test targets link against todo_core. No network, UI, or manual interaction.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 13,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 13,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 13,
+    "task_list_count": 13
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size C++17 repository architecture for: To-Do List App.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\n\nProject-specific C++17 to-do repository and header-self-containment contract:\n- use exactly these files and no substitutes, in dependency order: CMakeLists.txt, include/Task.h, src/Task.cpp, include/Date.h, src/Date.cpp, include/Query.h, src/Query.cpp, include/TaskStore.h, src/TaskStore.cpp, include/TaskManager.h, src/TaskManager.cpp, src/Main.cpp, tests/test_main.cpp. Do not add separate Priority, Filter, Sort, Repository, Service, Controller, or exception files\n- every header is self-contained. Task.h directly includes <cstdint>, <string>, and <vector>. Date.h directly includes <string>. Query.h directly includes <optional>, <string>, <vector>, \"Date.h\", and \"Task.h\". TaskStore.h directly includes <cstdint>, <map>, <vector>, and \"Task.h\" before declaring `std::map<std::uint64_t, Task> tasks_`. TaskManager.h directly includes <cstddef>, <cstdint>, <string>, <utility>, <vector>, \"Query.h\", and \"TaskStore.h\". Never rely on a transitive standard-library include\n- Task.cpp directly includes \"Task.h\", <algorithm>, and <cctype>. Date.cpp directly includes \"Date.h\" and <cctype>; every anonymous-namespace helper is declared before first use: in particular `IsLeapYear` MUST be defined or forward-declared before `IsValidDay` calls it, and a call to an as-yet undeclared helper is forbidden. Query.cpp directly includes \"Query.h\", <algorithm>, and <set>; every use of `std::set` therefore compiles. TaskStore.cpp directly includes \"TaskStore.h\". TaskManager.cpp directly includes \"TaskManager.h\", <algorithm>, and <stdexcept>. Sources and tests include project headers only by basename and never include a .cpp file\n- Task.h solely defines enum class Priority { Low, Medium, High } and aggregate Task with std::uint64_t id, string title/description/due_date, Priority priority, vector<string> tags, and bool completed, plus static Trim, NormalizeTag, NormalizeTags, and IsValidTitle helpers. NormalizeTags removes empty tags, sorts, and deduplicates deterministically\n- DateRules exposes static bool is_valid_iso_date(const std::string&) and static int compare_dates(const std::string&,const std::string&). Dates are exactly YYYY-MM-DD with digit and month/day range checks. TaskManager permits an empty due date; Query sorts an empty due date after valid dates. Consequently compare_dates(\"\", valid_date) returns positive, compare_dates(valid_date, \"\") returns negative, and compare_dates(\"\", \"\") returns zero\n- Query.h declares its public types at global/namespace scope in this exact order: first `enum class SortOrder { ByDueThenPriority, ByTitle };`, then struct FilterOptions with optional completed/min_priority/due_before/due_after and vector<string> require_tags, then class Query with static WithTags/matches/less_due_priority/less_title. SortOrder MUST remain outside class Query; nesting it in Query and spelling `Query::SortOrder` anywhere are forbidden. TaskManager.h and TaskManager.cpp use the unqualified global name SortOrder. Query requires every requested normalized tag, sorts earlier valid due dates first, then higher priority, title, and id deterministically\n- TaskStore.h owns ITaskStore and concrete InMemoryTaskStore backed only by the private map tasks_. Its add/update/remove/find/get_all methods return ordinary success values, pointers into the map only for find, and an ascending-id defensive vector for get_all\n- TaskManager owns an injected ITaskStore reference and monotonically increasing IDs starting at 1. create_task validates title and optional due date, normalizes tags, stores completed=false, and returns the id; edit_task revalidates; delete_task and set_completed return false for missing ids; list filters and sorts copies; summarize returns pair<completed_count,pending_count>\n- CMakeLists.txt enables C++17 with extensions off, builds todo_core from the five non-Main source files, publishes the include directory, builds todo_app and todo_tests, links both to todo_core, calls enable_testing(), and registers todo_tests. No external package, FetchContent, framework, filesystem, network, GUI, thread, clock, or randomness is allowed\n- src/Main.cpp performs one small fixed non-interactive demo and returns 0. tests/test_main.cpp directly includes <cassert>, <stdexcept>, <vector>, and \"TaskManager.h\", defines exactly one int main(), and has exactly three fresh-object blocks: basic create/list/summary, invalid title/date rejection, and normalized-tag plus due-date/priority ordering. Each block is independently scoped and MUST NOT reference a local id declared in another block. The invalid-title/date block first creates its own local valid task as `const auto existing_id = manager.create_task(\"Existing\", \"\", \"\", Priority::Low, {});` and uses existing_id when asserting that edit_task throws for invalid replacement data; it uses an arbitrary missing id only for the false-return assertion. It uses no third-party test framework. Because assert is a preprocessor macro, a braced initializer containing a comma must never appear directly inside assert: `assert(actual == std::vector<std::string>{\"a\", \"b\"});` is forbidden. Instead first declare `const std::vector<std::string> expected_tags{\"a\", \"b\"};` and then call `assert(actual == expected_tags);`; double-parenthesized assert is permitted but a named expected vector is preferred\n- repeat the exact 13-file list, all direct include lists (especially TaskStore.h <map> and Query.cpp <set>), helper declaration-before-use rule, empty-date comparison signs, global non-nested SortOrder declaration and unqualified use, exact field names, canonical APIs, deterministic ordering, independent test-block variable ownership including local existing_id, the forbidden braced-initializer-inside-assert form and named expected-vector replacement, one-main test rule, and three scopes in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, C++ Build Link Audit, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 29 functions or methods\n- about 613 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- task creation editing and deletion\n- completion state\n- priority due date and tags\n- filtering and sorting\n- in-memory persistence boundary\n- validation and deterministic summaries\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE TO-DO C++17 COMPILATION CHECKLIST:\n- Task filenames are exactly: CMakeLists.txt; include/Task.h; src/Task.cpp; include/Date.h; src/Date.cpp; include/Query.h; src/Query.cpp; include/TaskStore.h; src/TaskStore.cpp; include/TaskManager.h; src/TaskManager.cpp; src/Main.cpp; tests/test_main.cpp.\n- TaskStore.h directly contains `#include <map>` before declaring `std::map<std::uint64_t, Task> tasks_`; Query.cpp directly contains `#include <set>` before using std::set. Every header and source contains all of its own standard-library includes and never relies on transitive includes.\n- Query.h declares the global `enum class SortOrder { ByDueThenPriority, ByTitle };` outside and before class Query. Query::SortOrder and every nested SortOrder declaration are forbidden; TaskManager uses the unqualified global SortOrder type.\n- Date.cpp declares every helper before first use, especially IsLeapYear before IsValidDay calls it. Empty dates sort after valid dates: compare_dates(\"\",valid)>0 and compare_dates(valid,\"\")<0.\n- CMake builds and links todo_core, todo_app, and todo_tests without an external framework. tests/test_main.cpp contains exactly one int main and exactly three deterministic independently scoped blocks; no block references a local id from another block. The invalid-data block creates and uses its own local existing_id. It must never put `std::vector<std::string>{\"a\", \"b\"}` directly inside an assert macro; first declare a named expected vector and compare against that name. Do not summarize or omit the literal <map>/<set>/helper-order/local-existing-id/assert-safety tokens from Full API, Logic Analysis, Shared Knowledge, or affected tasks.\n\n",
+  "Logic Analysis": [
+    [
+      "CMakeLists.txt",
+      "dependency/build; declares core library (todo_core), runtime target (todo_app), test target (todo_tests), enables testing, registers test"
+    ],
+    [
+      "include/Task.h",
+      "interface/declaration; declares enum class Priority { Low, Medium, High } and struct Task fields and static helpers Trim/NormalizeTag/NormalizeTags/IsValidTitle; header must be self-contained and include <cstdint>, <string>, <vector>"
+    ],
+    [
+      "src/Task.cpp",
+      "implementation/domain-entity; implements Task helpers; must include \"Task.h\", <algorithm>, <cctype>; normalization trims, ASCII-lowercases tags, removes empties, sorts, deduplicates deterministically"
+    ],
+    [
+      "include/Date.h",
+      "interface/declaration; declares class DateRules with static is_valid_iso_date and compare_dates; header must be self-contained and include <string>"
+    ],
+    [
+      "src/Date.cpp",
+      "implementation/pure-rule; implements strict ISO YYYY-MM-DD validation with range checks and leap-year logic; implements compare_dates with empty-date order guarantees; must include \"Date.h\" and <cctype>; helper IsLeapYear declared/defined before IsValidDay uses it (declaration-before-use rule)"
+    ],
+    [
+      "include/Query.h",
+      "interface/declaration; declares global enum class SortOrder { ByDueThenPriority, ByTitle }; declares struct FilterOptions with optionals and require_tags; declares class Query with static WithTags/matches/less_due_priority/less_title; must include <optional>, <string>, <vector>, \"Date.h\", and \"Task.h\"; SortOrder must be global (not nested)"
+    ],
+    [
+      "src/Query.cpp",
+      "implementation/pure-rule; implements FilterOptions tag normalization via WithTags, matches with completion/priority/date range/tag-inclusion rules, comparators for deterministic ordering; must include \"Query.h\", <algorithm>, and <set> (directly) before using std::set"
+    ],
+    [
+      "include/TaskStore.h",
+      "interface/declaration; declares interface ITaskStore and concrete InMemoryTaskStore; must directly include <cstdint>, <map>, <vector>, and \"Task.h\"; declares private std::map<std::uint64_t, Task> tasks_ (ensure <map> is included before this declaration)"
+    ],
+    [
+      "src/TaskStore.cpp",
+      "implementation/domain-entity; implements add/update/remove/find/get_all; find returns pointer into map; get_all returns defensive vector sorted by ascending id; must include \"TaskStore.h\""
+    ],
+    [
+      "include/TaskManager.h",
+      "interface/declaration; orchestrates across store/query/date/task; must include <cstddef>, <cstdint>, <string>, <utility>, <vector>, \"Query.h\", and \"TaskStore.h\"; declares class TaskManager with injected ITaskStore&, next_id_"
+    ],
+    [
+      "src/TaskManager.cpp",
+      "implementation/orchestration; implements monotonic id generation from 1, create/edit/delete/set_completed/list/summarize; validates title and optional due date, normalizes tags, throws std::invalid_argument for invalid title/date in create/edit; returns false for missing ids on delete/set_completed; uses unqualified global SortOrder; must include \"TaskManager.h\", <algorithm>, and <stdexcept>"
+    ],
+    [
+      "src/Main.cpp",
+      "runtime/bootstrap/environment-dependent; thin non-interactive demo wiring InMemoryTaskStore + TaskManager, create a few tasks, list/summarize, return 0"
+    ],
+    [
+      "tests/test_main.cpp",
+      "automated-test; single protocol test file with exactly one int main(), three independently scoped blocks: basic create/list/summary; invalid title/date rejection (with local existing_id); normalized tags and deterministic ordering; must include <cassert>, <stdexcept>, <vector>, and \"TaskManager.h\"; must not include any .cpp and must include only declared headers"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/Task.cpp",
+      "src/Date.cpp",
+      "src/Query.cpp",
+      "src/TaskStore.cpp",
+      "src/TaskManager.cpp"
+    ],
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "CMake>=3.10",
+    "C++17",
+    "No third-party dependencies required"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "Repository layout is exactly 13 files: CMakeLists.txt; include/Task.h; src/Task.cpp; include/Date.h; src/Date.cpp; include/Query.h; src/Query.cpp; include/TaskStore.h; src/TaskStore.cpp; include/TaskManager.h; src/TaskManager.cpp; src/Main.cpp; tests/test_main.cpp. All headers are self-contained and list their own standard includes. TaskStore.h must directly include <map> before declaring std::map<std::uint64_t, Task> tasks_. Query.cpp must directly include <set> before using std::set. In Date.cpp, helper IsLeapYear must be declared/defined before IsValidDay uses it. Empty-date comparison signs are enforced: compare_dates(\"\", valid) > 0; compare_dates(valid, \"\") < 0; compare_dates(\"\", \"\") == 0. SortOrder is a global enum, not nested; TaskManager uses the unqualified SortOrder. tests/test_main.cpp includes only declared headers (\"TaskManager.h\") and never any .cpp. The invalid-data test block declares its own local existing_id and avoids braced-initializers directly inside assert by using named expected vectors.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "single_protocol_test_file": true,
+    "task_list_covers_all_canonical_files": true,
+    "tests_include_headers_only": true,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "CMakeLists.txt",
+    "include/Task.h",
+    "include/Date.h",
+    "include/Query.h",
+    "include/TaskStore.h",
+    "include/TaskManager.h",
+    "src/Task.cpp",
+    "src/Date.cpp",
+    "src/Query.cpp",
+    "src/TaskStore.cpp",
+    "src/TaskManager.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.cpp",
+      "include/TaskManager.h"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.cpp",
+      "block 1 basic wiring: create two local tasks, list with global SortOrder::ByDueThenPriority, and verify deterministic order plus summarize completed/pending counts"
+    ],
+    [
+      "tests/test_main.cpp",
+      "block 2 invalid data with fresh local store/manager: first create `const auto existing_id = manager.create_task(\"Existing\", \"\", \"\", Priority::Low, {});`; create_task rejects blank title and invalid nonempty date; edit_task on a missing arbitrary id returns false; edit_task(existing_id, blank title, ...) throws invalid_argument; never reference an id declared in another block"
+    ],
+    [
+      "tests/test_main.cpp",
+      "block 3 normalized tags and ordering with fresh local store/manager: named expected vectors are declared outside assert; require-all tag filtering works; valid due dates sort before empty dates, then higher Priority/title/id; ByTitle sorts title then id; use global unqualified SortOrder"
+    ]
+  ]
+}

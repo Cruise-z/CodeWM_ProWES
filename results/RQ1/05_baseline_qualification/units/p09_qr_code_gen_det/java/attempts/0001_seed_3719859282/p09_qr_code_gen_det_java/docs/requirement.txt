@@ -1,0 +1,79 @@
+Generate a complete medium-size Java 11 repository architecture for: QR Code Gen.&Det..
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java deterministic QR-like codec and padding contract:
+- use exactly these files and no substitutes, in dependency order: pom.xml, src/main/java/QRMatrix.java, src/main/java/Checksum.java, src/main/java/ZigZag.java, src/main/java/FinderPattern.java, src/main/java/TextEncoder.java, src/main/java/MatrixValidator.java, src/main/java/QRDetector.java, src/main/java/QRCodec.java, src/main/java/QRRenderer.java, src/main/java/Main.java, src/test/java/MainTest.java; every class is in the default package
+- pom.xml targets Java 11, declares JUnit Jupiter in test scope, and configures a JUnit-5-capable Maven Surefire plugin; no runtime dependency, network, GUI, input, randomness, clock, filesystem image, or third-party QR library is allowed
+- Checksum.sumMod256(byte[] data) sums every supplied byte as unsigned and returns the sum modulo 256. TextEncoder.encodePayload(String text) UTF-8 encodes text, prepends a two-byte unsigned big-endian payload length, and appends exactly one checksum byte computed over ONLY the two length bytes plus UTF-8 payload bytes, never over the checksum slot itself. Both encodePayload and decodePayload must literally obtain that checksum input with `java.util.Arrays.copyOf(frame, frame.length - 1)` and compare the expected checksum to `(frame[frame.length - 1] & 0xFF)`. Calling Checksum.sumMod256(frame) on the complete frame during validation is forbidden because it incorrectly includes the checksum byte
+- TextEncoder.decodePayload(byte[] frame) requires the frame length to be exactly 2+L+1, validates the prefix-only checksum before strict UTF-8 decoding, and `TextEncoder.decodePayload(TextEncoder.encodePayload("hello-世界"))` must round-trip directly even without a matrix
+- TextEncoder.bytesToBits(byte[] bytes) emits exactly eight MSB-first bits per byte using the literal assignment `bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;`. TextEncoder.bitsToBytes(boolean[] bits) MUST accept every non-null bit-array length, including zero and lengths not divisible by eight, and pads the final partial byte with trailing zero bits. It must literally allocate `byte[] result = new byte[(bits.length + 7) / 8];` and set each true bit with `result[i / 8] |= (byte) (1 << (7 - (i % 8)));`. A check, exception, assertion, early return, or truncation based on `bits.length % 8 != 0` is forbidden
+- the direct padding fixture is literal: `TextEncoder.bitsToBytes(new boolean[]{true,false,false,false,false,false,false,false,true})` returns a two-byte array whose unsigned values are 128 and 128; MainTest must include this fixture so rejecting or dropping the ninth bit cannot pass
+- FinderPattern.reservedMask(size), FinderPattern.place(matrix), FinderPattern.verify(matrix), and ZigZag.traversal(size,reserved) use one identical three-finder reserved-cell definition. QRCodec.encode writes framed payload bits to the traversal prefix and leaves every unused data cell false
+- ZigZag.traversal uses one exact finite two-pass row-serpentine algorithm, not an open-ended diagonal state machine: first validate that reserved is exactly size by size, set `int count = 0;`, scan every row and column once and increment count only for `!reserved[row][col]`, then allocate exactly `int[][] result = new int[count][2];`. In a second bounded `for (int row = 0; row < size; row++)` pass, visit columns 0 through size-1 on even rows and size-1 through 0 on odd rows, append `[row,col]` only when the cell is not reserved, and return after exactly count insertions
+- ZigZag.traversal MUST NOT allocate `new int[size * size][2]`, MUST NOT terminate on `index < size * size`, and MUST NOT use any while loop or leave zero-coordinate placeholder entries. These forms can never terminate after reserved cells are skipped and previously caused Index 21 out-of-bounds. Both encode and decode use the exact returned `count` coordinates without re-filtering them
+- MatrixValidator accepts only odd sizes at least 21. MatrixValidator.capacityBits(size) derives capacity by counting false entries in FinderPattern.reservedMask(size) and may round that count down to a multiple of eight; it must not subtract three pattern areas in a way that double-counts overlaps. QRDetector.readDataBits(QRMatrix matrix) deliberately returns every unreserved traversal bit, whose length need not be divisible by eight; no caller may assume its length is byte-aligned
+- QRDetector.extractPayloadBytes first calls readDataBits, then calls TextEncoder.bitsToBytes on that complete possibly-non-byte-aligned array. It reads unsigned L from the first two resulting bytes, computes exactly `int frameLength = 2 + length + 1;`, rejects insufficient bytes, then literally uses `byte[] frame = java.util.Arrays.copyOf(bytes, frameLength);`, validates that exact frame with TextEncoder.decodePayload(frame), and returns frame. It ignores only the zero-filled unused matrix suffix by truncating according to L; it must never pass all capacity bytes to an exact-length decoder
+- QRCodec.encode(String,int), encode(String), and decode(QRMatrix) use that single framing path. Auto-size must literally begin with `int size = 21;`, then add two while capacity is insufficient; QRCodec must never read a MatrixValidator.MIN_SIZE field or any other visibility-sensitive constant. QRRenderer.render produces exactly one deterministic line per matrix row and performs no I/O
+- Because every project class is in Java's unnamed/default package, MainTest imports ONLY `org.junit.jupiter.api.Test` and static members from `org.junit.jupiter.api.Assertions`. It directly refers to QRCodec, QRMatrix, TextEncoder, QRRenderer, and Main without importing them. Lines such as `import QRCodec;`, `import QRMatrix;`, or imports of any other default-package project class are invalid Java and strictly forbidden
+- Main.main encodes, renders, and decodes one fixed short string, prints at most one concise result, and returns normally. MainTest contains exactly three concise JUnit Jupiter tests: (1) Main.main returns normally; (2) the exact nine-bit padding fixture above, direct `TextEncoder.decodePayload(TextEncoder.encodePayload("hello-世界"))`, plus `codec.decode(codec.encode("hello-世界"))` all round-trip and rendering has one line per row; (3) corrupting a copied finder cell `[0][0]` makes decode throw IllegalArgumentException. Tests never locate an arbitrary payload bit or assume unused traversal length is divisible by eight
+- repeat the exact file list, Java 11 build, prefix-only checksum calculation, direct payload round-trip, exact bytesToBits inverse, default-package import ban, literal size-21 auto-size start, literal ceil-allocation and bit-setting statements, ban on modulo rejection, complete-bit-read rule, length-determined Arrays.copyOf truncation, exact nine-bit fixture, and three-test scopes in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task; vague statements such as "pad partial bytes" are insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 29 functions or methods
+- about 632 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- text-to-binary payload encoding
+- deterministic square module matrix generation
+- finder-pattern placement
+- matrix validation and rendering
+- payload detection from generated matrices
+- invalid or corrupted matrix rejection
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE QR JAVA PADDING CHECKLIST:
+- Task filenames are exactly: pom.xml; src/main/java/QRMatrix.java; src/main/java/Checksum.java; src/main/java/ZigZag.java; src/main/java/FinderPattern.java; src/main/java/TextEncoder.java; src/main/java/MatrixValidator.java; src/main/java/QRDetector.java; src/main/java/QRCodec.java; src/main/java/QRRenderer.java; src/main/java/Main.java; src/test/java/MainTest.java.
+- Full API and affected implementation tasks literally contain `byte[] result = new byte[(bits.length + 7) / 8];`, `result[i / 8] |= (byte) (1 << (7 - (i % 8)));`, and `byte[] frame = java.util.Arrays.copyOf(bytes, frameLength);`. bitsToBytes accepts non-byte-aligned arrays and never rejects `bits.length % 8 != 0`.
+- Checksum covers only the two-byte length and UTF-8 payload prefix: encodePayload and decodePayload both literally use `java.util.Arrays.copyOf(frame, frame.length - 1)` as the Checksum.sumMod256 input and compare against the unsigned final byte. Computing the validation checksum over the complete frame is forbidden. bytesToBits literally uses `bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;`.
+- ZigZag.traversal first counts only unreserved cells and literally allocates `int[][] result = new int[count][2];`, then fills it with two bounded row/column for-loop passes: columns ascend on even rows and descend on odd rows. `new int[size * size][2]`, `index < size * size`, every while loop, and placeholder coordinates are forbidden; encode and decode consume the returned coordinates directly without testing reserved a second time.
+- QRDetector reads all unreserved bits, converts all of them with the padding implementation, obtains L from the first two bytes, sets `int frameLength = 2 + length + 1;`, truncates to that frame, validates it, and ignores only the unused zero matrix suffix. It never sends all capacity bytes into exact-length decodePayload.
+- MatrixValidator supports odd sizes at least 21 and computes capacity from the actual reserved mask. QRCodec auto-size literally begins `int size = 21;` and never reads MatrixValidator.MIN_SIZE or another constant.
+- MainTest is in the default package and imports only JUnit Test/Assertions; importing QRCodec, QRMatrix, TextEncoder, QRRenderer, Main, or any other unnamed-package class is forbidden. MainTest has exactly three tests and literally checks the nine-bit input `new boolean[]{true,false,false,false,false,false,false,false,true}` yields unsigned bytes 128 and 128, directly checks `TextEncoder.decodePayload(TextEncoder.encodePayload("hello-世界"))`, round-trips the matrix codec, and rejects a copied matrix whose finder cell `[0][0]` is flipped. Do not summarize or substitute these statements or fixtures.
+

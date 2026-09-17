@@ -1,0 +1,60 @@
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260914_194657/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[ 20%] Building CXX object CMakeFiles/todo_core.dir/src/Task.cpp.o
+[ 20%] Building CXX object CMakeFiles/todo_core.dir/src/Date.cpp.o
+[ 30%] Building CXX object CMakeFiles/todo_core.dir/src/TaskManager.cpp.o
+[ 40%] Building CXX object CMakeFiles/todo_core.dir/src/Query.cpp.o
+[ 50%] Building CXX object CMakeFiles/todo_core.dir/src/TaskStore.cpp.o
+[ 60%] Linking CXX static library libtodo_core.a
+[ 60%] Built target todo_core
+[ 70%] Building CXX object CMakeFiles/todo_app.dir/src/Main.cpp.o
+[ 80%] Building CXX object CMakeFiles/todo_tests.dir/tests/test_main.cpp.o
+[ 90%] Linking CXX executable todo_app
+[100%] Linking CXX executable todo_tests
+[100%] Built target todo_tests
+[100%] Built target todo_app
+>>> Running CTest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+Internal ctest changing into directory: /workspace/proj_20260914_194657/build
+Test project /workspace/proj_20260914_194657/build
+    Start 1: todo_tests
+1/1 Test #1: todo_tests .......................   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+>>> Packaging C++ runnable binary
+>>> C++ packaged artifact:
+-rwxr-xr-x 1 root root 113152 Sep 14 19:47 /workspace/proj_20260914_194657/DTResults/artifacts/proj_20260914_194657
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: '/workspace/proj_20260914_194657/DTResults/artifacts/proj_20260914_194657'
+[INFO] Runtime output is captured in: /workspace/proj_20260914_194657/DTResults/runtime/cpp.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260914_194657/DTResults/runtime/cpp.log
+----- BEGIN runtime log tail (40 lines) -----
+All tasks:
+ID: 3, Title: Call mom, Due: , Priority: 0, Tags: personal, Completed: No
+ID: 1, Title: Buy groceries, Due: 2023-12-01, Priority: 2, Tags: home, shopping, Completed: No
+ID: 2, Title: Read book, Due: 2023-12-15, Priority: 1, Tags: learning, reading, Completed: No
+
+Summary:
+Completed: 0
+Pending: 3
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":308,"output_lines":8,"max_same_line":1,"max_consecutive_same_line":1,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260914_194657/DTResults/artifacts

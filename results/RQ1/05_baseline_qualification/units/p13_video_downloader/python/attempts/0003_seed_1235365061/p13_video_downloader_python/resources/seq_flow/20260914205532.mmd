@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant M as Main.run_demo
+    participant API as video_downloader (public API)
+    participant FTA as FakeTransferAdapter
+    participant Q as DownloadQueue
+
+    M->>API: DownloadRequest(url, fmt="mp4")
+    M->>FTA: __init__(mapping={"https://example.com/clip": (12,4)})
+    M->>Q: __init__(adapter=FTA)
+    M->>Q: enqueue(request)
+    M->>Q: process_all()
+    Q->>FTA: total_bytes(req)
+    Q->>API: Progress(total=12)
+    Q->>FTA: transfer(req, progress, token)
+    FTA->>API: Progress.update(chunk) (loop until total)
+    FTA-->>Q: TransferResult(bytes_transferred=12, final_name="clip.mp4", completed=True)
+    Q-->>M: get_status(job_id)
+    M-->>M: return status dict

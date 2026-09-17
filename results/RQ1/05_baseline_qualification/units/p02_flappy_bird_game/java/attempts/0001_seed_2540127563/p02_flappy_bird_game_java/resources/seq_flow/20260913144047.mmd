@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Main
+    participant G as Game
+    participant B as Bird
+    participant C as CollisionDetector
+    participant S as ScoreSystem
+    Main->>G: new Game(seed)
+    Main->>G: tick()
+    G->>B: applyGravity()
+    G->>B: integrate()
+    G->>C: hitBounds(bird, 30.0, worldHeight)
+    loop for each pipe
+        G->>C: hitPipe(bird, 30.0, 30.0, pipe, worldHeight)
+        G->>S: passedPipe(birdX, pipe)
+    end
+    G->>G: ticks++ and spawn if ticks % 100 == 0
+    Main->>G: birdY(), birdVy(), ticks(), score(), pipes().size()

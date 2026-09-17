@@ -1,0 +1,168 @@
+{
+  "Anything UNCLEAR": "",
+  "C++ Interface Plan": {},
+  "Canonical File References": [
+    "requirements.txt",
+    "press_releases/errors.py",
+    "press_releases/types.py",
+    "press_releases/template.py",
+    "press_releases/validation.py",
+    "press_releases/press_release.py",
+    "press_releases/search.py",
+    "press_releases/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Data structures and interfaces": "classDiagram\n    class DomainError {\n        <<exception>>\n    }\n    class InvalidTransitionError {\n        <<exception>>\n    }\n    DomainError <|-- InvalidTransitionError\n\n    class State {\n        <<enum>>\n        DRAFT\n        REVIEW\n        PUBLISHED\n    }\n\n    class Contact {\n        <<dataclass frozen>>\n        +name: str\n        +email: str\n    }\n\n    class VersionEntry {\n        <<dataclass frozen>>\n        +number: int\n        +rendered_text: str\n    }\n\n    class Template {\n        <<dataclass frozen>>\n        +name: str\n        +content: str\n        +render(fields: dict[str,str] | None): str\n    }\n\n    class PressRelease {\n        -_id: str\n        -_headline: str\n        -_body: str\n        -_contact: Contact\n        -_template: Template\n        -_custom_fields: dict[str,str]\n        -_state: State\n        -_tags_list: list[str]\n        -_tags_set: set[str]\n        -_versions: list[VersionEntry]\n        +id: str\n        +headline: str\n        +body: str\n        +contact: Contact\n        +state: State\n        +validate(): bool\n        +submit_for_review(): None\n        +publish(): None\n        +add_tag(tag: str): None\n        +tags(): list[str]\n        +render_plain_text(): str\n        +version_history(): list[VersionEntry]\n    }\n\n    class search_by_tag {\n        +search_by_tag(releases: list[PressRelease], tag: str): list[PressRelease]\n    }\n\n    class search_text {\n        +search_text(releases: list[PressRelease], query: str): list[PressRelease]\n    }\n\n    class Main {\n        +run_demo(): dict[str, object]\n    }\n\n    PressRelease --> Template\n    PressRelease --> Contact\n    PressRelease --> VersionEntry\n    PressRelease --> State\n    search_by_tag --> PressRelease\n    search_text --> PressRelease\n    Main --> PressRelease\n    Main --> Template\n    Main --> Contact\n    Main --> search_by_tag\n    Main --> search_text",
+  "Domain Decomposition": [
+    [
+      "Build descriptor: declare pytest only (Python 3.10 compatible). No other dependencies.",
+      "requirements.txt",
+      "protocol-required"
+    ],
+    [
+      "Domain errors: define DomainError(ValueError) and InvalidTransitionError(DomainError). No other symbols.",
+      "press_releases/errors.py",
+      "domain-entity"
+    ],
+    [
+      "Foundational types: State enum (DRAFT, REVIEW, PUBLISHED); frozen value objects Contact(name,email) and VersionEntry(number,rendered_text). Only generated initializers; no custom __init__.",
+      "press_releases/types.py",
+      "domain-entity"
+    ],
+    [
+      "Press-release template: frozen dataclass Template(name,content) with render(fields: dict[str,str] | None)->str using an exact sorted-keys literal replacement loop, leaving unknown placeholders intact.",
+      "press_releases/template.py",
+      "pure-rule"
+    ],
+    [
+      "Validation rules: validate_headline(str)->bool; validate_body(str)->bool; validate_contact(Contact)->bool. Return False on invalid, never throw. Email requires exactly one '@' with non-empty sides; name non-blank.",
+      "press_releases/validation.py",
+      "pure-rule"
+    ],
+    [
+      "Mutable press release aggregate and lifecycle: ordinary class PressRelease with properties id/headline/body/contact/state; validate()->bool; submit_for_review()->None; publish()->None; add_tag(tag:str)->None; tags()->list[str]; render_plain_text()->str; version_history()->list[VersionEntry]. Constructor does not validate and never throws merely for invalid fields. Lifecycle guards and errors per requirements; version history appends exactly VersionEntry(1, rendered_text) on first publish.",
+      "press_releases/press_release.py",
+      "domain-entity"
+    ],
+    [
+      "Search utilities: search_by_tag(releases:list[PressRelease], tag:str)->list[PressRelease]; search_text(releases:list[PressRelease], query:str)->list[PressRelease]. Preserve order, ignore None entries, exact normalized tag (trim) match, case-insensitive text containment, never mutate inputs.",
+      "press_releases/search.py",
+      "pure-rule"
+    ],
+    [
+      "Canonical package exports: re-export DomainError, InvalidTransitionError, State, Contact, VersionEntry, Template, three validators, PressRelease, search_by_tag, search_text. No run_demo export.",
+      "press_releases/__init__.py",
+      "package"
+    ],
+    [
+      "Runtime entry and small non-interactive demo: define run_demo()->dict[str,object]; perform a fixed lifecycle reaching PUBLISHED; under __name__ guard print at most one concise line.",
+      "Main.py",
+      "environment-dependent"
+    ],
+    [
+      "Single concise pytest suite with exactly three tests: (1) run_demo returns dict and reaches PUBLISHED; (2) basic rendering/validation/state transitions and exactly one version entry number=1; (3) invalid candidate validate false and submit_for_review raises DomainError; invalid publish from DRAFT raises InvalidTransitionError before any submit; tags insertion order and search_by_tag/search_text behavior.",
+      "tests/test_main.py",
+      "automated-test"
+    ]
+  ],
+  "Domain Mapping": [
+    [
+      "Error types and domain exceptions",
+      "press_releases/errors.py"
+    ],
+    [
+      "States and frozen value objects (Contact, VersionEntry)",
+      "press_releases/types.py"
+    ],
+    [
+      "Template rendering via literal sorted replacement; no parsing",
+      "press_releases/template.py"
+    ],
+    [
+      "Headline/body/contact validators returning booleans only",
+      "press_releases/validation.py"
+    ],
+    [
+      "PressRelease mutable aggregate: lifecycle, validation orchestration, tags, rendering, version history",
+      "press_releases/press_release.py"
+    ],
+    [
+      "Tag and text search, order preserving, non-mutating",
+      "press_releases/search.py"
+    ],
+    [
+      "Canonical package re-exports for stable API surface",
+      "press_releases/__init__.py"
+    ],
+    [
+      "Runtime demo orchestration reaching PUBLISHED and returning a dict",
+      "Main.py"
+    ],
+    [
+      "Protocol-level tests for demo, rendering/validation/lifecycle/versioning, invalid flow, tags, search",
+      "tests/test_main.py"
+    ]
+  ],
+  "File list": [
+    "requirements.txt",
+    "press_releases/errors.py",
+    "press_releases/types.py",
+    "press_releases/template.py",
+    "press_releases/validation.py",
+    "press_releases/press_release.py",
+    "press_releases/search.py",
+    "press_releases/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "Implementation approach": "Protocol-preserving, deterministic Python 3.10 architecture for Custom press releases. We keep Main.py thin and isolate all reusable domain logic under a lowercase snake_case package press_releases. The import graph is acyclic and dependency-ordered: errors.py -> types.py -> template.py -> validation.py -> press_release.py -> search.py -> __init__.py -> Main.py -> tests/test_main.py. We implement exactly the 10 required files, avoid extra modules, and prohibit datetime/time/random/uuid/pathlib/os/threading or any clock abstractions. Only pytest is declared in requirements.txt. The domain model follows strict rules: PressRelease is a mutable class (no dataclass), value objects Contact, VersionEntry, and Template are frozen dataclasses with only generated initializers and no custom __init__. Template.render uses exactly a literal sorted key replacement loop and leaves missing placeholders unchanged. Validation returns booleans rather than throwing; constructor of PressRelease never validates. Lifecycle transitions enforce DRAFT -> REVIEW -> PUBLISHED with guards and domain-specific exceptions (DomainError, InvalidTransitionError). Version history appends exactly VersionEntry(number=1, rendered_text) on first publish. Tags are trimmed, non-blank, unique, insertion-ordered. Search preserves input order, ignores None entries, uses exact normalized tag matching (trim-based), and case-insensitive text search for headline/body. __init__.py re-exports only canonical names and never mentions run_demo. Main.run_demo performs a non-interactive demo up to PUBLISHED and prints at most one concise line under __name__ guard. Tests are deterministic and headless, import run_demo from Main in a separate literal line, import all other symbols from press_releases, and include exactly three concise cases covering demo to PUBLISHED, rendering/validation/lifecycle/version-history, and invalid-candidate/transition error/tags/search. Implementation Tasks are ordered strictly by dependencies so later files import earlier ones without cycles.",
+  "Normative Architecture Requirements": "Generate a complete medium-size Python 3.10 repository architecture for: Custom press releases.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: requirements.txt\n- runtime entry: Main.py\n- single test target: tests/test_main.py\n- test command: python -m pytest -q\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nKeep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.\n\n\nProject-specific Python press-release lifecycle without clock/dataclass traps:\n- use exactly these files and no substitutes, in dependency order: requirements.txt, press_releases/errors.py, press_releases/types.py, press_releases/template.py, press_releases/validation.py, press_releases/press_release.py, press_releases/search.py, press_releases/__init__.py, Main.py, tests/test_main.py. Do not create clock.py, history.py, lifecycle.py, rendering.py, repository.py, service.py, or any additional source/test file\n- no module imports datetime, time, random, uuid, pathlib, os, threading, or a clock abstraction. Version history is deterministic and uses monotonically increasing integer version numbers only; tests never assert a wall-clock timestamp\n- errors.py solely defines DomainError(ValueError) and InvalidTransitionError(DomainError). types.py solely defines enum State with DRAFT, REVIEW, PUBLISHED; frozen dataclass Contact(name:str,email:str); and frozen dataclass VersionEntry(number:int,rendered_text:str). These frozen value objects use only the generated dataclass initializer and define no custom __init__\n- template.py defines frozen dataclass Template(name:str,content:str) with render(fields:dict[str,str]|None=None)->str and no custom __init__. Its implementation is literal and finite: set `values = {} if fields is None else fields`, set `result = self.content`, then `for key in sorted(values):` execute `result = result.replace(\"{{\" + key + \"}}\", values[key])`, and return result. It leaves missing placeholders unchanged. Parsing placeholders with result.split(\"{{\"), slicing parts such as part[2:-2], regular expressions, or an open-ended scanning loop is forbidden\n- validation.py defines validate_headline(str)->bool, validate_body(str)->bool, and validate_contact(Contact)->bool. They return false rather than throwing for invalid values; contact requires nonblank name and an email containing one @ with nonempty sides\n- press_release.py defines an ordinary mutable `class PressRelease:` and MUST NOT decorate it with `@dataclass`, `@dataclass(frozen=True)`, attrs, NamedTuple, or another frozen mechanism. Its constructor PressRelease(id:str,headline:str,body:str,contact:Contact,template:Template,custom_fields:dict[str,str]|None=None) assigns normal mutable attributes and starts State.DRAFT with empty insertion-ordered tags and empty version history. The constructor deliberately does not validate and never raises merely because headline/body/contact are invalid, so invalid candidate values remain constructible for validate tests\n- PressRelease exposes properties id/headline/body/contact/state; validate()->bool; submit_for_review()->None; publish()->None; add_tag(tag:str)->None; tags()->list[str]; render_plain_text()->str; version_history()->list[VersionEntry]. validate returns false and never throws for invalid fields. submit_for_review on invalid content raises DomainError, otherwise requires DRAFT then sets REVIEW; publish requires REVIEW then sets PUBLISHED and appends exactly VersionEntry(1,render_plain_text()) on the first publication; invalid state transitions raise InvalidTransitionError. add_tag trims, rejects blank with DomainError, and preserves unique insertion order. Returned lists are defensive copies\n- render_plain_text combines custom_fields with headline/body/contact/contact_name/contact_email and calls Template.render. search.py defines search_by_tag(releases:list[PressRelease],tag:str)->list[PressRelease] and search_text(releases:list[PressRelease],query:str)->list[PressRelease], preserves order, ignores None releases, uses exact normalized tag matching and case-insensitive headline/body containment, and never mutates inputs\n- __init__.py re-exports only real canonical names: DomainError, InvalidTransitionError, State, Contact, VersionEntry, Template, the three validators, PressRelease, search_by_tag, and search_text. It MUST NOT export, import, or mention run_demo. Main.py uses absolute imports from press_releases, exposes run_demo()->dict[str,object], performs a fixed non-interactive lifecycle demonstration, and main prints at most one concise line only under the __name__ guard\n- requirements.txt contains only a Python-3.10-compatible pytest requirement. tests/test_main.py must contain the separate literal line `from Main import run_demo`; it imports all other symbols from press_releases and MUST NEVER put run_demo in a `from press_releases import ...` statement. It uses exactly three concise tests: (1) run_demo returns a dict and reaches PUBLISHED; (2) Template(\"basic\",\"{{headline}}|{{body}}|{{contact_email}}\") plus Contact(\"Alice\",\"a@b.com\") renders exactly `Hello|Body|a@b.com`, validates, transitions DRAFT to REVIEW to PUBLISHED, and yields exactly one VersionEntry numbered 1 with the same text; (3) constructs a candidate with blank headline and Contact(\"\",\"invalid\"), asserts candidate.validate() is False without expecting its constructor to throw, asserts candidate.submit_for_review() raises DomainError, then constructs a separate valid release with headline \"Hello\" that remains DRAFT and immediately executes `with pytest.raises(InvalidTransitionError): valid_draft.publish()` before any submit_for_review call on that object; afterward it may add media then news tags to valid_draft, verifies their insertion order, search_by_tag media, and case-insensitive search_text hello. The third test MUST NOT call valid_draft.submit_for_review() before its expected failing publish\n- repeat the exact 10-file list, explicit clock/datetime prohibition, literal sorted-field replacement loop and forbidden split/slice parser, ordinary non-dataclass PressRelease requirement, non-validating constructor/false-returning validate rule, generated-only initializer rule for frozen value objects, integer version history, canonical APIs, the separate literal `from Main import run_demo` test import and forbidden press_releases run_demo import, the exact DRAFT publish sequence, exact fixtures, and three-test limit in Full API specification, Logic Analysis, Test Include Plan, Test Scope Plan, Shared Knowledge, and every affected implementation task\n\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 8 repository files\n- about 31 functions or methods\n- about 698 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- press-release templates\n- custom fields and placeholder substitution\n- draft review published lifecycle\n- validation of headline body and contact\n- audience tags and search\n- plain-text rendering and version history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n\nFINAL NON-NEGOTIABLE PRESS-RELEASE PYTHON 3.10 CHECKLIST:\n- Task filenames are exactly: requirements.txt; press_releases/errors.py; press_releases/types.py; press_releases/template.py; press_releases/validation.py; press_releases/press_release.py; press_releases/search.py; press_releases/__init__.py; Main.py; tests/test_main.py. clock.py, datetime, lifecycle.py, history.py, and rendering.py are forbidden.\n- PressRelease is an ordinary mutable class with no dataclass decorator and assigns normal attributes in its constructor. Only Contact, VersionEntry, and Template are frozen dataclasses, and they use generated initializers with no custom __init__. VersionEntry uses an integer number and rendered_text, never a timestamp.\n- Template.render iterates exactly `for key in sorted(values)` and replaces `\"{{\" + key + \"}}\"`; result.split(\"{{\"), part[2:-2], and regex parsing are forbidden. PressRelease construction never validates; invalid candidates are constructed, validate returns false, and submit_for_review raises DomainError.\n- Main uses absolute press_releases imports. Tests use a separate literal `from Main import run_demo` line, import all domain symbols from press_releases, and never import run_demo from press_releases; press_releases/__init__.py never exports run_demo. Tests contain exactly three cases with the exact basic template, Alice contact, Hello/Body rendering, DRAFT/REVIEW/PUBLISHED lifecycle, version 1, explicit invalid-candidate validate/submit semantics, media/news tag, and search fixtures. The valid-DRAFT error assertion immediately calls publish inside `with pytest.raises(InvalidTransitionError)` before any submit_for_review on that object. Do not summarize or substitute these requirements.\n\n",
+  "Program call flow": "sequenceDiagram\n    participant T as Template\n    participant C as Contact\n    participant PR as PressRelease\n    participant S as search_by_tag\n    participant ST as search_text\n    participant M as Main.run_demo\n\n    M->>T: create Template(name, content)\n    M->>C: create Contact(name, email)\n    M->>PR: create PressRelease(id, headline, body, contact, template, custom_fields)\n    M->>PR: validate()\n    alt valid\n        M->>PR: add_tag(\"media\")\n        M->>PR: submit_for_review()\n        M->>PR: publish()\n        PR->>PR: render_plain_text() -> Template.render(fields)\n        PR->>PR: version_history() append VersionEntry(1, rendered)\n    else invalid\n        PR-->>M: validate() returns False\n        M->>PR: submit_for_review() raises DomainError\n    end\n    M->>S: search_by_tag([PR], \"media\")\n    M->>ST: search_text([PR], \"hello\")\n    M-->>M: return dict with release, state, versions, rendered_text",
+  "Protocol Compliance Check": {
+    "build_file_preserved": true,
+    "canonical_extra_paths": [],
+    "canonical_matches_file_list": true,
+    "canonical_missing_from_file_list_copy": [],
+    "noncanonical_file_references": [],
+    "protocol_violations": [],
+    "required_files_missing": [],
+    "required_files_renamed": [],
+    "runtime_entry_preserved": true,
+    "test_command": "python -m pytest -q",
+    "test_target_preserved": true,
+    "unexpected_additional_test_files": []
+  },
+  "Protocol Preservation Notes": "Build file: requirements.txt (pytest only). Runtime entry: Main.py. Test target: tests/test_main.py. Test command: python -m pytest -q. Exactly one protocol-level test file is used.",
+  "Test Include Audit": {
+    "all_test_includes_declared": true,
+    "declared_test_imports": [
+      "from Main import run_demo",
+      "from press_releases import DomainError, InvalidTransitionError, State, Contact, VersionEntry, Template, validate_headline, validate_body, validate_contact, PressRelease, search_by_tag, search_text",
+      "import pytest"
+    ],
+    "undeclared_test_includes": []
+  },
+  "Testable Core Boundary": {
+    "environment_dependent_modules": [
+      "Main.py"
+    ],
+    "pure_logic_modules": [
+      "press_releases/errors.py",
+      "press_releases/types.py",
+      "press_releases/template.py",
+      "press_releases/validation.py",
+      "press_releases/press_release.py",
+      "press_releases/search.py",
+      "press_releases/__init__.py"
+    ],
+    "test_targets_should_focus_on": [
+      "Lifecycle transitions with deterministic version history (PressRelease)",
+      "Template.render exact sorted-field replacement and missing placeholder behavior",
+      "Validation returning False vs. raising",
+      "Tag normalization (trim), uniqueness, and insertion-order preservation",
+      "Search utilities preserving order and ignoring None inputs",
+      "Main.run_demo wiring to PUBLISHED state"
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+classDiagram
+    class ValidationError
+    class StateError
+    class NotFoundError
+    ValidationError <|-- StateError
+    ValidationError <|-- NotFoundError
+
+    class Media {
+        +id: str
+        +title: str
+        +duration_seconds: float
+        +metadata: dict
+        +__init__(id: str, title: str, duration_seconds: float, metadata: Optional[dict])
+    }
+
+    class ManualClock {
+        -_time: float
+        -_listeners: list
+        +now() float
+        +add_tick_listener(fn: Callable[[float], None]) None
+        +remove_tick_listener(fn) None
+        +tick(delta_seconds: float) None
+    }
+
+    class Playlist {
+        -_items: list[Media]
+        -_current_index: int|None
+        +__init__(items: list[Media])
+        +is_empty() bool
+        +size() int
+        +current() Media|None
+        +select(index: int) Media
+        +next() Media|None
+        +previous() Media|None
+    }
+
+    class PlaybackState {
+        <<enumeration>>
+        STOPPED
+        PLAYING
+        PAUSED
+    }
+
+    class Player {
+        -_playlist: Playlist
+        -_clock: ManualClock
+        -_state: PlaybackState
+        -_position: float
+        -_volume: float
+        -_muted: bool
+        +__init__(playlist: Playlist, clock: ManualClock)
+        +state() PlaybackState
+        +current_media() Media|None
+        +position_seconds() float
+        +duration_seconds() float
+        +play() None
+        +pause() None
+        +stop() None
+        +seek(seconds: float) float
+        +set_volume(v: float) float
+        +get_volume() float
+        +mute() None
+        +unmute() None
+        +toggle_mute() bool
+        +effective_volume() float
+        +next_media() Media|None
+        +previous_media() Media|None
+        +select_index(i: int) Media
+        -_on_tick(delta: float) None
+        -_reset_position() None
+    }
+
+    Player --> Playlist
+    Player --> ManualClock
+    Playlist --> Media
+    Player ..> PlaybackState

@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant M as Main (src/Main.cpp)
+    participant GE as GameEngine
+    participant GS as GameState
+    participant B as Bird
+    participant P as Pipe(s)
+    participant R as IRandom (LcgRandom)
+
+    M->>GE: construct(GameConfig::Default(), make_unique<LcgRandom>(42))
+    loop Fixed ticks
+        M->>GE: step(dt)
+        GE->>GS: update(dt, *rng)
+        GS->>B: update(dt, cfg)
+        alt Spawn due
+            GS->>R: nextUnit()
+            R-->>GS: u in [0,1)
+            GS->>P: create Pipe(worldWidth, gapY)
+        end
+        GS->>P: update(dt, cfg) for each
+        GS->>GS: check pass -> score++ (once)
+        GS->>GS: check AABB collisions and bounds -> gameOver?
+    end
+    M->>GE: flap() at intervals
+    GE->>GS: flap()
+    M-->>M: print final score and state

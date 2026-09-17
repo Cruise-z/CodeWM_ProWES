@@ -1,0 +1,31 @@
+{
+  "accepted_repository_tree_sha256": "ba11834e7c992028e30c90cc9f9737bda9575ea7fbae96e84b946f82e65a4e4b",
+  "architecture_team_sha256": "5ac9209cf64e5f3ee76152de30272816532264cc2344a68cf2de98661dfd6e39",
+  "completed_at": "2026-09-14T13:38:19.221498+00:00",
+  "content_identical_to_accepted": true,
+  "evaluator_elapsed_seconds": 9.663,
+  "evaluator_log_sha256": "9e5fe8ec803182074a52ee7e5c1cea92b5406d489cdc6d9a0770eee82234fede",
+  "evaluator_return_code": 0,
+  "failure_stage": null,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/java/replays/0001_seed_1570566783/p07_calculator_java/p07_calculator_java",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1570566783,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "65e6ca47097cb443879fc56ac9dc754130c348b2ed794554e7f8976f24f70422",
+  "initial_repository_tree_sha256": "f9f69c3db2124382ef683f3c011826ae6aac36bf0136f84e3e8971d594030310",
+  "model_base_url": "http://127.0.0.1:8001",
+  "passed": true,
+  "replay": 1,
+  "replay_repository_tree_sha256": "ba11834e7c992028e30c90cc9f9737bda9575ea7fbae96e84b946f82e65a4e4b",
+  "rng_seed": 1570566783,
+  "started_at": "2026-09-14T13:32:15.676084+00:00",
+  "truncated_files": [],
+  "unit_id": "p07_calculator_java"
+}

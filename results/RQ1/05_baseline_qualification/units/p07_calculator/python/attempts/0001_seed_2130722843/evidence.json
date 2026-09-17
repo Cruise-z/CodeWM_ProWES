@@ -1,0 +1,34 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "e96b5fb247b1c963b6cd998968bb38bd2f670e05ea6f2dba13cff27268a0060d",
+    "initial_repository_tree_sha256": "92331112008fb3d4a76c77950cab888a387716c25b5cd421a055786355e57407",
+    "prompt_sha256": "a0b2ae09ad21fd266a0bba99d5ea461ff559baa6004fbfd044738ac0336a57fa"
+  },
+  "architecture_team_sha256": "e96b5fb247b1c963b6cd998968bb38bd2f670e05ea6f2dba13cff27268a0060d",
+  "attempt": 1,
+  "completed_at": "2026-09-14T14:46:03.531310+00:00",
+  "evaluator_elapsed_seconds": 2.064,
+  "evaluator_log_sha256": "935e6c5aa57bfdcc4f99014c3245c8a2622ec69a9f37ae917b0d323c1dbc8358",
+  "evaluator_return_code": 1,
+  "failure_stage": "evaluation",
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/python/attempts/0001_seed_2130722843/p07_calculator_python/p07_calculator_python",
+  "generated_repository_tree_sha256": "33408a981e2fbea6281249f3c39201993cf6652c9ea849d4d167bdbfae9bf836",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2130722843,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "2b262ff5d374638dcc1aa2431077b9415aed6d1b53e586755b6565dfb1f0fa5d",
+  "initial_repository_tree_sha256": "92331112008fb3d4a76c77950cab888a387716c25b5cd421a055786355e57407",
+  "passed": false,
+  "rng_seed": 2130722843,
+  "started_at": "2026-09-14T14:42:28.410820+00:00",
+  "truncated_files": [],
+  "unit_id": "p07_calculator_python"
+}

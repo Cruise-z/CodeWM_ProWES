@@ -1,0 +1,28 @@
+Initial state:
+Score: 0
+Food: (6, 3)
+
+After tick 1:
+Score: 0
+Food: (6, 3)
+Game Over: No
+
+After tick 2:
+Score: 0
+Food: (6, 3)
+Game Over: No
+
+After tick 3:
+Score: 0
+Food: (6, 3)
+Game Over: No
+
+After tick 4:
+Score: 0
+Food: (6, 3)
+Game Over: No
+
+After tick 5:
+Score: 0
+Food: (6, 3)
+Game Over: Yes

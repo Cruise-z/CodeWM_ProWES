@@ -1,0 +1,67 @@
+classDiagram
+    class Position {
+        int x
+        int y
+    }
+    class Direction {
+        <<enum>> Up
+        <<enum>> Down
+        <<enum>> Left
+        <<enum>> Right
+    }
+    class IRandom {
+        <<interface>>
+        +~IRandom()
+        +next(maxExclusive: std::size_t) std::size_t
+    }
+    class DefaultRandom {
+        -engine: std::mt19937
+        +DefaultRandom(seed: std::uint32_t)
+        +next(maxExclusive: std::size_t) std::size_t
+    }
+    class Board {
+        -width_: std::size_t
+        -height_: std::size_t
+        +Board(width: std::size_t, height: std::size_t)
+        +getWidth() std::size_t
+        +getHeight() std::size_t
+        +inBounds(p: Position) bool
+    }
+    class Snake {
+        -body_: std::deque<Position>
+        -dir_: Direction
+        +Snake(start: Position, dir: Direction, initialLength: int)
+        +head() Position
+        +tail() Position
+        +body() const std::deque<Position>&
+        +direction() Direction
+        +trySetDirection(d: Direction) bool
+        +advanceTo(next: Position, grow: bool) void
+        +occupies(p: Position) bool
+    }
+    class Game {
+        -board_: Board
+        -rng_: IRandom&
+        -snake_: Snake
+        -food_: std::optional<Position>
+        -score_: std::size_t
+        -gameOver_: bool
+        -pendingDir_: std::optional<Direction>
+        +Game(width: std::size_t, height: std::size_t, rng: IRandom&)
+        +reset() void
+        +setDirection(d: Direction) void
+        +tick() void
+        +isGameOver() bool
+        +getScore() std::size_t
+        +getSnake() const Snake&
+        +getFood() std::optional<Position>
+        -placeFood() void
+        -wouldSelfCollide(next: Position, grow: bool) const bool
+    }
+    DefaultRandom ..|> IRandom
+    Game --> Board
+    Game --> Snake
+    Game --> IRandom
+    Snake --> Position
+    Snake --> Direction
+    Board --> Position

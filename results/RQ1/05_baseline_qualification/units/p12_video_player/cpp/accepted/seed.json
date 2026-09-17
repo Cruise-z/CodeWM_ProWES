@@ -1,0 +1,21 @@
+{
+  "architecture_epoch": {
+    "architecture_attempt": 6,
+    "architecture_team_sha256": "4f12f81f243a334dfecf9b89147d1c57e09d3ca18f6df9e370b495a350331a1a",
+    "initial_repository_tree_sha256": "d933d509969d471303e0b30edc616b2bcd9acc345e68e669cc84c6c7d7f55d72",
+    "prompt_sha256": "8b9354da28a62d4e08c7bca8a640e3672e78c745e29aecf0c6f582a5be2d0ae4"
+  },
+  "attempt": 1,
+  "generation": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 1700920662,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "rng_seed": 1700920662,
+  "selected_at": "2026-09-14T12:55:53.996888+00:00",
+  "unit_id": "p12_video_player_cpp"
+}

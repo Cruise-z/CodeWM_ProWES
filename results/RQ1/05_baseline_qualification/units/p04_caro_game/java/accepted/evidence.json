@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-13T16:57:07.714931+00:00",
+  "accepted_repository_tree_sha256": "ef5bdd54c2ac79257d251740a897f691b4617e2c6614309f628a9011aebdbcff",
+  "architecture_epoch": {
+    "architecture_attempt": 7,
+    "architecture_team_sha256": "7277a4988d707a85f7f7fd80ba9d050f787d023d3c2b541ea6d7774281cc43d7",
+    "initial_repository_tree_sha256": "679157bf7200c11344648fce11f484f5cfa3d2c3d8671edc7dd689187df6d161",
+    "prompt_sha256": "ddf9fdce24a01ece304f86d4432a2a69375aa9f3345fc122f1720bede4ef2343"
+  },
+  "architecture_team_sha256": "7277a4988d707a85f7f7fd80ba9d050f787d023d3c2b541ea6d7774281cc43d7",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p04_caro_game/java/attempts/0001_seed_3365300451/evaluator.log",
+  "attempt_evidence": "units/p04_caro_game/java/attempts/0001_seed_3365300451/evidence.json",
+  "attempt_generation_report": "units/p04_caro_game/java/attempts/0001_seed_3365300451/generation_report.json",
+  "completed_at": "2026-09-13T16:57:07.696529+00:00",
+  "evaluator_elapsed_seconds": 9.791,
+  "evaluator_log_sha256": "083c1fe6f22dfec34a03f8de0634af7689365e093ac8ed0e95063d5358850a1a",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p04_caro_game/java/attempts/0001_seed_3365300451/p04_caro_game_java/p04_caro_game_java",
+  "generated_repository_tree_sha256": "774617320bf0f766c26d3bb7b58276677f4c09d428ec86bb8726c81d33f1793f",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 3365300451,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "1eb2b7577e99afdd1f57796b4827e9d027e5fa27061d93eb10ac6aedf06733a5",
+  "initial_repository_tree_sha256": "679157bf7200c11344648fce11f484f5cfa3d2c3d8671edc7dd689187df6d161",
+  "passed": true,
+  "rng_seed": 3365300451,
+  "started_at": "2026-09-13T16:50:59.143683+00:00",
+  "truncated_files": [],
+  "unit_id": "p04_caro_game_java"
+}

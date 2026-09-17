@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T11:48:26.801692+00:00",
+  "accepted_repository_tree_sha256": "d5ba102fb88913da474632c4532b08424495759545bfccd4409839e74c927fac",
+  "architecture_epoch": {
+    "architecture_attempt": 123,
+    "architecture_team_sha256": "cbde9d424f9c118bb034209266d1e48c24bde1a1daaad08aa8cffe7986a22e13",
+    "initial_repository_tree_sha256": "f2d39106d9e53c327f1aae93095387267a72d8e693d247b4e0faf1b8ea29fcdd",
+    "prompt_sha256": "c459610cc738b2052bfa56d0ea4d90c18c59d40f0be30e8c9146569135503216"
+  },
+  "architecture_team_sha256": "cbde9d424f9c118bb034209266d1e48c24bde1a1daaad08aa8cffe7986a22e13",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p11_custom_press_releases/java/attempts/0001_seed_2810241787/evaluator.log",
+  "attempt_evidence": "units/p11_custom_press_releases/java/attempts/0001_seed_2810241787/evidence.json",
+  "attempt_generation_report": "units/p11_custom_press_releases/java/attempts/0001_seed_2810241787/generation_report.json",
+  "completed_at": "2026-09-14T11:48:26.786843+00:00",
+  "evaluator_elapsed_seconds": 15.824,
+  "evaluator_log_sha256": "28601632bc36e0f444ba7133e58d69a5b0ce014cf143027c487a8c31cfe55844",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p11_custom_press_releases/java/attempts/0001_seed_2810241787/p11_custom_press_releases_java/p11_custom_press_releases_java",
+  "generated_repository_tree_sha256": "78e0113b56f0fc8d93d677f2255b04e4b02e8c363e632c2c17fae49a5cf45f82",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2810241787,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "9613fd119de79a3705531840207bada1a6a8732ec24ea24e3af87e4ea8dfa1e0",
+  "initial_repository_tree_sha256": "f2d39106d9e53c327f1aae93095387267a72d8e693d247b4e0faf1b8ea29fcdd",
+  "passed": true,
+  "rng_seed": 2810241787,
+  "started_at": "2026-09-14T11:42:54.664751+00:00",
+  "truncated_files": [],
+  "unit_id": "p11_custom_press_releases_java"
+}

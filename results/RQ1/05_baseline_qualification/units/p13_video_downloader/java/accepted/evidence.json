@@ -1,0 +1,38 @@
+{
+  "accepted_at": "2026-09-14T18:19:27.783829+00:00",
+  "accepted_repository_tree_sha256": "481cb409e06f670bd969de1383ac37276501959e90d730e6b7a4dbfe66d47c34",
+  "architecture_epoch": {
+    "architecture_attempt": 7,
+    "architecture_team_sha256": "a1cc46f1bed3edcf7b1c191c98cc1e1827bebbeccfa6a9e04418faff60eaba09",
+    "initial_repository_tree_sha256": "c66e3cf59aaf70cceef7092073a92cccb4904c69d489dbc64d3882b199ed916f",
+    "prompt_sha256": "4c190082f28d6deed1cee253b3ea12ae38ad8c4b8028032ebd728f2b9eed961a"
+  },
+  "architecture_team_sha256": "a1cc46f1bed3edcf7b1c191c98cc1e1827bebbeccfa6a9e04418faff60eaba09",
+  "attempt": 1,
+  "attempt_evaluator_log": "units/p13_video_downloader/java/attempts/0001_seed_2020452492/evaluator.log",
+  "attempt_evidence": "units/p13_video_downloader/java/attempts/0001_seed_2020452492/evidence.json",
+  "attempt_generation_report": "units/p13_video_downloader/java/attempts/0001_seed_2020452492/generation_report.json",
+  "completed_at": "2026-09-14T18:19:27.767207+00:00",
+  "evaluator_elapsed_seconds": 9.113,
+  "evaluator_log_sha256": "ac4a795d7fb62f3561fcc9f3061b7a94cd2c46462bf005c4cbc53facade66a40",
+  "evaluator_return_code": 0,
+  "generated_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/java/attempts/0001_seed_2020452492/p13_video_downloader_java/p13_video_downloader_java",
+  "generated_repository_tree_sha256": "ff58a64285852a34ea235196ae122c316553d1ecddc1835a39394ad742a1833a",
+  "generation_args": {
+    "external_processor_names": [],
+    "internal_processor_names": [],
+    "max_tokens": 4096,
+    "rng_seed": 2020452492,
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "watermark_detect": false
+  },
+  "generation_complete": true,
+  "generation_report_sha256": "1d7cfe6857065b9e3bcfa986872ed761fed9e424e934c5744515162dbc655164",
+  "initial_repository_tree_sha256": "c66e3cf59aaf70cceef7092073a92cccb4904c69d489dbc64d3882b199ed916f",
+  "passed": true,
+  "rng_seed": 2020452492,
+  "started_at": "2026-09-14T18:12:39.980734+00:00",
+  "truncated_files": [],
+  "unit_id": "p13_video_downloader_java"
+}

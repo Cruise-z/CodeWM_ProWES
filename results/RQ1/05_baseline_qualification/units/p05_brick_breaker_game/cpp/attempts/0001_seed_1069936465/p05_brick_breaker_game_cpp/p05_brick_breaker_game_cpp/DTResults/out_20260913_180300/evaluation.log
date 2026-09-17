@@ -1,0 +1,56 @@
+[INFO] Detected protocol: cpp
+>>> Protocol detected: C++
+>>> Configuring CMake project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /workspace/proj_20260913_180300/build
+>>> Building C++ project
+[INFO] Build timeout limit: 300s (kill-after 5s)
+[  7%] Building CXX object CMakeFiles/breakout_core.dir/src/Vector2.cpp.o
+[ 23%] Building CXX object CMakeFiles/breakout_core.dir/src/Paddle.cpp.o
+[ 30%] Building CXX object CMakeFiles/breakout_core.dir/src/Brick.cpp.o
+[ 30%] Building CXX object CMakeFiles/breakout_core.dir/src/Ball.cpp.o
+[ 38%] Building CXX object CMakeFiles/breakout_core.dir/src/Level.cpp.o
+[ 46%] Building CXX object CMakeFiles/breakout_core.dir/src/GameEngine.cpp.o
+[ 53%] Building CXX object CMakeFiles/breakout_core.dir/src/Playfield.cpp.o
+[ 61%] Building CXX object CMakeFiles/breakout_core.dir/src/Collision.cpp.o
+/workspace/proj_20260913_180300/src/GameEngine.cpp: In member function ‘void breakout::GameEngine::step(double, breakout::GameEngine::Input)’:
+/workspace/proj_20260913_180300/src/GameEngine.cpp:65:38: error: no matching function for call to ‘min(<brace-enclosed initializer list>)’
+   65 |             double minDist = std::min({distLeft, distRight, distTop, distBottom});
+      |                              ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/11/vector:60,
+                 from /workspace/proj_20260913_180300/include/GameEngine.h:5,
+                 from /workspace/proj_20260913_180300/src/GameEngine.cpp:1:
+/usr/include/c++/11/bits/stl_algobase.h:230:5: note: candidate: ‘template<class _Tp> constexpr const _Tp& std::min(const _Tp&, const _Tp&)’
+  230 |     min(const _Tp& __a, const _Tp& __b)
+      |     ^~~
+/usr/include/c++/11/bits/stl_algobase.h:230:5: note:   template argument deduction/substitution failed:
+/workspace/proj_20260913_180300/src/GameEngine.cpp:65:38: note:   candidate expects 2 arguments, 1 provided
+   65 |             double minDist = std::min({distLeft, distRight, distTop, distBottom});
+      |                              ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/c++/11/vector:60,
+                 from /workspace/proj_20260913_180300/include/GameEngine.h:5,
+                 from /workspace/proj_20260913_180300/src/GameEngine.cpp:1:
+/usr/include/c++/11/bits/stl_algobase.h:278:5: note: candidate: ‘template<class _Tp, class _Compare> constexpr const _Tp& std::min(const _Tp&, const _Tp&, _Compare)’
+  278 |     min(const _Tp& __a, const _Tp& __b, _Compare __comp)
+      |     ^~~
+/usr/include/c++/11/bits/stl_algobase.h:278:5: note:   template argument deduction/substitution failed:
+/workspace/proj_20260913_180300/src/GameEngine.cpp:65:38: note:   candidate expects 3 arguments, 1 provided
+   65 |             double minDist = std::min({distLeft, distRight, distTop, distBottom});
+      |                              ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gmake[2]: *** [CMakeFiles/breakout_core.dir/build.make:174: CMakeFiles/breakout_core.dir/src/GameEngine.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/breakout_core.dir/all] Error 2
+gmake: *** [Makefile:101: all] Error 2

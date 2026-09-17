@@ -1,0 +1,30 @@
+[INFO] Detected protocol: python
+>>> Protocol detected: PYTHON
+>>> Installing Python dependencies
+[INFO] Install timeout limit: 300s (kill-after 5s)
+Requirement already satisfied: pytest<9,>=7 in /usr/local/lib/python3.10/dist-packages (from -r requirements.txt (line 1)) (7.4.4)
+Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.3.0)
+Requirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (26.2)
+Requirement already satisfied: pluggy<2.0,>=0.12 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.6.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (1.3.1)
+Requirement already satisfied: tomli>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from pytest<9,>=7->-r requirements.txt (line 1)) (2.4.1)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.10/dist-packages (from exceptiongroup>=1.0.0rc8->pytest<9,>=7->-r requirements.txt (line 1)) (4.16.0)
+>>> Running pytest
+[INFO] Test timeout limit: 30s (kill-after 5s)
+...                                                                      [100%]
+3 passed in 0.03s
+>>> Packaging Python project into zipapp
+>>> Python packaged artifact:
+/workspace/proj_20260913_201032/DTResults/artifacts/proj_20260913_201032.pyz
+>>> Running packaged artifact smart runtime check (5s)
+[INFO] Runtime command: PYTHONUNBUFFERED=1 python -u  '/workspace/proj_20260913_201032/DTResults/artifacts/proj_20260913_201032.pyz'
+[INFO] Runtime output is captured in: /workspace/proj_20260913_201032/DTResults/runtime/python.log
+[INFO] Runtime thresholds: max_bytes=262144, max_lines=200, max_same_line=30, max_consecutive_same_line=10, cpu_busy_check=1
+[INFO] Packaged artifact exited normally during runtime check.
+[INFO] Runtime log sample follows: /workspace/proj_20260913_201032/DTResults/runtime/python.log
+----- BEGIN runtime log tail (40 lines) -----
+{'score': 0, 'lives': 3, 'status': 'running', 'bricks_remaining': 15, 'ball': {'x': 150.0, 'y': 368.0, 'vx': 0.0, 'vy': 10.0}, 'paddle': {'x': 150.0, 'y': 380}}
+----- END runtime log tail -----
+[RUNTIME_STATUS] {"phase":"runtime_check","status":"success","reason":"normal_exit","exit_code":0,"output_bytes":161,"output_lines":1,"max_same_line":1,"max_consecutive_same_line":1,"cpu_busy_samples":0}
+[INFO] Evaluation, packaging, and smart runtime check finished successfully.
+[INFO] Packaged artifacts are stored in: /workspace/proj_20260913_201032/DTResults/artifacts
