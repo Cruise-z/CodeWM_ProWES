@@ -1,0 +1,21 @@
+{
+  "integration_date_utc": "2026-09-17",
+  "archives": [
+    {
+      "path": "results/RQ1/Applicability.zip",
+      "sha256": "e00122d3458826f8963e2b6f98753556b6e464bea981e3ea003bc4d6eef88183",
+      "expanded_to": "results/RQ1/Applicability",
+      "zip_crc_test": "PASS",
+      "path_safety_test": "PASS",
+      "integration_note": "The supplied internal SHA256SUMS predated the bundled plotting script and 18 bundled PDF figures. The expanded ledger was repaired to describe the actual archive payload; the original archive is retained unchanged. The plotting script's last-resort font was then changed from unavailable Liberation Serif to Matplotlib's bundled DejaVu Serif so clean-environment reproduction does not emit repeated font warnings. Data, validation, and statistics files already matched their supplied digests."
+    },
+    {
+      "path": "results/RQ1/Detectability.zip",
+      "sha256": "36e18dd3df140da91e6b447a0fde7cd3c217bdf662a71230e99ee8ef01fc6601",
+      "expanded_to": "results/RQ1/Detectability",
+      "zip_crc_test": "PASS",
+      "path_safety_test": "PASS",
+      "internal_sha256_test": "PASS"
+    }
+  ]
+}

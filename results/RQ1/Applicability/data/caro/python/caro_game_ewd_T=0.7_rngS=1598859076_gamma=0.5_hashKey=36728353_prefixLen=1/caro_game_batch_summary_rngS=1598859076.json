@@ -1,0 +1,12 @@
+{
+  "project_name": "caro_game",
+  "rng_seed": 1598859076,
+  "language": "python",
+  "counts": {
+    "[Build Error]": 0,
+    "[Test Error]": 28,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 2,
+    "[Pass]": 15
+  }
+}

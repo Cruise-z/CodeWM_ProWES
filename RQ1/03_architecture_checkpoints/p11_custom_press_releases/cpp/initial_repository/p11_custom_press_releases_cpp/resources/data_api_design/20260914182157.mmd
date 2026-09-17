@@ -1,0 +1,80 @@
+classDiagram
+    class Clock {
+        <<interface>>
+        +now() std::string
+        +~Clock()
+    }
+    class FixedClock {
+        -timestamp : std::string
+        +FixedClock(ts: std::string)
+        +now() std::string
+    }
+    Clock <|.. FixedClock
+    class VersionEntry {
+        +timestamp : std::string
+        +description : std::string
+    }
+    class VersionHistory {
+        -entries_ : std::vector<VersionEntry>
+        +append(clock: Clock, description: std::string) void
+        +entries() const std::vector<VersionEntry>&
+        +size() const std::size_t
+        +toString() const std::string
+    }
+    class SubstitutionResult {
+        +output : std::string
+        +missingKeys : std::vector<std::string>
+    }
+    class TemplateEngine {
+        +render(tmpl: std::string, fields: std::map<std::string,std::string>) const SubstitutionResult
+    }
+    class ValidationResult {
+        +ok : bool
+        +errors : std::vector<std::string>
+    }
+    class Validator {
+        +validateFields(headline: std::string, body: std::string, email: std::string, phone: std::string) const ValidationResult
+    }
+    class Contact {
+        +name : std::string
+        +email : std::string
+        +phone : std::string
+    }
+    class PressRelease {
+        +id() const std::string
+        +headline() const std::string
+        +body() const std::string
+        +contact() const Contact
+        +state() const LifecycleState
+        +tags() const std::set<std::string>&
+        +setHeadline(value: std::string, clock: Clock, desc: std::string) void
+        +setBody(value: std::string, clock: Clock, desc: std::string) void
+        +setContact(contact: Contact, clock: Clock, desc: std::string) void
+        +addTag(tag: std::string, clock: Clock, desc: std::string) void
+        +removeTag(tag: std::string, clock: Clock, desc: std::string) void
+        +submitForReview(validator: Validator, clock: Clock, desc: std::string) bool
+        +publish(validator: Validator, clock: Clock, desc: std::string) bool
+        +toFieldMap() const std::map<std::string,std::string>
+        +history() const VersionHistory&
+    }
+    class Renderer {
+        +render(templateTxt: std::string, pr: PressRelease, engine: TemplateEngine) const std::string
+    }
+    class ReleaseRecord {
+        +id : std::string
+        +headline : std::string
+        +body : std::string
+        +tags : std::set<std::string>
+    }
+    class SearchIndex {
+        -records_ : std::vector<ReleaseRecord>
+        +add(rec: ReleaseRecord) void
+        +clear() void
+        +search(textQuery: std::string, requiredTags: std::set<std::string>) const std::vector<ReleaseRecord>
+    }
+    PressRelease --> VersionHistory
+    PressRelease --> Validator
+    Renderer --> TemplateEngine
+    Renderer --> PressRelease
+    VersionHistory --> Clock
+    SearchIndex --> ReleaseRecord

@@ -1,0 +1,13 @@
+REQUESTED_LANGUAGE: {language}
+REQUESTED_CHANNEL: {channel}
+RANDOMIZATION_SEED: {seed}
+
+RETRIEVED RULE CARDS:
+{rule_cards}
+
+SOURCE CODE:
+```{language}
+{source_code}
+```
+
+Rewrite the source code using only safe, applicable retrieved rules from the requested channel. If no retrieved rule can be applied safely, return the original source unchanged and use <applied_rules>NONE</applied_rules>.

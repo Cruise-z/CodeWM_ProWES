@@ -1,0 +1,50 @@
+{
+  "accepted_file_count_range": [
+    8,
+    10
+  ],
+  "architecture_attempt": 41,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T12:04:52.525715+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/python/initial_repository/p06_tank_battle_game_python",
+  "initial_repository_tree_sha256": "f2fdc4e833ef90520909a0fc2cc6fa88887200260784d2709f26e4605dd8d515",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "763d0f89f8eb56ef4fc67051e21778fbf019b6d53fac13962ce08c75088e199f",
+  "planned_file_count": 14,
+  "planned_files": [
+    "requirements.txt",
+    "tank_battle/directions.py",
+    "tank_battle/geometry.py",
+    "tank_battle/obstacle.py",
+    "tank_battle/arena.py",
+    "tank_battle/tank.py",
+    "tank_battle/projectile.py",
+    "tank_battle/commands.py",
+    "tank_battle/scoring.py",
+    "tank_battle/game.py",
+    "tank_battle/configs.py",
+    "tank_battle/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "c62d83103922b253e1843436379e8cf78f8ec5f0f4e85fbcf08d0de3d4f93e64",
+  "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill",
+  "started_at": "2026-09-14T12:00:53.015021+00:00",
+  "status": "complete",
+  "target_file_count": 9,
+  "task_path_normalization": "not required for this language",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p06_tank_battle_game/python/architecture/team/team.json",
+  "team_json_sha256": "eccf1d8d0c25fc9135ec4977f6c34f89c8d889962f86b0a5ee02346c5b6aea66",
+  "unit_id": "p06_tank_battle_game_python",
+  "valid": true
+}

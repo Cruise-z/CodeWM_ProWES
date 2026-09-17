@@ -1,0 +1,25 @@
+sequenceDiagram
+    participant T as Template
+    participant C as Contact
+    participant PR as PressRelease
+    participant S as search_by_tag
+    participant ST as search_text
+    participant M as Main.run_demo
+
+    M->>T: create Template(name, content)
+    M->>C: create Contact(name, email)
+    M->>PR: create PressRelease(id, headline, body, contact, template, custom_fields)
+    M->>PR: validate()
+    alt valid
+        M->>PR: add_tag("media")
+        M->>PR: submit_for_review()
+        M->>PR: publish()
+        PR->>PR: render_plain_text() -> Template.render(fields)
+        PR->>PR: version_history() append VersionEntry(1, rendered)
+    else invalid
+        PR-->>M: validate() returns False
+        M->>PR: submit_for_review() raises DomainError
+    end
+    M->>S: search_by_tag([PR], "media")
+    M->>ST: search_text([PR], "hello")
+    M-->>M: return dict with release, state, versions, rendered_text

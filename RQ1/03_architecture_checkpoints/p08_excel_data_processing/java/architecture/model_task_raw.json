@@ -1,0 +1,171 @@
+{
+  "20260914160116.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/ProcessingReport.java",
+      "src/main/java/Cell.java",
+      "src/main/java/Row.java",
+      "src/main/java/Sorters.java",
+      "src/main/java/Sheet.java",
+      "src/main/java/Workbook.java",
+      "src/main/java/ValueParser.java",
+      "src/main/java/Filters.java",
+      "src/main/java/Aggregations.java",
+      "src/main/java/CsvIO.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Build and test with: mvn -q test. Runtime entry: src/main/java/Main.java (default package). Single protocol-level test target: src/test/java/MainTest.java with exactly three tests. Tests are deterministic, headless, offline, and non-interactive. No additional test files are present. No network, filesystem, clock, GUI, threads, or randomness are used.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 13,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 13,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 13,
+      "task_list_count": 13
+    },
+    "Full API spec": "Build: pom.xml\n- Declares Java 11 source/target. Dependency: org.junit.jupiter:junit-jupiter (test scope). Plugin: maven-surefire-plugin configured for JUnit 5. No other dependencies. Test command: mvn -q test.\n\nsrc/main/java/ProcessingReport.java:\n- public final class ProcessingReport\n  - private int rowsRead, rowsKept, rowsWritten initialized to 0.\n  - private LinkedHashMap<String,Integer> invalidCounts initialized empty.\n  - public ProcessingReport()\n  - public void incrementRowsRead(): increments rowsRead by exactly 1.\n  - public void incrementRowsKept(): increments rowsKept by exactly 1.\n  - public void incrementRowsWritten(): increments rowsWritten by exactly 1.\n  - public void recordInvalid(String column): adds 1 to invalidCounts for key column exactly once per call; must not increment other counters.\n  - public int getRowsRead(), getRowsKept(), getRowsWritten(): return respective counters.\n  - public LinkedHashMap<String,Integer> invalidCounts(): returns an unmodifiable defensive copy preserving insertion order. No method changes unrelated counters.\n\nsrc/main/java/Cell.java:\n- public final class Cell\n  - private final String raw.\n  - public static Cell of(String raw): if raw==null, store empty string; else store raw as-is.\n  - public String raw(): returns stored raw.\n  - public boolean isBlank(): returns raw.trim().isEmpty(). Immutable; no setters.\n\nsrc/main/java/Row.java:\n- public final class Row\n  - private final List<String> header; private final List<Cell> cells; both copied defensively in constructor.\n  - public Row(List<String> header, List<Cell> cells): copies inputs and may pad internal cells to header size using Cell.of(\"\") if needed.\n  - public List<String> header(): returns unmodifiable defensive copy or unmodifiable view that cannot be mutated by caller.\n  - public List<Cell> cells(): returns unmodifiable defensive view of cells list.\n  - public Cell get(String column): finds first index i in header with header.get(i).equals(column); if found and i < cells.size(), return cells.get(i); if not found or i>=cells.size(), return Cell.of(\"\").\n  - public LinkedHashMap<String,String> asStringMap(): builds an ordered map of header->cells[i].raw() for each header index; if cells shorter, empty string for missing.\n\nsrc/main/java/Sorters.java:\n- public final class Sorters\n  - public static final class Order\n    - private final String column; private final boolean ascending.\n    - public Order(String column, boolean ascending)\n    - public String column(): returns column.\n    - public boolean ascending(): returns ascending.\n  - public static Comparator<Row> comparator(List<Order> orders): returns a comparator that for each Order compares the corresponding Cell.raw() strings; blanks (cell.isBlank()) always sort after non-blanks regardless of ascending/descending; for non-blank comparisons use String.compareTo; apply ascending flag by reversing sign if needed; if tie across all orders, deterministically tie-break by comparing full Row as concatenated raw strings (e.g., iterate header order) to avoid nondeterminism; never use Java streams.\n\nsrc/main/java/Sheet.java:\n- public final class Sheet\n  - private final String name; private final List<String> header; private final List<Row> rows.\n  - public Sheet(String name, List<String> header, List<Row> rows): copies inputs defensively.\n  - public String name(): returns name.\n  - public List<String> header(): unmodifiable defensive header view.\n  - public List<Row> rows(): unmodifiable defensive rows view.\n  - public Sheet filter(Predicate<Row> predicate, ProcessingReport report): builds a new Sheet with only rows where predicate.test(row) is true; for each retained row, call report.incrementRowsKept() exactly once; does not change report.rowsRead or rowsWritten; header/name preserved.\n  - public Sheet sort(List<Sorters.Order> orders): returns a new Sheet with rows sorted by Sorters.comparator(orders); no counter changes.\n\nsrc/main/java/Workbook.java:\n- public final class Workbook\n  - private final LinkedHashMap<String, Sheet> sheets = new LinkedHashMap<>();\n  - public Workbook()\n  - public void addSheet(Sheet sheet): inserts/overwrites by sheet.name().\n  - public Optional<Sheet> getSheet(String name): returns Optional.of(sheet) if present, else Optional.empty().\n  - public Set<String> sheetNames(): returns unmodifiable defensive set copy preserving insertion order if applicable.\n\nsrc/main/java/ValueParser.java:\n- public final class ValueParser\n  - public static Double toDouble(String raw, String column, ProcessingReport report): if raw==null or raw.trim().isEmpty(), return null without recording; else attempt Double.valueOf(trimmed); on NumberFormatException, call report.recordInvalid(column) exactly once and return null.\n\nsrc/main/java/Filters.java:\n- public final class Filters\n  - public static Predicate<Row> equals(String column, String value): returns predicate evaluating row.get(column).raw().equals(value).\n  - public static Predicate<Row> contains(String column, String fragment): returns predicate evaluating row.get(column).raw().contains(fragment).\n  - public static Predicate<Row> numericGreaterThan(String column, double threshold, ProcessingReport report): for a given row, call ValueParser.toDouble once with row.get(column).raw(); if null return false; else return parsed > threshold.\n\nsrc/main/java/Aggregations.java:\n- public final class Aggregations\n  - public static int count(Sheet sheet): returns sheet.rows().size().\n  - public static double sum(Sheet sheet, String column, ProcessingReport report): iterate rows once, call ValueParser.toDouble once per row; accumulate non-null values; ignore blanks/invalids; return 0.0 if none.\n  - public static double average(Sheet sheet, String column, ProcessingReport report): as sum but divide by count of numeric values; return 0.0 if no numeric values.\n  - public static Double min(Sheet sheet, String column, ProcessingReport report): iterate once, call ValueParser once per row; track smallest non-null; return null if none.\n  - public static Double max(Sheet sheet, String column, ProcessingReport report): iterate once, call ValueParser once per row; track largest non-null; return null if none.\n  - All methods must not use Java streams; use for loops and ArrayList.\n\nsrc/main/java/CsvIO.java:\n- public final class CsvIO\n  - public static Sheet importCsvFromString(String name, String csv, ProcessingReport report): split by '\\n' retaining order; first line is header split by ',' with negative limit to preserve trailing empties; for each subsequent line (data row), split with negative limit; pad to header length with empty strings; ignore excess cells; construct Cell for each field; wrap in Row; increment report.incrementRowsRead() exactly once per data row; return new Sheet(name, header, dataRows).\n  - public static String toCsvString(Sheet sheet, ProcessingReport report): build string with header line (comma-joined) followed by each row as comma-joined cell.raw(); for every data row written, call report.incrementRowsWritten() exactly once; must not modify rowsRead or rowsKept; use '\\n' line separators; do not quote commas or escape.\n\nsrc/main/java/Main.java:\n- public final class Main\n  - public static void main(String[] args): prepare a fixed in-memory CSV string; use fresh ProcessingReport for each phase (import, filter, aggregation, export); invoke CsvIO.importCsvFromString, Sheet.filter, Sheet.sort, Aggregations.sum, CsvIO.toCsvString; print one concise deterministic summary; no input, no filesystem/network, no randomness, no threads, no streams.\n\nsrc/test/java/MainTest.java:\n- JUnit 5 tests only; default package; imports only org.junit.jupiter.api.Test and static org.junit.jupiter.api.Assertions.* plus java.util.*; refer to project classes by simple names; no explicit project imports.\n- Exactly three tests:\n  1) runtime invokes Main.main(new String[0]) returns normally.\n  2) three-row pipeline uses literal CSV `Name,Country,Sales\\nAlice,US,1000\\nBob,CA,1500\\nCharlie,US,2000`; import with fresh reportImport assert rowsRead==3; filter Country==\"US\" with fresh reportFilter assert rowsKept==2; literally assert `assertEquals(\"Alice\", filteredRows.get(0).get(\"Name\").raw());` and `assertEquals(\"Charlie\", filteredRows.get(1).get(\"Name\").raw());`; sort those rows descending by Name and literally assert `assertEquals(\"Charlie\", sortedRows.get(0).get(\"Name\").raw());` and `assertEquals(\"Alice\", sortedRows.get(1).get(\"Name\").raw());`; sum Sales with fresh reportAggregation assert 3000.0 and invalidCounts empty.\n  3) invalid/round-trip uses literal CSV `Name,Sales\\nAlice,1000\\nBob,bad\\nCharlie,\\nDana,2000`; call sum exactly once with fresh reportAggregation assert 3000.0 and invalidCounts().get(\"Sales\")==1; export with fresh reportExport assert rowsWritten==4; re-import with fresh reportReimport assert rowsRead==4, identical header, four rows, and Bob's Sales remains `bad`.\n\nGlobal constraints:\n- All classes in default (unnamed) package; tests must not import project classes.\n- Java streams are forbidden across all files; use loops and ArrayList.\n- CsvIO exposes exactly two public static methods as specified; no overloads.\n- Each independent operation uses a fresh ProcessingReport; counters have precise ownership semantics.\n- Allowed dependency direction: ProcessingReport, Cell -> Row -> Sorters/Sheet -> Workbook/Filters/Aggregations/CsvIO -> Main -> MainTest. Tests call public APIs only.",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Java 11 target; declares org.junit.jupiter:junit-jupiter (test scope) and a JUnit 5-capable maven-surefire-plugin; no other dependencies; enforces headless, deterministic tests"
+      ],
+      [
+        "src/main/java/ProcessingReport.java",
+        "domain-entity; deterministic counters rowsRead/rowsKept/rowsWritten and invalidCounts map; unmodifiable defensive copy on access; no cross-counter side-effects"
+      ],
+      [
+        "src/main/java/Cell.java",
+        "domain-entity; immutable cell value; maps null to empty string; blank detection via trim().isEmpty()"
+      ],
+      [
+        "src/main/java/Row.java",
+        "domain-entity; immutable-like row holding header and cells; defensive copies; column lookup by name; returns Cell.of(\"\") when column missing; unmodifiable header/cells/map views"
+      ],
+      [
+        "src/main/java/Sorters.java",
+        "pure-rule; defines Sorters.Order and a comparator over Row; compares cell raw strings; blanks-last regardless of direction; deterministic tie-breaking"
+      ],
+      [
+        "src/main/java/Sheet.java",
+        "domain-entity; in-memory sheet with name, header, rows; filter with Predicate<Row> increments rowsKept for each retained row; sort has no counter effects; immutable-like returns"
+      ],
+      [
+        "src/main/java/Workbook.java",
+        "domain-entity; in-memory container of named sheets; add/retrieve Optional sheet; unmodifiable defensive sheetNames"
+      ],
+      [
+        "src/main/java/ValueParser.java",
+        "pure-rule; numeric parsing for doubles; trims; returns null for null/blank without recording; on invalid records exactly once in report for the column and returns null"
+      ],
+      [
+        "src/main/java/Filters.java",
+        "pure-rule; equals and contains string predicates; numericGreaterThan uses ValueParser once per tested row"
+      ],
+      [
+        "src/main/java/Aggregations.java",
+        "pure-rule; count, sum, average, min, max; each visits rows once and calls ValueParser once per row; blanks/invalids ignored; sum/average return 0.0 when no numeric; min/max return null"
+      ],
+      [
+        "src/main/java/CsvIO.java",
+        "pure-rule; CSV import/export with unquoted commas; import: first line header, split with negative limit to preserve empties, pad/trim cells, increment rowsRead per data row; export: write header+rows, increment rowsWritten per data row; no filesystem APIs"
+      ],
+      [
+        "src/main/java/Main.java",
+        "runtime/bootstrap; thin, non-interactive demo orchestration using fresh ProcessingReport per phase; prints one concise deterministic summary; no I/O beyond stdout"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; single JUnit 5 test file with exactly three deterministic tests: runtime invocation; three-row pipeline (import, filter, sort descending by Name, sum); invalid/round-trip (sum once records exactly one invalid, export, re-import). Tests import only JUnit and java.util, reference project classes by simple names in default package; no streams"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/ProcessingReport.java",
+        "src/main/java/Cell.java",
+        "src/main/java/Row.java",
+        "src/main/java/Sorters.java",
+        "src/main/java/Sheet.java",
+        "src/main/java/Workbook.java",
+        "src/main/java/ValueParser.java",
+        "src/main/java/Filters.java",
+        "src/main/java/Aggregations.java",
+        "src/main/java/CsvIO.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Java 11 (JDK 11)",
+      "Apache Maven 3.6+",
+      "JUnit Jupiter (org.junit.jupiter:junit-jupiter, test scope only)",
+      "Maven Surefire Plugin (JUnit 5 capable)"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "This repository is a headless Java 11 Maven project implementing in-memory Excel-like data processing with CSV import/export, filtering, sorting, and aggregations. All implementation classes live in the default package under src/main/java and are dependency-ordered. ProcessingReport owns counters and invalid counts; Cell and Row are immutable-like with defensive copies; Sorters provides multi-column comparator with blanks-last; Sheet performs filter and sort without mutating counters except rowsKept during filter; Workbook is an in-memory container; ValueParser provides numeric parsing with exact invalid recording semantics; Filters and Aggregations are pure rules calling ValueParser exactly once per visited row; CsvIO implements two static methods for CSV import/export with precise counter effects; Main demonstrates a fixed pipeline with fresh reports per phase; MainTest (JUnit 5) contains exactly three tests, imports only JUnit and java.util, references project classes by simple names in the unnamed package, and never uses Java streams.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/ProcessingReport.java",
+      "src/main/java/Cell.java",
+      "src/main/java/Row.java",
+      "src/main/java/Sorters.java",
+      "src/main/java/Sheet.java",
+      "src/main/java/Workbook.java",
+      "src/main/java/ValueParser.java",
+      "src/main/java/Filters.java",
+      "src/main/java/Aggregations.java",
+      "src/main/java/CsvIO.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": [],
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "Runtime stability: invoke Main.main(new String[0]) and ensure it returns without exceptions"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Three-row pipeline: CSV `Name,Country,Sales\\nAlice,US,1000\\nBob,CA,1500\\nCharlie,US,2000` -> import with fresh reportImport assert rowsRead==3 -> filter Country==US with fresh reportFilter assert rowsKept==2 and literally assert Name order: filteredRows.get(0).get(\"Name\").raw()==\"Alice\" and filteredRows.get(1).get(\"Name\").raw()==\"Charlie\" -> sort descending by Name and literally assert sortedRows.get(0).get(\"Name\").raw()==\"Charlie\" and sortedRows.get(1).get(\"Name\").raw()==\"Alice\" -> sum Sales with fresh reportAggregation and assert 3000.0 and empty invalidCounts"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Invalid/round-trip: CSV `Name,Sales\\nAlice,1000\\nBob,bad\\nCharlie,\\nDana,2000` -> sum exactly once with fresh reportAggregation assert 3000.0 and invalidCounts().get(\"Sales\")==1 -> export with fresh reportExport assert rowsWritten==4 -> re-import with fresh reportReimport assert rowsRead==4, header identical, four rows, and Bob's Sales remains `bad`"
+      ]
+    ]
+  }
+}

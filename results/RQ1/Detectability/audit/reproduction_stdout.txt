@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "issues": [],
+  "n_runs": 20,
+  "repositories": [
+    "Brick Breaker",
+    "Calculator",
+    "Snake Game",
+    "Flappy Bird"
+  ],
+  "methods": [
+    "WLLM",
+    "EWD",
+    "SWEET",
+    "STONE",
+    "Waterfall"
+  ],
+  "strengths": [
+    0.5,
+    1.0,
+    2.0,
+    3.0
+  ],
+  "expected_per_strength_npos": 20,
+  "expected_per_strength_nneg": 20,
+  "expected_pooled_npos": 80,
+  "expected_pooled_nneg": 20,
+  "table_definition": {
+    "Pool": "logged pooled AUROC across strengths 0.5,1.0,2.0,3.0",
+    "FNR5": "1 - pooled TPR@FPR=5%",
+    "display": "percentage, ROUND_HALF_UP, 2 decimals"
+  },
+  "statistical_note": "With Nneg=20, empirical FPR resolution is 5 percentage points. Therefore the table's FNR5 is directly supported, while FPR targets below 5% are intrinsically coarse and are not used in the requested LaTeX table."
+}

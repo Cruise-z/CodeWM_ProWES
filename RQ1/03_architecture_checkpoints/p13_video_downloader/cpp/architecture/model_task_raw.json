@@ -1,0 +1,199 @@
+{
+  "20260914204115.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {
+      "add_test_declared": true,
+      "cmake_core_library_declared": true,
+      "cmake_runtime_links_core": true,
+      "cmake_test_links_core": true,
+      "core_library_sources_exact": [
+        "src/Url.cpp",
+        "src/SafeNamer.cpp",
+        "src/Transfer.cpp",
+        "src/DownloadQueue.cpp"
+      ],
+      "direct_include_constraints": [
+        "DownloadQueue.cpp includes \"DownloadQueue.h\" and \"Url.h\" before using URL APIs",
+        "SafeNamer.cpp includes <utility> before std::move"
+      ],
+      "enable_testing_declared": true,
+      "headers_match_sources": true,
+      "likely_link_errors": [],
+      "no_test_includes_src_cpp": true,
+      "tests_include_headers_only": true
+    },
+    "Canonical File References": [
+      "CMakeLists.txt",
+      "include/DownloadTypes.h",
+      "include/Url.h",
+      "src/Url.cpp",
+      "include/SafeNamer.h",
+      "src/SafeNamer.cpp",
+      "include/Transfer.h",
+      "src/Transfer.cpp",
+      "include/DownloadQueue.h",
+      "src/DownloadQueue.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Execution Protocol": "Build with CMake, then run tests via: ctest --test-dir build --output-on-failure. Runtime entry is src/Main.cpp; it performs a bounded demo and exits. There is exactly one protocol-level test file: tests/test_main.cpp. The test target links against the core library and includes only declared headers. No user interaction, no network, no filesystem, no sleeps.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 12,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 12,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 12,
+      "task_list_count": 12
+    },
+    "Full API spec": "CMakeLists.txt:\n- Build system contract: requires CMake>=3.10. Sets CMAKE_CXX_STANDARD 17 and CMAKE_CXX_EXTENSIONS OFF. Builds static or object library downloader_core from exactly src/Url.cpp, src/SafeNamer.cpp, src/Transfer.cpp, src/DownloadQueue.cpp. target_include_directories(downloader_core PUBLIC ${PROJECT_SOURCE_DIR}/include). Builds downloader_app from src/Main.cpp and links downloader_core. Builds downloader_tests from tests/test_main.cpp and links downloader_core. Calls enable_testing() and add_test(NAME downloader_tests COMMAND downloader_tests).\n\ninclude/DownloadTypes.h:\n- enum class Format { MP4, WEBM, AUDIO }.\n- enum class DownloadState { QUEUED, DOWNLOADING, COMPLETED, CANCELED, FAILED }.\n- struct Progress { std::size_t bytes; std::size_t total; }.\n- struct DownloadItem { std::uint64_t id; std::string url; Format format; std::string filename; DownloadState state; Progress progress; std::string error; }.\n- struct EnqueueResult { bool ok; std::uint64_t id; std::string filename; std::string error; }.\nContract: header is self-contained; includes <cstddef>, <cstdint>, <string> only. No functions are defined here. Format is defined before DownloadItem.\n\ninclude/Url.h:\n- Direct includes: <string> and \"DownloadTypes.h\".\n- bool is_valid_url(const std::string& url): returns true if and only if url contains no whitespace, contains the literal separator \"://\", scheme before it is exactly \"http\" or \"https\", host begins at sep+3, the next slash or end marks host_end, and host_end>host_begin (i.e., non-empty host). Path is optional. Therefore, \"https://example.com\" and \"https://example.com/clip\" are valid; \"https://\" and \"http:///path\" are invalid.\n- bool parse_format(const std::string& text, Format& out): case-insensitive mapping of \"mp4\"->Format::MP4, \"webm\"->Format::WEBM, \"audio\"->Format::AUDIO; returns true and sets out on success, false otherwise without modifying any external state.\n- std::string extension_for(Format fmt): returns file extension mapping: MP4->\".mp4\", WEBM->\".webm\", AUDIO->\".mp3\".\nInclude direction: implementation in src/Url.cpp includes \"Url.h\" and <algorithm>, <cctype>.\n\nsrc/Url.cpp:\n- Implements is_valid_url, parse_format, extension_for per above; pure functions; no global state; deterministic.\n\ninclude/SafeNamer.h:\n- Direct includes: <string>, <unordered_set>, <vector>.\n- class IExistingFiles { public: virtual ~IExistingFiles() = default; virtual bool exists(const std::string& name) const = 0; }.\n- class InMemoryExistingFiles final : public IExistingFiles { private: std::unordered_set<std::string> names; public: explicit InMemoryExistingFiles() = default; explicit InMemoryExistingFiles(const std::vector<std::string>& initial); bool exists(const std::string& name) const override; void add(const std::string& name); }.\n- std::string sanitize_base(const std::string& base): preserves [A-Za-z0-9], '-' and '_'; any other run collapsed to a single underscore; trims leading and trailing underscores; returns \"download\" if the result is empty.\n- std::string unique_name(const std::string& base, const std::string& extension, const IExistingFiles& files, const std::unordered_set<std::string>& reserved): constructs candidate = base+extension; if files.exists(candidate) or candidate is in reserved, tries base_2+extension, base_3+extension, ... until neither files nor reserved contains it; returns the chosen name.\nContract: Empty InMemoryExistingFiles must be constructed via literal `InMemoryExistingFiles files;`; the form `InMemoryExistingFiles files({});` is forbidden due to ambiguity.\n\nsrc/SafeNamer.cpp:\n- Direct includes: \"SafeNamer.h\", <algorithm>, <cctype>, <utility> (before std::move).\n- Implements InMemoryExistingFiles(const std::vector<std::string>& initial) by populating names; exists() by querying names; add() by inserting.\n- Implements sanitize_base and unique_name exactly as specified above; no filesystem calls.\n\ninclude/Transfer.h:\n- Direct includes: <cstddef>, <string>.\n- class ITransferAdapter { public: virtual ~ITransferAdapter() = default; virtual std::size_t total_bytes(const std::string& url) const = 0; }.\n- class FakeTransferAdapter final : public ITransferAdapter { public: explicit FakeTransferAdapter(std::size_t total_bytes = 12); std::size_t total_bytes(const std::string& url) const override; private: std::size_t fixed_total_; }.\nContract: The adapter returns a fixed total byte count for any URL. There are no session APIs or bytesTransferred accessors.\n\nsrc/Transfer.cpp:\n- Direct includes: \"Transfer.h\", <stdexcept>.\n- FakeTransferAdapter::FakeTransferAdapter validates that the provided total is > 0; otherwise throws std::invalid_argument.\n- FakeTransferAdapter::total_bytes returns fixed_total_.\n\ninclude/DownloadQueue.h:\n- Direct includes: <cstddef>, <cstdint>, <string>, <unordered_set>, <vector>, plus \"DownloadTypes.h\", \"SafeNamer.h\", and \"Transfer.h\".\n- class DownloadQueue { private: ITransferAdapter& adapter_; const IExistingFiles& files_; std::vector<DownloadItem> items_; std::unordered_set<std::string> reserved_names_; std::uint64_t next_id_ = 1; std::size_t chunk_size_; public: DownloadQueue(ITransferAdapter& adapter, const IExistingFiles& files, std::size_t chunk_size = 4); EnqueueResult enqueue(const std::string& url, const std::string& format_text, const std::string& desired_base); bool cancel(std::uint64_t id); const DownloadItem* get(std::uint64_t id) const; std::vector<DownloadItem> list() const; void tick(); }.\nSemantics:\n- enqueue: validates URL via is_valid_url and format via parse_format; on failure returns {ok=false, id=0, filename=\"\", error=\"invalid url\" or \"invalid format\"} and does not mutate state. On success, computes base = sanitize_base(desired_base); ext = extension_for(format); candidate = unique_name(base, ext, files_, reserved_names_); reserves candidate by inserting into reserved_names_; total = adapter_.total_bytes(url); appends DownloadItem { id=next_id_, url, format, filename=candidate, state=DownloadState::QUEUED, progress={0,total}, error=\"\" }; increments next_id_; returns {ok=true, id, filename, error=\"\"}.\n- tick: processes at most one item per call: the first item with state QUEUED or DOWNLOADING (skipping any CANCELED/COMPLETED/FAILED). If QUEUED, transitions to DOWNLOADING. Then advances progress.bytes by min(chunk_size_, total - bytes). If bytes == total, sets state to COMPLETED. Deterministic; no randomness or time.\n- cancel(id): finds item by id; if not found or already terminal (COMPLETED/CANCELED/FAILED), returns false; otherwise sets state=CANCELED and returns true. Canceled items do not advance on subsequent ticks.\n- get(id) const: returns a pointer to the internal DownloadItem or nullptr if absent. Callers must treat it as read-only; invalidated by future vector reallocation if the queue mutates.\n- list() const: returns a defensive copy of items_.\nInclude direction: src/DownloadQueue.cpp must include \"DownloadQueue.h\" and \"Url.h\" (no transitive assumptions), then <algorithm>, <stdexcept>.\n\nsrc/DownloadQueue.cpp:\n- Implements constructor storing references and chunk_size_. Implements enqueue, tick, cancel, get, and list per above; mutates item.progress.bytes directly by min(chunk_size_, total-bytes).\n\nsrc/Main.cpp:\n- Minimal runtime demo: `InMemoryExistingFiles files;` (literal zero-arg). `FakeTransferAdapter adapter;` `DownloadQueue queue(adapter, files, 4);` Enqueues one fixed HTTPS URL with format \"mp4\" and base \"clip\"; ticks a bounded number (e.g., 4) and exits 0. No IO/network/sleep.\n\ntests/test_main.cpp:\n- Includes only <cassert>, <vector>, \"DownloadQueue.h\", and \"Url.h\". Defines exactly one int main() containing four independent blocks: (a) URL/format rules, (b) Safe naming uniqueness clip->clip_2.mp4 when clip.mp4 exists, (c) Deterministic progress 0->4->8->12 and COMPLETED, (d) Cancellation freezes progress. Empty InMemoryExistingFiles instances are declared as literal zero-arg `InMemoryExistingFiles files;`.\n\nAllowed include directions:\n- Headers are self-contained. Implementation files include their paired headers and the standard headers they use. DownloadQueue.cpp must directly include \"Url.h\" before calling any URL API. SafeNamer.cpp must include <utility> before std::move. Tests include only headers, never src/*.cpp.\n\nError behavior:\n- FakeTransferAdapter constructor throws std::invalid_argument if constructed with total_bytes == 0. URL parsing functions never throw; they return booleans or strings. DownloadQueue APIs never throw for normal operation; enqueue returns ok=false on invalid inputs.",
+    "Logic Analysis": [
+      [
+        "CMakeLists.txt",
+        "dependency/build; declares core library from src/Url.cpp, src/SafeNamer.cpp, src/Transfer.cpp, src/DownloadQueue.cpp; publishes include/; builds runtime (src/Main.cpp) and test (tests/test_main.cpp); enable_testing + add_test."
+      ],
+      [
+        "include/DownloadTypes.h",
+        "interface; self-contained types: enums Format and DownloadState; structs Progress, DownloadItem, EnqueueResult; includes <cstddef>, <cstdint>, <string> only."
+      ],
+      [
+        "include/Url.h",
+        "interface; declares URL/format API: bool is_valid_url(const std::string&), bool parse_format(const std::string&, Format&), std::string extension_for(Format); directly includes <string> and \"DownloadTypes.h\"."
+      ],
+      [
+        "src/Url.cpp",
+        "pure-rule; implements URL validation and format parsing; directly includes \"Url.h\", <algorithm>, <cctype>."
+      ],
+      [
+        "include/SafeNamer.h",
+        "interface; declares IExistingFiles and InMemoryExistingFiles; declares sanitize_base and unique_name; directly includes <string>, <unordered_set>, <vector>."
+      ],
+      [
+        "src/SafeNamer.cpp",
+        "pure-rule; implements InMemoryExistingFiles, sanitize_base, unique_name; directly includes \"SafeNamer.h\", <algorithm>, <cctype>, and <utility> (before std::move)."
+      ],
+      [
+        "include/Transfer.h",
+        "interface; declares ITransferAdapter and FakeTransferAdapter; directly includes <cstddef>, <string>."
+      ],
+      [
+        "src/Transfer.cpp",
+        "pure-rule; implements FakeTransferAdapter with constructor validation (throws on zero total); directly includes \"Transfer.h\" and <stdexcept>."
+      ],
+      [
+        "include/DownloadQueue.h",
+        "interface; declares DownloadQueue orchestrator with enqueue/cancel/get/list/tick; directly includes <cstddef>, <cstdint>, <string>, <unordered_set>, <vector>, plus \"DownloadTypes.h\", \"SafeNamer.h\", \"Transfer.h\"."
+      ],
+      [
+        "src/DownloadQueue.cpp",
+        "orchestration; tick-driven state machine, enqueue logic, cancellation; directly includes \"DownloadQueue.h\" and \"Url.h\" (for is_valid_url/parse_format/extension_for), then <algorithm>, <stdexcept>."
+      ],
+      [
+        "src/Main.cpp",
+        "runtime/bootstrap; constructs InMemoryExistingFiles via literal `InMemoryExistingFiles files;`, FakeTransferAdapter, DownloadQueue; enqueues one fixed URL and ticks a bounded number of times; no IO."
+      ],
+      [
+        "tests/test_main.cpp",
+        "automated-test; single deterministic test program with four independent blocks; includes only <cassert>, <vector>, \"DownloadQueue.h\", and \"Url.h\"."
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/Url.cpp",
+        "src/SafeNamer.cpp",
+        "src/Transfer.cpp",
+        "src/DownloadQueue.cpp",
+        "include/DownloadTypes.h",
+        "include/Url.h",
+        "include/SafeNamer.h",
+        "include/Transfer.h",
+        "include/DownloadQueue.h"
+      ],
+      "environment_dependent_modules": [
+        "src/Main.cpp"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "CMake>=3.10",
+      "C++17",
+      "No third-party dependencies required"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "Exactly 12 files. Core reusable APIs live under include/*.h with matching implementations in src/*.cpp. Tests are deterministic and headless, including only headers (\"DownloadQueue.h\", \"Url.h\") and standard headers (<cassert>, <vector>). CMake builds downloader_core from src/Url.cpp, src/SafeNamer.cpp, src/Transfer.cpp, src/DownloadQueue.cpp; publishes include/; builds downloader_app from src/Main.cpp and downloader_tests from tests/test_main.cpp, linking both against downloader_core. src/DownloadQueue.cpp directly includes both \"DownloadQueue.h\" and \"Url.h\". src/SafeNamer.cpp includes <utility> before std::move. Empty InMemoryExistingFiles must be constructed as `InMemoryExistingFiles files;` and never with `files({})`.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "test_includes_src_cpp": false,
+      "tests_include_headers_only": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "CMakeLists.txt",
+      "include/DownloadTypes.h",
+      "include/Url.h",
+      "src/Url.cpp",
+      "include/SafeNamer.h",
+      "src/SafeNamer.cpp",
+      "include/Transfer.h",
+      "src/Transfer.cpp",
+      "include/DownloadQueue.h",
+      "src/DownloadQueue.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.cpp",
+        "include/DownloadQueue.h"
+      ],
+      [
+        "tests/test_main.cpp",
+        "include/Url.h"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.cpp",
+        "URL/format rules: host-only https://example.com is valid; https:// and http:///path invalid; parse_format case-insensitive WEBM -> Format::WEBM."
+      ],
+      [
+        "tests/test_main.cpp",
+        "Safe naming uniqueness: existing clip.mp4 forces enqueue to allocate clip_2.mp4."
+      ],
+      [
+        "tests/test_main.cpp",
+        "Deterministic progress: for total 12 and chunk 4, bytes advance 0->4->8->12 and state becomes COMPLETED."
+      ],
+      [
+        "tests/test_main.cpp",
+        "Cancellation freezes progress: after first tick, cancel keeps bytes frozen and state CANCELED across ticks."
+      ]
+    ]
+  }
+}

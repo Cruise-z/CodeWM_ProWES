@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant Main as Main.run_demo
+    participant Codec as qr_code.codec
+    participant Payload as qr_code.payload
+    participant Matrix as qr_code.matrix
+    participant Render as qr_code.render
+    Main->>Codec: generate(text="CodeWM")
+    Codec->>Payload: encode_text(text)
+    Payload-->>Codec: bytes
+    Codec->>Payload: pack_payload(data)
+    Payload-->>Codec: list[int] bits
+    Codec->>Matrix: build_matrix(bits)
+    Matrix-->>Codec: 21x21 matrix
+    Main->>Codec: decode(matrix)
+    Codec->>Matrix: extract_bits(matrix)
+    Matrix-->>Codec: 366 bits
+    Codec->>Payload: unpack_payload(bits)
+    Payload-->>Codec: bytes
+    Codec-->>Main: decoded str
+    Main->>Codec: detect(matrix)
+    Codec-->>Main: bool
+    Main->>Render: render(matrix)
+    Render-->>Main: 21-line string
+    Main-->>Main: assemble demo dict and return

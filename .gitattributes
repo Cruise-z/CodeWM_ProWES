@@ -1,0 +1,12 @@
+results/RQ2/02_training/checkpoints/**/*.pt filter=lfs diff=lfs merge=lfs -text
+# Preserve release byte streams while exempting immutable evidence/upstream
+# snapshots from style-only whitespace checks.
+*.csv -whitespace
+RQ1/03_architecture_checkpoints/** -whitespace
+RQ1/source/DT/codeGen/MetaGPT/** -whitespace
+RQ1/source/DT/codeGen/modelDeploy/** -whitespace
+RQ1/source/reproduct/framework/** -whitespace
+RQ1/source/reproduct/model_runtime/** -whitespace
+RQ2/source/training/SrcMarker_fresh/** -whitespace
+results/RQ1/** -whitespace
+results/RQ2/02_training/logs/** -whitespace

@@ -1,0 +1,43 @@
+Generate a complete medium-size C++17 repository architecture for: Excel data processing.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+Medium-size target from MetaProjectDev (an approximate architecture target, not permission to violate the protocol):
+- about 7 repository files
+- about 27 functions or methods
+- about 617 lines of code
+
+File-count quality gate:
+- the complete Task list MUST contain between 6 and 8 files inclusive
+- count build, runtime, test, package markers, headers, and implementation files in that total
+- combine closely related small types instead of exceeding this budget
+
+Required domain behavior:
+- workbook-like sheets rows and cells
+- CSV import and export as a portable interchange
+- column selection and filtering
+- sorting and aggregation
+- missing and invalid value handling
+- deterministic processing reports
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

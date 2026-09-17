@@ -1,0 +1,64 @@
+Generate a complete medium-size C++17 repository architecture for: Snake game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: CMakeLists.txt
+- runtime entry: src/Main.cpp
+- single test target: tests/test_main.cpp
+- test command: ctest --test-dir build --output-on-failure
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.
+
+
+Project-specific C++ compilation contract:
+- include/Types.h is the sole definition site for Position and Direction; every header that mentions either type must include "Types.h" directly
+- include/IRandom.h declares both IRandom and DefaultRandom; src/Random.cpp must include "IRandom.h" exactly and must never include or refer to a nonexistent Random.h
+- include/IRandom.h must directly include <cstddef>, <cstdint>, and <random>; spell size types std::size_t and seed types std::uint32_t because std::mt19937 is a declared data member
+- include/Game.h must directly include "Board.h", "IRandom.h", "Snake.h", and "Types.h" plus <cstddef>, <deque>, and <optional>; forward declarations and transitive includes are forbidden for these dependencies
+- in both Full API specification and Logic Analysis, the include/IRandom.h entry must literally enumerate \`#include <cstddef>\`, \`#include <cstdint>\`, and \`#include <random>\`, and the include/Game.h entry must literally enumerate \`#include "Board.h"\`, \`#include "IRandom.h"\`, \`#include "Snake.h"\`, \`#include "Types.h"\`, \`#include <cstddef>\`, \`#include <deque>\`, and \`#include <optional>\`
+- every header must directly include every standard type it declares, including <deque>, <optional>, <set>, or <vector> when used; do not rely on transitive includes
+- Game must construct its non-default-constructible Snake member in the constructor initializer list; do not default-construct and later assign it
+- use the exact collision-query signature bool wouldSelfCollide(const Position& next, bool grow) const (or omit that helper entirely); no function may refer to a grow variable that is absent from its parameters or local declarations
+- specify an exact Game constructor initializer containing snake_(Position{static_cast<int>(width / 2), static_cast<int>(height / 2)}, Direction::Right, 3); constructor-body assignment is forbidden, and dimensions must be validated before any game tick
+- each target_compile_options flag in CMake must be a separate list argument, never one quoted string containing multiple flags
+- repeat these exact filename, literal include-line, collision-signature, constructor-initializer, and CMake rules in the Full API specification, Logic Analysis, Shared Knowledge, and every affected implementation task; a generic statement that headers are self-contained is insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 31 functions or methods
+- about 590 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- grid-based snake movement
+- direction rules that reject immediate reversal
+- food placement and consumption
+- growth and score updates
+- wall and self collision
+- game-over and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

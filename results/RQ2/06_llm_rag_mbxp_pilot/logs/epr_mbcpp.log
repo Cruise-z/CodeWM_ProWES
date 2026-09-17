@@ -1,0 +1,57 @@
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+progress=5/15 output=outputs/fresh/llm_pilot_minimal/epr/mbcpp_llm_all.jsonl
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+progress=10/15 output=outputs/fresh/llm_pilot_minimal/epr/mbcpp_llm_all.jsonl
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+/home/zhaorz/project/CodeWM/RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision/.deps/tree_sitter/__init__.py:36: FutureWarning: Language(path, name) is deprecated. Use Language(ptr, name) instead.
+  warn("{} is deprecated. Use {} instead.".format(old, new), FutureWarning)
+progress=15/15 output=outputs/fresh/llm_pilot_minimal/epr/mbcpp_llm_all.jsonl
+{
+  "n_total": 15,
+  "n_baseline_pass": 15,
+  "n_changed": 15,
+  "n_syntax_valid_changed": 15,
+  "n_post_pass": 15,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 1.0,
+  "language": "cpp",
+  "channel": "all",
+  "attack": "llm-rag",
+  "seed": 42,
+  "provider": "openai-compatible",
+  "model": "gpt-5",
+  "status_counts": {
+    "baseline_fail": 0,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 0,
+    "valid_attack": 15,
+    "error": 0
+  }
+}

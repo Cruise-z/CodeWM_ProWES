@@ -1,0 +1,70 @@
+Generate a complete medium-size Java 11 repository architecture for: Brick breaker game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java collision fixture and testability contract:
+- use screen coordinates consistently: x increases rightward, y increases downward, negative vy is upward, and positive vy is downward
+- Paddle's x value is the horizontal CENTER, not its left edge: getX() returns that center, asRect() has left edge x-width/2.0, and setX clamps the center to [width/2.0,maxX-width/2.0]; for Paddle(100.0,180.0,80.0,10.0,200.0), getX() is exactly 100.0 and asRect() spans x=60.0 through 140.0
+- Game has the exact injectable constructor Game(double width, double height, Paddle paddle, Ball ball, java.util.List<Brick> bricks, int lives); it defensively copies the list but retains the supplied Ball, Paddle, and Brick object identities so deterministic tests can observe mutation
+- Game declares the life counter exactly as private int lives; final, effectively immutable, shadow, record, or alternate life counters are forbidden; the constructor assigns this.lives = lives and getLives() returns that same mutable field
+- bottom-out handling is exact: when ball.getY()+ball.getRadius()>=height and lives>0, execute lives -= 1 exactly once, set lifeLost=true, reset the retained ball to x=paddle.getX() and y=paddle.getY()-ball.getRadius()-1.0, and make its vertical velocity negative; an implementation that only sets lifeLost without decrementing lives is forbidden
+- getBricks() returns an unmodifiable view or copy and tests must never mutate that result to configure the game; tests needing one brick must invoke the injectable constructor with java.util.List.of(brick), never call createDemoLevel() and then assert or try to force a one-brick layout
+- Ball exposes package-private setPosition(double x,double y) and setVelocity(double vx,double vy), accessible to the sole default-package MainTest; Brick.hit() decrements a breakable brick by exactly one to a minimum of zero
+- tick(dt) validates finite dt>0, integrates x+=vx*dt and y+=vy*dt once, handles left/right/top walls, paddle, then bricks; a colliding brick is hit exactly once in that tick, a destroyed breakable brick is removed and adds exactly 100 score once, and levelCompleted becomes true exactly when the retained bricks list is empty
+- circle/rectangle contact is inclusive: nearest-point squared distance <= radius squared is a collision; resolve on the minimum-penetration axis and reflect the corresponding velocity component
+- the exact one-brick fixture is: width=200.0, height=200.0; Paddle(100.0,180.0,80.0,10.0,200.0); Ball(60.0,45.0,0.0,10.0,5.0); Brick(new Rect(50.0,50.0,20.0,10.0),1,true); lives=3; after tick(0.1), the same brick has 0 hit points, getBricks() is empty, score is 100, and levelCompleted is true
+- the exact life-loss fixture uses the same dimensions and paddle, Ball(100.0,199.0,0.0,20.0,5.0), an unbreakable Brick(new Rect(0.0,20.0,20.0,10.0),1,false), and 3 lives; after tick(0.5), lives is 2, lifeLost is true, ball x is 100.0, ball y is 174.0, ball vy is negative, and levelCompleted is false because the unbreakable brick remains
+- MainTest contains exactly three concise deterministic tests: Main.main smoke, the exact injected one-brick fixture, and the exact injected life-loss fixture; the two domain tests MUST copy every numeric constructor argument and dt above literally, with no alternate dimensions, positions, velocities, radius, paddle, brick, or time step
+- MainTest's life test must literally assert assertEquals(2,game.getLives()), assertTrue(game.isLifeLost()), assertEquals(100.0,ball.getX(),1e-9), assertEquals(174.0,ball.getY(),1e-9), assertTrue(ball.getVy()<0.0), and assertFalse(game.isLevelCompleted()); approximate phrases such as "positioned to cross" are insufficient and alternative fixtures are forbidden
+- MainTest's brick test must literally use the stated 200.0-world fixture and tick(0.1), then assert the same Brick identity has zero hit points, game.getBricks().isEmpty(), score 100, and levelCompleted true; createDemoLevel and any substituted fixture are forbidden in this test
+- retained Brick identity means only that the caller's original `brick` reference observes brick.getHitPoints()==0 after Game mutates and removes it; after removal the brick list MUST NOT contain that object, so the test must use assertFalse(game.getBricks().contains(brick)); asserting both isEmpty() and contains(brick), or otherwise asserting contains(brick) after removal, is explicitly forbidden
+- the Game.java task and Full API must spell the reset expression as ball.setPosition(paddle.getX(),paddle.getY()-ball.getRadius()-1.0); examples using -0.1, paddle.getX()+paddle.getWidth()/2.0, a preserved old ball x, or any alternative formula are forbidden
+- repeat the exact constructor, center-based Paddle semantics, mutable private int lives field, mandatory lives -= 1 bottom-out statement and reset coordinates, retained entity identity observed through the external brick reference, mandatory assertFalse after brick removal, read-only brick list, tick order, inclusive collision, score/removal rule, bricks-empty completion rule, coordinate convention, literal test assertions, and both numeric fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 39 functions or methods
+- about 628 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- ball motion
+- paddle control
+- wall paddle and brick collision
+- brick durability or removal
+- score and lives
+- level completion and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

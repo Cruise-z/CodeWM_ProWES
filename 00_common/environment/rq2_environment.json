@@ -1,0 +1,40 @@
+{
+  "python": "3.13.5",
+  "seed": 42,
+  "n_bits": 4,
+  "chance_BAR": 0.5,
+  "chance_MAR": 0.0625,
+  "bootstrap_replicates": 10000,
+  "bootstrap_method": "paired sample-level percentile 95% CI",
+  "tree_sitter_parser_sha256": "eb31f22f6d0cf7127afde90c5957e8d6f74f4e8cfcd88896b6090a462df57479",
+  "input_sha256": {
+    "4bit_gru_codemark_42_csn_js_test.jsonl": "c9b0156e3e8e483edb5e069d886372fad6efbd700f5e625d73e20598340c4c0b",
+    "4bit_gru_codemark_42_github_c_funcs_test.jsonl": "45cd076fb3d55ad6e93f73204365225ae86e0fd00ebe5ba2b177130e939b0c94",
+    "4bit_gru_codemark_42_github_java_funcs_test.jsonl": "aa6b35bd88afd533e15c598f2e0cc8f978df42166b7f81b09620e1aaa655dab0",
+    "4bit_gru_srcmarker_42_csn_java_test.jsonl": "66c29d902a26f1320f9c147a56b5d75d20f288fb18a72874640d7bc52c760334",
+    "4bit_gru_srcmarker_42_csn_js_test.jsonl": "38237a361f0055acbc5ed017f4e66b1ab13d1d2c1335e340117dd66c1235ea3e",
+    "4bit_gru_srcmarker_42_github_c_funcs_test.jsonl": "0daa7c36cc51ecaa9918c5cef4d41480f2293d5e1c254dd1cf7a15a272cf4f9d",
+    "4bit_gru_srcmarker_42_github_java_funcs_test.jsonl": "f6248981c5925cca6a9e8c1a7e9490f0786c3331fe1bd4907d0402331b94f894"
+  },
+  "checkpoint_sha256": {
+    "/home/zhaorz/project/CodeWM/SrcMarker/ckpts/4bit_gru_srcmarker_42_csn_java_SrcMarker/models_best.pt": "015b64d7eb420cf391772369a0771f74da1351cd3d5c6484b3138a216d6e502e",
+    "/home/zhaorz/project/CodeWM/SrcMarker/ckpts/4bit_gru_srcmarker_42_csn_js_SrcMarker/models_best.pt": "65790d18c795427888bfda171723710fd17c8a003f985905e165ceac92bb4538",
+    "/home/zhaorz/project/CodeWM/SrcMarker/ckpts/4bit_gru_srcmarker_42_github_c_funcs_SrcMarker/models_best.pt": "2829ef2875ba16b9817faabf435ad82d02ca743eecdef600421a9c878ca4bd0a",
+    "/home/zhaorz/project/CodeWM/SrcMarker/ckpts/4bit_gru_srcmarker_42_github_java_funcs_SrcMarker/models_best.pt": "eb8534523eb4918b45ce8e99604e2871b7621cf3c6a8916000536a749398bda1"
+  },
+  "detector_device": "cpu",
+  "codeMark_checkpoint_available": false,
+  "llm_provider_available": false,
+  "dynamic_runtime_availability": {
+    "cpp_g++": true,
+    "java_javac": false,
+    "javascript_node": false
+  },
+  "determinism_check": {
+    "sample_count": 20,
+    "byte_identical": true,
+    "full_prefix_sha256": "b9a5f466fb680385f3dad8e252abad02d00321e59ad2ba1b3514b1d74ce095f1",
+    "rerun_sha256": "b9a5f466fb680385f3dad8e252abad02d00321e59ad2ba1b3514b1d74ce095f1",
+    "seed": 42
+  }
+}

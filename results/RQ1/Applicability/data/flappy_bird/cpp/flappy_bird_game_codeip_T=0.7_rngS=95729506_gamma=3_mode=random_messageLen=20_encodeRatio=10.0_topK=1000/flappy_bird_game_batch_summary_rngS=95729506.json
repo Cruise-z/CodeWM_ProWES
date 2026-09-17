@@ -1,0 +1,12 @@
+{
+  "project_name": "flappy_bird_game",
+  "rng_seed": 95729506,
+  "language": "cpp",
+  "counts": {
+    "[Build Error]": 23,
+    "[Test Error]": 0,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 0,
+    "[Pass]": 0
+  }
+}

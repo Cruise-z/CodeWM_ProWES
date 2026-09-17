@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant R as Runtime (Main.cpp)
+    participant C as excel::CSV (ExcelCore)
+    participant O as excel::Ops (ExcelOps)
+    participant S as std::ostream
+    R->>C: importCSV(istringstream, config, "Demo")
+    C-->>R: ImportResult{Sheet, rowsRead, missingCells}
+    R->>O: makeNumericGreaterThan("Amount", 10.0, &report)
+    R->>O: filterRows(Sheet, predicate, &report)
+    O-->>R: Sheet(filtered)
+    R->>O: sortRows(filtered, SortSpec{keys...}, &report)
+    O-->>R: Sheet(sorted)
+    R->>O: aggregateNumeric(sorted, "Amount", &report)
+    O-->>R: AggregationResult
+    R->>C: exportCSV(sorted, ostringstream, config)
+    C-->>R: void
+    R->>S: print summary and report
+    S-->>R: ok

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant M as Main
+    participant A as OfflineDeterministicAdapter
+    participant VD as VideoDownloader
+    participant DT as DownloadTask
+    M->>A: new OfflineDeterministicAdapter()
+    M->>VD: new VideoDownloader(A)
+    M->>VD: requestDownload(url1, MP4, name1)
+    M->>VD: requestDownload(url2, WEBM, name2)
+    M->>VD: startPending()
+    loop few ticks
+        M->>VD: tick()
+        VD->>DT: tick() for each RUNNING
+        DT->>DT: session.step(), update progress/status
+    end
+    M->>VD: getStatus(taskId), getProgress(taskId), getOutputName(taskId)
+    VD-->>M: statuses and progress
+    Note over DT,A: ProgressListener callbacks occur on each step
+    DT-->>VD: status becomes COMPLETED/CANCELLED/FAILED as appropriate

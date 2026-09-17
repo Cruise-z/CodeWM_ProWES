@@ -1,0 +1,49 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 7,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T16:03:34.390151+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/java/initial_repository/p08_excel_data_processing_java",
+  "initial_repository_tree_sha256": "c1598dd12b3951e34e1f1adf712022e597a4c2949fa6eca2c67f65379042efeb",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "e33af7c1be6388e06aaf4842068b845f89685629748923c2d309db27739db5f4",
+  "planned_file_count": 13,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/ProcessingReport.java",
+    "src/main/java/Cell.java",
+    "src/main/java/Row.java",
+    "src/main/java/Sorters.java",
+    "src/main/java/Sheet.java",
+    "src/main/java/Workbook.java",
+    "src/main/java/ValueParser.java",
+    "src/main/java/Filters.java",
+    "src/main/java/Aggregations.java",
+    "src/main/java/CsvIO.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "f7de564e90847b25d3b0fc3e0878edaefdfe1948e33c41b2f0cd49b7c9f00df9",
+  "rebuild_reason": "epoch6_attempts1_2_repeated_direct_row_raw_compile_error",
+  "started_at": "2026-09-14T16:00:06.520255+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "task_path_normalization": "bare Java filenames mapped to Maven source roots; already-qualified paths unchanged",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p08_excel_data_processing/java/architecture/team/team.json",
+  "team_json_sha256": "306fbfbd9341437f7f9047d8a21c3b01a199fa95a267f35e2c149a2b60e96ee9",
+  "unit_id": "p08_excel_data_processing_java",
+  "valid": true
+}

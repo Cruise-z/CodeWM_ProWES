@@ -1,0 +1,40 @@
+{
+  "artifact_name": "Detectability",
+  "artifact_version": "1.0",
+  "created_utc": "2026-09-15T17:19:36.236713+00:00",
+  "purpose": "Reproduce the requested per-strength detectability LaTeX table from four supplied execution logs.",
+  "source_log_count": 4,
+  "expected_runs": 20,
+  "expected_repositories": [
+    "Brick Breaker",
+    "Calculator",
+    "Snake Game",
+    "Flappy Bird"
+  ],
+  "expected_methods": [
+    "WLLM",
+    "EWD",
+    "SWEET",
+    "STONE",
+    "Waterfall"
+  ],
+  "strengths": [
+    0.5,
+    1.0,
+    2.0,
+    3.0
+  ],
+  "rounding": "ROUND_HALF_UP to 2 decimal percentage points",
+  "source_hashes_sha256": {
+    "log(9).txt": "b7c41707c8c2dc7c4398b057892c76e75cc2d734f8d71934eee9da0517369bf8",
+    "log(10).txt": "e6d91370e0075c2f5d919be8d64b3387399a24f130b25845c3cd82b698106009",
+    "log(20260915-171046).txt": "9660454e5b08825cc88af6c98af80fc3590d013103429ea2d11000de167ba5ed",
+    "log(20260915-171053).txt": "a4be0d9e5d428b802c0b9efd420234e9cf0d03a9c1bf4e68a18cbe050c7a7cce"
+  },
+  "verification": {
+    "status": "PASS",
+    "checked_rows": 20,
+    "checked_numeric_cells": 120,
+    "mismatches": []
+  }
+}

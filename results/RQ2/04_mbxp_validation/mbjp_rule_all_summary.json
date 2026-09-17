@@ -1,0 +1,65 @@
+{
+  "n_total": 842,
+  "n_baseline_pass": 842,
+  "n_changed": 842,
+  "n_syntax_valid_changed": 842,
+  "n_post_pass": 829,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 0.9845605700712589,
+  "language": "java",
+  "channel": "all",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 0,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 13,
+    "valid_attack": 829,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_0.jsonl",
+      "rows": 106,
+      "sha256": "e71437a9d9e5e9203fb7c26ffaecd15536280cefec7878d8e6fac2ade15595df"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_1.jsonl",
+      "rows": 106,
+      "sha256": "3a230a96665b8304791894063ba58231de1bd2d465851c8dabd05145d7706ea9"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_2.jsonl",
+      "rows": 106,
+      "sha256": "7dd582ba0f3c96893ce4442e5a56d8194594c973fd5d080bdf04809cc292c003"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_3.jsonl",
+      "rows": 106,
+      "sha256": "dd8043b81f5f3eef4bb1b8fec7f6103f9cb1aa2f1e4da2122aca902807a6d459"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_4.jsonl",
+      "rows": 106,
+      "sha256": "273670cea2408e243f5fabc9557f970111bdd39af12eecf3d9ae6b6c363c2805"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_5.jsonl",
+      "rows": 106,
+      "sha256": "1fc0d304fdc56c6d3745efd4a7a45898cef0171b1b24f99725e571dd6ec2563d"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_6.jsonl",
+      "rows": 106,
+      "sha256": "7c0e8056da666ceb9d62c2522120e4d290928cb6890e6ecb5119cfc75e719eec"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/all/part_7.jsonl",
+      "rows": 100,
+      "sha256": "ed55f18ca9598237b4d653458395c7669017b74d35efe9271fd6fe8de4c7bb6c"
+    }
+  ],
+  "output_sha256": "92c227c2b5aafead9909b47d2ae0eaa0ff663ac63aff9e7ddf3b156f6dc719d0"
+}

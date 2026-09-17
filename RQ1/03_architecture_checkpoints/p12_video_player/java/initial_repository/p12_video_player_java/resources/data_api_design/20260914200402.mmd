@@ -1,0 +1,101 @@
+classDiagram
+    class MediaItem {
+        +MediaItem(String id, String title, long durationMillis)
+        +String getId()
+        +String getTitle()
+        +long getDurationMillis()
+    }
+    class Playlist {
+        -ArrayList~MediaItem~ items
+        +Playlist()
+        +void add(MediaItem item)
+        +int size()
+        +MediaItem getAt(int index)
+        +MediaItem removeAt(int index)
+        +boolean hasNext(int index)
+        +boolean hasPrevious(int index)
+        +int nextIndex(int index)
+        +int previousIndex(int index)
+    }
+    class PlayerState {
+        <<enum>> PlaybackStatus
+        PlaybackStatus : STOPPED
+        PlaybackStatus : PLAYING
+        PlaybackStatus : PAUSED
+        -int currentIndex
+        -long positionMillis
+        -PlaybackStatus status
+        +PlayerState()
+        +int getCurrentIndex()
+        +void setCurrentIndex(int index)
+        +long getPositionMillis()
+        +void setPositionMillis(long position)
+        +PlaybackStatus getStatus()
+        +void setStatus(PlaybackStatus status)
+        +void resetPosition()
+    }
+    class VolumeControl {
+        -int volume
+        -int lastNonMuted
+        -boolean muted
+        +VolumeControl()
+        +int getVolume()
+        +void setVolume(int volume)
+        +int getLastNonMuted()
+        +boolean isMuted()
+        +void mute()
+        +void unmute()
+        +int getEffectiveVolume()
+    }
+    class DeterministicClock {
+        -long currentTimeMillis
+        +DeterministicClock()
+        +long getCurrentTimeMillis()
+        +void advance(long deltaMillis)
+    }
+    class PlayerSnapshot {
+        -int index
+        -String title
+        -long positionMillis
+        -long durationMillis
+        -PlayerState.PlaybackStatus status
+        -int volume
+        -boolean muted
+        +PlayerSnapshot(int index, String title, long positionMillis, long durationMillis, PlayerState.PlaybackStatus status, int volume, boolean muted)
+        +int getIndex()
+        +String getTitle()
+        +long getPositionMillis()
+        +long getDurationMillis()
+        +PlayerState.PlaybackStatus getStatus()
+        +int getVolume()
+        +boolean isMuted()
+        +static PlayerSnapshot from(Playlist pl, PlayerState st, VolumeControl vc)
+    }
+    class PlaybackController {
+        -Playlist playlist
+        -VolumeControl volumeControl
+        -DeterministicClock clock
+        -PlayerState state
+        -long lastTick
+        +PlaybackController(Playlist playlist, VolumeControl volumeControl, DeterministicClock clock)
+        +void play()
+        +void pause()
+        +void stop()
+        +void seek(long positionMillis)
+        +void next()
+        +void previous()
+        +void onClockAdvanced()
+        +PlayerSnapshot getSnapshot()
+        +PlayerState getState()
+        +Playlist getPlaylist()
+        +VolumeControl getVolumeControl()
+    }
+    class Main {
+        +static void main(String[] args)
+    }
+    PlaybackController --> Playlist
+    PlaybackController --> VolumeControl
+    PlaybackController --> DeterministicClock
+    PlaybackController --> PlayerState
+    PlaybackController --> PlayerSnapshot
+    Playlist --> MediaItem

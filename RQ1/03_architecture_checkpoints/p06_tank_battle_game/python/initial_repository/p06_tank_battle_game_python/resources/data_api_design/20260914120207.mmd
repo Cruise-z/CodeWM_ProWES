@@ -1,0 +1,97 @@
+classDiagram
+    class Direction {
+        <<Enum>>
+        N=(0,-1)
+        E=(1,0)
+        S=(0,1)
+        W=(-1,0)
+        +delta() tuple[int,int]
+        +left() Direction
+        +right() Direction
+    }
+    class Rect {
+        +x:int
+        +y:int
+        +w:int
+        +h:int
+        +contains(px:int, py:int) bool
+    }
+    class Obstacle {
+        +rect: Rect
+    }
+    class Arena {
+        +width:int
+        +height:int
+        +obstacles:list[Obstacle]
+        +in_bounds(x:int,y:int) bool
+        +is_blocked(x:int,y:int) bool
+    }
+    class Tank {
+        +id:str
+        +name:str
+        +x:int
+        +y:int
+        +direction:Direction
+        +health:int
+        +speed:int
+        +barrel_ahead() tuple[int,int]
+        +alive() bool
+        +clone() Tank
+    }
+    class Projectile {
+        +pid:int
+        +owner_id:str
+        +x:int
+        +y:int
+        +direction:Direction
+        +speed:int
+        +move() None
+        +clone() Projectile
+    }
+    class Command {
+        <<marker>>
+    }
+    class MoveForward {
+        +steps:int
+    }
+    class RotateLeft
+    class RotateRight
+    class RotateTo {
+        +direction:Direction
+    }
+    class Fire
+    Command <|-- MoveForward
+    Command <|-- RotateLeft
+    Command <|-- RotateRight
+    Command <|-- RotateTo
+    Command <|-- Fire
+    class ScoreBoard {
+        +hits:dict[str,int]
+        +kills:dict[str,int]
+        +record_hit(player_id:str) None
+        +record_kill(player_id:str) None
+        +score(player_id:str) int
+    }
+    class Game {
+        +arena:Arena
+        +tanks:dict[str,Tank]
+        +projectiles:list[Projectile]
+        +scores:ScoreBoard
+        +command_queue:list[tuple[str,Command]]
+        +next_projectile_id:int
+        +queue_command(player_id:str, command:Command) None
+        +tick() None
+        +reset() None
+        +winner() str|None
+        +snapshot() dict
+    }
+    Arena --> Obstacle
+    Obstacle --> Rect
+    Tank --> Direction
+    Projectile --> Direction
+    Game --> Arena
+    Game --> Tank
+    Game --> Projectile
+    Game --> ScoreBoard
+    Game --> Command
+    RotateTo --> Direction

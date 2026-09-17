@@ -1,0 +1,21 @@
+{
+  "artifact_layout_revision": 1,
+  "assembled_utc_date": "2026-09-17",
+  "rq1": {
+    "source_repository": "CodeWM_ProWES_Logits",
+    "remote": "git@github.com:Cruise-z/CodeWM_ProWES_Logits.git",
+    "commit": "9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa",
+    "commit_subject": "Add metaProjectDEV reproducibility campaign",
+    "result_archives": {
+      "Applicability.zip": "e00122d3458826f8963e2b6f98753556b6e464bea981e3ea003bc4d6eef88183",
+      "Detectability.zip": "36e18dd3df140da91e6b447a0fde7cd3c217bdf662a71230e99ee8ef01fc6601"
+    }
+  },
+  "rq2": {
+    "source_bundle": "RQ2_Final_Codex_Release/RQ2_Robustness_All_in_One/revision/RQ2_Robustness_Revision",
+    "curated_source_archive": "RQ2_Source_Artifact_20260916.zip",
+    "curated_source_manifest": "RQ2/source/SOURCE_MANIFEST.json",
+    "srcmarker_base_commit": "2fb71cf816c12b0b07bb4d84dbe44ca0816662eb",
+    "codemark_reference_commit": "7958e66d083c9ab4bb3d5c1434f6a1df4bb670ff"
+  }
+}

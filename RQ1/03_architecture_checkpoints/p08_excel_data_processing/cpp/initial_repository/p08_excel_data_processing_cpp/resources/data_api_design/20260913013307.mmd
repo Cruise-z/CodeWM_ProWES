@@ -1,0 +1,86 @@
+classDiagram
+    namespace excel {
+      class Cell {
+        - std::string raw
+        + Cell()
+        + Cell(std::string)
+        + bool isMissing() const
+        + const std::string& asString() const
+        + std::optional<long long> parseInt() const
+        + std::optional<double> parseDouble() const
+      }
+      class Sheet {
+        - std::string name
+        - std::vector<std::string> headers
+        - std::unordered_map<std::string, size_t> nameToIndex
+        - std::vector<std::vector<Cell>> rows
+        + Sheet()
+        + Sheet(std::string name, std::vector<std::string> headers)
+        + const std::string& getName() const
+        + const std::vector<std::string>& getHeaders() const
+        + bool hasColumn(const std::string&) const
+        + size_t columnIndex(const std::string&) const
+        + void appendRow(const std::vector<std::string>& values)
+        + size_t rowCount() const
+        + size_t columnCount() const
+        + const Cell& cell(size_t row, size_t col) const
+        + Sheet cloneWithSubsetColumns(const std::vector<size_t>& indices) const
+      }
+      class Workbook {
+        - std::vector<Sheet> sheets
+        - std::unordered_map<std::string, size_t> nameToIndex
+        + void addSheet(const Sheet&)
+        + size_t sheetCount() const
+        + const Sheet& getSheetByIndex(size_t) const
+        + const Sheet& getSheetByName(const std::string&) const
+      }
+      class CSVConfig {
+        + char delimiter
+        + char quote
+        + bool hasHeader
+        + bool trim
+      }
+      class ImportResult {
+        + Sheet sheet
+        + size_t rowsRead
+        + size_t missingCells
+      }
+      class ProcessingReport {
+        + size_t rows_read
+        + size_t rows_kept
+        + size_t rows_dropped
+        + size_t invalid_cells
+        + size_t missing_cells
+        + std::vector<std::string> operations
+        + void addOperation(const std::string&)
+        + void merge(const ProcessingReport&)
+        + std::string toString() const
+      }
+      class SortKey {
+        + std::string column
+        + bool ascending
+        + MissingOrder missing
+      }
+      class SortSpec {
+        + std::vector<SortKey> keys
+      }
+      enum MissingOrder {
+        First
+        Last
+      }
+      class AggregationResult {
+        + size_t count_valid
+        + size_t count_missing
+        + size_t count_invalid
+        + double sum
+        + std::optional<double> average
+      }
+      Sheet selectColumnsByNames(Sheet, std::vector<std::string>, ProcessingReport*)
+      Sheet selectColumnsByIndices(Sheet, std::vector<size_t>, ProcessingReport*)
+      Sheet filterRows(Sheet, RowPredicate, ProcessingReport*)
+      RowPredicate makeNumericGreaterThan(std::string column, double threshold, ProcessingReport*)
+      Sheet sortRows(Sheet, SortSpec, ProcessingReport*)
+      AggregationResult aggregateNumeric(Sheet, std::string column, ProcessingReport*)
+      ImportResult importCSV(std::istream&, CSVConfig, std::string sheetName)
+      void exportCSV(const Sheet&, std::ostream&, const CSVConfig&)
+    }

@@ -1,0 +1,200 @@
+{
+  "Anything UNCLEAR": "",
+  "Architecture Collapse Audit": {
+    "collapse_risks": [],
+    "generic_bucket_modules": [],
+    "has_generic_bucket_modules": false,
+    "passes_architecture_quality_gate": true,
+    "recommended_replacements": []
+  },
+  "C++ Build Link Audit": {
+    "add_test_declared": true,
+    "core_library_declared": true,
+    "declared_headers_match_declared_sources": true,
+    "enable_testing_declared": true,
+    "missing_interface_files": [],
+    "notes": "The core library should compile from src/*.cpp except src/Main.cpp. All headers are self-contained. tests/test_main.cpp includes only include/Calculator.h.",
+    "runtime_links_core_library": true,
+    "suspected_build_breakers": [],
+    "test_links_core_library": true,
+    "tests_include_headers_only": true,
+    "undeclared_test_includes": []
+  },
+  "Canonical File References": [
+    "CMakeLists.txt",
+    "include/Tokens.h",
+    "src/Tokens.cpp",
+    "include/Lexer.h",
+    "src/Lexer.cpp",
+    "include/Parser.h",
+    "src/Parser.cpp",
+    "include/Evaluator.h",
+    "src/Evaluator.cpp",
+    "include/History.h",
+    "src/History.cpp",
+    "include/Calculator.h",
+    "src/Calculator.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Execution Protocol": "Run ctest with: ctest --test-dir build --output-on-failure. Runtime entry is src/Main.cpp. The single protocol test target is tests/test_main.cpp. tests/test_main.cpp includes only declared headers from include/, specifically include/Calculator.h. Both runtime and test executables link against the core library. Tests are deterministic, headless, offline, and require no manual interaction.",
+  "File Coverage Audit": {
+    "coverage_passed": true,
+    "design_file_list_count": 15,
+    "extra_in_pm_canonical": [],
+    "extra_in_task_list": [],
+    "logic_analysis_count": 15,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "pm_canonical_count": 15,
+    "task_list_count": 15
+  },
+  "Full API spec": "AUTHORITATIVE NORMATIVE API; supersedes every earlier model summary in this architecture:\n\nGenerate a complete medium-size C++17 repository architecture for: Calculator.\n\nThis architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.\n\nNormative evaluator protocol (these paths are mandatory and override preferences):\n- build file: CMakeLists.txt\n- runtime entry: src/Main.cpp\n- single test target: tests/test_main.cpp\n- test command: ctest --test-dir build --output-on-failure\n- keep exactly one protocol-level test file; additional non-test implementation files are allowed\n\nLanguage/layout constraints:\nUse include/*.h and src/*.cpp pairs for reusable modules. tests/test_main.cpp must include headers, never implementation .cpp files. Use only the C++17 standard library and CMake; do not fetch dependencies. Every header must be self-contained and list every standard-library include needed by its declarations; every source must include algorithms/types it uses.\n\nMedium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):\n- about 6 repository files\n- about 22 functions or methods\n- about 468 lines of code\n\nSizing guidance:\n- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds\n- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference\n- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size\n\nRequired domain behavior:\n- tokenization of arithmetic expressions\n- operator precedence and parentheses\n- addition subtraction multiplication and division\n- decimal values\n- clear error reporting\n- calculation history\n\nCross-cutting requirements:\n- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries\n- automated tests must be deterministic, headless, offline, and require no manual interaction\n- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix\n- do not inflate the function/LOC target with test code; put substantive behavior in implementation files\n- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC\n- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)\n- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code\n- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop\n- validate invalid inputs and boundary cases\n- keep public interfaces coherent across design, task list, implementation, and tests\n- specify one canonical public API; tests must use it without inventing alternate semantics\n- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task\n- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases\n- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated\n- avoid network access and OS-specific behavior during build, tests, and runtime checks\n- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents\n\n",
+  "Logic Analysis": [
+    [
+      "CMakeLists.txt",
+      "dependency/build; declares core static library from non-Main sources, demo runtime target, and single test target; enables testing and registers the test"
+    ],
+    [
+      "include/Tokens.h",
+      "interface; declares TokenType enum, Token struct with position, and non-inline operator helper function declarations (precedence, associativity, operator-char) used by Lexer/Parser"
+    ],
+    [
+      "src/Tokens.cpp",
+      "domain-entity; implements non-inline Token-related helpers (precedence(char), isLeftAssociative(char), isOperatorChar(char))"
+    ],
+    [
+      "include/Lexer.h",
+      "interface; declares LexResult (success, tokens, error message/position) and class Lexer with tokenize(const std::string&) const"
+    ],
+    [
+      "src/Lexer.cpp",
+      "pure-rule; implements whitespace skipping, numeric (decimal) scanning, parentheses and operator tokenization, with position-aware error reporting"
+    ],
+    [
+      "include/Parser.h",
+      "interface; declares ParseResult (success, RPN tokens, error message/position) and class Parser with toRPN(const std::vector<Token>&) const"
+    ],
+    [
+      "src/Parser.cpp",
+      "pure-rule; implements shunting-yard algorithm with precedence/associativity from Tokens helpers, validates parentheses, and produces RPN or error with position"
+    ],
+    [
+      "include/Evaluator.h",
+      "interface; declares EvalResult (success, value, error message/position) and class Evaluator with evaluateRPN(const std::vector<Token>&) const"
+    ],
+    [
+      "src/Evaluator.cpp",
+      "pure-rule; implements stack-based RPN execution; checks operand availability and division-by-zero, reports errors with source position from operator tokens"
+    ],
+    [
+      "include/History.h",
+      "interface; declares HistoryEntry (expression, result) and class History with record(expr,value), entries() const, and clear()"
+    ],
+    [
+      "src/History.cpp",
+      "domain-entity; implements History using std::vector<HistoryEntry>; records only successful evaluations"
+    ],
+    [
+      "include/Calculator.h",
+      "interface; declares EvaluationOutcome (success, value, error message/position) and class Calculator orchestrating tokenization, parsing, evaluation, and history"
+    ],
+    [
+      "src/Calculator.cpp",
+      "orchestration; implements Calculator::evaluate() workflow: Lexer -> Parser -> Evaluator, records history on success, returns EvaluationOutcome"
+    ],
+    [
+      "src/Main.cpp",
+      "runtime/bootstrap; thin, deterministic demo that evaluates a few fixed expressions and prints results/errors; no interactive loop"
+    ],
+    [
+      "tests/test_main.cpp",
+      "automated-test; single protocol-level test file that includes only include/Calculator.h and performs concise API-level smoke and representative rule tests"
+    ]
+  ],
+  "Module Boundary Audit": {
+    "core_domain_logic_modules": [
+      "src/Tokens.cpp",
+      "src/Lexer.cpp",
+      "src/Parser.cpp",
+      "src/Evaluator.cpp",
+      "src/History.cpp",
+      "src/Calculator.cpp"
+    ],
+    "environment_dependent_modules": [
+      "src/Main.cpp"
+    ],
+    "environment_test_coupling_risks": [],
+    "headless_testing_risks": []
+  },
+  "Python Dependency Compatibility Audit": {
+    "headless_test_notes": "",
+    "not_applicable": true,
+    "uses_outdated_pins": false,
+    "version_range_recommendations": []
+  },
+  "Required Other language third-party packages": [
+    "CMake>=3.10",
+    "C++17",
+    "No third-party dependencies required"
+  ],
+  "Required packages": [],
+  "Shared Knowledge": "This repository builds a pure, testable core library exposing a single canonical public API in include/Calculator.h. Domain modules are split into token model, lexer, parser (shunting-yard to RPN), evaluator (RPN execution), and history. The demo runtime entry is src/Main.cpp. The single test file tests/test_main.cpp includes only include/Calculator.h. CMake builds a core static library from non-Main src/*.cpp files, links both the runtime demo and the test executable against that library, enables testing, and registers the test.\n\nThe full normative architecture prompt above is binding for every generated file and test.",
+  "Task Protocol Audit": {
+    "For C++ projects - headers/sources parity": "All include/*.h have matching src/*.cpp; tests include headers only.",
+    "logic_analysis_covers_all_canonical_files": true,
+    "missing_from_logic_analysis": [],
+    "missing_from_pm_canonical": [],
+    "missing_from_task_list": [],
+    "noncanonical_file_references": [],
+    "pm_canonical_matches_design_file_list": true,
+    "renamed_required_files": [],
+    "required_files_present_exactly": true,
+    "task_list_covers_all_canonical_files": true,
+    "tests_include_src_cpp": false,
+    "undeclared_file_references": [],
+    "unexpected_additional_test_files": []
+  },
+  "Task list": [
+    "CMakeLists.txt",
+    "include/Tokens.h",
+    "include/Lexer.h",
+    "include/Parser.h",
+    "include/Evaluator.h",
+    "include/History.h",
+    "include/Calculator.h",
+    "src/Tokens.cpp",
+    "src/Lexer.cpp",
+    "src/Parser.cpp",
+    "src/Evaluator.cpp",
+    "src/History.cpp",
+    "src/Calculator.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "Test Include Plan": [
+    [
+      "tests/test_main.cpp",
+      "include/Calculator.h"
+    ]
+  ],
+  "Test Scope Plan": [
+    [
+      "tests/test_main.cpp",
+      "basic runtime wiring via calc::Calculator: evaluate a simple expression (e.g., 1+2*3) and assert success with correct value (precedence)"
+    ],
+    [
+      "tests/test_main.cpp",
+      "parentheses override precedence: (1+2)*3 produces expected result"
+    ],
+    [
+      "tests/test_main.cpp",
+      "division-by-zero yields non-crashing error: evaluate(\"1/0\") returns success=false with a non-empty error message"
+    ],
+    [
+      "tests/test_main.cpp",
+      "history records only successful evaluations: after one success and one failure, history size increments only for the success"
+    ]
+  ]
+}

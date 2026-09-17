@@ -1,0 +1,65 @@
+{
+  "n_total": 842,
+  "n_baseline_pass": 842,
+  "n_changed": 842,
+  "n_syntax_valid_changed": 842,
+  "n_post_pass": 842,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 1.0,
+  "language": "java",
+  "channel": "expr",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 0,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 0,
+    "valid_attack": 842,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_0.jsonl",
+      "rows": 106,
+      "sha256": "0ee60d5f4ddb729e99d47a7a675992a5ea336730191cd7cdc2d648ea068778e6"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_1.jsonl",
+      "rows": 106,
+      "sha256": "93ed807f491c488d070648c6e1301b6096c6d10dee8f9765ea28540393919333"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_2.jsonl",
+      "rows": 106,
+      "sha256": "b27f549ab6979be3ada67e66db75497bfcf9862726e205c88249d3b57c1c51f8"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_3.jsonl",
+      "rows": 106,
+      "sha256": "d9ae419f6bd8c7a9ed386b0cd62b44c59dc7e4a7170080f401b7aba4a61a0875"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_4.jsonl",
+      "rows": 106,
+      "sha256": "7960a66f7993574bf008dc1cc05af7e3f0b98dd44702b4055d81118751626527"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_5.jsonl",
+      "rows": 106,
+      "sha256": "354abf8eccb55e81dd73a126e56d065f823488ad6e1d2c68aa09f92b7c58aaa5"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_6.jsonl",
+      "rows": 106,
+      "sha256": "96ec798340c53f85d103a32b93999bb3f3e4a8211cd0cbf684e7e00c2db96b05"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/expr/part_7.jsonl",
+      "rows": 100,
+      "sha256": "49c3d4629878e0b6c104f8d6c50f6fde6c5517467831c01d9b00dae7ca0b0889"
+    }
+  ],
+  "output_sha256": "4c8f788584c2ac6ad0706a8a7f93b9491ca64bf4687e5b18a128c8916bf96d0e"
+}

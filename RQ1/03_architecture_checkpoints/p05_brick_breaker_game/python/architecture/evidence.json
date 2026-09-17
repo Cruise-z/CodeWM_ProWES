@@ -1,0 +1,43 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 9,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "completed_at": "2026-09-13T18:40:52.757939+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/python/initial_repository/p05_brick_breaker_game_python",
+  "initial_repository_tree_sha256": "ad7d539e617ae41522af8511de831af3c6c6228ab8e18e2637278083d67113bd",
+  "missing_required_files": [],
+  "planned_file_count": 11,
+  "planned_files": [
+    "requirements.txt",
+    "brick_breaker/config.py",
+    "brick_breaker/ball.py",
+    "brick_breaker/paddle.py",
+    "brick_breaker/brick.py",
+    "brick_breaker/level.py",
+    "brick_breaker/collision.py",
+    "brick_breaker/game.py",
+    "brick_breaker/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "32d6963cf68d67b735fb1331315924b6dd5023d51087340047a2c5763e7b169f",
+  "started_at": "2026-09-13T18:38:10.740115+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p05_brick_breaker_game/python/architecture/team/team.json",
+  "team_json_sha256": "a4cefc0c1231e6b901c0ac7efe530e1ef103e3dc4a7a104cf50bfa87d77ddf18",
+  "unit_id": "p05_brick_breaker_game_python",
+  "valid": true
+}

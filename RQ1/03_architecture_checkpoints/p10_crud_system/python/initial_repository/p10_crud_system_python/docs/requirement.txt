@@ -1,0 +1,70 @@
+Generate a complete medium-size Python 3.10 repository architecture for: CRUD system.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python 3.10 CRUD pagination contract:
+- preserve exactly these files in dependency order: requirements.txt, crud_system/errors.py, crud_system/types.py, crud_system/clock.py, crud_system/validation.py, crud_system/repository.py, crud_system/search.py, crud_system/audit.py, crud_system/service.py, crud_system/__init__.py, Main.py, tests/test_main.py. Do not add or rename modules
+- crud_system/types.py is the sole owner of Item, AuditEvent, and Page. Page is an ordinary dataclass declared as `class Page:` with fields items:list[Item], total:int, limit:int, offset:int. Page is deliberately not generic: TypeVar, Generic, `class Page(Generic[T])`, `Page[Item]`, and every other Page subscription are forbidden
+- crud_system/search.py directly imports Item and Page from .types. Its pagination signature is exactly `paginate(items:list[Item],limit:int|None=None,offset:int=0)->Page`; it returns `Page(items=selected,total=len(items),limit=effective_limit,offset=offset)`, rejects a negative offset or negative non-None limit with PaginationError, and never annotates a return as Page[Item]
+- all public annotations are valid when modules are imported under Python 3.10. A class used with square-bracket generic syntax must actually inherit from typing.Generic, but this repository must use the simpler non-generic Page contract above. Tests must import the complete package successfully before running any assertion
+- errors.py solely defines ValidationError, DuplicateNameError, NotFoundError, and PaginationError. repository.py directly contains `from .errors import DuplicateNameError, NotFoundError`; search.py directly imports PaginationError. Every referenced exception is directly imported in the module that raises it, and no module relies on re-export side effects
+- FixedClock(base:float=100.0,step:float=10.0) returns the current value from now() and then advances by step. AuditTrail() takes no clock and never calls now(); its log method receives an explicit timestamp. Service(Repository,AuditTrail,FixedClock) is the sole clock consumer and each create/update/delete operation calls clock.now() exactly once, stores that value in the entity change, and passes the identical value to AuditTrail. A single operation must never advance the clock twice
+- preserve deterministic validation, duplicate-name conflict, search/filter/sort, and CRUD behavior. Main.py constructs AuditTrail() without a clock, remains a bounded non-interactive demo, and requirements.txt lists pytest only
+- tests/test_main.py contains exactly three concise pytest tests: (1) basic CRUD uses FixedClock(100.0,10.0), creates at 100.0 and updates at 110.0, with entity and audit timestamps identical for each operation; (2) duplicate-name creation raises DuplicateNameError and missing access raises NotFoundError; (3) creation of Alpha, Beta, Gamma yields pagination limit2/offset1 names Beta and Gamma and audit timestamps exactly [100.0,110.0,120.0]. Tests use only canonical exports from crud_system and do not inspect private members
+- repeat the exact file list, non-generic Page declaration, exact paginate signature, `Page[Item]` prohibition, direct exception imports, single-clock-call ownership, AuditTrail() constructor, the exact three fixtures, Python-3.10 importability requirement, and exactly-three-test rule in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 11 repository files
+- about 47 functions or methods
+- about 983 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- typed records with stable identifiers
+- create read update and delete operations
+- validation and duplicate handling
+- search filtering and pagination
+- in-memory repository boundary
+- audit events and deterministic tests
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE CRUD PYTHON 3.10 PAGINATION CHECKLIST:
+- Task filenames are exactly: requirements.txt; crud_system/errors.py; crud_system/types.py; crud_system/clock.py; crud_system/validation.py; crud_system/repository.py; crud_system/search.py; crud_system/audit.py; crud_system/service.py; crud_system/__init__.py; Main.py; tests/test_main.py.
+- types.py declares an ordinary non-generic dataclass `class Page:` with items:list[Item], total:int, limit:int, offset:int. TypeVar, Generic, Page[Item], and subscribing Page in any annotation are forbidden.
+- search.py uses exactly `paginate(items:list[Item],limit:int|None=None,offset:int=0)->Page`; importing crud_system under Python 3.10 must succeed. repository.py directly imports DuplicateNameError and NotFoundError from .errors.
+- AuditTrail() takes no clock. Service alone calls FixedClock.now exactly once per create/update/delete and reuses that one timestamp for both entity and audit. Tests contain exactly three cases with create/update times 100/110, explicit duplicate/missing errors, and Alpha/Beta/Gamma pagination plus audit times [100,110,120]. Do not summarize or substitute these rules.
+

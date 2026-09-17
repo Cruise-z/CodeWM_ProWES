@@ -1,0 +1,71 @@
+Generate a complete medium-size Java 11 repository architecture for: Flappy bird game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java deterministic physics and test contract:
+- use screen coordinates consistently: x increases rightward and y increases downward; gravity is exactly +0.5 per tick, an upward flap velocity is exactly -8.0, and maximum speed magnitude is 10.0
+- Bird(double startY) begins at y=startY and vy=0.0; applyGravity() performs vy=clamp(vy+0.5,-10.0,10.0), integrate() performs y+=vy, and flap() replaces vy with -8.0 rather than adding -8.0 to the old velocity
+- Game(long seed) delegates to Game(seed,400.0,600.0,100), begins RUNNING with bird y=worldHeight/2.0, and contains zero pipes until the documented spawn interval elapses
+- one running tick must call Bird.applyGravity() and then Bird.integrate(); collision must be tested on the resulting unclamped position, so Game.tick must not clamp the bird back inside the world before CollisionDetector.hitBounds can report a terminal boundary hit
+- Game uses the exact public methods boolean tick(), void reset(long seed), void flapBird(), double birdY(), double birdVy(), long ticks(), int score(), and java.util.List<PipePair> pipes(); do not alternate between Bird-returning snapshots, void tick, flap, or other aliases
+- RNG must store the constructor seed in a final long originalSeed field; seed() returns originalSeed without consuming or changing java.util.Random state, while nextDouble() and nextInt(int bound) delegate directly to the stored java.util.Random
+- Game's RNG field is private RNG rng without final because reset(long seed) must assign rng=new RNG(seed); the delegating constructor must initialize final configuration fields and call reset(seed), and must not first assign a final RNG that reset then tries to reassign
+- ScoreSystem.passedPipe(double birdX, PipePair pipe) is the independently testable scoring rule: it returns true exactly once when pipe.x()+pipe.width()<birdX and calls pipe.markScored(); Game checks scoring before removing off-screen pipes
+- MainTest contains exactly 2--4 short deterministic tests and never indexes an initially empty pipe list; use ScoreSystem with a handcrafted PipePair for scoring instead of waiting for a spawn
+- the exact physics fixture is: new Game(12345L) has birdY 300.0 and birdVy 0.0; one tick yields birdVy 0.5 and birdY 300.5; after reset(12345L), flap yields -8.0, then one tick yields birdVy -7.5 and birdY 292.5
+- the exact RNG fixture creates RNG a and RNG b with seed 98765L, calls a.seed() twice before any random draw, then compares a.nextDouble() with b.nextDouble() and a.nextInt(100) with b.nextInt(100); never consume a random value from only one instance and later claim the streams are at the same position, and never assert two successive random values must differ
+- the exact scoring fixture creates PipePair(100.0,50.0,100.0,150.0,3.0): passedPipe(149.0,pipe) and passedPipe(150.0,pipe) are false because the trailing edge is 150.0 and the comparison is strict; passedPipe(151.0,pipe) is true and marks scored; a later passedPipe(160.0,pipe) is false
+- use exact collision signatures hitBounds(Bird bird,double birdHeight,double worldHeight) and hitPipe(Bird bird,double birdWidth,double birdHeight,PipePair pipe,double worldHeight); top-pipe vertical overlap is bird.y()<pipe.gapY() && bird.y()+birdHeight>0.0, while bottom overlap is bird.y()<worldHeight && bird.y()+birdHeight>pipe.gapY()+pipe.gapHeight(); never compare a y coordinate with pipe.x()
+- Game.tick first calls hitBounds(bird,30.0,worldHeight) alone, then iterates for (PipePair pipe : pipes) and calls hitPipe(bird,30.0,30.0,pipe,worldHeight) on that one pipe; passing pipes, a List<PipePair>, to the single-PipePair parameter is forbidden and no list overload may be invented
+- tick count starts at zero; each successful tick increments ticks exactly once and only then spawns when ticks % spawnInterval == 0, so the default game remains pipe-free for ticks 0 through 99 and first spawns on completed tick 100
+- Main must call game.tick() as a standalone statement and ignore its boolean result before printing getters; it must never embed game.tick() in concatenation, formatting, assignment, or any value expression
+- assertions and messages must agree with screen coordinates: downward motion means a larger y and upward motion means a smaller y; never assert that gravity makes y smaller or velocity more negative
+- repeat the exact Game API, mutable Game RNG field/reset construction, coordinate convention, numeric constants, replacement flap, tick order, per-pipe collision loop and formulas, non-consuming RNG seed and paired-stream fixture, empty initial pipe list and tick-100 spawn, strict-boundary scoring fixture, standalone Main tick call, and exact physics fixture in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 35 functions or methods
+- about 700 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- bird position and flap physics
+- gravity and deterministic ticks
+- pipe movement and gaps
+- collision rules
+- score updates when pipes pass
+- game-over and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

@@ -1,0 +1,105 @@
+[INFO 2026-09-15 07:40:25,638]: Namespace(epochs=25, seed=42, method='codemark', device='cuda', preprocess_workers=8, max_train_samples=None, max_valid_samples=None, max_test_samples=None, dataset='github_java_funcs', lang='java', dataset_dir='./datasets/github_java_funcs', log_prefix='fresh_rq2', n_bits=4, style_only=False, var_only=False, var_nomask=False, varmask_prob=0.5, batch_size=64, wv=0.5, wt=0.5, model_arch='gru', scheduler=False, shared_encoder=True, var_transform_mode='replace')
+[INFO 2026-09-15 07:40:25,735]: Device: cuda
+[INFO 2026-09-15 07:40:25,737]: Processing original dataset
+[INFO 2026-09-15 07:40:29,354]: Vocab size: 10190
+[INFO 2026-09-15 07:40:29,354]: Train size: 4400
+[INFO 2026-09-15 07:40:29,354]: Test size: 551
+[INFO 2026-09-15 07:40:29,437]: Method: codemark
+[INFO 2026-09-15 07:40:29,437]: Transform capacity: 4
+[INFO 2026-09-15 07:40:29,437]: Constructing dataloaders and models
+[INFO 2026-09-15 07:40:29,438]: Using gru
+[INFO 2026-09-15 07:40:29,702]: learning rate: 0.001
+[INFO 2026-09-15 07:40:29,816]: approximator arch: ConcatApproximator
+[INFO 2026-09-15 07:40:30,077]: Starting training loop
+[INFO 2026-09-15 07:40:30,078]: w_var: 0.5, w_style: 0.5
+[INFO 2026-09-15 07:40:30,078]: var mask enabled: True
+[INFO 2026-09-15 07:40:55,705]: | train | epoch:   0 | acc: 0.7096 | real_acc: 0.5660 | loss: 1.2928 | warp_loss: 0.0767 | decode_loss: 0.5466 |
+[INFO 2026-09-15 07:40:58,094]: | valid | epoch:   0 | oracle_acc: 0.7273 | actual_acc: 0.5909 | loss: 0.6610 | warp_loss: 0.0194 | msg_acc: 0.1309 |
+[INFO 2026-09-15 07:40:58,368]: | best model saved at 0 epoch |
+[INFO 2026-09-15 07:41:01,073]: | test  | epoch:   0 | oracle_acc: 0.7432 | actual_acc: 0.6143 | loss: 0.6548 | warp_loss: 0.0190 | msg_acc: 0.1125 |
+[INFO 2026-09-15 07:41:26,175]: | train | epoch:   1 | acc: 0.7464 | real_acc: 0.6489 | loss: 1.0658 | warp_loss: 0.0457 | decode_loss: 0.4384 |
+[INFO 2026-09-15 07:41:28,505]: | valid | epoch:   1 | oracle_acc: 0.7800 | actual_acc: 0.6882 | loss: 0.5017 | warp_loss: 0.0173 | msg_acc: 0.2200 |
+[INFO 2026-09-15 07:41:28,885]: | best model saved at 1 epoch |
+[INFO 2026-09-15 07:41:31,190]: | test  | epoch:   1 | oracle_acc: 0.7759 | actual_acc: 0.6874 | loss: 0.5036 | warp_loss: 0.0173 | msg_acc: 0.2160 |
+[INFO 2026-09-15 07:41:56,308]: | train | epoch:   2 | acc: 0.8213 | real_acc: 0.7352 | loss: 0.8077 | warp_loss: 0.0422 | decode_loss: 0.3187 |
+[INFO 2026-09-15 07:41:58,659]: | valid | epoch:   2 | oracle_acc: 0.8764 | actual_acc: 0.8000 | loss: 0.3423 | warp_loss: 0.0169 | msg_acc: 0.3927 |
+[INFO 2026-09-15 07:41:59,023]: | best model saved at 2 epoch |
+[INFO 2026-09-15 07:42:01,290]: | test  | epoch:   2 | oracle_acc: 0.8730 | actual_acc: 0.7813 | loss: 0.3700 | warp_loss: 0.0168 | msg_acc: 0.3666 |
+[INFO 2026-09-15 07:42:26,347]: | train | epoch:   3 | acc: 0.8836 | real_acc: 0.8177 | loss: 0.5640 | warp_loss: 0.0369 | decode_loss: 0.2070 |
+[INFO 2026-09-15 07:42:28,738]: | valid | epoch:   3 | oracle_acc: 0.9064 | actual_acc: 0.8514 | loss: 0.2842 | warp_loss: 0.0139 | msg_acc: 0.5255 |
+[INFO 2026-09-15 07:42:29,111]: | best model saved at 3 epoch |
+[INFO 2026-09-15 07:42:31,810]: | test  | epoch:   3 | oracle_acc: 0.9043 | actual_acc: 0.8475 | loss: 0.2844 | warp_loss: 0.0137 | msg_acc: 0.5227 |
+[INFO 2026-09-15 07:42:56,285]: | train | epoch:   4 | acc: 0.9069 | real_acc: 0.8615 | loss: 0.4400 | warp_loss: 0.0301 | decode_loss: 0.1662 |
+[INFO 2026-09-15 07:42:58,618]: | valid | epoch:   4 | oracle_acc: 0.9314 | actual_acc: 0.8600 | loss: 0.2933 | warp_loss: 0.0123 | msg_acc: 0.5709 |
+[INFO 2026-09-15 07:42:58,981]: | best model saved at 4 epoch |
+[INFO 2026-09-15 07:43:01,275]: | test  | epoch:   4 | oracle_acc: 0.9256 | actual_acc: 0.8525 | loss: 0.2859 | warp_loss: 0.0127 | msg_acc: 0.5390 |
+[INFO 2026-09-15 07:43:26,197]: | train | epoch:   5 | acc: 0.9360 | real_acc: 0.8820 | loss: 0.3955 | warp_loss: 0.0295 | decode_loss: 0.1359 |
+[INFO 2026-09-15 07:43:28,515]: | valid | epoch:   5 | oracle_acc: 0.9714 | actual_acc: 0.8886 | loss: 0.2304 | warp_loss: 0.0117 | msg_acc: 0.7109 |
+[INFO 2026-09-15 07:43:28,874]: | best model saved at 5 epoch |
+[INFO 2026-09-15 07:43:31,141]: | test  | epoch:   5 | oracle_acc: 0.9687 | actual_acc: 0.9047 | loss: 0.1920 | warp_loss: 0.0115 | msg_acc: 0.7332 |
+[INFO 2026-09-15 07:43:55,743]: | train | epoch:   6 | acc: 0.9671 | real_acc: 0.9105 | loss: 0.3182 | warp_loss: 0.0275 | decode_loss: 0.0950 |
+[INFO 2026-09-15 07:43:58,443]: | valid | epoch:   6 | oracle_acc: 0.9786 | actual_acc: 0.9145 | loss: 0.1846 | warp_loss: 0.0100 | msg_acc: 0.7545 |
+[INFO 2026-09-15 07:43:58,814]: | best model saved at 6 epoch |
+[INFO 2026-09-15 07:44:01,092]: | test  | epoch:   6 | oracle_acc: 0.9782 | actual_acc: 0.9165 | loss: 0.1764 | warp_loss: 0.0099 | msg_acc: 0.7477 |
+[INFO 2026-09-15 07:44:25,381]: | train | epoch:   7 | acc: 0.9723 | real_acc: 0.9180 | loss: 0.2995 | warp_loss: 0.0232 | decode_loss: 0.0910 |
+[INFO 2026-09-15 07:44:27,704]: | valid | epoch:   7 | oracle_acc: 0.9718 | actual_acc: 0.9036 | loss: 0.2288 | warp_loss: 0.0084 | msg_acc: 0.7527 |
+[INFO 2026-09-15 07:44:29,953]: | test  | epoch:   7 | oracle_acc: 0.9746 | actual_acc: 0.9165 | loss: 0.1934 | warp_loss: 0.0085 | msg_acc: 0.7804 |
+[INFO 2026-09-15 07:44:55,341]: | train | epoch:   8 | acc: 0.9801 | real_acc: 0.9325 | loss: 0.2454 | warp_loss: 0.0208 | decode_loss: 0.0709 |
+[INFO 2026-09-15 07:44:58,036]: | valid | epoch:   8 | oracle_acc: 0.9845 | actual_acc: 0.9186 | loss: 0.1862 | warp_loss: 0.0077 | msg_acc: 0.7891 |
+[INFO 2026-09-15 07:44:58,435]: | best model saved at 8 epoch |
+[INFO 2026-09-15 07:45:01,108]: | test  | epoch:   8 | oracle_acc: 0.9887 | actual_acc: 0.9324 | loss: 0.1570 | warp_loss: 0.0074 | msg_acc: 0.8076 |
+[INFO 2026-09-15 07:45:31,363]: | train | epoch:   9 | acc: 0.9863 | real_acc: 0.9404 | loss: 0.2151 | warp_loss: 0.0190 | decode_loss: 0.0563 |
+[INFO 2026-09-15 07:45:33,953]: | valid | epoch:   9 | oracle_acc: 0.9832 | actual_acc: 0.9164 | loss: 0.2008 | warp_loss: 0.0074 | msg_acc: 0.7636 |
+[INFO 2026-09-15 07:45:36,702]: | test  | epoch:   9 | oracle_acc: 0.9882 | actual_acc: 0.9192 | loss: 0.1996 | warp_loss: 0.0076 | msg_acc: 0.7586 |
+[INFO 2026-09-15 07:46:06,991]: | train | epoch:  10 | acc: 0.9859 | real_acc: 0.9370 | loss: 0.2015 | warp_loss: 0.0179 | decode_loss: 0.0488 |
+[INFO 2026-09-15 07:46:09,396]: | valid | epoch:  10 | oracle_acc: 0.9895 | actual_acc: 0.9341 | loss: 0.1466 | warp_loss: 0.0064 | msg_acc: 0.8255 |
+[INFO 2026-09-15 07:46:09,776]: | best model saved at 10 epoch |
+[INFO 2026-09-15 07:46:12,161]: | test  | epoch:  10 | oracle_acc: 0.9918 | actual_acc: 0.9274 | loss: 0.1689 | warp_loss: 0.0063 | msg_acc: 0.8167 |
+[INFO 2026-09-15 07:46:40,002]: | train | epoch:  11 | acc: 0.9889 | real_acc: 0.9434 | loss: 0.1884 | warp_loss: 0.0162 | decode_loss: 0.0464 |
+[INFO 2026-09-15 07:46:42,669]: | valid | epoch:  11 | oracle_acc: 0.9886 | actual_acc: 0.9405 | loss: 0.1243 | warp_loss: 0.0062 | msg_acc: 0.8400 |
+[INFO 2026-09-15 07:46:43,096]: | best model saved at 11 epoch |
+[INFO 2026-09-15 07:46:45,621]: | test  | epoch:  11 | oracle_acc: 0.9909 | actual_acc: 0.9501 | loss: 0.1052 | warp_loss: 0.0065 | msg_acc: 0.8621 |
+[INFO 2026-09-15 07:47:11,580]: | train | epoch:  12 | acc: 0.9873 | real_acc: 0.9519 | loss: 0.1724 | warp_loss: 0.0149 | decode_loss: 0.0462 |
+[INFO 2026-09-15 07:47:14,398]: | valid | epoch:  12 | oracle_acc: 0.9886 | actual_acc: 0.9355 | loss: 0.1353 | warp_loss: 0.0057 | msg_acc: 0.8382 |
+[INFO 2026-09-15 07:47:17,046]: | test  | epoch:  12 | oracle_acc: 0.9914 | actual_acc: 0.9397 | loss: 0.1253 | warp_loss: 0.0059 | msg_acc: 0.8330 |
+[INFO 2026-09-15 07:47:48,208]: | train | epoch:  13 | acc: 0.9861 | real_acc: 0.9433 | loss: 0.1821 | warp_loss: 0.0148 | decode_loss: 0.0491 |
+[INFO 2026-09-15 07:47:50,951]: | valid | epoch:  13 | oracle_acc: 0.9936 | actual_acc: 0.9427 | loss: 0.1214 | warp_loss: 0.0053 | msg_acc: 0.8582 |
+[INFO 2026-09-15 07:47:51,350]: | best model saved at 13 epoch |
+[INFO 2026-09-15 07:47:54,496]: | test  | epoch:  13 | oracle_acc: 0.9932 | actual_acc: 0.9437 | loss: 0.1256 | warp_loss: 0.0053 | msg_acc: 0.8566 |
+[INFO 2026-09-15 07:48:26,220]: | train | epoch:  14 | acc: 0.9897 | real_acc: 0.9415 | loss: 0.1711 | warp_loss: 0.0139 | decode_loss: 0.0381 |
+[INFO 2026-09-15 07:48:29,055]: | valid | epoch:  14 | oracle_acc: 0.9891 | actual_acc: 0.9382 | loss: 0.1205 | warp_loss: 0.0057 | msg_acc: 0.8455 |
+[INFO 2026-09-15 07:48:31,590]: | test  | epoch:  14 | oracle_acc: 0.9918 | actual_acc: 0.9347 | loss: 0.1294 | warp_loss: 0.0058 | msg_acc: 0.8439 |
+[INFO 2026-09-15 07:49:04,172]: | train | epoch:  15 | acc: 0.9891 | real_acc: 0.9467 | loss: 0.1619 | warp_loss: 0.0126 | decode_loss: 0.0388 |
+[INFO 2026-09-15 07:49:07,548]: | valid | epoch:  15 | oracle_acc: 0.9936 | actual_acc: 0.9505 | loss: 0.1044 | warp_loss: 0.0050 | msg_acc: 0.8727 |
+[INFO 2026-09-15 07:49:07,973]: | best model saved at 15 epoch |
+[INFO 2026-09-15 07:49:10,858]: | test  | epoch:  15 | oracle_acc: 0.9896 | actual_acc: 0.9551 | loss: 0.0888 | warp_loss: 0.0048 | msg_acc: 0.8766 |
+[INFO 2026-09-15 07:49:44,176]: | train | epoch:  16 | acc: 0.9884 | real_acc: 0.9499 | loss: 0.1537 | warp_loss: 0.0116 | decode_loss: 0.0395 |
+[INFO 2026-09-15 07:49:47,514]: | valid | epoch:  16 | oracle_acc: 0.9936 | actual_acc: 0.9450 | loss: 0.1198 | warp_loss: 0.0048 | msg_acc: 0.8636 |
+[INFO 2026-09-15 07:49:50,344]: | test  | epoch:  16 | oracle_acc: 0.9941 | actual_acc: 0.9483 | loss: 0.1110 | warp_loss: 0.0049 | msg_acc: 0.8711 |
+[INFO 2026-09-15 07:50:21,892]: | train | epoch:  17 | acc: 0.9885 | real_acc: 0.9575 | loss: 0.1454 | warp_loss: 0.0113 | decode_loss: 0.0395 |
+[INFO 2026-09-15 07:50:24,756]: | valid | epoch:  17 | oracle_acc: 0.9914 | actual_acc: 0.9455 | loss: 0.1205 | warp_loss: 0.0043 | msg_acc: 0.8582 |
+[INFO 2026-09-15 07:50:27,772]: | test  | epoch:  17 | oracle_acc: 0.9941 | actual_acc: 0.9510 | loss: 0.1232 | warp_loss: 0.0043 | msg_acc: 0.8675 |
+[INFO 2026-09-15 07:50:59,137]: | train | epoch:  18 | acc: 0.9885 | real_acc: 0.9571 | loss: 0.1522 | warp_loss: 0.0122 | decode_loss: 0.0404 |
+[INFO 2026-09-15 07:51:02,052]: | valid | epoch:  18 | oracle_acc: 0.9868 | actual_acc: 0.9400 | loss: 0.1387 | warp_loss: 0.0042 | msg_acc: 0.8527 |
+[INFO 2026-09-15 07:51:04,893]: | test  | epoch:  18 | oracle_acc: 0.9923 | actual_acc: 0.9628 | loss: 0.0863 | warp_loss: 0.0043 | msg_acc: 0.9002 |
+[INFO 2026-09-15 07:51:36,256]: | train | epoch:  19 | acc: 0.9908 | real_acc: 0.9573 | loss: 0.1328 | warp_loss: 0.0111 | decode_loss: 0.0293 |
+[INFO 2026-09-15 07:51:39,551]: | valid | epoch:  19 | oracle_acc: 0.9864 | actual_acc: 0.9500 | loss: 0.1109 | warp_loss: 0.0040 | msg_acc: 0.8691 |
+[INFO 2026-09-15 07:51:42,437]: | test  | epoch:  19 | oracle_acc: 0.9914 | actual_acc: 0.9605 | loss: 0.0880 | warp_loss: 0.0040 | msg_acc: 0.8966 |
+[INFO 2026-09-15 07:52:14,087]: | train | epoch:  20 | acc: 0.9912 | real_acc: 0.9640 | loss: 0.1233 | warp_loss: 0.0105 | decode_loss: 0.0302 |
+[INFO 2026-09-15 07:52:16,910]: | valid | epoch:  20 | oracle_acc: 0.9909 | actual_acc: 0.9550 | loss: 0.1069 | warp_loss: 0.0043 | msg_acc: 0.8836 |
+[INFO 2026-09-15 07:52:17,311]: | best model saved at 20 epoch |
+[INFO 2026-09-15 07:52:20,091]: | test  | epoch:  20 | oracle_acc: 0.9932 | actual_acc: 0.9664 | loss: 0.0827 | warp_loss: 0.0041 | msg_acc: 0.9129 |
+[INFO 2026-09-15 07:52:53,455]: | train | epoch:  21 | acc: 0.9887 | real_acc: 0.9609 | loss: 0.1379 | warp_loss: 0.0104 | decode_loss: 0.0387 |
+[INFO 2026-09-15 07:52:56,776]: | valid | epoch:  21 | oracle_acc: 0.9891 | actual_acc: 0.9559 | loss: 0.0980 | warp_loss: 0.0042 | msg_acc: 0.8709 |
+[INFO 2026-09-15 07:52:57,216]: | best model saved at 21 epoch |
+[INFO 2026-09-15 07:53:00,758]: | test  | epoch:  21 | oracle_acc: 0.9887 | actual_acc: 0.9601 | loss: 0.0853 | warp_loss: 0.0043 | msg_acc: 0.8875 |
+[INFO 2026-09-15 07:53:34,781]: | train | epoch:  22 | acc: 0.9906 | real_acc: 0.9610 | loss: 0.1338 | warp_loss: 0.0103 | decode_loss: 0.0336 |
+[INFO 2026-09-15 07:53:38,144]: | valid | epoch:  22 | oracle_acc: 0.9914 | actual_acc: 0.9486 | loss: 0.1044 | warp_loss: 0.0038 | msg_acc: 0.8745 |
+[INFO 2026-09-15 07:53:41,718]: | test  | epoch:  22 | oracle_acc: 0.9923 | actual_acc: 0.9524 | loss: 0.1082 | warp_loss: 0.0037 | msg_acc: 0.8857 |
+[INFO 2026-09-15 07:54:15,713]: | train | epoch:  23 | acc: 0.9898 | real_acc: 0.9567 | loss: 0.1414 | warp_loss: 0.0099 | decode_loss: 0.0362 |
+[INFO 2026-09-15 07:54:18,944]: | valid | epoch:  23 | oracle_acc: 0.9927 | actual_acc: 0.9609 | loss: 0.0832 | warp_loss: 0.0037 | msg_acc: 0.8800 |
+[INFO 2026-09-15 07:54:19,364]: | best model saved at 23 epoch |
+[INFO 2026-09-15 07:54:22,287]: | test  | epoch:  23 | oracle_acc: 0.9891 | actual_acc: 0.9592 | loss: 0.0757 | warp_loss: 0.0037 | msg_acc: 0.9002 |
+[INFO 2026-09-15 07:54:56,840]: | train | epoch:  24 | acc: 0.9905 | real_acc: 0.9636 | loss: 0.1245 | warp_loss: 0.0092 | decode_loss: 0.0341 |
+[INFO 2026-09-15 07:55:00,700]: | valid | epoch:  24 | oracle_acc: 0.9886 | actual_acc: 0.9432 | loss: 0.1344 | warp_loss: 0.0039 | msg_acc: 0.8673 |
+[INFO 2026-09-15 07:55:03,765]: | test  | epoch:  24 | oracle_acc: 0.9932 | actual_acc: 0.9524 | loss: 0.1112 | warp_loss: 0.0040 | msg_acc: 0.8784 |

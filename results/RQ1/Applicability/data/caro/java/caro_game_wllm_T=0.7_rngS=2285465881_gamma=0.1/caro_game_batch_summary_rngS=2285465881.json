@@ -1,0 +1,12 @@
+{
+  "project_name": "caro_game",
+  "rng_seed": 2285465881,
+  "language": "java",
+  "counts": {
+    "[Build Error]": 13,
+    "[Test Error]": 0,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 3,
+    "[Pass]": 3
+  }
+}

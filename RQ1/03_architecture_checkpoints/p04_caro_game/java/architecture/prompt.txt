@@ -1,0 +1,67 @@
+Generate a complete medium-size Java 11 repository architecture for: Caro game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java Caro state-machine and deterministic-test contract:
+- use freestyle Gomoku semantics on a square board: five or more contiguous stones wins immediately; WinDetector.hasFiveInRow(Board,int,int,Player) must count the just-played stone plus matching stones in both signs of exactly (0,1), (1,0), (1,1), and (1,-1)
+- the canonical Game API is exactly Game(int size), Board getBoard(), Player getCurrentPlayer(), GameState getState(), boolean placeMove(int row,int col), boolean undo(), void reset(), and java.util.List<Move> getHistory(); Game(int size) rejects size<5 with IllegalArgumentException and every new or reset game starts with Player.X
+- placeMove has no Player argument: while IN_PROGRESS it returns false without mutation for an out-of-bounds or occupied cell; otherwise it places currentPlayer, appends exactly one Move, evaluates win then draw, and advances to currentPlayer.next() only when the resulting state remains IN_PROGRESS; after a win currentPlayer therefore remains the winner, and every terminal call returns false without mutation
+- GameState uses exactly Status.IN_PROGRESS, Status.DRAW, Status.X_WON, and Status.O_WON; GameState.won(Player.X) produces X_WON and winner X, GameState.won(Player.O) produces O_WON and winner O, while inProgress/draw have an empty winner
+- undo returns false without mutation when history is empty; otherwise it removes exactly the latest move, clears that board cell, restores currentPlayer to the removed move's player, restores GameState.inProgress(), and returns true
+- reset clears every board cell and the complete history, restores currentPlayer=Player.X and GameState.inProgress(); it must never derive the first player from the pre-reset current turn
+- Board uses one empty-cell representation consistently; isEmpty and clearCell must agree with it, snapshot returns a deep copy, and getHistory/asReadOnly return unmodifiable copies or views
+- Main.main must finish by normal method return after at most one concise print; System.exit, Runtime.getRuntime().exit/halt, infinite loops, input, GUI, and background threads are forbidden because MainTest invokes Main.main inside the Surefire JVM
+- MainTest.java contains exactly three concise JUnit Jupiter tests and no invented sequences: (1) Main.main(new String[0]) returns normally; (2) the exact horizontal win sequence below; (3) the exact invalid-move, undo, and reset fixture below; vertical/diagonal/draw are implementation requirements but MUST NOT add long alternative test fixtures
+- the sole win fixture is literally on one new Game(15): (7,3),(0,0),(7,4),(0,2),(7,5),(0,4),(7,6),(0,6),(7,7); execute this sequence exactly once, assert all nine placeMove calls true, then status X_WON, winner Optional.of(Player.X), currentPlayer Player.X, and history size 9; do not construct a second game to replay prefixes, do not directly call WinDetector from MainTest, and never assert that the ninth move or WinDetector at (7,7) is false; no tenth move is attempted except one terminal placeMove asserted false with no mutation
+- the sole state fixture is literally: new Game(15) starts X; placeMove(1,1) is true and changes turn to O; repeated placeMove(1,1) and placeMove(-1,0) are false and leave turn O/history size 1; placeMove(2,2) is true and changes turn to X; undo is true, makes (2,2) empty, restores turn O, leaves history size 1 and IN_PROGRESS; reset restores X, empty (1,1), empty history, and IN_PROGRESS; never expect O immediately after reset
+- for architecture validation, the task document must literally preserve the compact sequence `(7,3),(0,0),(7,4),(0,2),(7,5),(0,4),(7,6),(0,6),(7,7)`, must say `exactly three` tests, and must mention both `placeMove(1,1)` and `placeMove(2,2)`; the phrase "nine consecutive X moves" or any test loop that lets X occupy every move is forbidden
+- pom.xml must use Java 11, JUnit Jupiter test scope, and a JUnit-5-capable Surefire plugin; every class remains in the default package with no package declaration
+- repeat the exact Game API, X-first/reset rule, toggle-only-while-in-progress rule, undo semantics, four-direction two-sided count, single nine-move win sequence, normal-return/no-System.exit rule, three-test limit, and literal state fixture in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task; vague statements about alternation, wins, or reset are insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 8 repository files
+- about 38 functions or methods
+- about 776 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- two-player board
+- legal move validation
+- alternating turns
+- five-in-a-row detection in all directions
+- draw state
+- reset and move history
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

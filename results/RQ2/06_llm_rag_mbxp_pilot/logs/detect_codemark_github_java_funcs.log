@@ -1,0 +1,10 @@
+{
+  "files": 1,
+  "rows": 5,
+  "device": "cpu",
+  "status_counts": {
+    "ok": 4,
+    "skipped_invalid_attack": 1,
+    "tokenization_error": 0
+  }
+}

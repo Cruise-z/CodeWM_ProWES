@@ -1,0 +1,1751 @@
+{
+  "protocol": {
+    "initialization": "fresh random initialization",
+    "epochs": 25,
+    "n_bits": 4,
+    "architecture": "GRU shared encoder",
+    "batch_size": 64,
+    "seed": 42,
+    "bootstrap_repetitions": 10000
+  },
+  "training_and_clean": [
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-C",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 13,
+      "best_epoch_number_one_based": 14,
+      "best_valid_BAR": 0.9491247264770241,
+      "best_epoch_test_BAR": 0.9438997821350763,
+      "best_epoch_test_MAR": 0.8366013071895425,
+      "generated_clean_BAR": 0.9395424836601307,
+      "generated_clean_MAR": 0.8191721132897604,
+      "test_samples": 459,
+      "transform_capacity": 4096,
+      "checkpoint_bytes": 198305229,
+      "checkpoint_sha256": "9b6717e3d53ced224ac04625f108e4a1dca65cc97b9d10ed7a4650e047a2a815",
+      "from_scratch": true
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-Java",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 21,
+      "best_epoch_number_one_based": 22,
+      "best_valid_BAR": 0.9395454545454546,
+      "best_epoch_test_BAR": 0.9287658802177858,
+      "best_epoch_test_MAR": 0.79491833030853,
+      "generated_clean_BAR": 0.9378402903811253,
+      "generated_clean_MAR": 0.8130671506352087,
+      "test_samples": 551,
+      "transform_capacity": 4096,
+      "checkpoint_bytes": 198444173,
+      "checkpoint_sha256": "875a0910c7a005a42b36f3344f5d851ba6ffddba2819119179fdd396daaf2531",
+      "from_scratch": true
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-JavaScript",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 14,
+      "best_epoch_number_one_based": 15,
+      "best_valid_BAR": 0.988697524219591,
+      "best_epoch_test_BAR": 0.9875396825396825,
+      "best_epoch_test_MAR": 0.967936507936508,
+      "generated_clean_BAR": 0.986904761904762,
+      "generated_clean_MAR": 0.9663492063492064,
+      "test_samples": 3150,
+      "transform_capacity": 4096,
+      "checkpoint_bytes": 967307213,
+      "checkpoint_sha256": "a0240b48e4cddecc89f0eea38687139bab7142c537c064f0568563db2dae4e19",
+      "from_scratch": true
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-Java",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 14,
+      "best_epoch_number_one_based": 15,
+      "best_valid_BAR": 0.9718623481781377,
+      "best_epoch_test_BAR": 0.9741813004271476,
+      "best_epoch_test_MAR": 0.9359278595158994,
+      "generated_clean_BAR": 0.9732083531086854,
+      "generated_clean_MAR": 0.9314665401044139,
+      "test_samples": 10535,
+      "transform_capacity": 4096,
+      "checkpoint_bytes": 916029773,
+      "checkpoint_sha256": "fbb23c432234ba2fba5fdcc2eee3c395755c650559f9e387f16eb4035c2189f2",
+      "from_scratch": true
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-C",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 21,
+      "best_epoch_number_one_based": 22,
+      "best_valid_BAR": 0.962253829321663,
+      "best_epoch_test_BAR": 0.9635076252723311,
+      "best_epoch_test_MAR": 0.8867102396514162,
+      "generated_clean_BAR": 0.960239651416122,
+      "generated_clean_MAR": 0.8823529411764706,
+      "test_samples": 459,
+      "transform_capacity": 4,
+      "checkpoint_bytes": 173147597,
+      "checkpoint_sha256": "1d837005d47fd28ce3999786cd0cc30c2d5d89fdb7d60a1736ae9fe4cd35eedd",
+      "from_scratch": true
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-Java",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 23,
+      "best_epoch_number_one_based": 24,
+      "best_valid_BAR": 0.9609090909090909,
+      "best_epoch_test_BAR": 0.9591651542649727,
+      "best_epoch_test_MAR": 0.9001814882032668,
+      "generated_clean_BAR": 0.9528130671506352,
+      "generated_clean_MAR": 0.8838475499092558,
+      "test_samples": 551,
+      "transform_capacity": 4,
+      "checkpoint_bytes": 173286541,
+      "checkpoint_sha256": "6cf99c34558456526ffc5e1528a350fccc8370f94e6c2757edc09f4fd571a022",
+      "from_scratch": true
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-JavaScript",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 15,
+      "best_epoch_number_one_based": 16,
+      "best_valid_BAR": 0.9827771797631862,
+      "best_epoch_test_BAR": 0.9788888888888889,
+      "best_epoch_test_MAR": 0.9463492063492064,
+      "generated_clean_BAR": 0.9809523809523809,
+      "generated_clean_MAR": 0.9501587301587302,
+      "test_samples": 3150,
+      "transform_capacity": 4,
+      "checkpoint_bytes": 942149581,
+      "checkpoint_sha256": "03b413e5b93a825496006466f2c7ae4502c08dde6d74eb79cdf95605ba166ea0",
+      "from_scratch": true
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-Java",
+      "epochs": 25,
+      "best_epoch_index_zero_based": 20,
+      "best_epoch_number_one_based": 21,
+      "best_valid_BAR": 0.9745951417004048,
+      "best_epoch_test_BAR": 0.9794019933554817,
+      "best_epoch_test_MAR": 0.9302325581395349,
+      "generated_clean_BAR": 0.9798054105363075,
+      "generated_clean_MAR": 0.9314665401044139,
+      "test_samples": 10535,
+      "transform_capacity": 4,
+      "checkpoint_bytes": 890872141,
+      "checkpoint_sha256": "f74f65f079d082da946dbb4c668b4067d4a7fd74fff15678e5c17f0032a9f060",
+      "from_scratch": true
+    }
+  ],
+  "rule_robustness": [
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-C",
+      "channel": "id",
+      "n_paired": 448,
+      "n_bits": 4,
+      "clean_BAR": 0.9380580357142857,
+      "attack_BAR": 0.5290178571428571,
+      "DeltaBAR": 0.4090401785714286,
+      "clean_MAR": 0.8147321428571429,
+      "attack_MAR": 0.12723214285714285,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 448,
+      "n_syntax_valid": 448,
+      "change_rate": 0.9760348583877996,
+      "syntax_valid_rate": 0.9760348583877996,
+      "paired_coverage": 0.9760348583877996,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 11,
+        "execution_invalid": 0,
+        "valid_attack": 448,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9241071428571429,
+          0.9508928571428571
+        ],
+        "attack_BAR": [
+          0.5033482142857143,
+          0.5546875
+        ],
+        "DeltaBAR": [
+          0.38113839285714285,
+          0.4369419642857143
+        ],
+        "clean_MAR": [
+          0.7767857142857143,
+          0.8504464285714286
+        ],
+        "attack_MAR": [
+          0.09821428571428571,
+          0.15848214285714285
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-C",
+      "channel": "expr",
+      "n_paired": 448,
+      "n_bits": 4,
+      "clean_BAR": 0.9380580357142857,
+      "attack_BAR": 0.9308035714285714,
+      "DeltaBAR": 0.007254464285714302,
+      "clean_MAR": 0.8147321428571429,
+      "attack_MAR": 0.8035714285714286,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 448,
+      "n_syntax_valid": 448,
+      "change_rate": 0.9760348583877996,
+      "syntax_valid_rate": 0.9760348583877996,
+      "paired_coverage": 0.9760348583877996,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 11,
+        "execution_invalid": 0,
+        "valid_attack": 448,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9241071428571429,
+          0.9508928571428571
+        ],
+        "attack_BAR": [
+          0.9157366071428571,
+          0.9447544642857143
+        ],
+        "DeltaBAR": [
+          0.0011160714285714285,
+          0.013950892857142858
+        ],
+        "clean_MAR": [
+          0.7767857142857143,
+          0.8504464285714286
+        ],
+        "attack_MAR": [
+          0.765625,
+          0.8392857142857143
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-C",
+      "channel": "block",
+      "n_paired": 448,
+      "n_bits": 4,
+      "clean_BAR": 0.9380580357142857,
+      "attack_BAR": 0.8091517857142857,
+      "DeltaBAR": 0.12890625,
+      "clean_MAR": 0.8147321428571429,
+      "attack_MAR": 0.5625,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 448,
+      "n_syntax_valid": 448,
+      "change_rate": 0.9760348583877996,
+      "syntax_valid_rate": 0.9760348583877996,
+      "paired_coverage": 0.9760348583877996,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 11,
+        "execution_invalid": 0,
+        "valid_attack": 448,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9241071428571429,
+          0.9508928571428571
+        ],
+        "attack_BAR": [
+          0.7845982142857143,
+          0.8331473214285714
+        ],
+        "DeltaBAR": [
+          0.10714285714285714,
+          0.15122767857142858
+        ],
+        "clean_MAR": [
+          0.7767857142857143,
+          0.8504464285714286
+        ],
+        "attack_MAR": [
+          0.515625,
+          0.6071428571428571
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-C",
+      "channel": "all",
+      "n_paired": 448,
+      "n_bits": 4,
+      "clean_BAR": 0.9380580357142857,
+      "attack_BAR": 0.5340401785714286,
+      "DeltaBAR": 0.4040178571428571,
+      "clean_MAR": 0.8147321428571429,
+      "attack_MAR": 0.09151785714285714,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 448,
+      "n_syntax_valid": 448,
+      "change_rate": 0.9760348583877996,
+      "syntax_valid_rate": 0.9760348583877996,
+      "paired_coverage": 0.9760348583877996,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 11,
+        "execution_invalid": 0,
+        "valid_attack": 448,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9241071428571429,
+          0.9508928571428571
+        ],
+        "attack_BAR": [
+          0.5100446428571429,
+          0.5580357142857143
+        ],
+        "DeltaBAR": [
+          0.3783482142857143,
+          0.4291294642857143
+        ],
+        "clean_MAR": [
+          0.7767857142857143,
+          0.8504464285714286
+        ],
+        "attack_MAR": [
+          0.06696428571428571,
+          0.11830357142857142
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-Java",
+      "channel": "id",
+      "n_paired": 528,
+      "n_bits": 4,
+      "clean_BAR": 0.9389204545454546,
+      "attack_BAR": 0.47301136363636365,
+      "DeltaBAR": 0.46590909090909094,
+      "clean_MAR": 0.8181818181818182,
+      "attack_MAR": 0.08143939393939394,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 528,
+      "n_syntax_valid": 528,
+      "change_rate": 0.9582577132486388,
+      "syntax_valid_rate": 0.9582577132486388,
+      "paired_coverage": 0.9582577132486388,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 23,
+        "execution_invalid": 0,
+        "valid_attack": 528,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9261363636363636,
+          0.9507575757575758
+        ],
+        "attack_BAR": [
+          0.4493371212121212,
+          0.4966856060606061
+        ],
+        "DeltaBAR": [
+          0.440329071969697,
+          0.49195075757575757
+        ],
+        "clean_MAR": [
+          0.7859848484848485,
+          0.8503787878787878
+        ],
+        "attack_MAR": [
+          0.058712121212121215,
+          0.10606060606060606
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-Java",
+      "channel": "expr",
+      "n_paired": 528,
+      "n_bits": 4,
+      "clean_BAR": 0.9389204545454546,
+      "attack_BAR": 0.9384469696969697,
+      "DeltaBAR": 0.00047348484848486194,
+      "clean_MAR": 0.8181818181818182,
+      "attack_MAR": 0.8181818181818182,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 528,
+      "n_syntax_valid": 528,
+      "change_rate": 0.9582577132486388,
+      "syntax_valid_rate": 0.9582577132486388,
+      "paired_coverage": 0.9582577132486388,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 23,
+        "execution_invalid": 0,
+        "valid_attack": 528,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9261363636363636,
+          0.9507575757575758
+        ],
+        "attack_BAR": [
+          0.9256628787878788,
+          0.9502840909090909
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.0014204545454545455
+        ],
+        "clean_MAR": [
+          0.7859848484848485,
+          0.8503787878787878
+        ],
+        "attack_MAR": [
+          0.7859848484848485,
+          0.8503787878787878
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-Java",
+      "channel": "block",
+      "n_paired": 528,
+      "n_bits": 4,
+      "clean_BAR": 0.9389204545454546,
+      "attack_BAR": 0.9285037878787878,
+      "DeltaBAR": 0.01041666666666674,
+      "clean_MAR": 0.8181818181818182,
+      "attack_MAR": 0.7992424242424242,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 528,
+      "n_syntax_valid": 528,
+      "change_rate": 0.9582577132486388,
+      "syntax_valid_rate": 0.9582577132486388,
+      "paired_coverage": 0.9582577132486388,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 23,
+        "execution_invalid": 0,
+        "valid_attack": 528,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9261363636363636,
+          0.9507575757575758
+        ],
+        "attack_BAR": [
+          0.9147727272727273,
+          0.9417613636363636
+        ],
+        "DeltaBAR": [
+          0.004734848484848485,
+          0.017045454545454544
+        ],
+        "clean_MAR": [
+          0.7859848484848485,
+          0.8503787878787878
+        ],
+        "attack_MAR": [
+          0.7651515151515151,
+          0.8314393939393939
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "GitHub-Java",
+      "channel": "all",
+      "n_paired": 528,
+      "n_bits": 4,
+      "clean_BAR": 0.9389204545454546,
+      "attack_BAR": 0.4744318181818182,
+      "DeltaBAR": 0.4644886363636364,
+      "clean_MAR": 0.8181818181818182,
+      "attack_MAR": 0.07575757575757576,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 528,
+      "n_syntax_valid": 528,
+      "change_rate": 0.9582577132486388,
+      "syntax_valid_rate": 0.9582577132486388,
+      "paired_coverage": 0.9582577132486388,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 23,
+        "execution_invalid": 0,
+        "valid_attack": 528,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9261363636363636,
+          0.9507575757575758
+        ],
+        "attack_BAR": [
+          0.45075757575757575,
+          0.49763257575757575
+        ],
+        "DeltaBAR": [
+          0.4384469696969697,
+          0.49053030303030304
+        ],
+        "clean_MAR": [
+          0.7859848484848485,
+          0.8503787878787878
+        ],
+        "attack_MAR": [
+          0.05303030303030303,
+          0.09848484848484848
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-JavaScript",
+      "channel": "id",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9868210862619808,
+      "attack_BAR": 0.4670926517571885,
+      "DeltaBAR": 0.5197284345047923,
+      "clean_MAR": 0.9661341853035144,
+      "attack_MAR": 0.05335463258785943,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9839456869009585,
+          0.9895367412140575
+        ],
+        "attack_BAR": [
+          0.4578274760383387,
+          0.47635982428115015
+        ],
+        "DeltaBAR": [
+          0.5099840255591054,
+          0.5294728434504792
+        ],
+        "clean_MAR": [
+          0.9597444089456869,
+          0.9722044728434505
+        ],
+        "attack_MAR": [
+          0.045678913738019175,
+          0.06134185303514377
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-JavaScript",
+      "channel": "expr",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9868210862619808,
+      "attack_BAR": 0.9874600638977635,
+      "DeltaBAR": -0.0006389776357826893,
+      "clean_MAR": 0.9661341853035144,
+      "attack_MAR": 0.9674121405750798,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9839456869009585,
+          0.9895367412140575
+        ],
+        "attack_BAR": [
+          0.9847444089456869,
+          0.9900179712460064
+        ],
+        "DeltaBAR": [
+          -0.0013578274760383386,
+          -7.987220447284345e-05
+        ],
+        "clean_MAR": [
+          0.9597444089456869,
+          0.9722044728434505
+        ],
+        "attack_MAR": [
+          0.9610223642172524,
+          0.973482428115016
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-JavaScript",
+      "channel": "block",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9868210862619808,
+      "attack_BAR": 0.9871405750798722,
+      "DeltaBAR": -0.00031948881789134465,
+      "clean_MAR": 0.9661341853035144,
+      "attack_MAR": 0.9664536741214057,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9839456869009585,
+          0.9895367412140575
+        ],
+        "attack_BAR": [
+          0.9843450479233227,
+          0.9897763578274761
+        ],
+        "DeltaBAR": [
+          -0.0011182108626198084,
+          0.0004792332268370607
+        ],
+        "clean_MAR": [
+          0.9597444089456869,
+          0.9722044728434505
+        ],
+        "attack_MAR": [
+          0.9600638977635783,
+          0.9725239616613418
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-JavaScript",
+      "channel": "all",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9868210862619808,
+      "attack_BAR": 0.465814696485623,
+      "DeltaBAR": 0.5210063897763578,
+      "clean_MAR": 0.9661341853035144,
+      "attack_MAR": 0.050798722044728434,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9839456869009585,
+          0.9895367412140575
+        ],
+        "attack_BAR": [
+          0.45686900958466453,
+          0.4747603833865815
+        ],
+        "DeltaBAR": [
+          0.5116613418530351,
+          0.5305111821086262
+        ],
+        "clean_MAR": [
+          0.9597444089456869,
+          0.9722044728434505
+        ],
+        "attack_MAR": [
+          0.043450479233226834,
+          0.05878594249201278
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-Java",
+      "channel": "id",
+      "n_paired": 10072,
+      "n_bits": 4,
+      "clean_BAR": 0.9734164019062749,
+      "attack_BAR": 0.5276260921366164,
+      "DeltaBAR": 0.4457903097696585,
+      "clean_MAR": 0.931989674344718,
+      "attack_MAR": 0.10127084988085783,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10072,
+      "n_syntax_valid": 10072,
+      "change_rate": 0.9560512577123873,
+      "syntax_valid_rate": 0.9560512577123873,
+      "paired_coverage": 0.9560512577123873,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 463,
+        "execution_invalid": 0,
+        "valid_attack": 10072,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9712569499602859,
+          0.9755758538522638
+        ],
+        "attack_BAR": [
+          0.5224874652501985,
+          0.5327392772041303
+        ],
+        "DeltaBAR": [
+          0.440453733121525,
+          0.4511517077045274
+        ],
+        "clean_MAR": [
+          0.9270254169976172,
+          0.9368546465448769
+        ],
+        "attack_MAR": [
+          0.0954130262112788,
+          0.10712867355043686
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-Java",
+      "channel": "expr",
+      "n_paired": 10072,
+      "n_bits": 4,
+      "clean_BAR": 0.9734164019062749,
+      "attack_BAR": 0.9733915806195393,
+      "DeltaBAR": 2.482128673553241e-05,
+      "clean_MAR": 0.931989674344718,
+      "attack_MAR": 0.931989674344718,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10072,
+      "n_syntax_valid": 10072,
+      "change_rate": 0.9560512577123873,
+      "syntax_valid_rate": 0.9560512577123873,
+      "paired_coverage": 0.9560512577123873,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 463,
+        "execution_invalid": 0,
+        "valid_attack": 10072,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9712569499602859,
+          0.9755758538522638
+        ],
+        "attack_BAR": [
+          0.9712073073868149,
+          0.9755510325655282
+        ],
+        "DeltaBAR": [
+          -0.00014892772041302622,
+          0.00019857029388403494
+        ],
+        "clean_MAR": [
+          0.9270254169976172,
+          0.9368546465448769
+        ],
+        "attack_MAR": [
+          0.9270254169976172,
+          0.9368546465448769
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-Java",
+      "channel": "block",
+      "n_paired": 10072,
+      "n_bits": 4,
+      "clean_BAR": 0.9734164019062749,
+      "attack_BAR": 0.9736149722001588,
+      "DeltaBAR": -0.00019857029388392622,
+      "clean_MAR": 0.931989674344718,
+      "attack_MAR": 0.9327839555202542,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10072,
+      "n_syntax_valid": 10072,
+      "change_rate": 0.9560512577123873,
+      "syntax_valid_rate": 0.9560512577123873,
+      "paired_coverage": 0.9560512577123873,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 463,
+        "execution_invalid": 0,
+        "valid_attack": 10072,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9712569499602859,
+          0.9755758538522638
+        ],
+        "attack_BAR": [
+          0.9714306989674345,
+          0.9757496028594123
+        ],
+        "DeltaBAR": [
+          -0.0005212470214455917,
+          9.928514694201747e-05
+        ],
+        "clean_MAR": [
+          0.9270254169976172,
+          0.9368546465448769
+        ],
+        "attack_MAR": [
+          0.9278196981731534,
+          0.937648927720413
+        ]
+      }
+    },
+    {
+      "method": "SrcMarker",
+      "dataset": "CSN-Java",
+      "channel": "all",
+      "n_paired": 10072,
+      "n_bits": 4,
+      "clean_BAR": 0.9734164019062749,
+      "attack_BAR": 0.531299642573471,
+      "DeltaBAR": 0.4421167593328039,
+      "clean_MAR": 0.931989674344718,
+      "attack_MAR": 0.10206513105639396,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10072,
+      "n_syntax_valid": 10072,
+      "change_rate": 0.9560512577123873,
+      "syntax_valid_rate": 0.9560512577123873,
+      "paired_coverage": 0.9560512577123873,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 463,
+        "execution_invalid": 0,
+        "valid_attack": 10072,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9712569499602859,
+          0.9755758538522638
+        ],
+        "attack_BAR": [
+          0.5262857426528992,
+          0.5363638055996823
+        ],
+        "DeltaBAR": [
+          0.4368546465448769,
+          0.4473546713661636
+        ],
+        "clean_MAR": [
+          0.9270254169976172,
+          0.9368546465448769
+        ],
+        "attack_MAR": [
+          0.09610802223987291,
+          0.10792295472597299
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-C",
+      "channel": "id",
+      "n_paired": 447,
+      "n_bits": 4,
+      "clean_BAR": 0.9608501118568232,
+      "attack_BAR": 0.4507829977628635,
+      "DeltaBAR": 0.5100671140939597,
+      "clean_MAR": 0.883668903803132,
+      "attack_MAR": 0.040268456375838924,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 447,
+      "n_syntax_valid": 447,
+      "change_rate": 0.9738562091503268,
+      "syntax_valid_rate": 0.9738562091503268,
+      "paired_coverage": 0.9738562091503268,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 12,
+        "execution_invalid": 0,
+        "valid_attack": 447,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9491051454138703,
+          0.9714765100671141
+        ],
+        "attack_BAR": [
+          0.4278523489932886,
+          0.47371364653243847
+        ],
+        "DeltaBAR": [
+          0.4848993288590604,
+          0.535234899328859
+        ],
+        "clean_MAR": [
+          0.8523489932885906,
+          0.912751677852349
+        ],
+        "attack_MAR": [
+          0.02237136465324385,
+          0.058165548098434
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-C",
+      "channel": "expr",
+      "n_paired": 447,
+      "n_bits": 4,
+      "clean_BAR": 0.9608501118568232,
+      "attack_BAR": 0.95917225950783,
+      "DeltaBAR": 0.001677852348993203,
+      "clean_MAR": 0.883668903803132,
+      "attack_MAR": 0.8791946308724832,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 447,
+      "n_syntax_valid": 447,
+      "change_rate": 0.9738562091503268,
+      "syntax_valid_rate": 0.9738562091503268,
+      "paired_coverage": 0.9738562091503268,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 12,
+        "execution_invalid": 0,
+        "valid_attack": 447,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9491051454138703,
+          0.9714765100671141
+        ],
+        "attack_BAR": [
+          0.9474272930648769,
+          0.9697986577181208
+        ],
+        "DeltaBAR": [
+          -0.0011185682326621924,
+          0.0050335570469798654
+        ],
+        "clean_MAR": [
+          0.8523489932885906,
+          0.912751677852349
+        ],
+        "attack_MAR": [
+          0.8478747203579419,
+          0.9082774049217002
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-C",
+      "channel": "block",
+      "n_paired": 447,
+      "n_bits": 4,
+      "clean_BAR": 0.9608501118568232,
+      "attack_BAR": 0.9619686800894854,
+      "DeltaBAR": -0.0011185682326622093,
+      "clean_MAR": 0.883668903803132,
+      "attack_MAR": 0.8881431767337807,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 447,
+      "n_syntax_valid": 447,
+      "change_rate": 0.9738562091503268,
+      "syntax_valid_rate": 0.9738562091503268,
+      "paired_coverage": 0.9738562091503268,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 12,
+        "execution_invalid": 0,
+        "valid_attack": 447,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9491051454138703,
+          0.9714765100671141
+        ],
+        "attack_BAR": [
+          0.9502237136465325,
+          0.9725950782997763
+        ],
+        "DeltaBAR": [
+          -0.006152125279642058,
+          0.0039149888143176735
+        ],
+        "clean_MAR": [
+          0.8523489932885906,
+          0.912751677852349
+        ],
+        "attack_MAR": [
+          0.8568232662192393,
+          0.9172259507829977
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-C",
+      "channel": "all",
+      "n_paired": 447,
+      "n_bits": 4,
+      "clean_BAR": 0.9608501118568232,
+      "attack_BAR": 0.44854586129753915,
+      "DeltaBAR": 0.5123042505592841,
+      "clean_MAR": 0.883668903803132,
+      "attack_MAR": 0.03803131991051454,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 459,
+      "n_changed": 447,
+      "n_syntax_valid": 447,
+      "change_rate": 0.9738562091503268,
+      "syntax_valid_rate": 0.9738562091503268,
+      "paired_coverage": 0.9738562091503268,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 12,
+        "execution_invalid": 0,
+        "valid_attack": 447,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9491051454138703,
+          0.9714765100671141
+        ],
+        "attack_BAR": [
+          0.4261744966442953,
+          0.470917225950783
+        ],
+        "DeltaBAR": [
+          0.4865771812080537,
+          0.5380313199105146
+        ],
+        "clean_MAR": [
+          0.8523489932885906,
+          0.912751677852349
+        ],
+        "attack_MAR": [
+          0.02237136465324385,
+          0.05592841163310962
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-Java",
+      "channel": "id",
+      "n_paired": 535,
+      "n_bits": 4,
+      "clean_BAR": 0.952803738317757,
+      "attack_BAR": 0.516822429906542,
+      "DeltaBAR": 0.43598130841121496,
+      "clean_MAR": 0.8859813084112149,
+      "attack_MAR": 0.07102803738317758,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 535,
+      "n_syntax_valid": 535,
+      "change_rate": 0.9709618874773139,
+      "syntax_valid_rate": 0.9709618874773139,
+      "paired_coverage": 0.9709618874773139,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 16,
+        "execution_invalid": 0,
+        "valid_attack": 535,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9397196261682244,
+          0.9649649532710279
+        ],
+        "attack_BAR": [
+          0.4957943925233645,
+          0.5373831775700935
+        ],
+        "DeltaBAR": [
+          0.41261682242990655,
+          0.45981308411214955
+        ],
+        "clean_MAR": [
+          0.8579439252336448,
+          0.9121495327102803
+        ],
+        "attack_MAR": [
+          0.05046728971962617,
+          0.09345794392523364
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-Java",
+      "channel": "expr",
+      "n_paired": 535,
+      "n_bits": 4,
+      "clean_BAR": 0.952803738317757,
+      "attack_BAR": 0.9532710280373832,
+      "DeltaBAR": -0.00046728971962617383,
+      "clean_MAR": 0.8859813084112149,
+      "attack_MAR": 0.8878504672897196,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 535,
+      "n_syntax_valid": 535,
+      "change_rate": 0.9709618874773139,
+      "syntax_valid_rate": 0.9709618874773139,
+      "paired_coverage": 0.9709618874773139,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 16,
+        "execution_invalid": 0,
+        "valid_attack": 535,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9397196261682244,
+          0.9649649532710279
+        ],
+        "attack_BAR": [
+          0.9401869158878504,
+          0.9654205607476636
+        ],
+        "DeltaBAR": [
+          -0.0014018691588785046,
+          0.0
+        ],
+        "clean_MAR": [
+          0.8579439252336448,
+          0.9121495327102803
+        ],
+        "attack_MAR": [
+          0.8598130841121495,
+          0.914018691588785
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-Java",
+      "channel": "block",
+      "n_paired": 535,
+      "n_bits": 4,
+      "clean_BAR": 0.952803738317757,
+      "attack_BAR": 0.9551401869158879,
+      "DeltaBAR": -0.002336448598130869,
+      "clean_MAR": 0.8859813084112149,
+      "attack_MAR": 0.8934579439252337,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 535,
+      "n_syntax_valid": 535,
+      "change_rate": 0.9709618874773139,
+      "syntax_valid_rate": 0.9709618874773139,
+      "paired_coverage": 0.9709618874773139,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 16,
+        "execution_invalid": 0,
+        "valid_attack": 535,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9397196261682244,
+          0.9649649532710279
+        ],
+        "attack_BAR": [
+          0.9425233644859813,
+          0.9672897196261683
+        ],
+        "DeltaBAR": [
+          -0.004672897196261682,
+          -0.00046728971962616824
+        ],
+        "clean_MAR": [
+          0.8579439252336448,
+          0.9121495327102803
+        ],
+        "attack_MAR": [
+          0.8672897196261682,
+          0.9196261682242991
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "GitHub-Java",
+      "channel": "all",
+      "n_paired": 535,
+      "n_bits": 4,
+      "clean_BAR": 0.952803738317757,
+      "attack_BAR": 0.5322429906542057,
+      "DeltaBAR": 0.42056074766355134,
+      "clean_MAR": 0.8859813084112149,
+      "attack_MAR": 0.07102803738317758,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 551,
+      "n_changed": 535,
+      "n_syntax_valid": 535,
+      "change_rate": 0.9709618874773139,
+      "syntax_valid_rate": 0.9709618874773139,
+      "paired_coverage": 0.9709618874773139,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 16,
+        "execution_invalid": 0,
+        "valid_attack": 535,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9397196261682244,
+          0.9649649532710279
+        ],
+        "attack_BAR": [
+          0.5116822429906542,
+          0.552803738317757
+        ],
+        "DeltaBAR": [
+          0.39766355140186915,
+          0.44345794392523363
+        ],
+        "clean_MAR": [
+          0.8579439252336448,
+          0.9121495327102803
+        ],
+        "attack_MAR": [
+          0.05046728971962617,
+          0.09345794392523364
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-JavaScript",
+      "channel": "id",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9808306709265175,
+      "attack_BAR": 0.5,
+      "DeltaBAR": 0.48083067092651754,
+      "clean_MAR": 0.9498402555910543,
+      "attack_MAR": 0.060063897763578275,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9774760383386581,
+          0.9840255591054313
+        ],
+        "attack_BAR": [
+          0.4911341853035144,
+          0.5086261980830671
+        ],
+        "DeltaBAR": [
+          0.4716453674121406,
+          0.4904153354632588
+        ],
+        "clean_MAR": [
+          0.94185303514377,
+          0.9571964856230031
+        ],
+        "attack_MAR": [
+          0.05175718849840256,
+          0.06869009584664537
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-JavaScript",
+      "channel": "expr",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9808306709265175,
+      "attack_BAR": 0.9808306709265175,
+      "DeltaBAR": 0.0,
+      "clean_MAR": 0.9498402555910543,
+      "attack_MAR": 0.9501597444089457,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9774760383386581,
+          0.9840255591054313
+        ],
+        "attack_BAR": [
+          0.9774760383386581,
+          0.9840255591054313
+        ],
+        "DeltaBAR": [
+          -0.00039936102236421724,
+          0.00039936102236421724
+        ],
+        "clean_MAR": [
+          0.94185303514377,
+          0.9571964856230031
+        ],
+        "attack_MAR": [
+          0.9421725239616613,
+          0.9578274760383386
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-JavaScript",
+      "channel": "block",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9808306709265175,
+      "attack_BAR": 0.9804313099041534,
+      "DeltaBAR": 0.00039936102236415305,
+      "clean_MAR": 0.9498402555910543,
+      "attack_MAR": 0.9485623003194888,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9774760383386581,
+          0.9840255591054313
+        ],
+        "attack_BAR": [
+          0.9770766773162939,
+          0.9836261980830671
+        ],
+        "DeltaBAR": [
+          -0.00039936102236421724,
+          0.0011980830670926517
+        ],
+        "clean_MAR": [
+          0.94185303514377,
+          0.9571964856230031
+        ],
+        "attack_MAR": [
+          0.9405750798722045,
+          0.9562300319488818
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-JavaScript",
+      "channel": "all",
+      "n_paired": 3130,
+      "n_bits": 4,
+      "clean_BAR": 0.9808306709265175,
+      "attack_BAR": 0.5008785942492012,
+      "DeltaBAR": 0.4799520766773163,
+      "clean_MAR": 0.9498402555910543,
+      "attack_MAR": 0.0645367412140575,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 3150,
+      "n_changed": 3130,
+      "n_syntax_valid": 3130,
+      "change_rate": 0.9936507936507937,
+      "syntax_valid_rate": 0.9936507936507937,
+      "paired_coverage": 0.9936507936507937,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 20,
+        "execution_invalid": 0,
+        "valid_attack": 3130,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9774760383386581,
+          0.9840255591054313
+        ],
+        "attack_BAR": [
+          0.49201078274760385,
+          0.509664536741214
+        ],
+        "DeltaBAR": [
+          0.4707647763578275,
+          0.4895367412140575
+        ],
+        "clean_MAR": [
+          0.94185303514377,
+          0.9571964856230031
+        ],
+        "attack_MAR": [
+          0.05623003194888179,
+          0.07348242811501597
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-Java",
+      "channel": "id",
+      "n_paired": 10070,
+      "n_bits": 4,
+      "clean_BAR": 0.9801390268123138,
+      "attack_BAR": 0.5443644488579941,
+      "DeltaBAR": 0.43577457795431973,
+      "clean_MAR": 0.9325719960278054,
+      "attack_MAR": 0.11360476663356504,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10070,
+      "n_syntax_valid": 10070,
+      "change_rate": 0.9558614143331752,
+      "syntax_valid_rate": 0.9558614143331752,
+      "paired_coverage": 0.9558614143331752,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 465,
+        "execution_invalid": 0,
+        "valid_attack": 10070,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9785749751737836,
+          0.9816782522343594
+        ],
+        "attack_BAR": [
+          0.539175148957299,
+          0.5494792701092353
+        ],
+        "DeltaBAR": [
+          0.43036246276067525,
+          0.44123634558093344
+        ],
+        "clean_MAR": [
+          0.9277060575968222,
+          0.9373386295928501
+        ],
+        "attack_MAR": [
+          0.10744786494538232,
+          0.11976166832174777
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-Java",
+      "channel": "expr",
+      "n_paired": 10070,
+      "n_bits": 4,
+      "clean_BAR": 0.9801390268123138,
+      "attack_BAR": 0.9801638530287984,
+      "DeltaBAR": -2.4826216484585828e-05,
+      "clean_MAR": 0.9325719960278054,
+      "attack_MAR": 0.9326713008937438,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10070,
+      "n_syntax_valid": 10070,
+      "change_rate": 0.9558614143331752,
+      "syntax_valid_rate": 0.9558614143331752,
+      "paired_coverage": 0.9558614143331752,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 465,
+        "execution_invalid": 0,
+        "valid_attack": 10070,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9785749751737836,
+          0.9816782522343594
+        ],
+        "attack_BAR": [
+          0.9785998013902681,
+          0.9817030784508441
+        ],
+        "DeltaBAR": [
+          -0.00022343594836146972,
+          0.0001737835153922542
+        ],
+        "clean_MAR": [
+          0.9277060575968222,
+          0.9373386295928501
+        ],
+        "attack_MAR": [
+          0.9279046673286991,
+          0.9374379344587885
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-Java",
+      "channel": "block",
+      "n_paired": 10070,
+      "n_bits": 4,
+      "clean_BAR": 0.9801390268123138,
+      "attack_BAR": 0.9797914597815293,
+      "DeltaBAR": 0.00034756703078453466,
+      "clean_MAR": 0.9325719960278054,
+      "attack_MAR": 0.9321747765640517,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10070,
+      "n_syntax_valid": 10070,
+      "change_rate": 0.9558614143331752,
+      "syntax_valid_rate": 0.9558614143331752,
+      "paired_coverage": 0.9558614143331752,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 465,
+        "execution_invalid": 0,
+        "valid_attack": 10070,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9785749751737836,
+          0.9816782522343594
+        ],
+        "attack_BAR": [
+          0.9782025819265144,
+          0.9813555114200596
+        ],
+        "DeltaBAR": [
+          -9.930486593843098e-05,
+          0.0008192651439920556
+        ],
+        "clean_MAR": [
+          0.9277060575968222,
+          0.9373386295928501
+        ],
+        "attack_MAR": [
+          0.9273088381330685,
+          0.9370407149950347
+        ]
+      }
+    },
+    {
+      "method": "CodeMark",
+      "dataset": "CSN-Java",
+      "channel": "all",
+      "n_paired": 10070,
+      "n_bits": 4,
+      "clean_BAR": 0.9801390268123138,
+      "attack_BAR": 0.5417576961271102,
+      "DeltaBAR": 0.4383813306852036,
+      "clean_MAR": 0.9325719960278054,
+      "attack_MAR": 0.10913604766633565,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 10535,
+      "n_changed": 10070,
+      "n_syntax_valid": 10070,
+      "change_rate": 0.9558614143331752,
+      "syntax_valid_rate": 0.9558614143331752,
+      "paired_coverage": 0.9558614143331752,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 465,
+        "execution_invalid": 0,
+        "valid_attack": 10070,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.9785749751737836,
+          0.9816782522343594
+        ],
+        "attack_BAR": [
+          0.5364945382323734,
+          0.5468470705064549
+        ],
+        "DeltaBAR": [
+          0.4329940417080437,
+          0.4439175769612711
+        ],
+        "clean_MAR": [
+          0.9277060575968222,
+          0.9373386295928501
+        ],
+        "attack_MAR": [
+          0.1030759682224429,
+          0.11519364448857994
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "project_name": "brick_breaker_game",
+  "rng_seed": 1082524405,
+  "language": "python",
+  "counts": {
+    "[Build Error]": 0,
+    "[Test Error]": 17,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 0,
+    "[Pass]": 18
+  }
+}

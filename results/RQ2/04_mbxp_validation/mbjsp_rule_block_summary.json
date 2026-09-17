@@ -1,0 +1,24 @@
+{
+  "n_total": 797,
+  "n_baseline_pass": 795,
+  "n_changed": 788,
+  "n_syntax_valid_changed": 788,
+  "n_post_pass": 781,
+  "attack_coverage": 0.9911949685534591,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 0.9911167512690355,
+  "language": "javascript",
+  "channel": "block",
+  "attack": "rule",
+  "seed": 42,
+  "provider": null,
+  "model": null,
+  "status_counts": {
+    "baseline_fail": 2,
+    "no_op": 7,
+    "syntax_invalid": 0,
+    "execution_invalid": 7,
+    "valid_attack": 781,
+    "error": 0
+  }
+}

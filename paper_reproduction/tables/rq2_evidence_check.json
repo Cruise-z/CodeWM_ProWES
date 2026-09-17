@@ -1,0 +1,112 @@
+{
+  "checkpoints": {
+    "count": 8,
+    "sha256": {
+      "codemark/csn_java": "f74f65f079d082da946dbb4c668b4067d4a7fd74fff15678e5c17f0032a9f060",
+      "codemark/csn_js": "03b413e5b93a825496006466f2c7ae4502c08dde6d74eb79cdf95605ba166ea0",
+      "codemark/github_c_funcs": "1d837005d47fd28ce3999786cd0cc30c2d5d89fdb7d60a1736ae9fe4cd35eedd",
+      "codemark/github_java_funcs": "6cf99c34558456526ffc5e1528a350fccc8370f94e6c2757edc09f4fd571a022",
+      "srcmarker/csn_java": "fbb23c432234ba2fba5fdcc2eee3c395755c650559f9e387f16eb4035c2189f2",
+      "srcmarker/csn_js": "a0240b48e4cddecc89f0eea38687139bab7142c537c064f0568563db2dae4e19",
+      "srcmarker/github_c_funcs": "9b6717e3d53ced224ac04625f108e4a1dca65cc97b9d10ed7a4650e047a2a815",
+      "srcmarker/github_java_funcs": "875a0910c7a005a42b36f3344f5d851ba6ffddba2819119179fdd396daaf2531"
+    }
+  },
+  "llm_rag": {
+    "attacked_predictions": 972,
+    "returned_models": {
+      "gpt-5-2025-08-07": 1000
+    },
+    "rows": 1000,
+    "rows_with_usage": 1000,
+    "statuses": {
+      "no_op": 23,
+      "syntax_invalid": 5,
+      "valid_attack": 972
+    }
+  },
+  "llm_rag_mbxp_pilot": {
+    "changed_syntax_valid": 45,
+    "post_pass": 45,
+    "rows": 45
+  },
+  "mbxp_rule_validation": {
+    "by_cell": {
+      "mbcpp_rule_all": {
+        "changed_syntax_valid": 763,
+        "post_pass": 748,
+        "rows": 764
+      },
+      "mbcpp_rule_block": {
+        "changed_syntax_valid": 763,
+        "post_pass": 754,
+        "rows": 764
+      },
+      "mbcpp_rule_expr": {
+        "changed_syntax_valid": 763,
+        "post_pass": 763,
+        "rows": 764
+      },
+      "mbcpp_rule_id": {
+        "changed_syntax_valid": 763,
+        "post_pass": 756,
+        "rows": 764
+      },
+      "mbjp_rule_all": {
+        "changed_syntax_valid": 842,
+        "post_pass": 829,
+        "rows": 842
+      },
+      "mbjp_rule_block": {
+        "changed_syntax_valid": 842,
+        "post_pass": 835,
+        "rows": 842
+      },
+      "mbjp_rule_expr": {
+        "changed_syntax_valid": 842,
+        "post_pass": 842,
+        "rows": 842
+      },
+      "mbjp_rule_id": {
+        "changed_syntax_valid": 842,
+        "post_pass": 834,
+        "rows": 842
+      },
+      "mbjsp_rule_all": {
+        "changed_syntax_valid": 788,
+        "post_pass": 760,
+        "rows": 797
+      },
+      "mbjsp_rule_block": {
+        "changed_syntax_valid": 788,
+        "post_pass": 781,
+        "rows": 797
+      },
+      "mbjsp_rule_expr": {
+        "changed_syntax_valid": 788,
+        "post_pass": 781,
+        "rows": 797
+      },
+      "mbjsp_rule_id": {
+        "changed_syntax_valid": 788,
+        "post_pass": 761,
+        "rows": 797
+      }
+    },
+    "cells": 12,
+    "changed_syntax_valid": 9572,
+    "post_pass": 9444,
+    "rows": 9612,
+    "weighted_EPR": 0.9866276640200585
+  },
+  "rule_robustness": {
+    "cells": 32,
+    "predictions": 113440,
+    "rows": 117560,
+    "status_counts": {
+      "syntax_invalid": 4120,
+      "valid_attack": 113440
+    }
+  },
+  "status": "PASS"
+}

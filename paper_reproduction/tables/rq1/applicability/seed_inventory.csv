@@ -1,0 +1,16 @@
+project,language,rng_seeds,seed_count,watermark_methods,response_points
+brick_breaker,cpp,3047071552,1,"codeip,ewd,stone,sweet,waterfall,wllm",471
+brick_breaker,java,3224345906,1,"codeip,ewd,stone,sweet,waterfall,wllm",606
+brick_breaker,python,"239766494,1082524405,4058173393",3,"codeip,ewd,stone,sweet,waterfall,wllm",730
+caro,cpp,3627467929,1,"codeip,ewd,stone,sweet,waterfall,wllm",443
+caro,java,2285465881,1,"codeip,ewd,stone,sweet,waterfall,wllm",559
+caro,python,1598859076,1,"codeip,ewd,stone,sweet,waterfall,wllm",695
+flappy_bird,cpp,95729506,1,"codeip,ewd,stone,sweet,waterfall,wllm",396
+flappy_bird,java,1385953100,1,"codeip,ewd,stone,sweet,waterfall,wllm",637
+flappy_bird,python,1716196616,1,"codeip,ewd,stone,sweet,waterfall,wllm",726
+snake,cpp,3908348467,1,"codeip,ewd,stone,sweet,waterfall,wllm",663
+snake,java,384552130,1,"codeip,ewd,stone,sweet,waterfall,wllm",661
+snake,python,2012703279,1,"codeip,ewd,stone,sweet,waterfall,wllm",745
+tank_battle,cpp,1297660533,1,"codeip,ewd,stone,sweet,waterfall,wllm",488
+tank_battle,java,2107680757,1,"codeip,ewd,stone,sweet,waterfall,wllm",700
+tank_battle,python,1210046855,1,"codeip,ewd,stone,sweet,waterfall,wllm",621

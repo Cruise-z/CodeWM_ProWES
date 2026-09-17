@@ -1,0 +1,42 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 6,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "completed_at": "2026-09-13T11:57:41.887160+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/java/initial_repository/p03_game_2048_java",
+  "initial_repository_tree_sha256": "8427109f247a02d66e4f3de4bb7b59a776c0187140a90720627d292cb178ae8c",
+  "missing_required_files": [],
+  "planned_file_count": 11,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/Direction.java",
+    "src/main/java/GameStatus.java",
+    "src/main/java/MoveResult.java",
+    "src/main/java/Spawner.java",
+    "src/main/java/Spawn.java",
+    "src/main/java/SequenceSpawner.java",
+    "src/main/java/Board.java",
+    "src/main/java/Game.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "prompt_sha256": "eec4c8ed865355ee8cf979ad3bdbbffa599d0a29280c3d8a6c4ecb5d090a87d7",
+  "started_at": "2026-09-13T11:54:56.965391+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p03_game_2048/java/architecture/team/team.json",
+  "team_json_sha256": "f8f397b2e0ad180d5b702d1aea82987017d02c69b07953f0003c97b2407f41d3",
+  "unit_id": "p03_game_2048_java",
+  "valid": true
+}

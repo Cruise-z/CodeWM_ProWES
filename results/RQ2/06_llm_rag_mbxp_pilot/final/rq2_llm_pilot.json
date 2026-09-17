@@ -1,0 +1,649 @@
+{
+  "generated_utc": "2026-09-16T00:58:25.724813+00:00",
+  "protocol": {
+    "provider": "openai-compatible",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "requested_model": "gpt-5",
+    "response_models": [
+      "gpt-5-2025-08-07"
+    ],
+    "temperature": 0,
+    "seed": 42,
+    "top_k": 6,
+    "reasoning_effort": "minimal",
+    "max_completion_tokens": 1100,
+    "automatic_retries": 0
+  },
+  "request_accounting": {
+    "initial_truncated_phase": 15,
+    "minimal_phase": 85,
+    "total_experimental_requests": 100
+  },
+  "usage": {
+    "minimal_exact": {
+      "rows_with_usage": 85,
+      "prompt_tokens": 92195,
+      "completion_tokens": 21140,
+      "reasoning_tokens": 0
+    },
+    "initial_recorded": {
+      "rows_with_usage": 1,
+      "prompt_tokens": 910,
+      "completion_tokens": 763,
+      "reasoning_tokens": 704
+    },
+    "initial_missing_usage_rows": 14,
+    "recorded_cost_cny": 2.3478787500000005,
+    "missing_usage_conservative_upper_cost_cny": 1.3230000000000002,
+    "pilot_cost_conservative_upper_cny": 3.670878750000001,
+    "pricing_cny_per_1k": {
+      "input": 0.00875,
+      "output": 0.07
+    }
+  },
+  "epr": [
+    {
+      "n_total": 15,
+      "n_baseline_pass": 15,
+      "n_changed": 15,
+      "n_syntax_valid_changed": 15,
+      "n_post_pass": 15,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 1.0,
+      "language": "cpp",
+      "channel": "all",
+      "attack": "llm-rag",
+      "seed": 42,
+      "provider": "openai-compatible",
+      "model": "gpt-5",
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 15,
+        "error": 0
+      }
+    },
+    {
+      "n_total": 15,
+      "n_baseline_pass": 15,
+      "n_changed": 15,
+      "n_syntax_valid_changed": 15,
+      "n_post_pass": 15,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 1.0,
+      "language": "java",
+      "channel": "all",
+      "attack": "llm-rag",
+      "seed": 42,
+      "provider": "openai-compatible",
+      "model": "gpt-5",
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 15,
+        "error": 0
+      }
+    },
+    {
+      "n_total": 15,
+      "n_baseline_pass": 15,
+      "n_changed": 15,
+      "n_syntax_valid_changed": 15,
+      "n_post_pass": 15,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 1.0,
+      "language": "javascript",
+      "channel": "all",
+      "attack": "llm-rag",
+      "seed": 42,
+      "provider": "openai-compatible",
+      "model": "gpt-5",
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 15,
+        "error": 0
+      }
+    }
+  ],
+  "main_syntax_validity": {
+    "n_total": 40,
+    "n_source_syntax_valid": 34,
+    "n_output_syntax_valid": 35,
+    "n_source_and_output_syntax_valid": 34,
+    "output_validity_given_source_valid": 1.0
+  },
+  "watermark_integration_metrics": [
+    {
+      "method": "codemark",
+      "dataset": "csn_java",
+      "n_paired": 3,
+      "n_bits": 4,
+      "clean_BAR": 0.9166666666666666,
+      "attack_BAR": 0.6666666666666666,
+      "DeltaBAR": 0.25,
+      "clean_MAR": 0.6666666666666666,
+      "attack_MAR": 0.3333333333333333,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 4,
+      "n_syntax_valid": 3,
+      "change_rate": 0.8,
+      "syntax_valid_rate": 0.6,
+      "paired_coverage": 0.6,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 2,
+        "execution_invalid": 0,
+        "valid_attack": 3,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.75,
+          1.0
+        ],
+        "attack_BAR": [
+          0.5,
+          1.0
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.5
+        ],
+        "clean_MAR": [
+          0.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "csn_js",
+      "n_paired": 5,
+      "n_bits": 4,
+      "clean_BAR": 1.0,
+      "attack_BAR": 0.95,
+      "DeltaBAR": 0.050000000000000044,
+      "clean_MAR": 1.0,
+      "attack_MAR": 0.8,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 5,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 1.0,
+      "paired_coverage": 1.0,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 5,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          1.0,
+          1.0
+        ],
+        "attack_BAR": [
+          0.85,
+          1.0
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.15
+        ],
+        "clean_MAR": [
+          1.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.4,
+          1.0
+        ]
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "github_c_funcs",
+      "n_paired": 5,
+      "n_bits": 4,
+      "clean_BAR": 0.95,
+      "attack_BAR": 0.7,
+      "DeltaBAR": 0.25,
+      "clean_MAR": 0.8,
+      "attack_MAR": 0.4,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 5,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 1.0,
+      "paired_coverage": 1.0,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 5,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.85,
+          1.0
+        ],
+        "attack_BAR": [
+          0.35,
+          0.95
+        ],
+        "DeltaBAR": [
+          0.05,
+          0.5
+        ],
+        "clean_MAR": [
+          0.4,
+          1.0
+        ],
+        "attack_MAR": [
+          0.0,
+          0.8
+        ]
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "github_java_funcs",
+      "n_paired": 4,
+      "n_bits": 4,
+      "clean_BAR": 1.0,
+      "attack_BAR": 0.6875,
+      "DeltaBAR": 0.3125,
+      "clean_MAR": 1.0,
+      "attack_MAR": 0.5,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 4,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 0.8,
+      "paired_coverage": 0.8,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 1,
+        "execution_invalid": 0,
+        "valid_attack": 4,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          1.0,
+          1.0
+        ],
+        "attack_BAR": [
+          0.375,
+          1.0
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.625
+        ],
+        "clean_MAR": [
+          1.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.0,
+          1.0
+        ]
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "csn_java",
+      "n_paired": 3,
+      "n_bits": 4,
+      "clean_BAR": 0.9166666666666666,
+      "attack_BAR": 0.4166666666666667,
+      "DeltaBAR": 0.49999999999999994,
+      "clean_MAR": 0.6666666666666666,
+      "attack_MAR": 0.0,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 4,
+      "n_syntax_valid": 3,
+      "change_rate": 0.8,
+      "syntax_valid_rate": 0.6,
+      "paired_coverage": 0.6,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 2,
+        "execution_invalid": 0,
+        "valid_attack": 3,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          0.75,
+          1.0
+        ],
+        "attack_BAR": [
+          0.25,
+          0.5
+        ],
+        "DeltaBAR": [
+          0.25,
+          0.75
+        ],
+        "clean_MAR": [
+          0.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "csn_js",
+      "n_paired": 5,
+      "n_bits": 4,
+      "clean_BAR": 1.0,
+      "attack_BAR": 0.7,
+      "DeltaBAR": 0.30000000000000004,
+      "clean_MAR": 1.0,
+      "attack_MAR": 0.2,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 5,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 1.0,
+      "paired_coverage": 1.0,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 5,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          1.0,
+          1.0
+        ],
+        "attack_BAR": [
+          0.55,
+          0.85
+        ],
+        "DeltaBAR": [
+          0.15,
+          0.45
+        ],
+        "clean_MAR": [
+          1.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.0,
+          0.6
+        ]
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "github_c_funcs",
+      "n_paired": 5,
+      "n_bits": 4,
+      "clean_BAR": 1.0,
+      "attack_BAR": 0.85,
+      "DeltaBAR": 0.15000000000000002,
+      "clean_MAR": 1.0,
+      "attack_MAR": 0.6,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 5,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 1.0,
+      "paired_coverage": 1.0,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 5,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          1.0,
+          1.0
+        ],
+        "attack_BAR": [
+          0.65,
+          1.0
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.35
+        ],
+        "clean_MAR": [
+          1.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.2,
+          1.0
+        ]
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "github_java_funcs",
+      "n_paired": 5,
+      "n_bits": 4,
+      "clean_BAR": 1.0,
+      "attack_BAR": 0.85,
+      "DeltaBAR": 0.15000000000000002,
+      "clean_MAR": 1.0,
+      "attack_MAR": 0.6,
+      "chance_BAR": 0.5,
+      "chance_MAR": 0.0625,
+      "n_attempted": 5,
+      "n_changed": 5,
+      "n_syntax_valid": 5,
+      "change_rate": 1.0,
+      "syntax_valid_rate": 1.0,
+      "paired_coverage": 1.0,
+      "status_counts": {
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 5,
+        "error": 0,
+        "unclassified": 0
+      },
+      "bootstrap_95CI": {
+        "clean_BAR": [
+          1.0,
+          1.0
+        ],
+        "attack_BAR": [
+          0.65,
+          1.0
+        ],
+        "DeltaBAR": [
+          0.0,
+          0.35
+        ],
+        "clean_MAR": [
+          1.0,
+          1.0
+        ],
+        "attack_MAR": [
+          0.2,
+          1.0
+        ]
+      }
+    }
+  ],
+  "full_run_projection": {
+    "llm_epr_requests": 2400,
+    "main_requests": 5748,
+    "total_requests": 8148,
+    "pilot_minimal_mean_cost_cny_per_request": 0.026900073529411768,
+    "projected_cost_cny": 219.18179911764707,
+    "projected_cost_with_10pct_reserve_cny": 241.0999790294118
+  },
+  "artifacts": [
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbcpp_llm_all.jsonl",
+      "sha256": "6aac18546ac66475133fe4fa46839232f0af775061c74ac0ba2bd35f1747c593"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbjp_llm_all.jsonl",
+      "sha256": "feab4c094e66d0b2bf0cbfe4bbb1f9551b619a5f03d33bca29c97f80fc3811d7"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbjsp_llm_all.jsonl",
+      "sha256": "399cb7b17c33d7543157163632be17b81e53706f793f53c527db324f7e4ecdbf"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/codemark_csn_java_llm_all.jsonl",
+      "sha256": "e8898c70d1593a801757fe9998bcf0db1ec45f30380fc1e8e805719270d65262"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/codemark_csn_js_llm_all.jsonl",
+      "sha256": "7caaf1d7d966b72fcd0a717de4883c56eb8bbd3e3867ac3d1886151ffd3e6008"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/codemark_github_c_funcs_llm_all.jsonl",
+      "sha256": "11c035ed4655fb63c81b67c48677a7f26c294ed770f27bf4971c1b12c893d415"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/codemark_github_java_funcs_llm_all.jsonl",
+      "sha256": "d41789e86e2fa4f01c56f46ca0ae5eae940fa64dea817ad619692473ed7c76bd"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/srcmarker_csn_java_llm_all.jsonl",
+      "sha256": "0eccff570af79fba950337ce3af76091fc922a496981df2c70b135f8f13086a3"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/srcmarker_csn_js_llm_all.jsonl",
+      "sha256": "d132a7d945a34076bbe520d76ca7494287d5a051ecd79f9d47278ec9519ba04a"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/srcmarker_github_c_funcs_llm_all.jsonl",
+      "sha256": "8ce97bfc1c55b524952b9139d339f831578728341ba2e588231311bb5646436b"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main/srcmarker_github_java_funcs_llm_all.jsonl",
+      "sha256": "7819b453b1ba4938bcddee65e573c2caec2f23997a3d207013514dc967a2e957"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbcpp_llm_all_summary.json",
+      "sha256": "4cf553e8e24646ed4a4d3f70fa49fa73a7de6bf798f0e51d5a085f11e856c4a1"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbjp_llm_all_summary.json",
+      "sha256": "d66163d4ed52bca0e107671673977c3592e39949611510f631213eca5ae52736"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/epr/mbjsp_llm_all_summary.json",
+      "sha256": "724ab49b456c4d646dcf318fcda70d4e694e4b688704da3bade066be5edf3899"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/codemark_csn_java_llm_all_eval.jsonl",
+      "sha256": "49800efae8074a7a983515c5faff1e4a8958b496421d3b26ef72448d08058d85"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/codemark_csn_js_llm_all_eval.jsonl",
+      "sha256": "68aeced1861639a312f64fc0b641b15136b6146919c022279fbb46247c7c816b"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/codemark_github_c_funcs_llm_all_eval.jsonl",
+      "sha256": "4d9fedc3515a545d2f2c94790ae1b3eb05c7266c4098d035d9bb6c1b7a977eef"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/codemark_github_java_funcs_llm_all_eval.jsonl",
+      "sha256": "0ca772fb0a13b15d18369a294befc3592975fb5151cfbc3aab6707621f71e3b9"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/srcmarker_csn_java_llm_all_eval.jsonl",
+      "sha256": "408be337bbe166e742e2d74ca73d263b49b0097e7c1536b2d3e9317e3eb923d5"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/srcmarker_csn_js_llm_all_eval.jsonl",
+      "sha256": "90066b62dfdefecc7807bf73e61b604bfcf5111cea572058a1d09797e6e52682"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/srcmarker_github_c_funcs_llm_all_eval.jsonl",
+      "sha256": "dd10d16ba709f08a2231b90567eb265fd8f7d0ba7b04892f1123def36d8bfa50"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/main_eval/srcmarker_github_java_funcs_llm_all_eval.jsonl",
+      "sha256": "0e3d42cd99bbf279c08f3b01cd53231a31658bed8a2a7d30416b65748df8d9a4"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/codemark_csn_java_llm_all.json",
+      "sha256": "3da2e5f8c28a7546b09d72878e8128ce71e13317137dc63ee8b216a2b6332892"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/codemark_csn_js_llm_all.json",
+      "sha256": "8cad118b08a7045db077b87d42089ea90f35ca35da8cbe673724285dd9a6db11"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/codemark_github_c_funcs_llm_all.json",
+      "sha256": "460fddd306a25a0b5e9febef7d0bcab5a9d7367cde873ea87ce76f3f7e26a3cd"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/codemark_github_java_funcs_llm_all.json",
+      "sha256": "a4149f0080deb7c042d2e2109fb408419af5904c458dbc3008cd6eba5d6384c8"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/srcmarker_csn_java_llm_all.json",
+      "sha256": "dc1d7989ecff6c05275499ba62dfd4e60b92228aacb0c5ac88d00dd40194e798"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/srcmarker_csn_js_llm_all.json",
+      "sha256": "f9bfa8b5bdf2923479a9d18b564c30e24fc583819ccb59cb303aad19b23de61f"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/srcmarker_github_c_funcs_llm_all.json",
+      "sha256": "dc9b9a29ad2508812be4738748a8d514e523093742830e119f6da5c268381e0d"
+    },
+    {
+      "path": "outputs/fresh/llm_pilot_minimal/metrics/srcmarker_github_java_funcs_llm_all.json",
+      "sha256": "dc9b9a29ad2508812be4738748a8d514e523093742830e119f6da5c268381e0d"
+    }
+  ]
+}

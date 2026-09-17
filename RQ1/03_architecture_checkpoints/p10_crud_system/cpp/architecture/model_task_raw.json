@@ -1,0 +1,177 @@
+{
+  "20260914171149.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {
+      "add_test_declared": true,
+      "core_library_declared": true,
+      "declared_headers_match_declared_sources": true,
+      "enable_testing_declared": true,
+      "missing_interface_files": [],
+      "non_main_sources_have_matching_headers": true,
+      "notes": "Headers are self-contained with exact required standard includes; sources include headers by basename only and do not rely on transitive includes. CMake builds crud_core from the four core .cpp files and links both crud_app and crud_tests against it.",
+      "runtime_links_core_library": true,
+      "suspected_build_breakers": [],
+      "test_links_core_library": true,
+      "tests_include_headers_only": true,
+      "undeclared_includes": []
+    },
+    "Canonical File References": [
+      "CMakeLists.txt",
+      "include/Record.h",
+      "src/Record.cpp",
+      "include/ManualClock.h",
+      "src/ManualClock.cpp",
+      "include/Repository.h",
+      "src/Repository.cpp",
+      "include/CrudService.h",
+      "src/CrudService.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Execution Protocol": "Build and test using: ctest --test-dir build --output-on-failure. CMakeLists.txt defines the core library and links both runtime and test targets to it. The runtime entry is src/Main.cpp; it is a small, headless demonstration. The single protocol-level test resides in tests/test_main.cpp, includes headers only, and validates deterministic behavior with three concise blocks.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 11,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 11,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 11,
+      "task_list_count": 11
+    },
+    "Full API spec": "Module: include/Record.h (and src/Record.cpp)\n- Type: struct Record\n  - Public fields: std::string id; std::string name; std::string email; std::uint64_t revision; std::uint64_t updated_at.\n  - Constructor: Record(std::string id, std::string name, std::string email, std::uint64_t revision, std::uint64_t updated_at);\n    Semantics: initializes all fields exactly as provided; no default constructor provided.\n  - bool operator==(const Record& other) const;\n    Semantics: returns true iff all five fields are equal by value.\n  - Includes: <cstdint>, <string>.\n\nModule: include/ManualClock.h (and src/ManualClock.cpp)\n- Type: class ManualClock\n  - explicit ManualClock(std::uint64_t initial);\n    Semantics: initializes internal counter to 'initial'. No wall-clock usage. Declared only in header; defined only in src/ManualClock.cpp.\n  - std::uint64_t now() const noexcept;\n    Semantics: returns current counter value.\n  - void advance(std::uint64_t delta) noexcept;\n    Semantics: increments internal counter by 'delta'. No overflow checks required by contract; caller responsibility.\n  - Includes: <cstdint>.\n\nModule: include/Repository.h (and src/Repository.cpp)\n- Type: class Repository (concrete in-memory repository)\n  - Private: std::map<std::string, Record> records_;\n  - bool insert(const Record& rec);\n    Return: true if id was absent and rec inserted; false if id already exists (no mutation).\n  - std::optional<Record> find(const std::string& id) const;\n    Return: a copy of the Record if present; std::nullopt otherwise.\n  - bool replace(const Record& rec);\n    Return: true if an existing record with same id was present and replaced; false if absent (no insertion).\n  - bool erase(const std::string& id);\n    Return: true if an element was erased; false if nothing erased.\n  - std::vector<Record> list() const;\n    Return: vector of all records in deterministic std::map key order (lexicographic by id).\n  - Includes: <map>, <optional>, <string>, <vector>, and \"Record.h\".\n\nModule: include/CrudService.h (and src/CrudService.cpp)\n- Type: class CrudService\n  - Private refs: Repository& repository_; ManualClock& clock_.\n  - CrudService(Repository& repository, ManualClock& clock);\n    Semantics: stores references; no ownership; no null allowed (references).\n  - Record create(const std::string& id, const std::string& name, const std::string& email);\n    Validation: throws std::invalid_argument if id or name is blank (empty or all spaces handled by caller; at minimum empty disallowed) or if email does not contain exactly one '@' not at the first or last character.\n    Duplicate: throws std::runtime_error if insert fails due to existing id.\n    State: constructs Record{id, name, email, revision=1, updated_at=clock_.now()} and inserts via repository_. Returns the stored Record.\n  - std::optional<Record> get(const std::string& id) const;\n    Semantics: returns repository_.find(id).\n  - Record update(const std::string& id, const std::string& name, const std::string& email);\n    Validation: same as create for name/email; id must be non-blank.\n    Absent: throws std::runtime_error if target id does not exist.\n    State: reads existing record, preserves id, increments revision by one (prev.revision + 1), sets updated_at to clock_.now(), and replaces via repository_. Returns the new record.\n  - bool remove(const std::string& id);\n    Semantics: returns repository_.erase(id).\n  - std::vector<Record> list() const;\n    Semantics: returns repository_.list(); deterministic order by id.\n  - Includes: <optional>, <string>, <vector>, \"ManualClock.h\", \"Record.h\", and \"Repository.h\".\n\nModule: src/Main.cpp\n- Runtime entry: constructs Repository repo; ManualClock clock(100); CrudService service(repo, clock); creates Record with id \"1\"; prints at most one concise value; returns 0. No loops, no wall clock.\n\nAllowed include direction:\n- Headers are self-contained and include only what they use.\n- CrudService.h may include ManualClock.h, Record.h, Repository.h.\n- Repository.h includes Record.h.\n- Tests include only headers from include/ by basename in code (e.g., \"CrudService.h\").\n- Sources include their corresponding headers by basename only; no transitive reliance on standard headers.\n\nExceptions and validation rules:\n- std::invalid_argument for invalid inputs: blank id/name or malformed email (must contain exactly one '@' not at edges).\n- std::runtime_error for duplicate create or absent update.\n- ManualClock operations are noexcept and deterministic.\n\nDeterministic behaviors:\n- ManualClock is the sole time source; now() used for updated_at in create/update.\n- Repository list() order is deterministic by std::map key.\n\nNotes:\n- Constructor declarations appear only in headers; definitions only in matching .cpp files.\n- No extra files, interfaces, or namespaces are allowed.",
+    "Logic Analysis": [
+      [
+        "CMakeLists.txt",
+        "dependency/build; defines project, sets C++17 with extensions off, builds static library crud_core from src/Record.cpp, src/ManualClock.cpp, src/Repository.cpp, src/CrudService.cpp; publishes include/; builds runtime executable src/Main.cpp (crud_app) and test executable tests/test_main.cpp (crud_tests); links both to crud_core; enables testing and registers the test"
+      ],
+      [
+        "include/Record.h",
+        "interface/declaration; declares struct Record with exact public fields id, name, email, revision, updated_at; declares constructor Record(std::string, std::string, std::string, std::uint64_t, std::uint64_t) and bool operator==(const Record&) const; includes <cstdint> and <string>; uses #pragma once; no default constructor"
+      ],
+      [
+        "src/Record.cpp",
+        "implementation/domain-entity; defines the Record constructor and value-based operator==; includes \"Record.h\" and any standard headers required for definitions"
+      ],
+      [
+        "include/ManualClock.h",
+        "interface/declaration; declares class ManualClock with explicit ManualClock(std::uint64_t), std::uint64_t now() const noexcept, and void advance(std::uint64_t) noexcept; stores a single counter; includes <cstdint>; uses #pragma once"
+      ],
+      [
+        "src/ManualClock.cpp",
+        "implementation/pure-rule; defines ManualClock's constructor, now, and advance; deterministic, no system clock; includes \"ManualClock.h\""
+      ],
+      [
+        "include/Repository.h",
+        "interface/declaration; declares concrete in-memory Repository backed by std::map<std::string, Record> records_; API: bool insert(const Record&), std::optional<Record> find(const std::string&) const, bool replace(const Record&), bool erase(const std::string&), std::vector<Record> list() const; includes <map>, <optional>, <string>, <vector>, and \"Record.h\"; uses #pragma once"
+      ],
+      [
+        "src/Repository.cpp",
+        "implementation/pure-rule; defines Repository operations using std::map keyed by id; deterministic behavior; includes \"Repository.h\" and needed std headers"
+      ],
+      [
+        "include/CrudService.h",
+        "interface/declaration; declares class CrudService orchestrating Repository and ManualClock; constructor CrudService(Repository&, ManualClock&); API: Record create(const std::string&, const std::string&, const std::string&), std::optional<Record> get(const std::string&) const, Record update(const std::string&, const std::string&, const std::string&), bool remove(const std::string&), std::vector<Record> list() const; includes <optional>, <string>, <vector>, \"ManualClock.h\", \"Record.h\", and \"Repository.h\"; uses #pragma once"
+      ],
+      [
+        "src/CrudService.cpp",
+        "implementation/orchestration; defines CrudService methods: input validation, duplicate/absent handling via exceptions, revision/timestamp rules with ManualClock; no wall clock; includes \"CrudService.h\" and needed std headers for exceptions"
+      ],
+      [
+        "src/Main.cpp",
+        "runtime/bootstrap/environment-dependent; constructs Repository, ManualClock(100), CrudService; performs a single create with id \"1\", prints at most one concise value, returns 0; includes \"CrudService.h\" and iostream as needed"
+      ],
+      [
+        "tests/test_main.cpp",
+        "automated-test; single deterministic test main with exactly three blocks as specified: CRUD lifecycle at times 100/105; invalid inputs and duplicate handling; deterministic list order by id; includes <cassert>, <stdexcept>, <string>, and \"CrudService.h\"; no framework"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "include/Record.h",
+        "src/Record.cpp",
+        "include/ManualClock.h",
+        "src/ManualClock.cpp",
+        "include/Repository.h",
+        "src/Repository.cpp",
+        "include/CrudService.h",
+        "src/CrudService.cpp"
+      ],
+      "environment_dependent_modules": [
+        "src/Main.cpp"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": [
+        "None; tests are deterministic, headless, and include only headers from include/."
+      ]
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "CMake>=3.10",
+      "C++17",
+      "No third-party dependencies required"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "Exactly 11 files form the project: CMakeLists.txt; include/Record.h; src/Record.cpp; include/ManualClock.h; src/ManualClock.cpp; include/Repository.h; src/Repository.cpp; include/CrudService.h; src/CrudService.cpp; src/Main.cpp; tests/test_main.cpp. Headers are self-contained and use #pragma once with explicit standard includes: Record.h (<cstdint>, <string>); ManualClock.h (<cstdint>); Repository.h (<map>, <optional>, <string>, <vector>, and \"Record.h\"); CrudService.h (<optional>, <string>, <vector>, \"ManualClock.h\", \"Record.h\", and \"Repository.h\"). Sources include headers by basename only. CMake builds a static core library (crud_core) from the four core .cpp files and links both runtime (crud_app) and test (crud_tests) executables to it. tests/test_main.cpp includes only headers (\"CrudService.h\") plus standard headers and defines exactly one main with three blocks.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "CMakeLists.txt",
+      "include/Record.h",
+      "src/Record.cpp",
+      "include/ManualClock.h",
+      "src/ManualClock.cpp",
+      "include/Repository.h",
+      "src/Repository.cpp",
+      "include/CrudService.h",
+      "src/CrudService.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.cpp",
+        "include/CrudService.h"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.cpp",
+        "Block 1: Repository repo; ManualClock clock(100); CrudService service(repo, clock). Create id \"1\" with name \"Alice\" and email \"alice@example.com\". Assert returned record has revision 1 and updated_at 100. get(\"1\") returns the same. clock.advance(5); update id \"1\" to name \"Alice Smith\" with same email; assert revision 2 and updated_at 105; remove returns true; get returns empty."
+      ],
+      [
+        "tests/test_main.cpp",
+        "Block 2: Assert invalid_argument when name is blank; assert invalid_argument when email is malformed (must have exactly one '@' not at edges); assert runtime_error when creating duplicate id."
+      ],
+      [
+        "tests/test_main.cpp",
+        "Block 3: Create id \"b\" then id \"a\"; call list() and assert size is 2 and the order of ids is \"a\" then \"b\" (deterministic std::map order)."
+      ]
+    ]
+  }
+}

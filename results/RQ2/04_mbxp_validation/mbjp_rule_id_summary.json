@@ -1,0 +1,65 @@
+{
+  "n_total": 842,
+  "n_baseline_pass": 842,
+  "n_changed": 842,
+  "n_syntax_valid_changed": 842,
+  "n_post_pass": 834,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 0.9904988123515439,
+  "language": "java",
+  "channel": "id",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 0,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 8,
+    "valid_attack": 834,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_0.jsonl",
+      "rows": 106,
+      "sha256": "c1415e8dc7cd3e9a441776cdfb30893275a81df0c965e9c2f31165bb8dbc8cb4"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_1.jsonl",
+      "rows": 106,
+      "sha256": "e1cc48befa083b1f0e01494d75ab29637f53ac1f6e35add00a47e8717d10cc3f"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_2.jsonl",
+      "rows": 106,
+      "sha256": "d2187e088ed17d128b770fc97995a7bc989a87d4f36077521e7d701086e4e459"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_3.jsonl",
+      "rows": 106,
+      "sha256": "77a7f6e383e737329cd2613d6581277a80fe1e1fc59f0aced99ca3d60298bd21"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_4.jsonl",
+      "rows": 106,
+      "sha256": "9eb70ca28b41695be7036ac3312aca84aa797f39c045f6df95e87dca8d1d8cf2"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_5.jsonl",
+      "rows": 106,
+      "sha256": "519b7eb4d6777154108ec27a1136a7b3f8f342d71f616f09d002ef83c5e91f97"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_6.jsonl",
+      "rows": 106,
+      "sha256": "881b48f575c1c780192a444f0a0604292e68b7338a895db3ef87fb4d095f164e"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/id/part_7.jsonl",
+      "rows": 100,
+      "sha256": "6990cb369666481c1b58938351ca7b3bba46ed3700fb36bde2b86163e7d67446"
+    }
+  ],
+  "output_sha256": "ea0dfff741a2aff4abf8c32738102441fd406f7c2792f3aabe1adcac55e6686b"
+}

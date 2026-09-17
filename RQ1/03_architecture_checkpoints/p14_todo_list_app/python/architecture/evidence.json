@@ -1,0 +1,49 @@
+{
+  "accepted_file_count_range": [
+    7,
+    9
+  ],
+  "architecture_attempt": 5,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_repair_llm_output": false,
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T20:12:21.349990+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/python/initial_repository/p14_todo_list_app_python",
+  "initial_repository_tree_sha256": "9bbba450b32b0bf0b72c7445559de5e4701b1ea091d54db2ac7e85e36a64d156",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "875244fc31398dc7d8212f5285b138545a0ee3d934c2ce4e95b0de59e4c5a05a",
+  "planned_file_count": 12,
+  "planned_files": [
+    "requirements.txt",
+    "todo_app/errors.py",
+    "todo_app/priority.py",
+    "todo_app/entities.py",
+    "todo_app/filtering.py",
+    "todo_app/sorting.py",
+    "todo_app/repository.py",
+    "todo_app/clock.py",
+    "todo_app/service.py",
+    "todo_app/__init__.py",
+    "Main.py",
+    "tests/test_main.py"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "efe7aedadbd2109947b62ee068a1aa759e059f1aa1e278b1bbcda2bec154ab10",
+  "rebuild_reason": "architecture_attempt4_seed_attempts1_2_repeated_builtin_valueerror_instead_of_validationerror",
+  "started_at": "2026-09-14T20:09:06.088453+00:00",
+  "status": "complete",
+  "target_file_count": 8,
+  "task_path_normalization": "not required for this language",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/python/architecture/team/team.json",
+  "team_json_sha256": "da4a37654887038ce7dc3fc4b83f333bfff1d56348a47628b99f2956a8136b40",
+  "unit_id": "p14_todo_list_app_python",
+  "valid": true
+}

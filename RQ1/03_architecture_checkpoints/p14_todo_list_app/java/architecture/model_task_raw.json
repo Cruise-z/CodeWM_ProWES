@@ -1,0 +1,155 @@
+{
+  "20260915020041.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": null,
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/Priority.java",
+      "src/main/java/Task.java",
+      "src/main/java/TaskRepository.java",
+      "src/main/java/InMemoryTaskRepository.java",
+      "src/main/java/TaskFilter.java",
+      "src/main/java/TaskSorter.java",
+      "src/main/java/TodoService.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Test command: mvn -q test. Runtime entry: src/main/java/Main.java. Protocol test target: src/test/java/MainTest.java with exactly four tests. Tests are deterministic, headless, and offline; no user input or output capture is required. Additional implementation files are not introduced; the exact 10-file list is preserved. Main.main returns normally without System.exit.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 10,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 10,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 10,
+      "task_list_count": 10
+    },
+    "Full API spec": "pom.xml: Maven build targeting Java 11 with UTF-8 encoding. Declares dependency org.junit.jupiter:junit-jupiter:5.9.3 with scope test and configures maven-surefire-plugin:3.1.2 with <useModulePath>false</useModulePath>. No additional runtime dependencies.\\n\\nsrc/main/java/Priority.java: public enum Priority { LOW, MEDIUM, HIGH; public int rank(); }. rank() returns 0 for LOW, 1 for MEDIUM, 2 for HIGH. No other methods or fields.\\n\\nsrc/main/java/Task.java: public final class Task. Imports must begin exactly with: import java.time.LocalDate; import java.util.ArrayList; import java.util.Collections; import java.util.LinkedHashSet; import java.util.List; import java.util.Locale; import java.util.Set;. State: private final int id; private String title; private String description; private Priority priority; private LocalDate dueDate; private LinkedHashSet<String> tags; private boolean completed;. Constructor: public Task(int id, String title, String description, Priority priority, LocalDate dueDate, Set<String> tags). Validation: id must be > 0; title must be non-null and non-blank after trim; priority must be non-null; description null is converted to \"\"; dueDate may be null; tags normalized by private static LinkedHashSet<String> normalizeTags(Set<String>) which trims, lowercases with Locale.ROOT, removes blanks/duplicates, sorts lexicographically, returns LinkedHashSet. Public methods: public int getId(); public String getTitle(); public String getDescription(); public Priority getPriority(); public LocalDate getDueDate(); public Set<String> getTags() which returns Collections.unmodifiableSet(new LinkedHashSet<>(tags)); public boolean isCompleted(); public void edit(String title, String description, Priority priority, LocalDate dueDate, Set<String> tags) applying same validation and normalization; public void setCompleted(boolean completed). Error behavior: IllegalArgumentException for invalid id/title/priority in constructor and in edit. No builders, no Optional, no final-mutable reassignment patterns beyond field updates, and no ternary with exception branches.\\n\\nsrc/main/java/TaskRepository.java: public interface TaskRepository. Imports must begin exactly with: import java.util.List;. Methods: void add(Task task) throws IllegalArgumentException on null or duplicate id; Task findById(int id) returning null when absent; void save(Task task) throws IllegalArgumentException on null or absent id; boolean deleteById(int id) returns true if an entry existed and was removed; List<Task> findAll() returns defensive copy.\\n\\nsrc/main/java/InMemoryTaskRepository.java: public final class InMemoryTaskRepository implements TaskRepository. Imports must begin exactly with: import java.util.ArrayList; import java.util.LinkedHashMap; import java.util.List;. State: private final LinkedHashMap<Integer, Task> store = new LinkedHashMap<Integer, Task>();. Behavior: add(Task) rejects null and duplicate id; findById(int) returns stored Task or null; save(Task) rejects null and absent id; deleteById(int) removes by id and returns whether removal happened; findAll() returns new ArrayList<Task> of values sorted by id ascending using simple loops/lambdas and explicit imports only.\\n\\nsrc/main/java/TaskFilter.java: public final class TaskFilter. Imports must begin exactly with: import java.util.ArrayList; import java.util.LinkedHashSet; import java.util.List; import java.util.Locale; import java.util.Set; import java.util.TreeSet;. API: public static List<Task> filter(List<Task> tasks, Boolean completed, Priority priority, Set<String> requiredTags). A null completed or priority means no constraint. requiredTags normalized by private static LinkedHashSet<String> normalizeRequiredTags(Set<String>) implemented with trim, toLowerCase(Locale.ROOT), TreeSet for sorting, LinkedHashSet for order; it MUST NOT call any Task private methods. Filtering semantics: returns new ArrayList preserving input order of tasks that match all provided constraints; if requiredTags normalized is empty, no tag constraint; every required normalized tag must be present in task.getTags(). No mutation of inputs.\\n\\nsrc/main/java/TaskSorter.java: public final class TaskSorter. Imports must begin exactly with: import java.time.LocalDate; import java.util.ArrayList; import java.util.Comparator; import java.util.List;. API: public static List<Task> sort(List<Task> tasks). Semantics: copies input into new ArrayList and sorts using exactly one comparator (lambda or anonymous Comparator) applying comparisons in order: (1) higher Priority.rank() first using Integer.compare(b.rank(), a.rank()); (2) due date: non-null before null; if both non-null, ascending by LocalDate.compareTo; (3) title case-insensitive via String.CASE_INSENSITIVE_ORDER.compare; (4) id ascending via Integer.compare. Forbidden: streams, Comparator.comparing/thenComparing/reversed, Collections.reverseOrder, chained/compound comparators beyond the single literal comparator.\\n\\nsrc/main/java/TodoService.java: public final class TodoService. Imports must begin exactly with: import java.time.LocalDate; import java.util.LinkedHashMap; import java.util.List; import java.util.Map; import java.util.Set;. State: private final TaskRepository repository; private int nextId initialized to 1. Constructor: public TodoService(TaskRepository repository). API: public Task createTask(String title, String description, Priority priority, LocalDate dueDate, Set<String> tags); public Task editTask(int id, String title, String description, Priority priority, LocalDate dueDate, Set<String> tags); public boolean deleteTask(int id); public Task setCompleted(int id, boolean completed); public List<Task> listTasks(Boolean completed, Priority priority, Set<String> requiredTags); public Map<String, Integer> summary(LocalDate today). Semantics: createTask executes literally in this order: Task task = new Task(nextId, title, description, priority, dueDate, tags); repository.add(task); nextId += 1; return task;. No pre/post-increment forms and no id consumption on failed validation. editTask throws IllegalArgumentException if repository.findById(id) is null; otherwise call task.edit(...) and repository.save(task), then return task. setCompleted mirrors edit missing-id behavior and sets completion. deleteTask delegates to repository.deleteById(id). listTasks returns TaskSorter.sort(TaskFilter.filter(repository.findAll(), completed, priority, requiredTags)). summary(LocalDate today) rejects null today (IllegalArgumentException) and returns LinkedHashMap with keys inserted exactly in this order: \"total\", \"completed\", \"pending\", \"overdue\"; overdue counts only incomplete tasks with non-null dueDate strictly before today.\\n\\nsrc/main/java/Main.java: public final class Main. Imports must begin exactly with: import java.time.LocalDate; import java.util.Map; import java.util.Set;. API: public static Map<String, Integer> runDemo(); public static void main(String[] args). runDemo: constructs new InMemoryTaskRepository and TodoService; creates Write paper at HIGH due 2023-10-14 with tags {\"work\",\"urgent\"} and marks it complete; creates Buy milk at MEDIUM due 2023-10-16 with tag {\"home\"} and leaves it incomplete; returns service.summary(LocalDate.of(2023, 10, 15)). The exact expected map is {total=2, completed=1, pending=1, overdue=0} with LinkedHashMap insertion order. main: only calls runDemo() and returns normally; no System.exit, no input.\\n\\nsrc/test/java/MainTest.java: single JUnit Jupiter test file in unnamed package. Imports exactly: org.junit.jupiter.api.Test; static org.junit.jupiter.api.Assertions.*; java.time.LocalDate; java.util.List; java.util.Map; java.util.Set;. Contains exactly four @Test methods: (1) runtime/demo calling Main.main(new String[0]) and asserting runDemo() equals the expected map; (2) CRUD/validation that asserts IllegalArgumentException on blank title, then creates id=1 task, edits to Beta, completes it, deletes it, and asserts behaviors; (3) filter/sort scenario creating three tasks and asserting filtered order High then Low; (4) summary scenario asserting counts total=3, completed=1, pending=2, overdue=1 for today=2023-10-15.\\n\\nImport audit and package rules: All classes are in the default unnamed package; no package declarations. Each file must explicitly import every JDK type it references, with the exact leading import blocks specified above for Task.java, TaskRepository.java, InMemoryTaskRepository.java, TaskFilter.java, TaskSorter.java, TodoService.java, Main.java, and MainTest.java.\\n\\nAllowed import/include directions: Main.java depends on TodoService and domain/persistence utilities; TodoService depends on TaskRepository, Task, TaskFilter, TaskSorter; TaskFilter/TaskSorter depend only on Task (and JDK collections/time); InMemoryTaskRepository implements TaskRepository and depends on Task; Task depends on Priority and JDK types; Priority depends on nothing. Tests depend on public APIs only and not on any private/internal methods.\\n\\nForbidden elements: Java records, Optional, builders, streams, Stream.toList(), custom clocks, Comparator.comparing/thenComparing/reversed, Collections.reverseOrder, compound/configurable sort keys, additional files like TaskDraft.java/TaskUpdate.java/TaskQuery.java/TaskSort.java/ValidationException.java/TimeProvider.java/TaskSummary.java/ToDoService.java, network/FS/threads/GUI/randomness.",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Maven build descriptor for Java 11, UTF-8, JUnit Jupiter 5.9.3 (test scope), Maven Surefire 3.1.2 with useModulePath=false"
+      ],
+      [
+        "src/main/java/Priority.java",
+        "domain-entity; enum Priority { LOW, MEDIUM, HIGH } with rank() returning 0/1/2"
+      ],
+      [
+        "src/main/java/Task.java",
+        "domain-entity; Task aggregate with validation, tag normalization, edit(), and completion state"
+      ],
+      [
+        "src/main/java/TaskRepository.java",
+        "interface; abstraction boundary for persistence with add/findById/save/deleteById/findAll"
+      ],
+      [
+        "src/main/java/InMemoryTaskRepository.java",
+        "domain-entity; in-memory persistence using LinkedHashMap<Integer,Task>, ID uniqueness, defensive findAll sorted by id"
+      ],
+      [
+        "src/main/java/TaskFilter.java",
+        "pure-rule; filtering utility by completed/priority/required tags, input-order preserving and non-mutating"
+      ],
+      [
+        "src/main/java/TaskSorter.java",
+        "pure-rule; deterministic sorting by priority rank desc, due date null-last, title case-insensitive, id asc via one comparator"
+      ],
+      [
+        "src/main/java/TodoService.java",
+        "orchestration; service for create/edit/delete/complete/list/summary and ID issuance with strict sequencing"
+      ],
+      [
+        "src/main/java/Main.java",
+        "runtime/bootstrap; thin demo wiring repository and service to produce deterministic summary"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; single JUnit Jupiter test file with exactly four tests: runtime/demo, CRUD/validation, filter/sort, summary"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/Priority.java",
+        "src/main/java/Task.java",
+        "src/main/java/TaskRepository.java",
+        "src/main/java/InMemoryTaskRepository.java",
+        "src/main/java/TaskFilter.java",
+        "src/main/java/TaskSorter.java",
+        "src/main/java/TodoService.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Java 11 (source/target compatibility)",
+      "Maven 3.x",
+      "JUnit Jupiter 5.9.3 (test scope)",
+      "Maven Surefire Plugin 3.1.2 (useModulePath=false)"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "The project is a headless Java 11 Maven app with a single unnamed package. Build via mvn -q test. Runtime entry is src/main/java/Main.java. Core domain logic is split into Priority, Task, persistence boundary (TaskRepository, InMemoryTaskRepository), pure utilities (TaskFilter, TaskSorter), and service orchestration (TodoService). Main wires an in-memory repository and service, runs a fixed demo, and returns a deterministic summary. Tests live solely in src/test/java/MainTest.java with exactly four @Test methods covering runtime/demo, CRUD/validation, filter/sort, and summary. Import blocks in each file must follow the exact audit. No external runtime dependencies beyond JUnit Jupiter for tests.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/Priority.java",
+      "src/main/java/Task.java",
+      "src/main/java/TaskRepository.java",
+      "src/main/java/InMemoryTaskRepository.java",
+      "src/main/java/TaskFilter.java",
+      "src/main/java/TaskSorter.java",
+      "src/main/java/TodoService.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": null,
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "runtime/demo: call Main.main(new String[0]) and assert runDemo() returns total=2, completed=1, pending=1, overdue=0 for 2023-10-15"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "CRUD/validation: reject blank title; create Alpha as id=1; edit to Beta; set completed; delete and assert deletion"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "filter/sort: create Low (2023-10-16, work), High (2023-10-17, work/urgent), Medium (null due, home); filter incomplete requiring work; expect High then Low"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "summary: with today=2023-10-15, one incomplete HIGH due 2023-10-14, one incomplete LOW due 2023-10-16, one completed MEDIUM due 2023-10-14; expect total=3, completed=1, pending=2, overdue=1"
+      ]
+    ]
+  }
+}

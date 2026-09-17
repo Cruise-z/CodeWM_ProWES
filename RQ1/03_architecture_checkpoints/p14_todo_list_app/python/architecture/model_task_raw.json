@@ -1,0 +1,183 @@
+{
+  "20260914200946.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "requirements.txt",
+      "todo_app/errors.py",
+      "todo_app/priority.py",
+      "todo_app/entities.py",
+      "todo_app/filtering.py",
+      "todo_app/sorting.py",
+      "todo_app/repository.py",
+      "todo_app/clock.py",
+      "todo_app/service.py",
+      "todo_app/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.run_demo() returns a dict and performs no I/O, network, filesystem, threads, or wall-time access. Exactly one test file exists: tests/test_main.py, which uses only the public API exported by todo_app.__init__, plus run_demo from Main and datetime.date. Additional files do not alter protocol-required files. Tests are deterministic, headless, and concise.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 12,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 12,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 12,
+      "task_list_count": 12
+    },
+    "Full API spec": "Public modules and symbols (todo_app package) and their exact contracts:\n\n1) todo_app/errors.py\n- class ValidationError(Exception):\n  - __init__(self, message: str) -> None. Stores message; behaves like a standard Exception subclass.\n- class NotFoundError(ValidationError):\n  - Subclass of ValidationError used to signal repository misses.\n\n2) todo_app/priority.py (imports: from .errors import ValidationError)\n- enum Priority(enum.Enum): LOW, MEDIUM, HIGH.\n  - order_value(self) -> int: returns 0 for LOW, 1 for MEDIUM, 2 for HIGH. Deterministic ordering for sorting.\n  - @staticmethod from_value(v: Priority|str) -> Priority:\n    - If v is a Priority, return it unchanged.\n    - If v is a str, strip(), lower(), and map: 'low' -> LOW; 'med'/'medium' -> MEDIUM; 'high' -> HIGH.\n    - For any other input (including non-str, non-Priority), raise ValidationError only. Never raise ValueError, TypeError, KeyError, or other built-ins.\n\n3) todo_app/entities.py\n- dataclass Task:\n  - Fields: id:int; title:str; description: Optional[str]=None; priority: Priority; due_date: Optional[datetime.date]=None; tags: List[str]=[]; completed: bool=False; completed_at: Optional[datetime.date]=None.\n  - Title validation: on construction and when editing via service, title is stripped and must be non-blank; otherwise raise ValidationError.\n  - Tag normalization on construction and when editing via service: input tags are stripped, lowercased, empty entries removed, deduplicated, and sorted ascending for determinism.\n  - Methods:\n    - mark_complete_on(self, day: datetime.date) -> None: idempotent; sets completed=True and sets completed_at only if previously None; preserves the first timestamp on subsequent calls.\n    - mark_incomplete(self) -> None: sets completed=False and clears completed_at=None; idempotent with respect to multiple calls.\n\n4) todo_app/filtering.py\n- enum TagMatchMode(enum.Enum): ANY, ALL.\n- dataclass FilterCriteria:\n  - tags: Optional[List[str]] = None.\n  - tag_mode: TagMatchMode = TagMatchMode.ANY.\n  - include_completed: bool = True.\n  - priorities: Optional[List[Priority]] = None.\n- function filter_tasks(tasks: List[Task], criteria: Optional[FilterCriteria]) -> List[Task]:\n  - Pure function that returns a new list without mutating inputs.\n  - If criteria is None, return tasks as-is (shallow copy for safety).\n  - Behavior:\n    - include_completed=False filters out tasks with completed=True.\n    - priorities provided: include only tasks whose priority is in the given list.\n    - tags provided: with ANY, include tasks that contain any of the given tags; with ALL, include only tasks that contain all given tags.\n\n5) todo_app/sorting.py\n- enum SortKey(enum.Enum): DUE_DATE, PRIORITY, TITLE, COMPLETED.\n- enum SortDirection(enum.Enum): ASC, DESC.\n- function sort_tasks(tasks: List[Task], sort_keys: Optional[List[SortKey]], direction: SortDirection = SortDirection.ASC) -> List[Task]:\n  - Pure and stable; does not mutate input list or tasks.\n  - If sort_keys is None or empty, return tasks sorted by id ascending (deterministic baseline).\n  - Sorting rules by key:\n    - DUE_DATE: ascending places real dates before None; descending places None after real dates consistently. Within equal due dates, defer to next keys, ending with id as final tie-break.\n    - PRIORITY: uses Priority.order_value() ascending/descending.\n    - TITLE: case-insensitive or direct string comparison ascending/descending; consistent deterministic grouping.\n    - COMPLETED: False < True in ascending.\n  - Final tie-breaker must always be id ascending for stability.\n\n6) todo_app/repository.py\n- abstract class TaskRepository(abc.ABC):\n  - next_id(self) -> int: returns the next available id.\n  - add(self, task: Task) -> None: adds a new task; raises ValidationError if a task with the same id already exists (duplicates prohibited).\n  - get(self, task_id: int) -> Task: returns task; raises NotFoundError if missing.\n  - edit(self, task: Task) -> None: updates existing task; raises NotFoundError if missing.\n  - delete(self, task_id: int) -> None: removes existing task; raises NotFoundError if missing.\n  - list_all(self) -> List[Task]: returns all tasks.\n- class InMemoryTaskRepository(TaskRepository):\n  - Sequential ids start at 1; next_id increments deterministically.\n  - add enforces unique id; raises ValidationError on duplicate id.\n  - list_all returns tasks sorted by id ascending (deterministic ordering).\n\n7) todo_app/clock.py\n- abstract class Clock(abc.ABC): today(self) -> datetime.date.\n- class SystemClock(Clock): today() returns datetime.date.today() (wall clock).\n- class FixedClock(Clock):\n  - __init__(self, fixed: datetime.date) stores a fixed date.\n  - today() returns the fixed date; deterministic for tests.\n\n8) todo_app/service.py (imports ValidationError, Priority directly)\n- class ApplicationService:\n  - __init__(self, repo: TaskRepository, clock: Clock)\n  - create_task(self, title: str, priority: Priority|str, description: Optional[str]=None, due_date: Optional[datetime.date]=None, tags: Optional[List[str]]=None) -> Task:\n    - Converts priority via Priority.from_value when given a string; propagates its ValidationError.\n    - Allocates id via repo.next_id(); constructs Task with normalized title and tags; stores via repo.add(); returns Task.\n  - edit_task(self, task_id: int, title: Optional[str]=None, priority: Optional[Priority|str]=None, description: Optional[str]=None, due_date: Optional[datetime.date]=None, tags: Optional[List[str]]=None) -> Task:\n    - Loads task via repo.get(); applies provided field updates; priority strings converted via Priority.from_value; validates title; normalizes tags; persists via repo.edit(); returns updated Task.\n  - complete_task(self, task_id: int) -> Task:\n    - Idempotent; sets completed and completed_at on the first call using clock.today(); preserves completed_at on subsequent calls; persists via repo.edit(); returns Task.\n  - uncomplete_task(self, task_id: int) -> Task:\n    - Clears completion and completed_at; idempotent; persists via repo.edit(); returns Task.\n  - delete_task(self, task_id: int) -> None: deletes via repo.delete().\n  - list_tasks(self, criteria: Optional[FilterCriteria]=None, sort_keys: Optional[List[SortKey]]=None, direction: SortDirection=SortDirection.ASC) -> List[Task]:\n    - Loads tasks via repo.list_all(); applies filter_tasks and sort_tasks; returns new list.\n  - summary(self) -> dict:\n    - Returns dict with keys: total (int), completed (int), pending (int), by_priority (dict with uppercase 'LOW', 'MEDIUM', 'HIGH' counts), completed_today (int equal to number of tasks with completed=True and completed_at == clock.today()).\n\n9) todo_app/__init__.py\n- Explicitly re-exports only: ValidationError, NotFoundError, Priority, Task, TagMatchMode, FilterCriteria, filter_tasks, SortKey, SortDirection, sort_tasks, TaskRepository, InMemoryTaskRepository, Clock, SystemClock, FixedClock, ApplicationService.\n\n10) Main.py\n- function run_demo() -> dict:\n  - Wires repo=InMemoryTaskRepository, clock=FixedClock(date(2023,10,15)), service=ApplicationService(repo, clock).\n  - Demonstrates: create_task(\"Buy milk\", priority=\"high\", due_date set); create_task(\"Read\", priority=\"med\"); complete_task(task_id=1); list_tasks with sort_keys=[SortKey.DUE_DATE], direction=SortDirection.ASC; calls summary().\n  - Returns a dict containing demonstrative 'tasks' (as a list of dicts or minimal info) and 'summary'; performs no I/O and no wall time access.\n\n11) tests/test_main.py (single file with exactly four tests)\n- Imports only via todo_app public API and run_demo from Main and datetime.date.\n- Tests include:\n  (1) run_demo returns dict and core flow works with FixedClock(date(2023,10,15)).\n  (2) service.create_task(\"Test\", priority=\"invalid\") raises ValidationError specifically.\n  (3) Sorting with equal due dates uses id ascending tie-break.\n  (4) Completing twice preserves completed_at and summary shows total1/completed1/pending0/completed_today1 and uppercase by_priority counts.\n\nImport and dependency rules:\n- Files must appear exactly in this order for generation: requirements.txt; todo_app/errors.py; todo_app/priority.py; todo_app/entities.py; todo_app/filtering.py; todo_app/sorting.py; todo_app/repository.py; todo_app/clock.py; todo_app/service.py; todo_app/__init__.py; Main.py; tests/test_main.py.\n- priority.py must directly import ValidationError from .errors and use enum.Enum, not IntEnum.\n- No module uses Python 3.11+ features (no typing.Self, StrEnum, or exception groups).",
+    "Logic Analysis": [
+      [
+        "requirements.txt",
+        "dependency/build; declares pytest as the only dependency compatible with Python 3.10"
+      ],
+      [
+        "todo_app/errors.py",
+        "package; foundational error types for domain validation and repository miss conditions"
+      ],
+      [
+        "todo_app/priority.py",
+        "domain-entity; Priority enum with deterministic order and from_value conversion; directly imports ValidationError from .errors; uses enum.Enum"
+      ],
+      [
+        "todo_app/entities.py",
+        "domain-entity; Task dataclass: identity, validation of title, tag normalization, and idempotent completion state transitions"
+      ],
+      [
+        "todo_app/filtering.py",
+        "pure-rule; TagMatchMode, FilterCriteria, and pure filter_tasks function"
+      ],
+      [
+        "todo_app/sorting.py",
+        "pure-rule; SortKey, SortDirection, and pure stable sort_tasks with final id tie-break and due_date None ordering"
+      ],
+      [
+        "todo_app/repository.py",
+        "interface; TaskRepository ABC and InMemoryTaskRepository with sequential IDs and deterministic list_all; ValidationError on duplicates; NotFoundError on missing ids"
+      ],
+      [
+        "todo_app/clock.py",
+        "interface/environment-dependent; Clock ABC plus SystemClock (wall time) and FixedClock for deterministic tests"
+      ],
+      [
+        "todo_app/service.py",
+        "orchestration; ApplicationService orchestrating creation, editing, deletion, completion, listing, and summary using repository and clock"
+      ],
+      [
+        "todo_app/__init__.py",
+        "package; explicit re-exports of the public API only"
+      ],
+      [
+        "Main.py",
+        "runtime/bootstrap; thin entrypoint wiring repo, clock, and service; returns a deterministic dict; no I/O"
+      ],
+      [
+        "tests/test_main.py",
+        "automated-test; single protocol-level file with exactly four tests covering runtime wiring and key rules"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "todo_app/errors.py",
+        "todo_app/priority.py",
+        "todo_app/entities.py",
+        "todo_app/filtering.py",
+        "todo_app/sorting.py",
+        "todo_app/repository.py",
+        "todo_app/service.py",
+        "todo_app/__init__.py"
+      ],
+      "environment_dependent_modules": [
+        "todo_app/clock.py",
+        "Main.py"
+      ],
+      "environment_test_coupling_risks": [
+        "SystemClock accesses wall time but tests must use only FixedClock; the test plan adheres to this"
+      ],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "No external dependencies beyond pytest; tests are deterministic, headless, and offline",
+      "not_applicable": false,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": [
+        "Use pytest>=7,<8 to ensure Python 3.10 compatibility and deterministic behavior"
+      ]
+    },
+    "Required Other language third-party packages": [],
+    "Required packages": [
+      "pytest>=7,<8"
+    ],
+    "Shared Knowledge": "This project is a medium-size Python 3.10 To-Do List App with deterministic behavior and a single protocol-level test file. Foundational modules (errors, priority, entities) are independent and acyclic. Priority.from_value maps 'low'->LOW, 'med'/'medium'->MEDIUM, 'high'->HIGH and raises only ValidationError for any invalid input; tests assert this exact behavior. Task normalizes tags and enforces idempotent completion transitions. Filtering and sorting are pure and stable, with final id ascending tie-break and due_date None ordering (real dates precede None in ascending sorts). Repository boundary provides TaskRepository ABC and InMemoryTaskRepository with sequential IDs starting at 1; list_all returns id-sorted lists; add duplicates by id raise ValidationError; missing ids raise NotFoundError. Clock boundary defines Clock ABC, SystemClock, and FixedClock; tests and Main use FixedClock only. ApplicationService orchestrates all operations, imports ValidationError and Priority directly, uses Priority.from_value, and returns a summary dict with keys total, completed, pending, by_priority (uppercase names), and completed_today using clock.today. __init__.py re-exports only the declared public API. Main.run_demo wires InMemoryTaskRepository and FixedClock(date(2023,10,15)), demonstrates create/complete/list/summary, and returns a dict with no I/O. tests/test_main.py contains exactly four tests using only the public API and run_demo; they validate runtime wiring, ValidationError-only priority failure, equal due-date id tie-break sorting, and completion idempotence with deterministic summary.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "requirements.txt",
+      "todo_app/errors.py",
+      "todo_app/priority.py",
+      "todo_app/entities.py",
+      "todo_app/filtering.py",
+      "todo_app/sorting.py",
+      "todo_app/repository.py",
+      "todo_app/clock.py",
+      "todo_app/service.py",
+      "todo_app/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.py",
+        "from Main import run_demo"
+      ],
+      [
+        "tests/test_main.py",
+        "from todo_app import ApplicationService, InMemoryTaskRepository, FixedClock, Priority, SortKey, SortDirection, FilterCriteria, TagMatchMode, ValidationError"
+      ],
+      [
+        "tests/test_main.py",
+        "from datetime import date"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.py",
+        "Runtime wiring and deterministic run_demo: create two tasks via ApplicationService wired with InMemoryTaskRepository and FixedClock(date(2023,10,15)); complete one; list sorted by DUE_DATE ascending; run_demo returns a dict"
+      ],
+      [
+        "tests/test_main.py",
+        "Priority.from_value ValidationError-only failure: service.create_task(\"Test\", priority=\"invalid\") raises ValidationError specifically (never ValueError/TypeError/KeyError)"
+      ],
+      [
+        "tests/test_main.py",
+        "Sorting stability: tasks with equal due dates are sorted by id ascending (stable tie-break)"
+      ],
+      [
+        "tests/test_main.py",
+        "Completion idempotence and summary: completing the same task twice preserves the first completed_at; summary returns total1/completed1/pending0/completed_today1 and by_priority with uppercase LOW/MEDIUM/HIGH counts"
+      ]
+    ]
+  }
+}

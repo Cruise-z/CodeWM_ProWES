@@ -1,0 +1,12 @@
+{
+  "project_name": "tank_battle_game",
+  "rng_seed": 2107680757,
+  "language": "java",
+  "counts": {
+    "[Build Error]": 33,
+    "[Test Error]": 0,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 0,
+    "[Pass]": 3
+  }
+}

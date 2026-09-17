@@ -1,0 +1,179 @@
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.654375 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.037500  thr=4.518673
+[TPR@FPR=1.000%] TPR=0.037500  thr=4.518673
+[TPR@FPR=5.000%] TPR=0.100000  thr=3.940604
+[TPR@FPR=10.000%] TPR=0.300000  thr=3.205373
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.477500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=4.160251
+  TPR@FPR=1.000% : TPR=0.000000  thr=4.160251
+  TPR@FPR=5.000% : TPR=0.000000  thr=4.160251
+  TPR@FPR=10.000% : TPR=0.150000  thr=3.205373
+
+[Strength=1.0] AUROC=0.650000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=5.268403
+  TPR@FPR=1.000% : TPR=0.050000  thr=5.268403
+  TPR@FPR=5.000% : TPR=0.100000  thr=3.978109
+  TPR@FPR=10.000% : TPR=0.300000  thr=3.205373
+
+[Strength=2.0] AUROC=0.747500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=4.518673
+  TPR@FPR=1.000% : TPR=0.050000  thr=4.518673
+  TPR@FPR=5.000% : TPR=0.150000  thr=4.097645
+  TPR@FPR=10.000% : TPR=0.300000  thr=3.229808
+
+[Strength=3.0] AUROC=0.742500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=5.232490
+  TPR@FPR=1.000% : TPR=0.050000  thr=5.232490
+  TPR@FPR=5.000% : TPR=0.150000  thr=3.940604
+  TPR@FPR=10.000% : TPR=0.450000  thr=3.280016
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_wllm_20260127_134005.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_wllm_20260127_134005_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.923750 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.725000  thr=1.857143
+[TPR@FPR=1.000%] TPR=0.725000  thr=1.857143
+[TPR@FPR=5.000%] TPR=0.787500  thr=1.761410
+[TPR@FPR=10.000%] TPR=0.837500  thr=1.677484
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.750000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=1.979899
+  TPR@FPR=1.000% : TPR=0.350000  thr=1.979899
+  TPR@FPR=5.000% : TPR=0.450000  thr=1.767767
+  TPR@FPR=10.000% : TPR=0.550000  thr=1.723281
+
+[Strength=1.0] AUROC=0.945000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.550000  thr=1.857143
+  TPR@FPR=1.000% : TPR=0.550000  thr=1.857143
+  TPR@FPR=5.000% : TPR=0.700000  thr=1.761410
+  TPR@FPR=10.000% : TPR=0.800000  thr=1.677484
+
+[Strength=2.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=2.771435
+  TPR@FPR=1.000% : TPR=1.000000  thr=2.771435
+  TPR@FPR=5.000% : TPR=1.000000  thr=1.851640
+  TPR@FPR=10.000% : TPR=1.000000  thr=1.752920
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=3.333333
+  TPR@FPR=1.000% : TPR=1.000000  thr=3.333333
+  TPR@FPR=5.000% : TPR=1.000000  thr=1.851640
+  TPR@FPR=10.000% : TPR=1.000000  thr=1.752920
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_sweet_20260127_174402.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_sweet_20260127_174402_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.038125 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.012500  thr=2.978151
+[TPR@FPR=1.000%] TPR=0.012500  thr=2.978151
+[TPR@FPR=5.000%] TPR=0.012500  thr=2.642087
+[TPR@FPR=10.000%] TPR=0.012500  thr=1.926079
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.642087
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=5.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=10.000% : TPR=0.000000  thr=1.926079
+
+[Strength=1.0] AUROC=0.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.642087
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=5.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=10.000% : TPR=0.000000  thr=1.926079
+
+[Strength=2.0] AUROC=0.060000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=2.978151
+  TPR@FPR=1.000% : TPR=0.050000  thr=2.978151
+  TPR@FPR=5.000% : TPR=0.050000  thr=2.642087
+  TPR@FPR=10.000% : TPR=0.050000  thr=1.926079
+
+[Strength=3.0] AUROC=0.092500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.642087
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=5.000% : TPR=0.000000  thr=2.642087
+  TPR@FPR=10.000% : TPR=0.000000  thr=1.926079
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_ewd_20260127_210751.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_ewd_20260127_210751_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.488125 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.075000  thr=57.869139
+[TPR@FPR=1.000%] TPR=0.075000  thr=57.869139
+[TPR@FPR=5.000%] TPR=0.075000  thr=57.661142
+[TPR@FPR=10.000%] TPR=0.137500  thr=56.588192
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.408750  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=59.066230
+  TPR@FPR=1.000% : TPR=0.050000  thr=59.066230
+  TPR@FPR=5.000% : TPR=0.050000  thr=57.661142
+  TPR@FPR=10.000% : TPR=0.150000  thr=56.755543
+
+[Strength=1.0] AUROC=0.433750  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=57.661142
+  TPR@FPR=1.000% : TPR=0.000000  thr=57.661142
+  TPR@FPR=5.000% : TPR=0.000000  thr=57.661142
+  TPR@FPR=10.000% : TPR=0.000000  thr=57.435021
+
+[Strength=2.0] AUROC=0.480000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=58.477277
+  TPR@FPR=1.000% : TPR=0.100000  thr=58.477277
+  TPR@FPR=5.000% : TPR=0.100000  thr=57.661142
+  TPR@FPR=10.000% : TPR=0.100000  thr=57.435021
+
+[Strength=3.0] AUROC=0.630000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=57.869139
+  TPR@FPR=1.000% : TPR=0.150000  thr=57.869139
+  TPR@FPR=5.000% : TPR=0.150000  thr=57.661142
+  TPR@FPR=10.000% : TPR=0.300000  thr=56.588192
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_stone_20260128_003014.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_stone_20260128_003014_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.734375 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.212500  thr=0.066300
+[TPR@FPR=1.000%] TPR=0.212500  thr=0.066300
+[TPR@FPR=5.000%] TPR=0.262500  thr=0.054149
+[TPR@FPR=10.000%] TPR=0.437500  thr=0.039642
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.597500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=0.060312
+  TPR@FPR=1.000% : TPR=0.000000  thr=0.060312
+  TPR@FPR=5.000% : TPR=0.100000  thr=0.054149
+  TPR@FPR=10.000% : TPR=0.250000  thr=0.049586
+
+[Strength=1.0] AUROC=0.650000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=0.073785
+  TPR@FPR=1.000% : TPR=0.050000  thr=0.073785
+  TPR@FPR=5.000% : TPR=0.050000  thr=0.060312
+  TPR@FPR=10.000% : TPR=0.300000  thr=0.039642
+
+[Strength=2.0] AUROC=0.760000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.250000  thr=0.067786
+  TPR@FPR=1.000% : TPR=0.250000  thr=0.067786
+  TPR@FPR=5.000% : TPR=0.300000  thr=0.056263
+  TPR@FPR=10.000% : TPR=0.300000  thr=0.053764
+
+[Strength=3.0] AUROC=0.930000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.550000  thr=0.066300
+  TPR@FPR=1.000% : TPR=0.550000  thr=0.066300
+  TPR@FPR=5.000% : TPR=0.600000  thr=0.055946
+  TPR@FPR=10.000% : TPR=0.900000  thr=0.041350
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_waterfall_20260128_034936.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_calculator_waterfall_20260128_034936_summary.json

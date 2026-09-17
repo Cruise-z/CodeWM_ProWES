@@ -1,0 +1,65 @@
+{
+  "n_total": 764,
+  "n_baseline_pass": 763,
+  "n_changed": 763,
+  "n_syntax_valid_changed": 763,
+  "n_post_pass": 763,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 1.0,
+  "language": "cpp",
+  "channel": "expr",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 1,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 0,
+    "valid_attack": 763,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_0.jsonl",
+      "rows": 96,
+      "sha256": "3611a04d6bcbafc0d8a6194e39601b653e937c9787b9a77a35f608aaa7ca2d9f"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_1.jsonl",
+      "rows": 96,
+      "sha256": "15967eb12ea3e1733a398ff0f5dadb9267a1c3a7d9c9a332bcd11fe3a31c1c25"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_2.jsonl",
+      "rows": 96,
+      "sha256": "50590a3643e4576a137187d886a694777cfe804d65d7d768f27905c5c81f6c18"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_3.jsonl",
+      "rows": 96,
+      "sha256": "37fdd88a4acc49a8abcbeafdd2883386d9108f24f7ae6a60778d886f1952c416"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_4.jsonl",
+      "rows": 96,
+      "sha256": "e973e8f368d9a5b5ae72626f606939decf0411db2671eabe21797c4436756f2d"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_5.jsonl",
+      "rows": 96,
+      "sha256": "f9b7350ce7c08afb79a6be0e594012a43945a7802a69aeb8bd1b40112b7b5d8e"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_6.jsonl",
+      "rows": 96,
+      "sha256": "23c05e6d2685df6c68f36e4959308e413bbafcd358d6cbc5fe1b34bef37f0320"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/expr/part_7.jsonl",
+      "rows": 92,
+      "sha256": "ec70301c482969b687343b7770bc61096752b0d626c911b8b2c8fe7e4e06529d"
+    }
+  ],
+  "output_sha256": "efc79a1798d683b509bdaa0bd7017928e746a2631c5de565ec800aecffb09caa"
+}

@@ -1,0 +1,179 @@
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.821250 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.412500  thr=-0.224168
+[TPR@FPR=1.000%] TPR=0.412500  thr=-0.224168
+[TPR@FPR=5.000%] TPR=0.525000  thr=-0.468293
+[TPR@FPR=10.000%] TPR=0.562500  thr=-0.651217
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.627500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=-0.195881
+  TPR@FPR=1.000% : TPR=0.100000  thr=-0.195881
+  TPR@FPR=5.000% : TPR=0.200000  thr=-0.468293
+  TPR@FPR=10.000% : TPR=0.250000  thr=-0.616767
+
+[Strength=1.0] AUROC=0.735000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=1.097106
+  TPR@FPR=1.000% : TPR=0.100000  thr=1.097106
+  TPR@FPR=5.000% : TPR=0.200000  thr=-0.392972
+  TPR@FPR=10.000% : TPR=0.300000  thr=-0.651217
+
+[Strength=2.0] AUROC=0.947500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.750000  thr=-0.224168
+  TPR@FPR=1.000% : TPR=0.750000  thr=-0.224168
+  TPR@FPR=5.000% : TPR=0.800000  thr=-0.379023
+  TPR@FPR=10.000% : TPR=0.800000  thr=-0.477818
+
+[Strength=3.0] AUROC=0.975000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.700000  thr=-0.147353
+  TPR@FPR=1.000% : TPR=0.700000  thr=-0.147353
+  TPR@FPR=5.000% : TPR=0.900000  thr=-0.433264
+  TPR@FPR=10.000% : TPR=0.900000  thr=-0.477818
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_wllm_20260129_064927.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_wllm_20260129_064927_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.941875 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.675000  thr=2.741435
+[TPR@FPR=1.000%] TPR=0.675000  thr=2.741435
+[TPR@FPR=5.000%] TPR=0.787500  thr=1.481487
+[TPR@FPR=10.000%] TPR=0.875000  thr=1.073490
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.807500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=2.772413
+  TPR@FPR=1.000% : TPR=0.150000  thr=2.772413
+  TPR@FPR=5.000% : TPR=0.350000  thr=1.481487
+  TPR@FPR=10.000% : TPR=0.550000  thr=1.073490
+
+[Strength=1.0] AUROC=0.960000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.550000  thr=2.741435
+  TPR@FPR=1.000% : TPR=0.550000  thr=2.741435
+  TPR@FPR=5.000% : TPR=0.800000  thr=1.632993
+  TPR@FPR=10.000% : TPR=0.950000  thr=1.165998
+
+[Strength=2.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=3.396831
+  TPR@FPR=1.000% : TPR=1.000000  thr=3.396831
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.610189
+  TPR@FPR=10.000% : TPR=1.000000  thr=1.343864
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=4.840706
+  TPR@FPR=1.000% : TPR=1.000000  thr=4.840706
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.610189
+  TPR@FPR=10.000% : TPR=1.000000  thr=1.343864
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_sweet_20260129_150716.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_sweet_20260129_150716_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.991250 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.912500  thr=0.002407
+[TPR@FPR=1.000%] TPR=0.912500  thr=0.002407
+[TPR@FPR=5.000%] TPR=0.937500  thr=-0.107082
+[TPR@FPR=10.000%] TPR=0.975000  thr=-0.210908
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.965000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.650000  thr=0.002407
+  TPR@FPR=1.000% : TPR=0.650000  thr=0.002407
+  TPR@FPR=5.000% : TPR=0.750000  thr=-0.107082
+  TPR@FPR=10.000% : TPR=0.900000  thr=-0.210908
+
+[Strength=1.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=0.011348
+  TPR@FPR=1.000% : TPR=1.000000  thr=0.011348
+  TPR@FPR=5.000% : TPR=1.000000  thr=-0.052876
+  TPR@FPR=10.000% : TPR=1.000000  thr=-0.191514
+
+[Strength=2.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=0.497769
+  TPR@FPR=1.000% : TPR=1.000000  thr=0.497769
+  TPR@FPR=5.000% : TPR=1.000000  thr=-0.052876
+  TPR@FPR=10.000% : TPR=1.000000  thr=-0.191514
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=0.924935
+  TPR@FPR=1.000% : TPR=1.000000  thr=0.924935
+  TPR@FPR=5.000% : TPR=1.000000  thr=-0.052876
+  TPR@FPR=10.000% : TPR=1.000000  thr=-0.191514
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_ewd_20260129_221714.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_ewd_20260129_221714_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.656250 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.150000  thr=49.807160
+[TPR@FPR=1.000%] TPR=0.150000  thr=49.807160
+[TPR@FPR=5.000%] TPR=0.250000  thr=48.851470
+[TPR@FPR=10.000%] TPR=0.362500  thr=48.345092
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.562500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=50.006535
+  TPR@FPR=1.000% : TPR=0.150000  thr=50.006535
+  TPR@FPR=5.000% : TPR=0.200000  thr=49.032300
+  TPR@FPR=10.000% : TPR=0.250000  thr=48.525415
+
+[Strength=1.0] AUROC=0.555000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=50.048744
+  TPR@FPR=1.000% : TPR=0.050000  thr=50.048744
+  TPR@FPR=5.000% : TPR=0.200000  thr=49.412172
+  TPR@FPR=10.000% : TPR=0.300000  thr=48.391979
+
+[Strength=2.0] AUROC=0.697500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.200000  thr=49.807160
+  TPR@FPR=1.000% : TPR=0.200000  thr=49.807160
+  TPR@FPR=5.000% : TPR=0.300000  thr=49.176599
+  TPR@FPR=10.000% : TPR=0.350000  thr=48.675548
+
+[Strength=3.0] AUROC=0.810000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.200000  thr=49.895144
+  TPR@FPR=1.000% : TPR=0.200000  thr=49.895144
+  TPR@FPR=5.000% : TPR=0.300000  thr=48.851470
+  TPR@FPR=10.000% : TPR=0.550000  thr=48.345092
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_stone_20260130_052343.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_stone_20260130_052343_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.800000 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.537500  thr=0.015830
+[TPR@FPR=1.000%] TPR=0.537500  thr=0.015830
+[TPR@FPR=5.000%] TPR=0.537500  thr=0.015661
+[TPR@FPR=10.000%] TPR=0.550000  thr=0.014389
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.487500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=0.023256
+  TPR@FPR=1.000% : TPR=0.050000  thr=0.023256
+  TPR@FPR=5.000% : TPR=0.050000  thr=0.015661
+  TPR@FPR=10.000% : TPR=0.050000  thr=0.015383
+
+[Strength=1.0] AUROC=0.792500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=0.015830
+  TPR@FPR=1.000% : TPR=0.350000  thr=0.015830
+  TPR@FPR=5.000% : TPR=0.350000  thr=0.015661
+  TPR@FPR=10.000% : TPR=0.350000  thr=0.015383
+
+[Strength=2.0] AUROC=0.920000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.750000  thr=0.016291
+  TPR@FPR=1.000% : TPR=0.750000  thr=0.016291
+  TPR@FPR=5.000% : TPR=0.750000  thr=0.015661
+  TPR@FPR=10.000% : TPR=0.800000  thr=0.014389
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=0.016942
+  TPR@FPR=1.000% : TPR=1.000000  thr=0.016942
+  TPR@FPR=5.000% : TPR=1.000000  thr=0.015661
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.015383
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_waterfall_20260130_123049.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_brick_breaker_game_waterfall_20260130_123049_summary.json

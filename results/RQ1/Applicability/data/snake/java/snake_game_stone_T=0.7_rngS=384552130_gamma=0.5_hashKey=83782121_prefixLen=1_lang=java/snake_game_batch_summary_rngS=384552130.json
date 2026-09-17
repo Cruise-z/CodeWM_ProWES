@@ -1,0 +1,12 @@
+{
+  "project_name": "snake_game",
+  "rng_seed": 384552130,
+  "language": "java",
+  "counts": {
+    "[Build Error]": 27,
+    "[Test Error]": 2,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 2,
+    "[Pass]": 1
+  }
+}

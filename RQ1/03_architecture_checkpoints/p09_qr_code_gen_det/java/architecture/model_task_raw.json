@@ -1,0 +1,165 @@
+{
+  "20260914153551.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/QRMatrix.java",
+      "src/main/java/Checksum.java",
+      "src/main/java/ZigZag.java",
+      "src/main/java/FinderPattern.java",
+      "src/main/java/TextEncoder.java",
+      "src/main/java/MatrixValidator.java",
+      "src/main/java/QRDetector.java",
+      "src/main/java/QRCodec.java",
+      "src/main/java/QRRenderer.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Build and test with mvn -q test. Exactly one protocol-level test file exists at src/test/java/MainTest.java. Runtime entrypoint is src/main/java/Main.java and runs a small deterministic demo without IO beyond a single concise print. Tests are deterministic, headless, offline, and require no manual interaction. No additional files alter protocol paths.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 12,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 12,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 12,
+      "task_list_count": 12
+    },
+    "Full API spec": "pom.xml: Maven build descriptor targeting Java 11. Declares dependency org.junit.jupiter:junit-jupiter (test scope). Configures maven-surefire-plugin for JUnit 5. No runtime dependencies.\n\nsrc/main/java/QRMatrix.java: class QRMatrix { public QRMatrix(int size); public int getSize(); public boolean get(int row, int col); public void set(int row, int col, boolean val); public boolean[][] copyCells(); }. Semantics: size immutable, cells are square size x size. Bounds checks throw IndexOutOfBoundsException. copyCells returns a deep copy. No IO.\n\nsrc/main/java/Checksum.java: class Checksum { public static int sumMod256(byte[] data); }. Semantics: sums every provided byte as unsigned (b & 0xFF), returns sum % 256. No side effects.\n\nsrc/main/java/ZigZag.java: class ZigZag { public static int[][] traversal(int size, boolean[][] reserved); }. Semantics: validates reserved is size x size. Two-pass bounded row-serpentine algorithm: First pass counts only unreserved cells with int count = 0; then literally allocates int[][] result = new int[count][2];. Second pass: for (int row = 0; row < size; row++) { if (row % 2 == 0) iterate col 0..size-1; else iterate col size-1..0; append coordinates only when !reserved[row][col]; }. No while loops, MUST NOT allocate new int[size * size][2], MUST NOT use index < size * size termination, and MUST NOT emit placeholder zeros. Consumers (encode/decode) use returned coordinates directly without re-filtering.\n\nsrc/main/java/FinderPattern.java: class FinderPattern { public static boolean[][] reservedMask(int size); public static void place(QRMatrix matrix); public static void verify(QRMatrix matrix); }. Semantics: Defines and enforces exactly three 7x7 finder squares at top-left, top-right, and bottom-left. reservedMask marks those cells true; throws IllegalArgumentException if size is even or < 21. place sets those cells to true in the given matrix. verify ensures those cells are true and reserved pattern matches exactly; throws IllegalArgumentException on mismatch.\n\nsrc/main/java/TextEncoder.java: class TextEncoder { public static byte[] encodePayload(String text); public static String decodePayload(byte[] frame); public static boolean[] bytesToBits(byte[] bytes); public static byte[] bitsToBytes(boolean[] bits); }. Semantics:\n- encodePayload: UTF-8 encodes text; builds frame [lenHi, lenLo, payload..., checksum]; computes checksum ONLY over the prefix (two length bytes plus payload) via java.util.Arrays.copyOf(frame, frame.length - 1) and Checksum.sumMod256; writes checksum as final byte; never computes over the complete frame.\n- decodePayload: requires frame length == 2 + L + 1; validates checksum using the same prefix-only java.util.Arrays.copyOf(frame, frame.length - 1) and compares to (frame[frame.length - 1] & 0xFF); decodes payload as strict UTF-8 and returns String. Throws IllegalArgumentException on length mismatch or checksum mismatch, and CharacterCodingException-derived errors are wrapped or rethrown as IllegalArgumentException.\n- bytesToBits: emits exactly eight MSB-first bits per byte using the literal statement bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;.\n- bitsToBytes: accepts any non-null bit array length (including 0 and non-multiples of 8). It must literally allocate byte[] result = new byte[(bits.length + 7) / 8]; and set each true bit with result[i / 8] |= (byte) (1 << (7 - (i % 8)));. No modulo-length rejection, exceptions, assertions, early returns, or truncation if bits.length % 8 != 0.\n\nsrc/main/java/MatrixValidator.java: class MatrixValidator { public static void ensureValidSize(int size); public static int capacityBits(int size); }. Semantics: ensureValidSize accepts odd sizes >= 21, else throws IllegalArgumentException. capacityBits uses FinderPattern.reservedMask(size) and counts false entries; may round down to multiple of 8; must not double-count or subtract heuristically.\n\nsrc/main/java/QRDetector.java: class QRDetector { public static boolean[] readDataBits(QRMatrix matrix); public static byte[] extractPayloadBytes(QRMatrix matrix); }. Semantics: readDataBits uses FinderPattern.reservedMask and ZigZag.traversal to read all unreserved cells in order; returns possibly non-byte-aligned boolean[]. extractPayloadBytes converts all bits via TextEncoder.bitsToBytes; if fewer than two bytes available, throws IllegalArgumentException; reads unsigned length L from first two bytes; computes exactly int frameLength = 2 + length + 1;; rejects insufficient bytes; literally truncates via byte[] frame = java.util.Arrays.copyOf(bytes, frameLength);; validates via TextEncoder.decodePayload(frame); returns frame. It ignores only zero-padded unused suffix dictated by L and never passes all capacity bytes to decodePayload.\n\nsrc/main/java/QRCodec.java: class QRCodec { public QRMatrix encode(String text); public QRMatrix encode(String text, int size); public String decode(QRMatrix matrix); }. Semantics: encode(String,int) validates size via MatrixValidator.ensureValidSize; computes reserved mask and traversal; encodes frame via TextEncoder.encodePayload; writes TextEncoder.bytesToBits into traversal order; leaves all extra unfilled cells false; calls FinderPattern.place; returns populated matrix. encode(String) auto-sizes literally starting with int size = 21; increments by 2 until MatrixValidator.capacityBits(size) >= frameBitLength; delegates to encode(String,int). decode verifies finders via FinderPattern.verify, extracts frame via QRDetector.extractPayloadBytes, and returns TextEncoder.decodePayload(frame).\n\nsrc/main/java/QRRenderer.java: class QRRenderer { public static String render(QRMatrix matrix); }. Semantics: returns a deterministic textual representation with exactly one line per matrix row; no IO side-effects.\n\nsrc/main/java/Main.java: class Main { public static void main(String[] args); }. Semantics: Demonstrates encode->render->decode pipeline on a fixed short string like \"hello-世界\"; prints at most one concise line; returns normally.\n\nsrc/test/java/MainTest.java: JUnit 5 tests in default package; imports only org.junit.jupiter.api.Test and static org.junit.jupiter.api.Assertions.*. Exactly three tests: (1) Main.main does not throw; (2) literal nine-bit fixture new boolean[]{true,false,false,false,false,false,false,false,true} maps via TextEncoder.bitsToBytes to two bytes whose unsigned values are 128 and 128; TextEncoder.decodePayload(TextEncoder.encodePayload(\"hello-世界\")) round-trips; QRCodec.decode(QRCodec.encode(\"hello-世界\")) round-trips; QRRenderer.render emits exactly one line per matrix row; (3) flipping a copied finder cell [0][0] causes IllegalArgumentException during decode.\n\nAllowed import/include directions: Higher-level classes depend on already-declared lower-level modules: QRCodec depends on TextEncoder, MatrixValidator, ZigZag, FinderPattern, and QRMatrix; QRDetector depends on TextEncoder, ZigZag, FinderPattern; QRRenderer depends on QRMatrix; Main depends on QRCodec and QRRenderer. No circular dependencies. All classes reside in the default package (unnamed), and tests must not import these classes explicitly.",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Java 11 toolchain; declares org.junit.jupiter:junit-jupiter in test scope; configures a JUnit-5-capable Maven Surefire plugin; zero runtime dependencies; test command mvn -q test. Must explicitly support JUnit 5."
+      ],
+      [
+        "src/main/java/QRMatrix.java",
+        "domain-entity; square boolean matrix with immutable size and boolean[][] cells; methods: QRMatrix(int size), int getSize(), boolean get(int row,int col), void set(int row,int col,boolean val), boolean[][] copyCells(). No IO. Used by renderer, finder, detector, codec."
+      ],
+      [
+        "src/main/java/Checksum.java",
+        "pure-rule; static int sumMod256(byte[] data) sums each byte as unsigned and returns sum % 256. No other functions."
+      ],
+      [
+        "src/main/java/ZigZag.java",
+        "pure-rule; static int[][] traversal(int size, boolean[][] reserved) implements two-pass bounded serpentine traversal over unreserved cells only. First pass counts only unreserved cells with int count = 0, then literally allocates int[][] result = new int[count][2];. Second pass iterates rows 0..size-1; even rows visit columns 0..size-1 ascending, odd rows visit columns size-1..0 descending; appends [row,col] only when !reserved[row][col]. No while loops; MUST NOT allocate new int[size * size][2]; MUST NOT terminate on index < size * size; no placeholder entries."
+      ],
+      [
+        "src/main/java/FinderPattern.java",
+        "pure-rule; three-finder reserved mask definition and enforcement. static boolean[][] reservedMask(int size) marks three 7x7 finder squares at top-left, top-right, bottom-left; rejects size < 21 or even. static void place(QRMatrix) sets those finder cells true. static void verify(QRMatrix) enforces that those exact reserved cells are true and others remain unreserved; throws IllegalArgumentException on mismatch. Mask used consistently by traversal, place, and verify."
+      ],
+      [
+        "src/main/java/TextEncoder.java",
+        "pure-rule; framing and bit conversions with exact padding and MSB-first rules. Methods: encodePayload(String text) builds frame [lenHi,lenLo,payload,checksum]; checksum computed ONLY over prefix via java.util.Arrays.copyOf(frame, frame.length - 1) and Checksum.sumMod256; never over complete frame. decodePayload(byte[] frame) requires exact length 2+L+1, validates checksum using the same prefix-only java.util.Arrays.copyOf(frame, frame.length - 1) and compares to (frame[frame.length - 1] & 0xFF); returns strict UTF-8 String. bytesToBits(byte[] bytes) emits exactly eight MSB-first bits per byte with the literal assignment bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;; bitsToBytes(boolean[] bits) accepts any length including non-multiples of eight, literally allocates byte[] result = new byte[(bits.length + 7) / 8]; and sets bits with result[i / 8] |= (byte) (1 << (7 - (i % 8)));; no modulo-length rejection or truncation."
+      ],
+      [
+        "src/main/java/MatrixValidator.java",
+        "pure-rule; static void ensureValidSize(int size) accepts only odd sizes >= 21; static int capacityBits(int size) derives capacity by counting false entries in FinderPattern.reservedMask(size) and may round down to a multiple of 8; avoids double-counting or heuristic subtraction."
+      ],
+      [
+        "src/main/java/QRDetector.java",
+        "pure-rule; static boolean[] readDataBits(QRMatrix matrix) reads every unreserved traversal bit in traversal order; length may be non-byte-aligned. static byte[] extractPayloadBytes(QRMatrix matrix) converts all bits via TextEncoder.bitsToBytes; if fewer than 2 bytes, throw; reads unsigned L from first two bytes; computes exactly int frameLength = 2 + length + 1;; rejects insufficient bytes; literally truncates via byte[] frame = java.util.Arrays.copyOf(bytes, frameLength);; validates frame via TextEncoder.decodePayload(frame); returns frame. Ignores only zero-filled unused suffix determined by L; never passes all capacity bytes to decodePayload."
+      ],
+      [
+        "src/main/java/QRCodec.java",
+        "orchestration; encode/decode end-to-end. encode(String text, int size): MatrixValidator.ensureValidSize; compute reserved mask; capacityBits; TextEncoder.encodePayload; write TextEncoder.bytesToBits output into ZigZag.traversal order, leave extra cells false; FinderPattern.place; return QRMatrix. encode(String text): auto-size literally begins with int size = 21; and while capacity < frameBitsLen, size += 2; then delegates to encode(String,int). decode(QRMatrix): FinderPattern.verify; QRDetector.extractPayloadBytes; returns TextEncoder.decodePayload(frame)."
+      ],
+      [
+        "src/main/java/QRRenderer.java",
+        "pure-rule; static String render(QRMatrix matrix) deterministic text rendering with exactly one line per matrix row (e.g., '#' for true and '.' for false); no IO side-effects."
+      ],
+      [
+        "src/main/java/Main.java",
+        "environment-dependent; thin demo: encodes a fixed short string (e.g., \"hello-世界\"), renders, decodes, prints at most one concise result, returns normally. No input loops, network, or filesystem."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; exactly three JUnit 5 tests. Constraints: default package; imports only org.junit.jupiter.api.Test and static org.junit.jupiter.api.Assertions.*. Tests: (1) Main.main returns normally; (2) nine-bit padding fixture TextEncoder.bitsToBytes(new boolean[]{true,false,false,false,false,false,false,false,true}) returns two bytes with unsigned values 128 and 128; TextEncoder.decodePayload(TextEncoder.encodePayload(\"hello-世界\")) round-trips; QRCodec.decode(QRCodec.encode(\"hello-世界\")) round-trips; rendering emits exactly one line per row; (3) flipping a copied matrix finder cell [0][0] induces IllegalArgumentException on decode."
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/QRMatrix.java",
+        "src/main/java/Checksum.java",
+        "src/main/java/ZigZag.java",
+        "src/main/java/FinderPattern.java",
+        "src/main/java/TextEncoder.java",
+        "src/main/java/MatrixValidator.java",
+        "src/main/java/QRDetector.java",
+        "src/main/java/QRCodec.java",
+        "src/main/java/QRRenderer.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Maven 3.6+",
+      "Java 11 (no preview features)",
+      "org.junit.jupiter:junit-jupiter (test scope only)",
+      "maven-surefire-plugin (JUnit 5 capable; e.g., 2.22.2+ or 3.0.0-M7)"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "Repository targets a Java 11 Maven project. All project classes (QRMatrix, Checksum, ZigZag, FinderPattern, TextEncoder, MatrixValidator, QRDetector, QRCodec, QRRenderer, Main) are placed directly under src/main/java in the default package with no package declarations. pom.xml declares org.junit.jupiter:junit-jupiter (test scope) and a JUnit 5-capable Maven Surefire plugin. The single protocol-level test resides at src/test/java/MainTest.java and imports only org.junit.jupiter.api.Test and static org.junit.jupiter.api.Assertions.*. Tests refer directly to QRCodec, QRMatrix, TextEncoder, QRRenderer, and Main without import statements for default-package classes. Normative invariants repeated across design and implementation: bytesToBits uses bits[i * 8 + bit] = (bytes[i] & (1 << (7 - bit))) != 0;; bitsToBytes literally allocates byte[] result = new byte[(bits.length + 7) / 8]; and sets with result[i / 8] |= (byte) (1 << (7 - (i % 8)));; Checksums are computed only over the prefix using java.util.Arrays.copyOf(frame, frame.length - 1); ZigZag.traversal uses a two-pass bounded serpentine with int[][] result = new int[count][2]; and zero while loops; QRDetector.extractPayloadBytes reads all bits, sets int frameLength = 2 + length + 1;, truncates via byte[] frame = java.util.Arrays.copyOf(bytes, frameLength);, validates decodePayload(frame), and returns frame; QRCodec auto-size literally starts at int size = 21;.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/QRMatrix.java",
+      "src/main/java/Checksum.java",
+      "src/main/java/ZigZag.java",
+      "src/main/java/FinderPattern.java",
+      "src/main/java/TextEncoder.java",
+      "src/main/java/MatrixValidator.java",
+      "src/main/java/QRDetector.java",
+      "src/main/java/QRCodec.java",
+      "src/main/java/QRRenderer.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": null,
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "Runtime wiring sanity: Main.main executes without throwing"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Padding and framing invariants: literal nine-bit fixture TextEncoder.bitsToBytes(new boolean[]{true,false,false,false,false,false,false,false,true}) returns unsigned 128,128; direct TextEncoder.decodePayload(TextEncoder.encodePayload(\"hello-世界\")) round-trips; QRCodec.decode(QRCodec.encode(\"hello-世界\")) round-trips; QRRenderer.render emits exactly one line per matrix row"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Corruption rejection: flipping copied finder cell [0][0] produces IllegalArgumentException during QRCodec.decode"
+      ]
+    ]
+  }
+}

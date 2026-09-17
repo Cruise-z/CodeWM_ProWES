@@ -1,0 +1,7 @@
+watermark_method,response_points,evaluated_points,parameter_runs,Pass,BE,TE,RE,Excluded,point_pooled_pass_rate,pass_strength_mean,pass_strength_median,pass_strength_q1,pass_strength_q3,pass_strength_iqr,run_balanced_pass_rate,run_balanced_mean_pass_strength,runs_with_pass
+codeip,367,367,16,65,202,94,6,0,0.177112,1.778462,1.7,0.7,2.5,1.8,0.178831,1.774488,12
+ewd,3036,3030,90,532,1589,844,65,6,0.175578,1.684774,1.5,0.6,2.6,2.0,0.177678,1.537333,69
+stone,2676,2643,90,537,1369,693,44,33,0.203178,1.664246,1.5,0.6,2.5,1.9,0.209987,1.353686,71
+sweet,858,847,45,187,420,223,17,11,0.220779,1.252406,1.0,0.5,1.9,1.4,0.24357,1.050617,36
+waterfall,937,936,16,188,470,258,20,1,0.200855,3.896277,2.75,1.3,5.225,3.925,0.219155,3.551639,16
+wllm,1267,1245,45,216,656,341,32,22,0.173494,1.743519,1.4,0.6,2.7,2.1,0.189391,1.567251,38

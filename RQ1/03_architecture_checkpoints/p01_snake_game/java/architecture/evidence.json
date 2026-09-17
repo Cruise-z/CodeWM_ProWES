@@ -1,0 +1,42 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 5,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "completed_at": "2026-09-13T02:17:33.910685+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/initial_repository/p01_snake_game_java",
+  "initial_repository_tree_sha256": "17b09efc893713621cc2223043a261a979c53df10a1ae289f96966ce2c68d94f",
+  "missing_required_files": [],
+  "planned_file_count": 11,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/Position.java",
+    "src/main/java/Direction.java",
+    "src/main/java/RandomSource.java",
+    "src/main/java/MoveOutcome.java",
+    "src/main/java/Snake.java",
+    "src/main/java/GameSnapshot.java",
+    "src/main/java/JavaUtilRandomSource.java",
+    "src/main/java/SnakeGame.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "prompt_sha256": "d82504ceaf8e14537540c352704b83eb031ed48e5a21aae1e6a872f1794d97fb",
+  "started_at": "2026-09-13T02:14:14.705988+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/java/architecture/team/team.json",
+  "team_json_sha256": "b87da36a36b6bd69971e6d995176137e78335c25c94068c640ec0700eb17da80",
+  "unit_id": "p01_snake_game_java",
+  "valid": true
+}

@@ -1,0 +1,65 @@
+{
+  "n_total": 842,
+  "n_baseline_pass": 842,
+  "n_changed": 842,
+  "n_syntax_valid_changed": 842,
+  "n_post_pass": 835,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 0.9916864608076009,
+  "language": "java",
+  "channel": "block",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 0,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 7,
+    "valid_attack": 835,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_0.jsonl",
+      "rows": 106,
+      "sha256": "abbed895ec282c9b55e137d4673a440fa82d20c6a4aa2bbebe7869cfbed7c15c"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_1.jsonl",
+      "rows": 106,
+      "sha256": "d523b9ebd99feb3a64ccdadccceb3d807df8784e47ec26e4fac350e45e89e2ad"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_2.jsonl",
+      "rows": 106,
+      "sha256": "be418079bf2420714722c6d3fe1bd5dbc10fefa807f87b8c7181615069ab6a63"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_3.jsonl",
+      "rows": 106,
+      "sha256": "3dde77f32bcaede868c738c7e30a305e02be59fb0819b5303f7ed33a1ee0579e"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_4.jsonl",
+      "rows": 106,
+      "sha256": "1bf66058adde795f48bf7f1e9b9683e3eadc99d76d137485256abeb02bd1834e"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_5.jsonl",
+      "rows": 106,
+      "sha256": "4f8d411fe679adac1fa2949f7b399367ebf1c99f4245052ba6c84afcc939e402"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_6.jsonl",
+      "rows": 106,
+      "sha256": "82df04aa3a3a4ed14d376900035781f8d2ba3b5900f31061c0d5528bd39ad498"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbjp/block/part_7.jsonl",
+      "rows": 100,
+      "sha256": "e2b676d4cd2ef534df010c2592fb6d7ec9b6ec040733763e660b63a5937bc5f1"
+    }
+  ],
+  "output_sha256": "73d8e4a7b69a7bbf4b3f57b7094acc32a933c02625f7783913031cfe64a851fa"
+}

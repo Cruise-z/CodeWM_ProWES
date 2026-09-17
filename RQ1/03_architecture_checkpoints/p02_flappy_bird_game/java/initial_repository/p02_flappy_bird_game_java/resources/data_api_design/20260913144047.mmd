@@ -1,0 +1,74 @@
+classDiagram
+    class Bird {
+        - double y
+        - double vy
+        + Bird(double startY)
+        + double y()
+        + double vy()
+        + void applyGravity()
+        + void integrate()
+        + void flap()
+    }
+    class RNG {
+        - java.util.Random random
+        + final long originalSeed
+        + RNG(long seed)
+        + long seed()
+        + double nextDouble()
+        + int nextInt(int bound)
+    }
+    class PipePair {
+        - double x
+        - double width
+        - double gapY
+        - double gapHeight
+        - double speed
+        - boolean scored
+        + PipePair(double x, double width, double gapY, double gapHeight, double speed)
+        + double x()
+        + double width()
+        + double gapY()
+        + double gapHeight()
+        + double speed()
+        + boolean scored()
+        + void markScored()
+        + void move()
+    }
+    class CollisionDetector {
+        + static boolean hitBounds(Bird bird, double birdHeight, double worldHeight)
+        + static boolean hitPipe(Bird bird, double birdWidth, double birdHeight, PipePair pipe, double worldHeight)
+    }
+    class ScoreSystem {
+        + static boolean passedPipe(double birdX, PipePair pipe)
+    }
+    class Game {
+        - final double worldWidth
+        - final double worldHeight
+        - final int spawnInterval
+        - double birdX
+        - Bird bird
+        - java.util.List<PipePair> pipes
+        - long tickCount
+        - int score
+        - GameState state
+        - RNG rng
+        + Game(long seed)
+        + Game(long seed, double worldWidth, double worldHeight, int spawnInterval)
+        + boolean tick()
+        + void reset(long seed)
+        + void flapBird()
+        + double birdY()
+        + double birdVy()
+        + long ticks()
+        + int score()
+        + java.util.List<PipePair> pipes()
+    }
+    class GameState {
+        <<enum>> RUNNING, GAME_OVER
+    }
+    Main --> Game
+    Game --> Bird
+    Game --> RNG
+    Game --> PipePair
+    Game --> CollisionDetector
+    Game --> ScoreSystem

@@ -1,0 +1,80 @@
+Generate a complete medium-size Java 11 repository architecture for: Tank battle game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java Tank Battle compilation and deterministic-fixture contract:
+- use exactly these files and no substitutes: pom.xml, src/main/java/Position.java, src/main/java/Orientation.java, src/main/java/Command.java, src/main/java/Tank.java, src/main/java/Projectile.java, src/main/java/ObstacleMap.java, src/main/java/Arena.java, src/main/java/ScoreBoard.java, src/main/java/GameEngine.java, src/main/java/Main.java, src/test/java/MainTest.java; every class is in the default package and no package declaration is allowed
+- pom.xml targets Java 11, declares JUnit Jupiter in test scope, and configures a JUnit-5-capable Maven Surefire plugin; Main.main is non-interactive, prints at most one concise snapshot, and returns normally without System.exit, GUI, input, network, loops, or threads
+- Position is an immutable value Position(int x,int y) with getX(), getY(), translate(int dx,int dy), value-based equals, and hashCode; Orientation is an enum NORTH(0,-1), EAST(1,0), SOUTH(0,1), WEST(-1,0) with dx(), dy(), left(), and right(); Command is exactly an enum with MOVE_FORWARD, TURN_LEFT, TURN_RIGHT, and FIRE
+- Tank has Tank(String id,Position position,Orientation orientation,int health), validates nonblank id/non-null values and permits health==0 so dead tanks can be copied but rejects health<0; it has mutable fields `private Position position;`, `private Orientation orientation;`, and `private int health;`; expose getId/getPosition/getOrientation/getHealth/isAlive, package-private setPosition(Position), rotateLeft(), rotateRight(), applyDamage(int), and copy(); copy() must work when health is zero, while position and orientation must not be final because movement and rotation mutate them
+- Projectile has Projectile(String shooterId,Position position,Orientation orientation), mutable `private Position position;`, getShooterId/getPosition/getOrientation, package-private `void setPosition(Position position)`, and copy(); GameEngine may move a projectile only through that declared setPosition method and must never call an undeclared projectile mutator
+- ObstacleMap.empty(), add(Position), isBlocked(Position), and copy() use a set of immutable Position values; Arena(int width,int height,ObstacleMap obstacles) validates positive dimensions, defensively copies obstacles, and exposes inBounds(Position), isObstacle(Position), and copy()
+- ScoreBoard(Collection<String> tankIds) owns private hit and kill maps initialized to zero for every id; expose addHit(String), addKill(String), getHits(String), getKills(String), getScore(String)=hits+5*kills, asMap(), copy(), and `void reset(Collection<String> tankIds)`; GameEngine.reset must call scoreBoard.reset(initialTanks.keySet()) and must never access ScoreBoard fields directly, assign to its private maps, or replace a final scoreBoard field
+- GameEngine has the exact reset-compatible ownership fields `private Arena arena;`, `private final Arena initialArena;`, `private Map<String,Tank> tanks;`, `private final Map<String,Tank> initialTanks;`, and `private final ScoreBoard scoreBoard;`. `tanks` is the only mutable current-state tank map; `initialTanks` is an immutable-by-convention deep snapshot and MUST NEVER be cleared, mutated, or used as the current-state map. The current arena is deliberately not final because reset assigns exactly `this.arena = initialArena.copy();`; initialArena, initialTanks, and scoreBoard remain final. GameEngine(Arena arena,List<Tank> tanks) requires at least two initially alive tanks (health>0) with unique ids on distinct in-bounds non-obstacle cells, deep-copies the supplied arena, and initializes one empty FIFO command queue per tank; expose enqueue(String tankId,Command), tick(), reset(), getTanksCopy(), getProjectilesCopy(), getScoreBoardCopy(), getArena(), and winner()
+- inside the GameEngine constructor, every supplied tank MUST be copied into two independently allocated objects with these literal statements in this order: `Tank initialCopy = tank.copy();`, `Tank currentCopy = tank.copy();`, `this.initialTanks.put(tank.getId(), initialCopy);`, and `this.tanks.put(tank.getId(), currentCopy);`. Reusing one `copy`, `copied`, or other Tank object in both maps is forbidden, as is deriving currentCopy from a mutable object already stored in either map
+- GameEngine never uses Java Stream API, `.stream()`, or `Collectors`; no file imports java.util.stream. Its reset calls the literal `scoreBoard.reset(initialTanks.keySet())` directly. Every java.util symbol used by a file is either directly imported or fully qualified; Main uses `java.util.Arrays.asList(...)` fully qualified and never refers to bare Arrays without an import
+- each tick processes at most one queued command for each live tank in lexicographic tank-id order, then updates projectiles; MOVE_FORWARD tries exactly one orientation cell and stops on bounds/obstacle/another live tank, turns mutate orientation, and FIRE spawns at the forward cell only when it is in bounds and not an obstacle
+- during that same tick, every projectile advances exactly one orientation cell using Projectile.setPosition and is then removed on bounds/obstacle or on hitting the first non-owner live tank at that cell; a hit applies one damage, calls addHit(shooterId), calls addKill(shooterId) only when health becomes zero, and consumes the projectile; dead tanks do not execute commands or block movement
+- enqueue, tick, movement, fire/hit resolution, winner, and getTanksCopy operate only on the current `tanks` map and never on initialTanks. reset assigns `this.arena = initialArena.copy();`, assigns `this.tanks = new HashMap<>();`, then restores tank copies into `this.tanks` by iterating `initialTanks.values()` without streams; it never calls initialTanks.clear() or initialTanks.put(...), recreates empty command queues, clears projectiles, and calls `scoreBoard.reset(initialTanks.keySet())`; getTanksCopy/getProjectilesCopy/getScoreBoardCopy return fresh defensive copies and tests must fetch a fresh tank copy after every tick rather than retaining a stale prior copy
+- winner returns the sole surviving tank id only when exactly one of the at-least-two initial tanks is alive, otherwise null
+- MainTest.java contains exactly three concise JUnit Jupiter tests: (1) Main.main(new String[0]) returns normally; (2) blocked movement plus reset uses Arena(6,5,obstacles), Alice at (1,2) EAST health3, Bob at (4,2) WEST health3, an obstacle at Position(2,2), verifies a freshly fetched Alice from `engine.getTanksCopy()` remains (1,2), fetches Alice again after TURN_RIGHT and verifies SOUTH, calls reset, fetches Alice again and verifies EAST and health3, then verifies zero score and no projectiles; (3) hit/kill uses empty Arena(6,5), Alice at Position(1,2) EAST health3 and Bob at Position(3,2) WEST health1, enqueues Alice FIRE and ticks once, then a freshly fetched Bob copy has health0, Alice has hits1/kills1/score6, projectiles are empty, and winner is Alice
+- because GameEngine deep-copies constructor inputs, MainTest MUST NEVER inspect `alice`, `bob`, or any other constructor-supplied Tank after GameEngine construction to observe gameplay or reset. Every post-construction tank assertion must first locate a new object in a fresh call to `engine.getTanksCopy()`; retaining a Tank or List<Tank> across tick/reset is forbidden
+- the hit fixture relies on same-tick movement from the spawned Position(2,2) to Bob at Position(3,2); never expect a hit on the shooter, never add a kill with a second shot after the target is already dead, and never assert against a List<Tank> copy captured before the tick
+- repeat the exact file list, method signatures, exact GameEngine arena/initialArena/tanks/initialTanks/scoreBoard fields, the four literal two-independent-copy constructor statements, the ban on post-construction observation of input Tank objects, strict current-state-versus-snapshot ownership rule, no-stream/no-Collectors rule, qualified Arrays usage, reset assignments, mutable-field declarations, ScoreBoard.reset boundary, same-tick projectile semantics, fresh-copy rule, three-test limit, and both numeric fixtures in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 9 repository files
+- about 46 functions or methods
+- about 727 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- tank movement and orientation
+- bounded arena and obstacles
+- projectile creation and movement
+- projectile collision and damage
+- score or winner state
+- deterministic tick and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents
+
+
+FINAL NON-NEGOTIABLE TANK-BATTLE JAVA COMPILATION CHECKLIST:
+- Task filenames are exactly: pom.xml; src/main/java/Position.java; src/main/java/Orientation.java; src/main/java/Command.java; src/main/java/Tank.java; src/main/java/Projectile.java; src/main/java/ObstacleMap.java; src/main/java/Arena.java; src/main/java/ScoreBoard.java; src/main/java/GameEngine.java; src/main/java/Main.java; src/test/java/MainTest.java.
+- Full API and implementation tasks must literally preserve `private Position position;` in Tank and Projectile, `private Orientation orientation;` in Tank, `void setPosition(Position position)` in Projectile, `void reset(Collection<String> tankIds)` in ScoreBoard, and `scoreBoard.reset(initialTanks.keySet())` in GameEngine; GameEngine never accesses ScoreBoard fields directly. Tank permits `health==0`, rejects only `health<0`, and copy() must successfully copy a dead tank; GameEngine separately rejects a non-alive initial tank.
+- GameEngine literally owns `private Arena arena;`, `private final Arena initialArena;`, `private Map<String,Tank> tanks;`, `private final Map<String,Tank> initialTanks;`, and `private final ScoreBoard scoreBoard;`; `tanks` is the current state while initialTanks is a preserved deep snapshot. Its constructor literally creates `Tank initialCopy = tank.copy();` and a separate `Tank currentCopy = tank.copy();`, then puts initialCopy only in initialTanks and currentCopy only in tanks; putting one copied object in both maps is forbidden. All game actions and getters use `tanks`. reset may assign the non-final current arena with `this.arena = initialArena.copy();` and MUST assign `this.tanks = new HashMap<>();` before copying every initialTanks.values() entry into `this.tanks`; it must never clear or mutate initialTanks. Java streams and Collectors are forbidden, reset iterates initialTanks.values(), and Main uses fully qualified `java.util.Arrays.asList(...)` rather than an unimported Arrays symbol.
+- MainTest never reads constructor-input `alice` or `bob` after constructing GameEngine; after blocked movement, after turning, after reset, and after firing it locates the relevant tank in a fresh `engine.getTanksCopy()` result. It never retains a tank copy across tick or reset.
+- Full API must spell the same-tick projectile fixture Position(1,2) -> spawn Position(2,2) -> hit Bob at Position(3,2), and MainTest has exactly three tests with fresh defensive copies, score hits1/kills1/total6, and no second kill shot. Do not summarize or substitute these compile and fixture rules.
+

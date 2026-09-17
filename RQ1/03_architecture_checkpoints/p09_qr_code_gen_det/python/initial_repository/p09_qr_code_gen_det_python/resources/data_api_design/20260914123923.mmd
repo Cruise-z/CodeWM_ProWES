@@ -1,0 +1,50 @@
+classDiagram
+    class PayloadModule {
+      +encode_text(text: str) bytes
+      +pack_payload(data: bytes) list[int]
+      +unpack_payload(bits: list[int]) bytes
+    }
+    class MatrixModule {
+      +SIZE: int = 21
+      +FINDER_SIZE: int = 5
+      +place_finder_patterns(matrix: list[list[int]]) None
+      +data_positions() list[tuple[int,int]]
+      +build_matrix(bits: list[int]) list[list[int]]
+      +validate_matrix(matrix: object) bool
+      +extract_bits(matrix: list[list[int]]) list[int]
+    }
+    class CodecModule {
+      +generate(text: str) list[list[int]]
+      +decode(matrix: list[list[int]]) str
+      +detect(matrix: object) bool
+    }
+    class RenderModule {
+      +render(matrix: list[list[int]], on: str, off: str) str
+    }
+    class PackageAPI {
+      +encode_text(...)
+      +pack_payload(...)
+      +unpack_payload(...)
+      +place_finder_patterns(...)
+      +data_positions(...)
+      +build_matrix(...)
+      +extract_bits(...)
+      +validate_matrix(...)
+      +generate(...)
+      +decode(...)
+      +detect(...)
+      +render(...)
+    }
+    class MainRuntime {
+      +run_demo() dict
+      +main() None
+    }
+    CodecModule --> PayloadModule
+    CodecModule --> MatrixModule
+    RenderModule --> MatrixModule
+    MainRuntime --> CodecModule
+    MainRuntime --> RenderModule
+    PackageAPI --> PayloadModule
+    PackageAPI --> MatrixModule
+    PackageAPI --> CodecModule
+    PackageAPI --> RenderModule

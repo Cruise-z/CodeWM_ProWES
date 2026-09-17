@@ -1,0 +1,490 @@
+{
+  "generated_utc": "2026-09-16T04:00:06.135290+00:00",
+  "protocol": {
+    "device": "cuda",
+    "gpu_ids": [
+      "0",
+      "1"
+    ],
+    "batch_size": 64,
+    "bootstrap_repetitions": 10000,
+    "bootstrap_seed": 42,
+    "n_bits": 4,
+    "model_architecture": "GRU shared encoder",
+    "token_truncation": 512
+  },
+  "results": [
+    {
+      "method": "srcmarker",
+      "dataset": "github_c_funcs",
+      "language": "cpp",
+      "device": "cuda",
+      "assigned_gpu": "0",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_srcmarker_42_github_c_funcs/models_best.pt",
+      "checkpoint_sha256": "9b6717e3d53ced224ac04625f108e4a1dca65cc97b9d10ed7a4650e047a2a815",
+      "attack_sha256": "8e2fb3db14cb4c2794c9172709619c76ea4bac10d742f796e14e0ce2631ca9c3",
+      "evaluated_sha256": "c328cccbceea2a6ee1d4a1d736478eb92df1fa19e1d2bb5ffeb0c7009a4607a3",
+      "metrics_sha256": "44d8ac2a81c2b19795c01318ca70990071dbb6f2640c4992f3739df85f0a9dd7",
+      "metrics": {
+        "n_paired": 120,
+        "n_bits": 4,
+        "clean_BAR": 0.9354166666666667,
+        "attack_BAR": 0.7145833333333333,
+        "DeltaBAR": 0.22083333333333333,
+        "clean_MAR": 0.7833333333333333,
+        "attack_MAR": 0.35,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 122,
+        "n_syntax_valid": 123,
+        "change_rate": 0.976,
+        "syntax_valid_rate": 0.984,
+        "paired_coverage": 0.96,
+        "status_counts": {
+          "no_op": 3,
+          "syntax_invalid": 2,
+          "execution_invalid": 0,
+          "valid_attack": 120,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.9104166666666667,
+            0.9583333333333334
+          ],
+          "attack_BAR": [
+            0.6666666666666666,
+            0.7625
+          ],
+          "DeltaBAR": [
+            0.175,
+            0.26875
+          ],
+          "clean_MAR": [
+            0.7083333333333334,
+            0.8583333333333333
+          ],
+          "attack_MAR": [
+            0.26666666666666666,
+            0.43333333333333335
+          ]
+        }
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "github_java_funcs",
+      "language": "java",
+      "device": "cuda",
+      "assigned_gpu": "1",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_srcmarker_42_github_java_funcs/models_best.pt",
+      "checkpoint_sha256": "875a0910c7a005a42b36f3344f5d851ba6ffddba2819119179fdd396daaf2531",
+      "attack_sha256": "4f2bc78307ebfe1202f3a6a972a9853fb6da590994d62e5d1d20ba71efb50580",
+      "evaluated_sha256": "7911953dfdcf574dbe259171aa97cfb8617b18309970d0b29cc150befa5a3c2e",
+      "metrics_sha256": "104822a3b4fd60e5a1d3079305835c6449fa4ce688cf39f30626ac740a2d7180",
+      "metrics": {
+        "n_paired": 121,
+        "n_bits": 4,
+        "clean_BAR": 0.9586776859504132,
+        "attack_BAR": 0.6962809917355371,
+        "DeltaBAR": 0.2623966942148761,
+        "clean_MAR": 0.859504132231405,
+        "attack_MAR": 0.32231404958677684,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 122,
+        "n_syntax_valid": 124,
+        "change_rate": 0.976,
+        "syntax_valid_rate": 0.992,
+        "paired_coverage": 0.968,
+        "status_counts": {
+          "no_op": 3,
+          "syntax_invalid": 1,
+          "execution_invalid": 0,
+          "valid_attack": 121,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.9380165289256198,
+            0.9772727272727273
+          ],
+          "attack_BAR": [
+            0.6466942148760331,
+            0.7458677685950413
+          ],
+          "DeltaBAR": [
+            0.21074380165289255,
+            0.3140495867768595
+          ],
+          "clean_MAR": [
+            0.7933884297520661,
+            0.9173553719008265
+          ],
+          "attack_MAR": [
+            0.2396694214876033,
+            0.4049586776859504
+          ]
+        }
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "csn_js",
+      "language": "javascript",
+      "device": "cuda",
+      "assigned_gpu": "0",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_srcmarker_42_csn_js/models_best.pt",
+      "checkpoint_sha256": "a0240b48e4cddecc89f0eea38687139bab7142c537c064f0568563db2dae4e19",
+      "attack_sha256": "450e888e9d984998abf9fe5babd1a9143b207ba15e6bfec84e27ded0cdc1804b",
+      "evaluated_sha256": "0457a3b01dd27adaac16c069b2c4039a8b958c7cb40637fc6be4559f1eec15c9",
+      "metrics_sha256": "bd222ccb0c00b63755b86b907e775175c4ebfe004a6d3a8240988cd60bf58f44",
+      "metrics": {
+        "n_paired": 123,
+        "n_bits": 4,
+        "clean_BAR": 1.0,
+        "attack_BAR": 0.7398373983739838,
+        "DeltaBAR": 0.26016260162601623,
+        "clean_MAR": 1.0,
+        "attack_MAR": 0.3902439024390244,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 123,
+        "n_syntax_valid": 125,
+        "change_rate": 0.984,
+        "syntax_valid_rate": 1.0,
+        "paired_coverage": 0.984,
+        "status_counts": {
+          "no_op": 2,
+          "syntax_invalid": 0,
+          "execution_invalid": 0,
+          "valid_attack": 123,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            1.0,
+            1.0
+          ],
+          "attack_BAR": [
+            0.693089430894309,
+            0.7845528455284553
+          ],
+          "DeltaBAR": [
+            0.21544715447154472,
+            0.30691056910569103
+          ],
+          "clean_MAR": [
+            1.0,
+            1.0
+          ],
+          "attack_MAR": [
+            0.3089430894308943,
+            0.4796747967479675
+          ]
+        }
+      }
+    },
+    {
+      "method": "srcmarker",
+      "dataset": "csn_java",
+      "language": "java",
+      "device": "cuda",
+      "assigned_gpu": "1",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_srcmarker_42_csn_java/models_best.pt",
+      "checkpoint_sha256": "fbb23c432234ba2fba5fdcc2eee3c395755c650559f9e387f16eb4035c2189f2",
+      "attack_sha256": "09561fbc24f33329bb64c7b806fe3f215ae841048ee0356c27d7af6c810f69d0",
+      "evaluated_sha256": "a0649250ba648001d907125cd06fb9f03f8e75f075fcff5dbdecb19d524b4cd9",
+      "metrics_sha256": "9f83239c2db983badf0187faf9629abf2028bfa2b81d8ba4dbcb20c90168452d",
+      "metrics": {
+        "n_paired": 123,
+        "n_bits": 4,
+        "clean_BAR": 0.9715447154471545,
+        "attack_BAR": 0.7073170731707317,
+        "DeltaBAR": 0.2642276422764228,
+        "clean_MAR": 0.9349593495934959,
+        "attack_MAR": 0.34146341463414637,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 123,
+        "n_syntax_valid": 125,
+        "change_rate": 0.984,
+        "syntax_valid_rate": 1.0,
+        "paired_coverage": 0.984,
+        "status_counts": {
+          "no_op": 2,
+          "syntax_invalid": 0,
+          "execution_invalid": 0,
+          "valid_attack": 123,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.9491869918699187,
+            0.9898373983739838
+          ],
+          "attack_BAR": [
+            0.6585365853658537,
+            0.758130081300813
+          ],
+          "DeltaBAR": [
+            0.21544715447154472,
+            0.3130081300813008
+          ],
+          "clean_MAR": [
+            0.8861788617886179,
+            0.975609756097561
+          ],
+          "attack_MAR": [
+            0.2601626016260163,
+            0.43089430894308944
+          ]
+        }
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "github_c_funcs",
+      "language": "cpp",
+      "device": "cuda",
+      "assigned_gpu": "0",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_codemark_42_github_c_funcs/models_best.pt",
+      "checkpoint_sha256": "1d837005d47fd28ce3999786cd0cc30c2d5d89fdb7d60a1736ae9fe4cd35eedd",
+      "attack_sha256": "9b7a7667550fa0983a12e8b54bba92e43164de0c3bd39d45cfbe3710ece6d3e8",
+      "evaluated_sha256": "489768febc46bc495db93ecedc1a3754a318932ecdeec987e1e8c9339e8a3da2",
+      "metrics_sha256": "a34881d4118403549ba16a4af9833fe4e694e28fd08acdaf2ed729a40528cd56",
+      "metrics": {
+        "n_paired": 118,
+        "n_bits": 4,
+        "clean_BAR": 0.972457627118644,
+        "attack_BAR": 0.739406779661017,
+        "DeltaBAR": 0.23305084745762705,
+        "clean_MAR": 0.9152542372881356,
+        "attack_MAR": 0.3983050847457627,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 120,
+        "n_syntax_valid": 123,
+        "change_rate": 0.96,
+        "syntax_valid_rate": 0.984,
+        "paired_coverage": 0.944,
+        "status_counts": {
+          "no_op": 5,
+          "syntax_invalid": 2,
+          "execution_invalid": 0,
+          "valid_attack": 118,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.9533898305084746,
+            0.989406779661017
+          ],
+          "attack_BAR": [
+            0.6885593220338984,
+            0.7860169491525424
+          ],
+          "DeltaBAR": [
+            0.1843220338983051,
+            0.2838983050847458
+          ],
+          "clean_MAR": [
+            0.864406779661017,
+            0.9576271186440678
+          ],
+          "attack_MAR": [
+            0.3135593220338983,
+            0.4830508474576271
+          ]
+        }
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "github_java_funcs",
+      "language": "java",
+      "device": "cuda",
+      "assigned_gpu": "1",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_codemark_42_github_java_funcs/models_best.pt",
+      "checkpoint_sha256": "6cf99c34558456526ffc5e1528a350fccc8370f94e6c2757edc09f4fd571a022",
+      "attack_sha256": "4f08625995e2d701d60e00fe56a2c380d8a497a523652300b05706b2722db3d8",
+      "evaluated_sha256": "ab8cb9c419599d75b0c5e6217d5a567aa31e1237b7dadf3dbb1ed89eb2e0dd9b",
+      "metrics_sha256": "eda38253def23f89cc31b24f051fbdee9717bc6aee733afec3e31a019404034e",
+      "metrics": {
+        "n_paired": 124,
+        "n_bits": 4,
+        "clean_BAR": 0.9637096774193549,
+        "attack_BAR": 0.6612903225806451,
+        "DeltaBAR": 0.30241935483870974,
+        "clean_MAR": 0.9193548387096774,
+        "attack_MAR": 0.27419354838709675,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 124,
+        "n_syntax_valid": 125,
+        "change_rate": 0.992,
+        "syntax_valid_rate": 1.0,
+        "paired_coverage": 0.992,
+        "status_counts": {
+          "no_op": 1,
+          "syntax_invalid": 0,
+          "execution_invalid": 0,
+          "valid_attack": 124,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.9375,
+            0.9858870967741935
+          ],
+          "attack_BAR": [
+            0.6108870967741935,
+            0.7116935483870968
+          ],
+          "DeltaBAR": [
+            0.2540322580645161,
+            0.3528225806451613
+          ],
+          "clean_MAR": [
+            0.8709677419354839,
+            0.967741935483871
+          ],
+          "attack_MAR": [
+            0.20161290322580644,
+            0.3548387096774194
+          ]
+        }
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "csn_js",
+      "language": "javascript",
+      "device": "cuda",
+      "assigned_gpu": "0",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_codemark_42_csn_js/models_best.pt",
+      "checkpoint_sha256": "03b413e5b93a825496006466f2c7ae4502c08dde6d74eb79cdf95605ba166ea0",
+      "attack_sha256": "a6bedce7aed89d4e7bc6607f32a99086a31d136e90717201970d7960c812c41f",
+      "evaluated_sha256": "e252e58b65338dbf5b0242586915129693b768c1e2776abc28e8e6028fb217d2",
+      "metrics_sha256": "a4e57d471047491b9615e900c42052116471dcd16a5097c2eb2bb489cae8cf12",
+      "metrics": {
+        "n_paired": 120,
+        "n_bits": 4,
+        "clean_BAR": 0.9854166666666667,
+        "attack_BAR": 0.7520833333333333,
+        "DeltaBAR": 0.2333333333333334,
+        "clean_MAR": 0.9583333333333334,
+        "attack_MAR": 0.4,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 120,
+        "n_syntax_valid": 125,
+        "change_rate": 0.96,
+        "syntax_valid_rate": 1.0,
+        "paired_coverage": 0.96,
+        "status_counts": {
+          "no_op": 5,
+          "syntax_invalid": 0,
+          "execution_invalid": 0,
+          "valid_attack": 120,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.96875,
+            0.9979166666666667
+          ],
+          "attack_BAR": [
+            0.70625,
+            0.7958333333333333
+          ],
+          "DeltaBAR": [
+            0.18958333333333333,
+            0.2791666666666667
+          ],
+          "clean_MAR": [
+            0.9166666666666666,
+            0.9916666666666667
+          ],
+          "attack_MAR": [
+            0.31666666666666665,
+            0.49166666666666664
+          ]
+        }
+      }
+    },
+    {
+      "method": "codemark",
+      "dataset": "csn_java",
+      "language": "java",
+      "device": "cuda",
+      "assigned_gpu": "1",
+      "checkpoint": "training/SrcMarker_fresh/ckpts/fresh_rq2_codemark_42_csn_java/models_best.pt",
+      "checkpoint_sha256": "f74f65f079d082da946dbb4c668b4067d4a7fd74fff15678e5c17f0032a9f060",
+      "attack_sha256": "489160d976deafb6bcec582537dffd4d2d80f92a49171befdf51564b7dfd1277",
+      "evaluated_sha256": "fb193bdbd7326f1ec395524eae0c0c2f705359ad176a9e5cae41be275f701b7e",
+      "metrics_sha256": "22b1eebf4745ea38105d42824ecfff32f66dfdeb1b17808551f4f62695c23ba5",
+      "metrics": {
+        "n_paired": 123,
+        "n_bits": 4,
+        "clean_BAR": 0.9817073170731707,
+        "attack_BAR": 0.7154471544715447,
+        "DeltaBAR": 0.266260162601626,
+        "clean_MAR": 0.9349593495934959,
+        "attack_MAR": 0.35772357723577236,
+        "chance_BAR": 0.5,
+        "chance_MAR": 0.0625,
+        "n_attempted": 125,
+        "n_changed": 123,
+        "n_syntax_valid": 125,
+        "change_rate": 0.984,
+        "syntax_valid_rate": 1.0,
+        "paired_coverage": 0.984,
+        "status_counts": {
+          "no_op": 2,
+          "syntax_invalid": 0,
+          "execution_invalid": 0,
+          "valid_attack": 123,
+          "error": 0,
+          "unclassified": 0
+        },
+        "bootstrap_95CI": {
+          "clean_BAR": [
+            0.967479674796748,
+            0.9939024390243902
+          ],
+          "attack_BAR": [
+            0.6646341463414634,
+            0.7642276422764228
+          ],
+          "DeltaBAR": [
+            0.21747967479674796,
+            0.3170731707317073
+          ],
+          "clean_MAR": [
+            0.8861788617886179,
+            0.975609756097561
+          ],
+          "attack_MAR": [
+            0.2764227642276423,
+            0.44715447154471544
+          ]
+        }
+      }
+    }
+  ]
+}

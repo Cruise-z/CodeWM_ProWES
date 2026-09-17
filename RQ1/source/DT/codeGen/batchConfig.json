@@ -1,0 +1,31 @@
+{
+  "project_name": "brick_breaker_game",
+  "paths": {
+    "srcPath": "/home/zhaorz/project/CodeWM/srcRepo/",
+    "workspacePath": "/home/zhaorz/project/CodeWM/MetaGPT/workspace",
+    "resPath": "/home/zhaorz/project/CodeWM/results"
+  },
+  "seed_probe_args": {
+    "temperature": 0.7,
+    "max_tokens": 4096
+  },
+  "rng_seed": 1802891719,
+  "wmS_config": {
+    "start": "0.0",
+    "step": "0.1",
+    "end": "15.0"
+  },
+  "args": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 4096,
+    "watermark_detect": true,
+    "processor_names_ext": "codeip",
+    "use_pda": true,
+    "gamma": 3.0,
+    "message_code_len": 20,
+    "encode_ratio": 10.0,
+    "top_k": 1000,
+    "message": [2024]
+  }
+}

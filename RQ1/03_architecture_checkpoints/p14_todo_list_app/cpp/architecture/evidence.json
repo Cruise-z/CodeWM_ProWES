@@ -1,0 +1,50 @@
+{
+  "accepted_file_count_range": [
+    7,
+    9
+  ],
+  "architecture_attempt": 8,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_repair_llm_output": false,
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T19:38:59.872438+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/cpp/initial_repository/p14_todo_list_app_cpp",
+  "initial_repository_tree_sha256": "712f081e8d4d79566155cb39301a0c5f227c2ab6c54d25cd6f8085ea23fc277a",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "b5baa9677673c366f45cf2bd3dd089ff0b1a9c4fd67a628865055bf5ebc8e2a6",
+  "planned_file_count": 13,
+  "planned_files": [
+    "CMakeLists.txt",
+    "include/Task.h",
+    "include/Date.h",
+    "include/Query.h",
+    "include/TaskStore.h",
+    "include/TaskManager.h",
+    "src/Task.cpp",
+    "src/Date.cpp",
+    "src/Query.cpp",
+    "src/TaskStore.cpp",
+    "src/TaskManager.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "be47e3ea1c83d5026559e845b03ba5b8da783741f24715e65b244137ab2e6093",
+  "rebuild_reason": "architecture_attempt7_seed_attempt1_undeclared_date_helper_and_cross_block_local_id",
+  "started_at": "2026-09-14T19:35:07.292858+00:00",
+  "status": "complete",
+  "target_file_count": 8,
+  "task_path_normalization": "not required for this language",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/cpp/architecture/team/team.json",
+  "team_json_sha256": "548032ccdd5e62f7eef36843eb8b953472418a862cdd5bab39b62d17b66eb4a6",
+  "unit_id": "p14_todo_list_app_cpp",
+  "valid": true
+}

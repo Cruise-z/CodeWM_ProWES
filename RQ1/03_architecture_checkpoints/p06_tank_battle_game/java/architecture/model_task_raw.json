@@ -1,0 +1,202 @@
+{
+  "20260914135517.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/Position.java",
+      "src/main/java/Orientation.java",
+      "src/main/java/Command.java",
+      "src/main/java/Tank.java",
+      "src/main/java/Projectile.java",
+      "src/main/java/ObstacleMap.java",
+      "src/main/java/Arena.java",
+      "src/main/java/ScoreBoard.java",
+      "src/main/java/GameEngine.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Build and test with mvn -q test. Runtime entry is src/main/java/Main.java and must be non-interactive, print at most one snapshot, and exit normally. Exactly one protocol-level test file exists at src/test/java/MainTest.java and it contains exactly three JUnit 5 tests covering smoke, blocked movement with reset, and hit/kill with same-tick projectile advance. No GUI, no network, no threads.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 12,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 12,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 12,
+      "task_list_count": 12
+    },
+    "Full API spec": "pom.xml: Maven build descriptor targeting Java 11. Declares dependency org.junit.jupiter:junit-jupiter (scope test) and configures a JUnit 5-capable Maven Surefire plugin so mvn -q test executes JUnit Jupiter tests.\n\nsrc/main/java/Position.java: public final class Position { public Position(int x,int y); public int getX(); public int getY(); public Position translate(int dx,int dy); public boolean equals(Object o); public int hashCode(); }. Semantics: immutable value object; translate returns a new Position(x+dx,y+dy). equals/hashCode use x and y only.\n\nsrc/main/java/Orientation.java: public enum Orientation { NORTH, EAST, SOUTH, WEST; public int dx(); public int dy(); public Orientation left(); public Orientation right(); }. Semantics: NORTH(0,-1), EAST(1,0), SOUTH(0,1), WEST(-1,0). left/right rotate 90 degrees.\n\nsrc/main/java/Command.java: public enum Command { MOVE_FORWARD, TURN_LEFT, TURN_RIGHT, FIRE }. No extras.\n\nsrc/main/java/Tank.java: public class Tank { private final String id; private Position position; private Orientation orientation; private int health; public Tank(String id, Position position, Orientation orientation, int health); public String getId(); public Position getPosition(); public Orientation getOrientation(); public int getHealth(); public boolean isAlive(); /* package-private */ void setPosition(Position position); /* package-private */ void rotateLeft(); /* package-private */ void rotateRight(); /* package-private */ void applyDamage(int amount); public Tank copy(); }. Semantics: constructor validates id nonblank, position/orientation non-null; health>=0 (health==0 allowed) else IllegalArgumentException. isAlive() iff health>0. rotateLeft/right mutate orientation using Orientation.left/right. applyDamage(int amount) reduces health by positive amount not below zero. copy() returns a deep logical copy, supporting dead tanks.\n\nsrc/main/java/Projectile.java: public class Projectile { private final String shooterId; private Position position; private final Orientation orientation; public Projectile(String shooterId, Position position, Orientation orientation); public String getShooterId(); public Position getPosition(); public Orientation getOrientation(); /* package-private */ void setPosition(Position position); public Projectile copy(); }. Semantics: mutable position set only via setPosition; other fields immutable after construction. copy() returns a new Projectile with same values.\n\nsrc/main/java/ObstacleMap.java: public class ObstacleMap { public static ObstacleMap empty(); public void add(Position p); public boolean isBlocked(Position p); public ObstacleMap copy(); }. Semantics: backed by a Set<Position>; add inserts a blocking cell; isBlocked tests membership; copy returns deep copy.\n\nsrc/main/java/Arena.java: public class Arena { private final int width; private final int height; private final ObstacleMap obstacles; public Arena(int width, int height, ObstacleMap obstacles); public boolean inBounds(Position p); public boolean isObstacle(Position p); public Arena copy(); }. Semantics: validates width>0,height>0; defensively copies obstacles in constructor and copy(). inBounds checks 0<=x<width and 0<=y<height.\n\nsrc/main/java/ScoreBoard.java: public class ScoreBoard { private final java.util.Map<String,Integer> hits; private final java.util.Map<String,Integer> kills; public ScoreBoard(java.util.Collection<String> ids); public void addHit(String id); public void addKill(String id); public int getHits(String id); public int getKills(String id); public int getScore(String id); public java.util.Map<String,Integer> asMap(); public ScoreBoard copy(); public void reset(java.util.Collection<String> tankIds); }. Semantics: initialize hits/kills=0 for each provided id; add* increments; getScore = hits + 5*kills; asMap returns a snapshot map of total scores per id or a structured map per requirement (implement consistently with tests); copy returns deep copy; reset reinitializes hits/kills to zero for the provided ids (clears unknown ids), and is invoked from GameEngine.reset via scoreBoard.reset(initialTanks.keySet()).\n\nsrc/main/java/GameEngine.java: public class GameEngine { private Arena arena; private final Arena initialArena; private java.util.Map<String,Tank> tanks; private final java.util.Map<String,Tank> initialTanks; private final ScoreBoard scoreBoard; public GameEngine(Arena arena, java.util.List<Tank> tanks); public void enqueue(String tankId, Command cmd); public void tick(); public void reset(); public java.util.Map<String,Tank> getTanksCopy(); public java.util.List<Projectile> getProjectilesCopy(); public ScoreBoard getScoreBoardCopy(); public Arena getArena(); public String winner(); }. Constructor semantics: validate at least two initially alive tanks (health>0), unique ids, distinct positions, all in-bounds and not obstacles. Deep-copy arena (store copy in both initialArena and current arena as required). Initialize one empty FIFO command queue per tank. For every supplied tank perform literally: Tank initialCopy = tank.copy(); Tank currentCopy = tank.copy(); this.initialTanks.put(tank.getId(), initialCopy); this.tanks.put(tank.getId(), currentCopy);. ScoreBoard constructed with initial alive tank ids. No Java Stream API anywhere. enqueue adds Command to the FIFO for the given tank id if it exists. tick: process at most one command for each live tank in lexicographic id order. MOVE_FORWARD: attempt to move one cell forward unless out-of-bounds, obstacle, or occupied by a live tank; dead tanks do not block. TURN_LEFT/RIGHT rotate orientation. FIRE: spawn a projectile in the forward cell only if in bounds and not an obstacle. After commands, advance all projectiles one cell using Projectile.setPosition; remove any projectile out-of-bounds or into an obstacle; on first non-owner live tank occupying the new cell, applyDamage(1), scoreBoard.addHit(shooterId), and if tank health reaches 0 also scoreBoard.addKill(shooterId); consume projectile upon hit. reset: assign this.arena = initialArena.copy(); assign this.tanks = new java.util.HashMap<String,Tank>(); iterate initialTanks.values() (no streams) to copy each into current tanks; recreate empty command queues; clear all projectiles; and call scoreBoard.reset(initialTanks.keySet()). getTanksCopy/getProjectilesCopy/getScoreBoardCopy return fresh defensive copies. winner: return sole surviving tank id only when exactly one of the at-least-two initial tanks is alive; otherwise return null. All runtime state mutations occur on the current tanks map; initialTanks is never mutated after construction.\n\nsrc/main/java/Main.java: public final class Main { public static void main(String[] args); }. Semantics: thin headless demo. Build a small arena and two tanks, create engine, optionally enqueue a couple of commands, tick once, then print one concise snapshot of tank ids and scores; use fully qualified java.util.Arrays.asList(...); do not loop or call System.exit.\n\nImport/usage rules: All classes are in the default package; no package declarations. Tests only use public APIs described above and must fetch fresh copies from GameEngine after each tick/reset. GameEngine never uses java.util.stream.*.",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Maven Java 11 config, JUnit Jupiter test dependency (scope test), and JUnit 5-capable Surefire plugin so mvn -q test runs"
+      ],
+      [
+        "src/main/java/Position.java",
+        "domain-entity; immutable grid coordinate with translate, equals/hashCode value semantics"
+      ],
+      [
+        "src/main/java/Orientation.java",
+        "domain-entity; enum NORTH/EAST/SOUTH/WEST with dx()/dy() and left()/right() rotation"
+      ],
+      [
+        "src/main/java/Command.java",
+        "domain-entity; enum of MOVE_FORWARD, TURN_LEFT, TURN_RIGHT, FIRE"
+      ],
+      [
+        "src/main/java/Tank.java",
+        "domain-entity; mutable tank with id, position, orientation, health, rotation, damage, copy; validation on construction"
+      ],
+      [
+        "src/main/java/Projectile.java",
+        "domain-entity; projectile with shooterId, mutable position via setPosition only, orientation, copy"
+      ],
+      [
+        "src/main/java/ObstacleMap.java",
+        "domain-entity; set-backed obstacles with add/isBlocked/copy"
+      ],
+      [
+        "src/main/java/Arena.java",
+        "domain-entity; width/height bounds and obstacle checking; defensive copy"
+      ],
+      [
+        "src/main/java/ScoreBoard.java",
+        "domain-entity; hits/kills maps, score=h+5*k, reset, asMap, copy"
+      ],
+      [
+        "src/main/java/GameEngine.java",
+        "orchestration; deterministic tick, queues, movement, firing, projectile advance/collision, scoring, reset, winner; strict ownership/copy rules; no streams"
+      ],
+      [
+        "src/main/java/Main.java",
+        "environment-dependent; thin demo, builds small arena/tanks/engine, enqueues few commands, tick, prints snapshot, exits"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; exactly three JUnit 5 tests for smoke, blocked move/turn/reset, and hit/kill fixture"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/Position.java",
+        "src/main/java/Orientation.java",
+        "src/main/java/Command.java",
+        "src/main/java/Tank.java",
+        "src/main/java/Projectile.java",
+        "src/main/java/ObstacleMap.java",
+        "src/main/java/Arena.java",
+        "src/main/java/ScoreBoard.java",
+        "src/main/java/GameEngine.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Java 11",
+      "Maven >= 3.6",
+      "JUnit Jupiter (org.junit.jupiter:junit-jupiter, test scope)",
+      "Maven Surefire Plugin (JUnit 5 capable)"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "The repository is a Java 11 Maven project. All classes live in the default package under src/main/java. Core logic modules (Position, Orientation, Command, Tank, Projectile, ObstacleMap, Arena, ScoreBoard, GameEngine) are pure and headless; Main is the only environment-dependent runtime entry. Tests live in src/test/java/MainTest.java and use JUnit Jupiter only. Tests interact via the canonical public API, especially GameEngine.enqueue(), tick(), reset(), getTanksCopy(), getProjectilesCopy(), getScoreBoardCopy(), and winner(). Tests must never retain constructor-supplied Tank instances and must always fetch fresh copies after each tick/reset.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "test_target_single_file": true,
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/Position.java",
+      "src/main/java/Orientation.java",
+      "src/main/java/Command.java",
+      "src/main/java/Tank.java",
+      "src/main/java/Projectile.java",
+      "src/main/java/ObstacleMap.java",
+      "src/main/java/Arena.java",
+      "src/main/java/ScoreBoard.java",
+      "src/main/java/GameEngine.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Main.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/GameEngine.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Arena.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/ObstacleMap.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Tank.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Position.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Orientation.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Command.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/ScoreBoard.java"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "Smoke: Main.main(new String[0]) returns normally (no exceptions)"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Blocked move + turn + reset: Arena(6,5) with obstacle at (2,2); Alice(1,2,EAST,3), Bob(4,2,WEST,3). Verify Alice doesn’t move into obstacle after MOVE_FORWARD; after TURN_RIGHT becomes SOUTH; reset restores EAST and health3; zero score; no projectiles"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Hit/kill: Empty Arena(6,5); Alice(1,2,EAST,3), Bob(3,2,WEST,1); enqueue Alice FIRE; single tick spawns at (2,2), advances to (3,2), hits Bob; assert Bob health0, Alice hits1/kills1/score6, no projectiles, winner is Alice"
+      ]
+    ]
+  }
+}

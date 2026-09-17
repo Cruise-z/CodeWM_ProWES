@@ -1,0 +1,37 @@
+classDiagram
+    class Record {
+        +std::string id
+        +std::string name
+        +std::string email
+        +std::uint64_t revision
+        +std::uint64_t updated_at
+        +Record(std::string id, std::string name, std::string email, std::uint64_t revision, std::uint64_t updated_at)
+        +bool operator==(const Record&) const
+    }
+    class ManualClock {
+        +ManualClock(std::uint64_t initial)
+        +std::uint64_t now() const noexcept
+        +void advance(std::uint64_t delta) noexcept
+        -std::uint64_t current
+    }
+    class Repository {
+        +bool insert(const Record&)
+        +std::optional~Record~ find(const std::string&) const
+        +bool replace(const Record&)
+        +bool erase(const std::string&)
+        +std::vector~Record~ list() const
+        -std::map~std::string, Record~ records_
+    }
+    class CrudService {
+        +CrudService(Repository&, ManualClock&)
+        +Record create(const std::string& id, const std::string& name, const std::string& email)
+        +std::optional~Record~ get(const std::string& id) const
+        +Record update(const std::string& id, const std::string& name, const std::string& email)
+        +bool remove(const std::string& id)
+        +std::vector~Record~ list() const
+        -Repository& repository_
+        -ManualClock& clock_
+    }
+    CrudService --> Repository
+    CrudService --> ManualClock
+    Repository --> Record

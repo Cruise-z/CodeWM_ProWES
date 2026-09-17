@@ -1,0 +1,184 @@
+{
+  "20260914114046.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/ReleaseState.java",
+      "src/main/java/Version.java",
+      "src/main/java/Template.java",
+      "src/main/java/Validator.java",
+      "src/main/java/PressRelease.java",
+      "src/main/java/TaggingSystem.java",
+      "src/main/java/RenderService.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Build and test with: mvn -q test. Runtime entry point is src/main/java/Main.java (default package). Exactly one protocol-level test target exists: src/test/java/MainTest.java using JUnit Jupiter 5.x, containing exactly three tests. No manual interaction is required during tests. Additional implementation files do not alter the protocol-required files.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 10,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 10,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 10,
+      "task_list_count": 10
+    },
+    "Full API spec": "All classes are in the default package (no package declarations). Allowed dependencies: PressRelease depends on ReleaseState, Version, Template, Validator; TaggingSystem depends on PressRelease; RenderService depends on PressRelease; Main depends on Template, PressRelease, RenderService (and may reference TaggingSystem in the demo). Tests import only the public types defined below.\n\npom.xml:\n- Declares Java 11 compilation via maven-compiler-plugin (source/target 11).\n- Declares test-scoped org.junit.jupiter:junit-jupiter (5.x). Configures maven-surefire-plugin 3.1.2 to run JUnit 5.\n\nsrc/main/java/ReleaseState.java:\n- public enum ReleaseState { DRAFT, REVIEW, PUBLISHED }\n- Sole definition site. Used by PressRelease to represent lifecycle state.\n\nsrc/main/java/Version.java:\n- public final class Version\n  - private final int number;\n  - private final String renderedText;\n  - public Version(int number, String renderedText)\n  - public int getNumber()\n  - public String getRenderedText()\n  - public boolean equals(Object o)\n  - public int hashCode()\n  - public String toString()\n- Semantics: Value object with value-based equality by number and renderedText. Immutable; constructor stores given values without mutation; getters return stored values; toString returns a stable human-readable representation including both fields.\n\nsrc/main/java/Template.java:\n- public final class Template\n  - private final String name;\n  - private final String content;\n  - public Template(String name, String content)\n  - public String getName()\n  - public String getContent()\n  - public String applyCustomFields(java.util.Map<String, String> fields)\n- Semantics: Immutable template with deterministic placeholder substitution. The literal placeholder form is {{key}}. applyCustomFields:\n  - Treat null fields map as empty.\n  - For each entry in fields, replace all literal occurrences of {{key}} in content with value (null values are treated as empty string \"\").\n  - Missing placeholders remain unchanged. No side effects. Deterministic: same inputs produce same outputs.\n\nsrc/main/java/Validator.java:\n- public final class Validator\n  - public static boolean validateHeadline(String text)\n  - public static boolean validateBody(String text)\n  - public static boolean validateContact(String text)\n- Semantics: Stateless validation utilities. validateHeadline/validateBody return true iff text is non-null and contains at least one non-whitespace character (trim().isEmpty() == false). validateContact returns true iff text is non-null, contains exactly one '@', and both the local part (before '@') and domain part (after '@') are non-empty after trimming. All methods return false for invalid inputs and never throw.\n\nsrc/main/java/PressRelease.java:\n- public final class PressRelease\n  - private final String id, headline, body, contact;\n  - private final Template template;\n  - private final java.util.LinkedHashMap<String,String> customFields; (defensive copy)\n  - private ReleaseState state; (initially DRAFT)\n  - private final java.util.LinkedHashSet<String> tags; (insertion ordered, trimmed, unique)\n  - private final java.util.List<Version> versionHistory; (insertion ordered)\n  - public PressRelease(String id, String headline, String body, String contact, Template template, java.util.Map<String,String> customFields)\n  - public String getId()\n  - public String getHeadline()\n  - public String getBody()\n  - public String getContact()\n  - public ReleaseState getState()\n  - public boolean validate()\n  - public void submitForReview()\n  - public void publish()\n  - public void addTag(String tag)\n  - public java.util.List<String> getTags()\n  - public String renderPlainText()\n  - public java.util.List<Version> getVersionHistory()\n- Semantics:\n  - Construction: stores provided values; copies customFields into an insertion-ordered LinkedHashMap (null map treated as empty); initializes state to DRAFT; tags empty; versionHistory empty.\n  - validate(): returns Validator.validateHeadline(headline) && Validator.validateBody(body) && Validator.validateContact(contact). No side effects.\n  - submitForReview(): Requires current state == DRAFT and validate() == true. On success, state transitions to REVIEW. Otherwise throws IllegalStateException.\n  - publish(): Requires current state == REVIEW. On success, appends exactly one new Version(1, renderPlainText()) to versionHistory if this is the first publication (i.e., versionHistory is empty) and sets state to PUBLISHED. Any call when not in REVIEW throws IllegalStateException. No randomness/clock involved.\n  - addTag(String tag): Ignores null or blank input. Stores trimmed tag. Maintains insertion order and uniqueness (no duplicate entries). No exception for duplicates; duplicates are ignored.\n  - getTags(): Returns a defensive copy (java.util.ArrayList) of tags preserving insertion order.\n  - renderPlainText(): Builds a new field map with keys \"headline\", \"body\", \"contact\" using the instance fields, then overlays/extends with constructor customFields (constructor fields take effect in addition to the three built-ins; if the map contains these keys, their values will be used by Template substitution rules). Delegates to template.applyCustomFields(map) and returns result. No mutation of internal collections.\n  - getVersionHistory(): Returns a defensive copy (java.util.ArrayList) of versions preserving insertion order.\n  - Error behavior: submitForReview()/publish() throw IllegalStateException on invalid transitions; other methods avoid throwing for invalid data, except standard NPE if required constructor arguments (like template) are null and dereferenced later by caller; tests rely only on specified behavior.\n\nsrc/main/java/TaggingSystem.java:\n- public final class TaggingSystem\n  - public static java.util.List<PressRelease> searchByTag(java.util.List<PressRelease> releases, String tag)\n- Semantics: Returns a new list preserving the input order of releases that contain the exact trimmed tag in their getTags() collection. If releases is null or tag is null, returns an empty list. The tag argument is trimmed before matching; matching is exact (case-sensitive). Stateless and deterministic.\n\nsrc/main/java/RenderService.java:\n- public final class RenderService\n  - public static String toPlainText(PressRelease release)\n- Semantics: Stateless delegator. Returns release.renderPlainText(). If release is null, throws NullPointerException due to dereference; tests do not require special null handling.\n\nsrc/main/java/Main.java:\n- public final class Main\n  - public static void main(String[] args)\n- Semantics: Thin, non-interactive demo that constructs a Template and a PressRelease with simple values, checks validate(), performs submitForReview() and publish(), renders plain text via RenderService.toPlainText(), prints one or two lines, and exits normally. No input, no loops, no network/filesystem/clock access.\n\nsrc/test/java/MainTest.java:\n- JUnit 5 test class with exactly three @Test methods:\n  1) Asserts Main.main(new String[0]) returns without throwing.\n  2) Asserts Template(\"basic\",\"{{headline}}|{{body}}|{{contact}}\") substitution for fields (headline=Hello, body=Body, contact=a@b.com) yields exactly \"Hello|Body|a@b.com\"; Validator accepts those three values and rejects a blank headline and contact \"invalid\".\n  3) Constructs PressRelease id \"r1\" using the same values and template; asserts lifecycle DRAFT -> submitForReview() -> REVIEW; addTag(\"media\"); publish() -> PUBLISHED; RenderService.toPlainText(release) is \"Hello|Body|a@b.com\"; versionHistory size is 1 with Version.getNumber()==1 and renderedText equal; TaggingSystem.searchByTag(java.util.Arrays.asList(release), \"media\") returns a list containing only that release.\n\nImport direction and ownership constraints:\n- ReleaseState and Version are sole owners in their respective files and must not be nested elsewhere.\n- Allowed reference direction: ReleaseState/Version/Template/Validator are foundational; PressRelease may reference them; TaggingSystem and RenderService may reference PressRelease; Main may reference any of the above. No module references tests.\n- All classes reside in the default package to avoid package/import mismatches.\n- Java 11 syntax only; no records or newer features.",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Maven build descriptor for Java 11, JUnit Jupiter 5.x (test scope), Maven Surefire 3.1.2 enabling JUnit 5; no external runtime deps."
+      ],
+      [
+        "src/main/java/ReleaseState.java",
+        "domain-entity; sole enum owner of DRAFT, REVIEW, PUBLISHED; referenced by PressRelease."
+      ],
+      [
+        "src/main/java/Version.java",
+        "domain-entity; value object with number and renderedText; value-based equality/hash; used by PressRelease for version history."
+      ],
+      [
+        "src/main/java/Template.java",
+        "pure-rule; immutable name/content with deterministic {{key}} substitution; used by PressRelease.renderPlainText."
+      ],
+      [
+        "src/main/java/Validator.java",
+        "pure-rule; stateless validation for headline/body/contact; used by PressRelease.validate and submitForReview guard."
+      ],
+      [
+        "src/main/java/PressRelease.java",
+        "domain-entity; aggregate root: identity, content, custom fields, tags, state, version history, lifecycle ops; depends on ReleaseState, Version, Template, Validator."
+      ],
+      [
+        "src/main/java/TaggingSystem.java",
+        "pure-rule; stateless searchByTag preserving input order by exact trimmed tag; depends on PressRelease."
+      ],
+      [
+        "src/main/java/RenderService.java",
+        "pure-rule; stateless toPlainText delegating to PressRelease.renderPlainText; depends on PressRelease."
+      ],
+      [
+        "src/main/java/Main.java",
+        "runtime/bootstrap; thin demo wiring: constructs Template/PressRelease, validates, transitions, renders, prints; no interaction."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; single JUnit 5 test file with exactly three tests covering: runtime entry, template/validator fixtures, lifecycle/version/tags/search."
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/ReleaseState.java",
+        "src/main/java/Version.java",
+        "src/main/java/Template.java",
+        "src/main/java/Validator.java",
+        "src/main/java/PressRelease.java",
+        "src/main/java/TaggingSystem.java",
+        "src/main/java/RenderService.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Java 11 (JDK 11)",
+      "Apache Maven >= 3.8",
+      "JUnit Jupiter 5.x (test scope only)",
+      "Maven Surefire Plugin 3.1.2"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "The repository has exactly 10 files: pom.xml; main sources: ReleaseState.java, Version.java, Template.java, Validator.java, PressRelease.java, TaggingSystem.java, RenderService.java, Main.java; single test: src/test/java/MainTest.java. All classes are in the default package. Core domain logic is pure and headless: no IO, network, filesystem, clock, or randomness. Main.java is the only environment-dependent demo. The test uses only the canonical public API and asserts deterministic outcomes with exactly three JUnit 5 tests.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/ReleaseState.java",
+      "src/main/java/Version.java",
+      "src/main/java/Template.java",
+      "src/main/java/Validator.java",
+      "src/main/java/PressRelease.java",
+      "src/main/java/TaggingSystem.java",
+      "src/main/java/RenderService.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Main.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Template.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Validator.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/PressRelease.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/TaggingSystem.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/RenderService.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/Version.java"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "src/main/java/ReleaseState.java"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "Runtime wiring: assert Main.main(new String[0]) returns normally without interaction."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Template substitution and Validator: Template(\"basic\",\"{{headline}}|{{body}}|{{contact}}\") with fields maps to Hello|Body|a@b.com; Validator accepts those and rejects blank headline and contact \"invalid\"."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "PressRelease lifecycle: start DRAFT, submitForReview -> REVIEW, add tag \"media\", publish -> PUBLISHED, render exact Hello|Body|a@b.com, version history size 1 with Version number 1 and same text, TaggingSystem.searchByTag([...],\"media\") returns only that release."
+      ]
+    ]
+  }
+}

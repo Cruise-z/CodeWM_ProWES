@@ -1,49 +1,118 @@
-# CodeWM_ProWES: Project-Structured Evaluation for LLM-Generated Code Watermarking
+# ProWES Artifact
 
-This repository contains the reference implementation and artifact for the paper:
+This repository is the reviewer-facing artifact for *Beyond Snippets: A
+Project-Structured Empirical Study of Watermarking for LLM-Generated Code*.
+It is organized around the paper's research questions and preserves the
+evidence chain
 
-**“A Systematic Empirical Study on the Properties of Watermarking for LLM-Generated Code”** (ISSTA 2026)
+```text
+input/configuration -> intermediate artifact -> raw observation
+                    -> statistical script -> paper table/figure
+```
 
-It provides:
-- **ProWES** (**Pro**ject-structured **W**atermarking **E**valuation **S**ystem) for end-to-end evaluation of **logits-bias** watermarking on *multi-file, buildable, executable* repositories.
-- **metaProjectDEV**, a *project-level* benchmark dataset for measuring applicability + detectability of logits-bias watermarks.
-- A **randomized, channel-stratified, strength-controlled transformation** framework for robustness evaluation of **semantic-preserving** watermarking methods.
-- Scripts to reproduce paper results for **RQ1 / RQ2 / RQ3**.
+## Quick start
 
-> Note: Stage-0 architecture synthesis uses MetaGPT + a proprietary LLM API in the paper setup. The artifact is designed to be reproducible via provided checkpoints / prepared datasets; if you want to re-run Stage-0, you’ll need your own compatible API access.
+```bash
+# Check the released RQ1 bundles and the formal RQ2 evidence.
+python tools/verify_rq1_evidence.py
+python tools/verify_rq2_evidence.py
 
----
+# Regenerate all currently supported paper outputs (RQ3 is skipped with a
+# disclosure because its raw timing bundle was not supplied).
+./paper_reproduction/reproduce_all.sh
 
-## Applibility test:
+# Confirm reviewer-facing first-party source and documentation are English.
+python tools/check_release_language.py
 
-**ProWES** is a 3-stage pipeline tailored for project-structured code watermark evaluation:
+# Or run one RQ independently.
+./paper_reproduction/reproduce_rq1.sh
+./paper_reproduction/reproduce_rq2.sh
 
-![image-20260530120620922](./README.assets/image-20260530120620922.png)
+# Verify every released payload against SHA256SUMS.txt.
+python tools/artifact_manifest.py --verify
+```
 
-- **Stage 0 — Architecture Synthesis**
-  - Generates an “ideal” repository blueprint (file list, data structures, interfaces, call flow) and a self-test suite.
-- **Stage 1 — Checkpointed Code Generation**
-  - Resumes from Stage-0 checkpoint; generates multi-file source code with **watermark embedded during decoding** (logits-bias watermarking).
-- **Stage 2 — Automated Docker Test**
-  - Builds and runs the repository in Docker; classifies runtime outcomes (Pass / Compilation Error / Runtime Error / Test Error).
+The reproduction steps do not call an LLM or retrain a model. They rebuild
+paper outputs from released observations and statistical summaries. Full RQ2
+experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 
-This setup exposes failures that snippet/function-level benchmarks cannot capture (e.g., cross-file consistency, dependency resolution, build/test integration).
+## Layout
 
-### Instructions for Use
+| Path | Purpose |
+|---|---|
+| `00_common/` | Environment, hardware, revisions, upstream repositories, and disclosure of known gaps. |
+| `RQ1/` | Latest logits-bias implementation, task specifications, rendered Stage-0 prompts, serialized architecture checkpoints, initial repositories, and evaluator. |
+| `RQ2/` | Fresh-training, rule attack, MBXP, LLM+RAG, detector, and statistics source code. |
+| `RQ3/` | Timing hooks plus an explicit disclosure of the missing raw timing bundle. |
+| `results/RQ1/` | Original RQ1 archives plus expanded applicability and detectability evidence. |
+| `results/RQ2/` | Formal RQ2 datasets/splits, checkpoints, logs, raw attacks, predictions, MBXP executions, LLM manifests/responses, statistics, tables, and figures. |
+| `paper_reproduction/` | Reviewer entry points for rebuilding paper outputs. |
+| `ARTIFACT_MANIFEST.csv/json` | Machine-readable file-to-RQ/evidence map. |
+| `SHA256SUMS.txt` | Integrity digests for the released payload. |
 
-1. `./1_Applibility/datasets` contains some of the prompts used in the evaluation, along with the generated code repositories.
-2. The remaining content is located in the subfolders under `./1_Applibility/DT`. Each subfolder includes a `README.md` file with instructions for use, so please refer to those files when operating it.
+See `ARTIFACT_COMPLETENESS.md` before release. It distinguishes present
+evidence from material that was not found in the supplied workspaces. No
+missing observation was synthesized.
 
-We will further refine the overall layout in future updates to improve readability and make reproduction more convenient.
+## Scope and important boundaries
 
-## Robustness test:
+- RQ1 contains 9,141 point-level applicability rows, 298 batch summaries, four
+  aggregate detectability logs, and reproducible derived tables/figures. The
+  supplied bundles do not contain per-point Docker logs/repository snapshots,
+  the complete baseline-attempt/replay ledger, or per-sample detector scores;
+  those portions of the ideal evidence chain remain explicitly incomplete.
+- RQ2 is complete for the paper's formal fresh-checkpoint, rule-based, MBXP,
+  and 1,000-request LLM+RAG analyses. The supplied CSN training corpora were
+  not present in the release workspace; stable test observations and cohort
+  UIDs are present, while the original CSN train/validation downloads must be
+  obtained as documented by SrcMarker.
+- Raw RQ3 timing records were not present in either supplied experiment
+  repository. Timing instrumentation is retained, but Table X cannot honestly
+  be recomputed from this handoff alone.
+- API credentials are deliberately excluded. Formal LLM rows retain request
+  parameters, per-sample seeds, response identifiers, returned model snapshot,
+  token usage, retrieved rules, prompt digest, raw response-derived source,
+  and validity status.
+- Chinese text is absent from reviewer-facing first-party scripts and
+  documentation checked by `tools/check_release_language.py`. Immutable raw
+  observations, generated Stage-0 artifacts, and frozen third-party/upstream
+  snapshots remain byte-faithful and may contain multilingual text; see
+  `00_common/LANGUAGE_AUDIT.md`.
 
-Inspired by Dual-Channel Constraints theory, we construct a hierarchical code transformation framework. This framework supports multiple programming languages and provides a diverse set of transformations. In the following, we evaluate the robustness of existing semantic-preserving watermarking methods under randomized, channel-stratified code transformation attacks:![image-20260130205112564](./README.assets/image-20260130205112564.png)
+## Large files
 
-### Instructions for Use
+Eight `models_best.pt` files are tracked with Git LFS. Together they are about
+4.3 GB and are the exact checkpoints used for final RQ2 detection. Reviewers
+who only need the reported tables can skip LFS checkout and use the already
+released statistics; checkpoint verification and detector reruns require the
+LFS objects.
 
-1. `./2_Robustness` contains the obfuscators constructed in the paper.
-2. `./2_Robustness/project` contains the adaptation scripts used to evaluate other watermarking methods under obfuscation attacks. 
+## Facts checked by the verifiers
 
-For the remaining content, please refer to the usage instructions provided in the repositories of the other watermarking methods for reproduction.
+RQ1:
 
+- 9,141 applicability points: 9,068 evaluated and 73 explicitly excluded,
+  across 302 parameter runs.
+- 298 retained batch summaries.
+- Four detectability repositories, five methods, 20 positive/20 negative
+  samples at each of four strengths, and 120 audited numeric table cells with
+  zero mismatches.
+
+RQ2:
+
+- 8 fresh random-initialization models, seed 42, 25 epochs, 4-bit payload.
+- 32 method/dataset/channel rule-robustness cells.
+- 9,444 post-transformation passes among 9,572 changed and syntax-valid MBXP
+  programs (weighted EPR 98.66%).
+- 1,000 LLM+RAG requests: 972 valid attacks, 23 no-ops, 5 syntax-invalid
+  outputs, and no provider errors; returned snapshot `gpt-5-2025-08-07`.
+- 45/45 post-pass programs in the independent LLM+RAG MBXP pilot.
+- 10,000 sample-level paired bootstrap replicates per reported robustness cell.
+
+## Source revisions
+
+The RQ1 source was taken from `CodeWM_ProWES_Logits` commit
+`9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa`. RQ2 was taken from the supplied
+`RQ2_Final_Codex_Release` bundle dated 2026-09-16; its source archive manifest
+is retained at `RQ2/source/SOURCE_MANIFEST.json`. Further provenance is in
+`00_common/upstream_commits/METHODS.md`.

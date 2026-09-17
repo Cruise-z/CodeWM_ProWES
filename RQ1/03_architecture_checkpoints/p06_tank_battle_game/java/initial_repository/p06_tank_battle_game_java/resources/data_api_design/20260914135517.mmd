@@ -1,0 +1,103 @@
+classDiagram
+    class Position {
+        +Position(int x, int y)
+        +int getX()
+        +int getY()
+        +Position translate(int dx, int dy)
+        +boolean equals(Object o)
+        +int hashCode()
+    }
+    enum Orientation {
+        NORTH, EAST, SOUTH, WEST
+        +int dx()
+        +int dy()
+        +Orientation left()
+        +Orientation right()
+    }
+    enum Command {
+        MOVE_FORWARD, TURN_LEFT, TURN_RIGHT, FIRE
+    }
+    class Tank {
+        -String id
+        -Position position
+        -Orientation orientation
+        -int health
+        +Tank(String id, Position position, Orientation orientation, int health)
+        +String getId()
+        +Position getPosition()
+        +Orientation getOrientation()
+        +int getHealth()
+        +boolean isAlive()
+        ~void setPosition(Position position)
+        ~void rotateLeft()
+        ~void rotateRight()
+        ~void applyDamage(int amount)
+        +Tank copy()
+    }
+    class Projectile {
+        -String shooterId
+        -Position position
+        -Orientation orientation
+        +Projectile(String shooterId, Position position, Orientation orientation)
+        +String getShooterId()
+        +Position getPosition()
+        +Orientation getOrientation()
+        ~void setPosition(Position position)
+        +Projectile copy()
+    }
+    class ObstacleMap {
+        +static ObstacleMap empty()
+        +void add(Position p)
+        +boolean isBlocked(Position p)
+        +ObstacleMap copy()
+    }
+    class Arena {
+        -int width
+        -int height
+        -ObstacleMap obstacles
+        +Arena(int width, int height, ObstacleMap obstacles)
+        +boolean inBounds(Position p)
+        +boolean isObstacle(Position p)
+        +Arena copy()
+    }
+    class ScoreBoard {
+        -Map~String,Integer~ hits
+        -Map~String,Integer~ kills
+        +ScoreBoard(Collection~String~ ids)
+        +void addHit(String id)
+        +void addKill(String id)
+        +int getHits(String id)
+        +int getKills(String id)
+        +int getScore(String id)
+        +Map~String,Integer~ asMap()
+        +ScoreBoard copy()
+        +void reset(Collection~String~ tankIds)
+    }
+    class GameEngine {
+        -Arena arena
+        -final Arena initialArena
+        -Map~String,Tank~ tanks
+        -final Map~String,Tank~ initialTanks
+        -final ScoreBoard scoreBoard
+        +GameEngine(Arena arena, List~Tank~ tanks)
+        +void enqueue(String tankId, Command cmd)
+        +void tick()
+        +void reset()
+        +Map~String,Tank~ getTanksCopy()
+        +List~Projectile~ getProjectilesCopy()
+        +ScoreBoard getScoreBoardCopy()
+        +Arena getArena()
+        +String winner()
+    }
+    class Main {
+        +static void main(String[] args)
+    }
+    GameEngine --> Arena
+    GameEngine --> ScoreBoard
+    GameEngine --> Tank
+    GameEngine --> Projectile
+    Arena --> ObstacleMap
+    Tank --> Position
+    Projectile --> Position
+    Orientation --> Tank
+    Orientation --> Projectile

@@ -1,0 +1,65 @@
+{
+  "n_total": 764,
+  "n_baseline_pass": 763,
+  "n_changed": 763,
+  "n_syntax_valid_changed": 763,
+  "n_post_pass": 748,
+  "attack_coverage": 1.0,
+  "syntax_validity_given_changed": 1.0,
+  "EPR_given_valid_changed": 0.9803407601572739,
+  "language": "cpp",
+  "channel": "all",
+  "attack": "rule",
+  "seed": 42,
+  "status_counts": {
+    "baseline_fail": 1,
+    "no_op": 0,
+    "syntax_invalid": 0,
+    "execution_invalid": 15,
+    "valid_attack": 748,
+    "error": 0
+  },
+  "merged_chunks": [
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_0.jsonl",
+      "rows": 96,
+      "sha256": "b51298c140f80ad028abf98660f070c4f19123388e2ed2f8fc99e3eb3c67abf3"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_1.jsonl",
+      "rows": 96,
+      "sha256": "34d988f26591d783fdde7221f281f3d52d9d3225cffc24fb0ebf17ca2ffaf644"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_2.jsonl",
+      "rows": 96,
+      "sha256": "81dc994d1c87e3a9a19301ea928e3885ba23ff770147eb72a26342f96efec9a5"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_3.jsonl",
+      "rows": 96,
+      "sha256": "41f9f2c3637873ec0e7f2f6716b0a9f45c8c9497069c9b93da9a05db2b6e07f1"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_4.jsonl",
+      "rows": 96,
+      "sha256": "f16e2a89c5d7a6213ba827b33cae13ff9a5160865765b91a59ba84f1f96a1c84"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_5.jsonl",
+      "rows": 96,
+      "sha256": "e0b9cbf4fd1ed7d072f813f37d2b5d756d64124f937cad04aad5b1be5ac7203b"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_6.jsonl",
+      "rows": 96,
+      "sha256": "e19d68e596503f3d8146c951823709c374863eab5e7bd038c2ab4a88c75b8a17"
+    },
+    {
+      "path": "outputs/fresh/epr_rule/chunks/mbcpp/all/part_7.jsonl",
+      "rows": 92,
+      "sha256": "fc05ec3a2b6739d50261c28fbbd4f713fde1df5582fc94a5e80928a2ada05448"
+    }
+  ],
+  "output_sha256": "03044b99ac50b84050a7479805a4bc22231bd007288b21d008119d6aa1f931cf"
+}

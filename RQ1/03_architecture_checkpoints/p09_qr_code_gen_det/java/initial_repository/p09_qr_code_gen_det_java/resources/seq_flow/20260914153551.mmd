@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant Main as Main
+    participant Codec as QRCodec
+    participant TE as TextEncoder
+    participant FP as FinderPattern
+    participant ZZ as ZigZag
+    participant MV as MatrixValidator
+    participant Det as QRDetector
+    participant Ren as QRRenderer
+    Main->>Codec: encode("hello-世界")
+    Codec->>MV: ensureValidSize(21)
+    Codec->>TE: encodePayload(text)
+    Codec->>FP: reservedMask(size)
+    Codec->>ZZ: traversal(size,reserved)
+    Codec->>FP: place(matrix)
+    Codec-->>Main: QRMatrix
+    Main->>Ren: render(matrix)
+    Ren-->>Main: String (one line per row)
+    Main->>Codec: decode(matrix)
+    Codec->>FP: verify(matrix)
+    Codec->>Det: extractPayloadBytes(matrix)
+    Det->>Det: readDataBits(matrix)
+    Det->>TE: bitsToBytes(bits)
+    Det->>TE: decodePayload(frame)
+    Codec-->>Main: String
+    Main-->>Main: print concise result; return

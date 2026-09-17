@@ -1,0 +1,47 @@
+{
+  "n_paired": 3130,
+  "n_bits": 4,
+  "clean_BAR": 0.9868210862619808,
+  "attack_BAR": 0.9874600638977635,
+  "DeltaBAR": -0.0006389776357826893,
+  "clean_MAR": 0.9661341853035144,
+  "attack_MAR": 0.9674121405750798,
+  "chance_BAR": 0.5,
+  "chance_MAR": 0.0625,
+  "n_attempted": 3150,
+  "n_changed": 3130,
+  "n_syntax_valid": 3130,
+  "change_rate": 0.9936507936507937,
+  "syntax_valid_rate": 0.9936507936507937,
+  "paired_coverage": 0.9936507936507937,
+  "status_counts": {
+    "no_op": 0,
+    "syntax_invalid": 20,
+    "execution_invalid": 0,
+    "valid_attack": 3130,
+    "error": 0,
+    "unclassified": 0
+  },
+  "bootstrap_95CI": {
+    "clean_BAR": [
+      0.9839456869009585,
+      0.9895367412140575
+    ],
+    "attack_BAR": [
+      0.9847444089456869,
+      0.9900179712460064
+    ],
+    "DeltaBAR": [
+      -0.0013578274760383386,
+      -7.987220447284345e-05
+    ],
+    "clean_MAR": [
+      0.9597444089456869,
+      0.9722044728434505
+    ],
+    "attack_MAR": [
+      0.9610223642172524,
+      0.973482428115016
+    ]
+  }
+}

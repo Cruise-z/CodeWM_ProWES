@@ -1,0 +1,207 @@
+{
+  "20260914120849.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "pom.xml",
+      "src/main/java/Main.java",
+      "src/main/java/Calculator.java",
+      "src/main/java/Tokenizer.java",
+      "src/main/java/Token.java",
+      "src/main/java/TokenType.java",
+      "src/main/java/Parser.java",
+      "src/main/java/CalculationResult.java",
+      "src/main/java/CalculationHistory.java",
+      "src/main/java/HistoryEntry.java",
+      "src/main/java/CalculatorException.java",
+      "src/main/java/TokenizationException.java",
+      "src/main/java/ParseException.java",
+      "src/main/java/EvaluationException.java",
+      "src/main/java/DivisionByZeroException.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Execution Protocol": "Build and test via Maven with mvn -q test. Exactly one protocol-level test file exists: src/test/java/MainTest.java using JUnit 5 (Jupiter). The runtime entry is src/main/java/Main.java but is not invoked during tests. Tests are deterministic, headless, and call the Calculator API directly. No network, filesystem, or interactive IO is used. The pom.xml declares org.junit.jupiter:junit-jupiter (test scope) and a Surefire plugin version that runs JUnit 5.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 16,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 16,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 16,
+      "task_list_count": 16
+    },
+    "Full API spec": "Module: src/main/java/Calculator.java\n- Public class Calculator\n  - Constructors:\n    - Calculator(): creates a calculator with default history capacity (implementation-defined but finite; e.g., 100). No side effects.\n    - Calculator(int historyCapacity): creates with given bounded capacity; capacity must be >= 1; values < 1 are clamped or result in IllegalArgumentException (implementation choice to be consistent in all modules). History initially empty.\n  - Methods:\n    - CalculationResult evaluate(String expression): never throws; validates null or blank input; tokenizes via Tokenizer.tokenize(expression); parses/evaluates via Parser.evaluate(tokens). On success, returns CalculationResult.success with double result, and appends a success HistoryEntry to history. On error (TokenizationException, ParseException, EvaluationException), returns CalculationResult.failure with a human-readable message and appends an error HistoryEntry. Division by zero is reported as an error via message; no exceptions escape to callers.\n    - java.util.List<HistoryEntry> history(): returns an immutable snapshot or unmodifiable view of the current history entries in insertion order (oldest to newest), size <= capacity.\n    - void clearHistory(): removes all entries.\n    - int historyCapacity(): returns the configured capacity.\n\nModule: src/main/java/Tokenizer.java\n- Public class Tokenizer\n  - Methods:\n    - java.util.List<Token> tokenize(String input) throws TokenizationException: Produces tokens from input. Rules: skip ASCII whitespace; numbers are decimal with optional fractional part (e.g., 12, 12.34, .5 is invalid by default; 0.5 valid). Accepts digits and at most one dot per number. Operators: '+', '-', '*', '/'. Parentheses: '(', ')'. Emits EOF token at the end. Throws TokenizationException for invalid characters or malformed numbers (e.g., '1..2').\n\nModule: src/main/java/Token.java\n- Public class Token\n  - Public fields or accessors:\n    - TokenType type: token category.\n    - String text: original lexeme string for debugging/errors.\n    - Double numericValue: non-null only when type == NUMBER; otherwise null.\n  - Constructor:\n    - Token(TokenType type, String text, Double numericValue)\n\nModule: src/main/java/TokenType.java\n- Public enum TokenType { NUMBER, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, EOF }\n\nModule: src/main/java/Parser.java\n- Public class Parser\n  - Methods:\n    - double evaluate(java.util.List<Token> tokens) throws ParseException, EvaluationException: Recursive-descent parser with grammar:\n      expr := term ((PLUS | MINUS) term)*\n      term := factor ((STAR | SLASH) factor)*\n      factor := (MINUS factor) | NUMBER | LPAREN expr RPAREN\n      Semantics: left-associative for PLUS/MINUS and STAR/SLASH. Unary minus binds tighter than multiplicative level (typical recursive-descent via factor). Detects mismatched parentheses and incomplete expressions, throwing ParseException with a clear message. Division by zero throws DivisionByZeroException. No side effects.\n\nModule: src/main/java/CalculationResult.java\n- Public class CalculationResult\n  - Methods:\n    - boolean isSuccess(): true if evaluation succeeded.\n    - double getResult(): valid only when isSuccess() is true; otherwise may throw IllegalStateException.\n    - String getErrorMessage(): non-null when isSuccess() is false; null otherwise.\n  - Static factory or constructor pattern: Implementation ensures immutable state visible to external callers.\n\nModule: src/main/java/CalculationHistory.java\n- Public class CalculationHistory\n  - Constructors:\n    - CalculationHistory(int capacity): capacity must be >= 1; stores entries up to capacity; when adding beyond capacity, evicts oldest entry.\n  - Methods:\n    - void add(HistoryEntry entry): appends, evicting oldest if size reaches capacity.\n    - java.util.List<HistoryEntry> getAll(): returns an unmodifiable list in insertion order.\n    - void clear(): removes all entries.\n    - int capacity(): returns capacity.\n    - int size(): current number of stored entries.\n\nModule: src/main/java/HistoryEntry.java\n- Public class HistoryEntry\n  - Methods:\n    - String getExpression(): original input expression.\n    - boolean isSuccess(): success flag.\n    - Double getNumericResult(): non-null only if success; null if error.\n    - String getErrorMessage(): non-null only if error; null if success.\n  - Constructors or static factories capture creation from Calculator evaluate() paths.\n\nModule: src/main/java/CalculatorException.java\n- Public class CalculatorException extends Exception\n  - Constructor: CalculatorException(String message)\n\nModule: src/main/java/TokenizationException.java\n- Public class TokenizationException extends CalculatorException\n  - Constructor: TokenizationException(String message)\n\nModule: src/main/java/ParseException.java\n- Public class ParseException extends CalculatorException\n  - Constructor: ParseException(String message)\n\nModule: src/main/java/EvaluationException.java\n- Public class EvaluationException extends CalculatorException\n  - Constructor: EvaluationException(String message)\n\nModule: src/main/java/DivisionByZeroException.java\n- Public class DivisionByZeroException extends EvaluationException\n  - Constructor: DivisionByZeroException(): default message like \"Division by zero\"\n\nModule: src/main/java/Main.java\n- Public class Main (default package)\n  - static void main(String[] args): Demonstrates a few calls to Calculator.evaluate and prints results and history. No loops, no input reading, exits successfully.\n\nImports/allowed dependencies:\n- Calculator may depend on Tokenizer, Parser, CalculationHistory, HistoryEntry, CalculationResult, and the exception types internally. Tests and external callers must use only the Calculator public API and DTOs (CalculationResult, HistoryEntry). Tokenizer/Parser are internal mechanics; tests should not call them directly.\n- Tokenizer depends on Token and TokenType only.\n- Parser depends on Token and TokenType and may throw the defined exception types.\n- Runtime-related printing is restricted to Main.java only.\n- All classes are in the default package and reside directly under src/main/java to avoid package/import issues.\n\nError behavior:\n- No checked exceptions escape from Calculator.evaluate; errors are reported via CalculationResult with a stable human-readable message.\n- Null or blank expressions are treated as invalid inputs resulting in a failure CalculationResult.\n- Division by zero is detected and mapped to a failure CalculationResult.\n\nStability guarantees:\n- Operator precedence, associativity, and unary minus semantics are stable as defined above.\n- History ordering and capacity semantics are stable (oldest-eviction policy).",
+    "Logic Analysis": [
+      [
+        "pom.xml",
+        "dependency/build; Maven build descriptor. Declares Java 11, junit-jupiter (test scope), and Maven Surefire plugin pinned for JUnit 5 to ensure tests run. No additional runtime dependencies."
+      ],
+      [
+        "src/main/java/Main.java",
+        "runtime/bootstrap (environment-dependent); Thin demo entrypoint in default package. Instantiates Calculator, evaluates a few expressions, prints results and bounded history, then exits."
+      ],
+      [
+        "src/main/java/Calculator.java",
+        "orchestration; Canonical public API. Responsibilities: coordinate Tokenizer and Parser, wrap outcomes into CalculationResult, manage CalculationHistory bounded storage, expose history() and clearHistory(). Depends on Tokenizer, Parser, CalculationHistory, HistoryEntry, CalculationResult."
+      ],
+      [
+        "src/main/java/Tokenizer.java",
+        "pure-rule; Tokenizes arithmetic expressions. Produces List<Token> from input string, skipping whitespace. Recognizes numbers (decimals), operators (+, -, *, /), parentheses, and EOF. Throws TokenizationException on invalid characters or malformed numbers. Depends on Token, TokenType, TokenizationException."
+      ],
+      [
+        "src/main/java/Token.java",
+        "domain-entity; Value object holding TokenType type, original text, and optional numericValue for NUMBER tokens. Used by Tokenizer and Parser."
+      ],
+      [
+        "src/main/java/TokenType.java",
+        "domain-entity; Enum categories: NUMBER, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, EOF."
+      ],
+      [
+        "src/main/java/Parser.java",
+        "pure-rule; Recursive-descent parser and evaluator. Honors operator precedence (*, / over +, -), left associativity, parentheses, and unary minus. Evaluates tokens to a double. Throws ParseException or EvaluationException (including DivisionByZeroException). Depends on Token, TokenType, ParseException, EvaluationException, DivisionByZeroException."
+      ],
+      [
+        "src/main/java/CalculationResult.java",
+        "domain-entity; DTO encapsulating either success with double result or failure with non-null error message. Immutable externally visible API consumed by callers and tests."
+      ],
+      [
+        "src/main/java/CalculationHistory.java",
+        "domain-entity; Bounded in-memory history store with insertion order retrieval. Evicts oldest entries when capacity exceeded. Provides add, getAll, clear, capacity, size. Depends on HistoryEntry."
+      ],
+      [
+        "src/main/java/HistoryEntry.java",
+        "domain-entity; DTO capturing: expression string, success flag, optional numeric result (Double), optional error message. Used by CalculationHistory and exposed via Calculator.history()."
+      ],
+      [
+        "src/main/java/CalculatorException.java",
+        "pure-rule; Base checked exception for calculator internals. Provides message-only constructor."
+      ],
+      [
+        "src/main/java/TokenizationException.java",
+        "pure-rule; Specific for tokenization errors, extends CalculatorException."
+      ],
+      [
+        "src/main/java/ParseException.java",
+        "pure-rule; Specific for parse errors (e.g., mismatched parentheses, incomplete expressions), extends CalculatorException."
+      ],
+      [
+        "src/main/java/EvaluationException.java",
+        "pure-rule; Specific for evaluation errors (generic arithmetic domain errors), extends CalculatorException."
+      ],
+      [
+        "src/main/java/DivisionByZeroException.java",
+        "pure-rule; Specialization of EvaluationException for division by zero. Provides default message."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "automated-test; Single JUnit 5 test file. Tests Calculator API wiring: precedence with unary minus, division by zero error propagation without escaping exceptions, and bounded history behavior."
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/main/java/Calculator.java",
+        "src/main/java/Tokenizer.java",
+        "src/main/java/Token.java",
+        "src/main/java/TokenType.java",
+        "src/main/java/Parser.java",
+        "src/main/java/CalculationResult.java",
+        "src/main/java/CalculationHistory.java",
+        "src/main/java/HistoryEntry.java",
+        "src/main/java/CalculatorException.java",
+        "src/main/java/TokenizationException.java",
+        "src/main/java/ParseException.java",
+        "src/main/java/EvaluationException.java",
+        "src/main/java/DivisionByZeroException.java"
+      ],
+      "environment_dependent_modules": [
+        "src/main/java/Main.java"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": [
+        "None; tests use only the Calculator API and do not depend on console output or environment-specific behavior."
+      ]
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "Apache Maven >= 3.6",
+      "Java 11 (no preview features)",
+      "JUnit Jupiter (org.junit.jupiter:junit-jupiter, test scope)",
+      "Maven Surefire Plugin pinned to a JUnit 5-compatible version (e.g., 2.22.2 or newer that supports JUnit 5)"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "This Java 11 Maven project adheres to a strict protocol: build file pom.xml, runtime entry src/main/java/Main.java, and a single test file src/test/java/MainTest.java. All implementation classes are in the default package under src/main/java. The canonical public API is the Calculator class exposing evaluate(String), history(), clearHistory(), and historyCapacity(). The core pure logic is in Tokenizer, Parser, Token, TokenType, CalculationResult, CalculationHistory, HistoryEntry, and exception classes. Main.java is a thin demo and not used by tests. Tests import only the canonical API (Calculator and DTOs) and use JUnit Jupiter. No external runtime dependencies beyond JUnit in test scope. The test command is mvn -q test.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "pom.xml",
+      "src/main/java/TokenType.java",
+      "src/main/java/Token.java",
+      "src/main/java/CalculatorException.java",
+      "src/main/java/TokenizationException.java",
+      "src/main/java/ParseException.java",
+      "src/main/java/EvaluationException.java",
+      "src/main/java/DivisionByZeroException.java",
+      "src/main/java/CalculationResult.java",
+      "src/main/java/HistoryEntry.java",
+      "src/main/java/CalculationHistory.java",
+      "src/main/java/Tokenizer.java",
+      "src/main/java/Parser.java",
+      "src/main/java/Calculator.java",
+      "src/main/java/Main.java",
+      "src/test/java/MainTest.java"
+    ],
+    "Test Include Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "import Calculator"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "import CalculationResult"
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "import HistoryEntry"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "src/test/java/MainTest.java",
+        "Runtime wiring and precedence: evaluate(\"-3 + 4*2/(1-5)\") returns success with result -5.0 (unary minus and precedence with parentheses)."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "Error propagation: evaluate(\"1/0\") returns failure CalculationResult with a non-null error message (division by zero), and no exceptions escape the API."
+      ],
+      [
+        "src/test/java/MainTest.java",
+        "History capacity: instantiate Calculator with historyCapacity=2, perform three evaluations (mix of success and error), then assert history size equals 2 and entries are the last two in insertion order."
+      ]
+    ]
+  }
+}

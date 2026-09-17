@@ -1,0 +1,146 @@
+{
+  "20260914123923.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "requirements.txt",
+      "qr_code/payload.py",
+      "qr_code/matrix.py",
+      "qr_code/codec.py",
+      "qr_code/render.py",
+      "qr_code/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Execution Protocol": "Run tests with: python -m pytest -q. There is exactly one protocol-level test file at tests/test_main.py. No manual interaction, network, or OS-dependent behavior is involved. Runtime entry is Main.py under __main__ guard. Additional files do not alter protocol files or introduce extra tests.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 8,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 8,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 8,
+      "task_list_count": 8
+    },
+    "Full API spec": "Module: qr_code/payload.py\n- Function: encode_text(text: str) -> bytes\n  Behavior: Encodes the given Unicode text to bytes using UTF-8 with 'strict' error handling. Raises UnicodeEncodeError if the string contains non-encodable surrogates. Returns the encoded bytes.\n  Notes: No external dependencies; pure function.\n\n- Function: pack_payload(data: bytes) -> list[int]\n  Pre-conditions: len(data) <= 40; 'data' is a built-in bytes instance.\n  Behavior: Constructs a payload bitstream as a list of integers 0/1 in MSB-first order:\n    1) Prefix: 8-bit length header equal to len(data), MSB-first.\n    2) Data: for each byte in data, append 8 bits MSB-first (bit 7 to bit 0).\n    3) Checksum: append 8-bit checksum equal to (sum(data) % 256), MSB-first.\n  Post-conditions: Returns the concatenated list[int] of bits.\n  Errors: Raises ValueError if len(data) > 40 or non-bytes input.\n\n- Function: unpack_payload(bits: list[int]) -> bytes\n  Behavior: Parses a packed payload from a list of 0/1 bits with strict validation.\n    - Validates the bit domain: every element must be int 0 or 1; otherwise ValueError.\n    - Reads first 8 bits MSB-first as length L. Requires 0 <= L <= 40.\n    - Requires at least 8 + L*8 + 8 bits to parse length, data, checksum; otherwise ValueError.\n    - Reads next L bytes (each 8 bits MSB-first) to form data bytes.\n    - Reads next 8 bits as checksum and validates checksum == sum(data) % 256.\n    - All remaining trailing bits, if any, must be zeros only; otherwise ValueError.\n  Returns: bytes of length L.\n  Errors: Raises ValueError on any validation failure (domain, length, truncation, checksum mismatch, or non-zero trailing padding).\n\nModule: qr_code/matrix.py\n- Constants:\n  SIZE: int = 21\n  FINDER_SIZE: int = 5\n  Finder pattern definition (5x5): border=1s, inner ring=0s, center=1.\n\n- Function: place_finder_patterns(matrix: list[list[int]]) -> None\n  Behavior: Mutates the provided 21x21 matrix (list of 21 rows, each list of 21 ints) to place 5x5 finder patterns at top-left (0,0), top-right (0,16), bottom-left (16,0). Existing cells in those regions are overwritten with the exact finder pattern.\n  Errors: Raises ValueError if matrix is not a 21x21 grid or contains non-list rows; however typical usage is internal to builder.\n\n- Function: data_positions() -> list[tuple[int,int]]\n  Behavior: Returns the list of coordinates (r, c) for all cells not part of any finder pattern, enumerated in row-major order from r=0..20, c=0..20. For a 21x21 grid with three 5x5 finders, there are exactly 441 - 75 = 366 positions.\n\n- Function: build_matrix(bits: list[int]) -> list[list[int]]\n  Behavior: Builds a new 21x21 matrix filled with zeros, places finder patterns, then writes the provided bits (must be 0/1) into the data positions in row-major order. If bits contains elements not in {0,1} or has more than 366 elements, raises ValueError. If fewer than 366 bits are provided, remaining data cells stay zero.\n  Returns: A 21x21 matrix (list of lists of ints 0/1).\n\n- Function: validate_matrix(matrix: object) -> bool\n  Behavior: Returns True if and only if matrix is a 21x21 list-of-lists of ints where every value is 0 or 1, finder patterns at (0,0), (0,16), (16,0) exactly match the required 5x5 pattern, and no structural irregularities (ragged rows) exist. Returns False on any violation.\n\n- Function: extract_bits(matrix: list[list[int]]) -> list[int]\n  Behavior: Requires validate_matrix(matrix) to be True. If not, raises ValueError. Otherwise, traverses row-major all non-finder positions and returns exactly 366 bits (0/1) in that order.\n\nModule: qr_code/codec.py\n- Function: generate(text: str) -> list[list[int]]\n  Behavior: Orchestrates encode_text -> pack_payload -> build_matrix. Returns a validated 21x21 matrix representing the encoded text.\n  Errors: Propagates errors from payload encoding/packing and matrix building.\n\n- Function: decode(matrix: list[list[int]]) -> str\n  Behavior: Decodes text by calling extract_bits(matrix), then unpack_payload(bits) to obtain bytes, then bytes.decode('utf-8', 'strict') to produce a Unicode string. If any step fails (invalid matrix, invalid bits, checksum mismatch, or invalid UTF-8), raises ValueError.\n\n- Function: detect(matrix: object) -> bool\n  Behavior: Returns True only when decode(matrix) succeeds without exceptions. Catches validation, checksum, and UTF-8 errors and returns False in those cases.\n\nModule: qr_code/render.py\n- Function: render(matrix: list[list[int]], on: str = '##', off: str = '  ') -> str\n  Behavior: Validates matrix using validate_matrix. Validates that markers 'on' and 'off' are non-empty strings. Produces a textual rendering: for each of 21 rows, maps 1 -> 'on' and 0 -> 'off', concatenates cells to a line, and joins 21 lines with '\\n'. Returns the resulting 21-line string.\n  Errors: Raises ValueError if matrix is invalid or markers are empty.\n\nModule: qr_code/__init__.py\n- Behavior: Explicitly re-exports the canonical functions and constants: encode_text, pack_payload, unpack_payload, place_finder_patterns, data_positions, build_matrix, extract_bits, validate_matrix, generate, decode, detect, render. No aliasing beyond these names.\n\nModule: Main.py\n- Function: run_demo() -> dict\n  Behavior: Demonstrates end-to-end flow: selects a sample text (e.g., 'CodeWM'), calls qr_code.codec.generate to produce a matrix, qr_code.codec.decode to recover text, qr_code.codec.detect to test validity, qr_code.render.render to get ASCII drawing. Returns a dict with exact fields: text (str), decoded (str), detected (bool), size (int == 21), rendered_lines (int == 21).\n\n- Function: main() -> None\n  Behavior: Under if __name__ == '__main__': invokes run_demo() and prints a concise, single-line or minimal output. No user input or interactive behavior.\n\nImport Graph (acyclic and enforced):\n- qr_code/payload.py: imports only standard library; imports no project modules.\n- qr_code/matrix.py: imports only standard library; imports no project modules.\n- qr_code/codec.py: imports from qr_code.payload and qr_code.matrix only.\n- qr_code/render.py: imports validate_matrix from qr_code.matrix only.\n- qr_code/__init__.py: imports from qr_code.payload, qr_code.matrix, qr_code.codec, qr_code.render and re-exports.\n- Main.py: imports from qr_code.codec and qr_code.render.\n\nAdditional Contracts:\n- bytes is the Python built-in; never imported from typing.\n- The 366 extracted data bits flow directly into unpack_payload; no regrouping or reinterpretation is allowed in codec.decode.\n- Maximum payload length is 40 bytes; checksum is 8-bit sum of data bytes modulo 256.\n- Tests import Main.run_demo and functions via qr_code.__init__ re-exports only.\n",
+    "Logic Analysis": [
+      [
+        "requirements.txt",
+        "dependency/build; declares Python-only dependencies (tests run with pytest); no runtime third-party libs"
+      ],
+      [
+        "qr_code/payload.py",
+        "pure-rule; foundational payload encoding/packing/unpacking with strict UTF-8, length, MSB-first bits, checksum, and padding validation"
+      ],
+      [
+        "qr_code/matrix.py",
+        "pure-rule; foundational 21x21 matrix rules, 3 finder patterns, data positions, builder, validator, and extractor"
+      ],
+      [
+        "qr_code/codec.py",
+        "orchestration; composes payload and matrix: generate, decode, detect"
+      ],
+      [
+        "qr_code/render.py",
+        "pure-rule; ASCII renderer depending only on validate_matrix from qr_code.matrix"
+      ],
+      [
+        "qr_code/__init__.py",
+        "package; explicit re-export of canonical API surface"
+      ],
+      [
+        "Main.py",
+        "environment-dependent; thin runtime entry and demo wiring under __main__ guard"
+      ],
+      [
+        "tests/test_main.py",
+        "automated-test; exactly three deterministic pytest tests covering demo contract, Unicode roundtrip/rendering, and corruption/malformed rejection"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "qr_code/payload.py",
+        "qr_code/matrix.py",
+        "qr_code/codec.py",
+        "qr_code/render.py",
+        "qr_code/__init__.py"
+      ],
+      "environment_dependent_modules": [
+        "Main.py"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "Tests are deterministic, headless, and avoid IO/network/GUI",
+      "not_applicable": false,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": [
+        "Pin pytest within a recent major release (e.g., >=7,<8) to keep tests deterministic",
+        "Target Python 3.10 only; avoid typing bytes import; rely on built-in bytes"
+      ]
+    },
+    "Required Other language third-party packages": [],
+    "Required packages": [
+      "pytest>=7.0,<8"
+    ],
+    "Shared Knowledge": "This project implements a deterministic QR-like codec in Python 3.10 with no third-party runtime dependencies. Foundational modules are qr_code/payload.py and qr_code/matrix.py, which import no project modules. Orchestration lives in qr_code/codec.py, and rendering is in qr_code/render.py depending only on validate_matrix. The package aggregator qr_code/__init__.py re-exports the canonical API. Main.py is the environment-dependent runtime entry that wires a demo under a __main__ guard. The single protocol-level test tests/test_main.py imports Main.run_demo and API functions from qr_code/__init__.py (generate, decode, detect, render, validate_matrix, extract_bits, unpack_payload), ensuring headless deterministic behavior and strict contracts, including 366 data bits and strict zero-only padding.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "requirements.txt",
+      "qr_code/payload.py",
+      "qr_code/matrix.py",
+      "qr_code/codec.py",
+      "qr_code/render.py",
+      "qr_code/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.py",
+        "Main.py (imports and uses Main.run_demo)"
+      ],
+      [
+        "tests/test_main.py",
+        "qr_code/__init__.py (imports: generate, decode, detect, render, validate_matrix, extract_bits, unpack_payload)"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.py",
+        "Demo contract: call Main.run_demo(), assert returned dict has fields text, decoded, detected, size, rendered_lines; size==21, rendered_lines==21, detect True for valid generated matrix; main() prints at most one concise line under guard"
+      ],
+      [
+        "tests/test_main.py",
+        "Unicode roundtrip and render: generate matrix from a Unicode string, decode back strictly (UTF-8), ensure 21-line render, and confirm strict zero-only trailing padding enforcement using direct extract_bits->unpack_payload path"
+      ],
+      [
+        "tests/test_main.py",
+        "Corruption/malformed rejection: validate validate_matrix rejects malformed matrices; extract_bits raises on invalid; detect() returns False on corrupted matrix or checksum/UTF-8 errors"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 11,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "completed_at": "2026-09-13T11:56:29.295541+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/cpp/initial_repository/p01_snake_game_cpp",
+  "initial_repository_tree_sha256": "ef91e3b7365cc187397d5f02934ea6993f8cf5af020d7ffe11b2f340baa13649",
+  "missing_required_files": [],
+  "planned_file_count": 12,
+  "planned_files": [
+    "CMakeLists.txt",
+    "include/Types.h",
+    "include/IRandom.h",
+    "include/Board.h",
+    "include/Snake.h",
+    "include/Game.h",
+    "src/Random.cpp",
+    "src/Board.cpp",
+    "src/Snake.cpp",
+    "src/Game.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "prompt_sha256": "ba6ad711134ac616b668c7d1c2632e772a870cc665f4a2c81da1e8c58c7bd3d4",
+  "started_at": "2026-09-13T11:53:30.598438+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p01_snake_game/cpp/architecture/team/team.json",
+  "team_json_sha256": "6d38ed734a9368bde06574600fd9c5343731af32998a6c9fca8094daf7c548a3",
+  "unit_id": "p01_snake_game_cpp",
+  "valid": true
+}

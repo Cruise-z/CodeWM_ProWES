@@ -1,0 +1,63 @@
+Generate a complete medium-size Java 11 repository architecture for: 2048 game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: pom.xml
+- runtime entry: src/main/java/Main.java
+- single test target: src/test/java/MainTest.java
+- test command: mvn -q test
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Use Maven and Java 11 without preview features. Main.java must be in the default package because the evaluator runs Main. Put every other project class directly under src/main/java and keep it in the default package too; do not create package subdirectories or package declarations. This deliberately avoids package/import mismatches in independently generated files. Keep core logic independent from Swing/JavaFX; prefer no GUI and no non-test external dependency. pom.xml MUST declare org.junit.jupiter:junit-jupiter with test scope and a Maven Surefire version that runs JUnit 5; MainTest.java must use JUnit Jupiter only. Repeat this exact dependency contract in the pom.xml task.
+
+
+Project-specific Java correctness contract:
+- Board is the sole owner of one authoritative 4x4 int grid; getGridCopy() returns a deep read-only snapshot, so Game and spawners must never try to mutate the board through getGridCopy()
+- declare one exact mutation API void setCell(int row, int col, int value) with bounds checks and 0-or-power-of-two validation, and use it consistently for deterministic setup and applying every Spawn; do not invent setGridValue, placeTile, setTile, or aliases
+- declare boolean hasTileAtLeast(int value) on Board and use that exact name for win detection; do not invent hasValueAtLeast or aliases
+- declare a simple immutable MoveResult with exact accessors boolean changed() and int scoreGained(); Board.move(Direction) returns it, and Game must use these methods rather than fields
+- Board.move must implement each row/column by reading exactly four values in movement order, compacting nonzero values, merging one equal adjacent pair at most once, compacting/filling with zero, writing all four results back to the authoritative grid, and summing each newly merged tile into scoreGained; forbid generic multi-delta helpers with unused or ambiguous row/column parameters
+- Game.move(Direction) calls Board.move once, adds scoreGained, and spawns exactly one tile only when changed() is true; apply the Spawn via Board.setCell, never via a copied array
+- Game must update status after every move attempt, including an unchanged move: WON iff Board.hasTileAtLeast(2048), otherwise LOST iff !Board.hasAnyMoves(), otherwise IN_PROGRESS
+- initialization/reset must clear the authoritative Board and apply exactly two spawns through Board.setCell; a deterministic SequenceSpawner must consume its documented sequence in order
+- keep MainTest to 2--4 concise deterministic tests using only the canonical methods; do not assert mutations made to arrays returned by getGridCopy()
+- repeat the exact getGridCopy immutability, setCell, hasTileAtLeast, MoveResult, line-merge, spawn-on-change, and status-transition rules in Full API specification, Logic Analysis, Shared Knowledge, and every affected implementation task; vague descriptions are insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 33 functions or methods
+- about 650 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- 4x4 board
+- left right up and down moves
+- single-merge-per-move rule
+- score accumulation
+- deterministic tile spawning
+- win loss and reset states
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

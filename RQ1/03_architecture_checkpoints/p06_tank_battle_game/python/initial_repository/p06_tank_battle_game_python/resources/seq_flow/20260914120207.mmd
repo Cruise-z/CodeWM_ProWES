@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant M as Main
+    participant C as configs.build_default_demo
+    participant G as Game
+    participant SB as ScoreBoard
+    M->>C: build_default_demo()
+    C-->>M: Game(arena:Arena, tanks:dict[str,Tank])
+    M->>G: queue_command("p1", RotateRight())
+    M->>G: tick()
+    G->>G: stable-sort commands by player id
+    G->>G: isinstance dispatch MoveForward/RotateLeft/RotateRight/RotateTo/Fire
+    G->>G: spawn projectile on Fire at barrel_ahead if free
+    G->>G: move all projectiles same tick by speed; resolve collisions; record_hit/record_kill
+    M->>G: snapshot()
+    G-->>M: dict {arena,tanks,projectiles,scores,winner}
+    M->>M: print(snapshot)
+    note over G: winner returns sole surviving id only when exactly one remains alive from at least two initial tanks

@@ -1,0 +1,202 @@
+{
+  "20260914120531.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {
+      "add_test_declared": true,
+      "core_library_declared": true,
+      "declared_headers_match_declared_sources": true,
+      "enable_testing_declared": true,
+      "missing_interface_files": [],
+      "notes": "The core library should compile from src/*.cpp except src/Main.cpp. All headers are self-contained. tests/test_main.cpp includes only include/Calculator.h.",
+      "runtime_links_core_library": true,
+      "suspected_build_breakers": [],
+      "test_links_core_library": true,
+      "tests_include_headers_only": true,
+      "undeclared_test_includes": []
+    },
+    "Canonical File References": [
+      "CMakeLists.txt",
+      "include/Tokens.h",
+      "src/Tokens.cpp",
+      "include/Lexer.h",
+      "src/Lexer.cpp",
+      "include/Parser.h",
+      "src/Parser.cpp",
+      "include/Evaluator.h",
+      "src/Evaluator.cpp",
+      "include/History.h",
+      "src/History.cpp",
+      "include/Calculator.h",
+      "src/Calculator.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Execution Protocol": "Run ctest with: ctest --test-dir build --output-on-failure. Runtime entry is src/Main.cpp. The single protocol test target is tests/test_main.cpp. tests/test_main.cpp includes only declared headers from include/, specifically include/Calculator.h. Both runtime and test executables link against the core library. Tests are deterministic, headless, offline, and require no manual interaction.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 15,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 15,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 15,
+      "task_list_count": 15
+    },
+    "Full API spec": "Module: include/Tokens.h\n- namespace calc\n  - enum class TokenType { Number, Operator, LeftParen, RightParen };\n  - struct Token { TokenType type; double numberValue; char op; std::size_t position; };\n    Semantics: Token represents a lexical unit; for Number tokens, numberValue holds the parsed value; for Operator tokens, op holds one of '+', '-', '*', '/'; position is the 0-based index in the original expression where the token starts.\n  - int precedence(char op) noexcept;\n    Semantics: returns 1 for '+' and '-', 2 for '*' and '/', and -1 for unknown operators. Pure function.\n  - bool isLeftAssociative(char op) noexcept;\n    Semantics: returns true for all supported binary operators '+', '-', '*', '/'. Pure function.\n  - bool isOperatorChar(char c) noexcept;\n    Semantics: returns true if c is one of '+', '-', '*', '/'. Pure function.\n\nModule: include/Lexer.h\n- namespace calc\n  - struct LexResult { bool success; std::vector<Token> tokens; std::string errorMessage; std::size_t errorPosition; };\n    Semantics: On success=true, tokens contains the full token stream; error fields are unused. On success=false, tokens may be partially filled; errorMessage is non-empty and errorPosition indicates the offending character's index.\n  - class Lexer { public: LexResult tokenize(const std::string& input) const; };\n    Contract: tokenize scans input left-to-right, skipping ASCII whitespace. Recognizes decimal numbers with optional single dot, parentheses '(', ')', and operators '+', '-', '*', '/'. Reports errors for invalid characters, malformed numbers (e.g., multiple dots), or empty input by returning success=false with appropriate errorMessage and errorPosition. Position stored in each Token reflects the start index of that token in the input string.\n\nModule: include/Parser.h\n- namespace calc\n  - struct ParseResult { bool success; std::vector<Token> rpn; std::string errorMessage; std::size_t errorPosition; };\n    Semantics: On success=true, rpn contains tokens in Reverse Polish Notation suitable for stack evaluation. On success=false, errorMessage is non-empty and errorPosition references the position of the token causing the parse error (e.g., mismatched parentheses or unexpected operator/operand ordering).\n  - class Parser { public: ParseResult toRPN(const std::vector<Token>& tokens) const; };\n    Contract: toRPN implements the shunting-yard algorithm using precedence() and isLeftAssociative() from Tokens.h. Validates balanced parentheses and proper token sequence (no two numbers adjacent without operator, no operator at start/end, etc.). Unary operators are not supported; a leading '-' is treated as a binary operator and will yield an error if no left operand is present.\n\nModule: include/Evaluator.h\n- namespace calc\n  - struct EvalResult { bool success; double value; std::string errorMessage; std::size_t errorPosition; };\n    Semantics: On success=true, value holds the computation result; on error, success=false with non-empty errorMessage and errorPosition referencing the source position of the failing operator (e.g., division by zero) or token (e.g., insufficient operands).\n  - class Evaluator { public: EvalResult evaluateRPN(const std::vector<Token>& rpn) const; };\n    Contract: evaluateRPN performs stack-based execution. For Number tokens, pushes numberValue. For Operator tokens, pops two operands (left, right) and applies op. If the stack has fewer than two operands, returns error. Division by zero returns error with errorPosition set from the operator token's position. No side effects.\n\nModule: include/History.h\n- namespace calc\n  - struct HistoryEntry { std::string expression; double result; };\n  - class History {\n      public:\n        void record(const std::string& expr, double value);\n        const std::vector<HistoryEntry>& entries() const noexcept;\n        void clear() noexcept;\n    };\n    Semantics: History stores only successful evaluations in order. entries() returns a const reference valid for the History object's lifetime.\n\nModule: include/Calculator.h\n- namespace calc\n  - struct EvaluationOutcome { bool success; double value; std::string errorMessage; std::size_t errorPosition; };\n  - class Calculator {\n      public:\n        Calculator();\n        EvaluationOutcome evaluate(const std::string& expression);\n        const std::vector<HistoryEntry>& history() const noexcept;\n        void clearHistory() noexcept;\n      private:\n        Lexer lexer_;\n        Parser parser_;\n        Evaluator evaluator_;\n        History history_;\n    };\n    Contract: evaluate orchestrates the pipeline: tokenize -> toRPN -> evaluateRPN. On the first error, returns an EvaluationOutcome mirroring the underlying component's error fields. On success, records the expression and computed value into History and returns success=true with the value. history() exposes read-only view of stored HistoryEntry items.\n\nInclude direction rules:\n- include/Calculator.h may include include/Lexer.h, include/Parser.h, include/Evaluator.h, include/History.h.\n- include/Lexer.h, include/Parser.h, include/Evaluator.h include include/Tokens.h.\n- Implementation files include their matching headers and any required C++ standard headers. No circular includes are allowed.\n\nError behavior summary:\n- Lexer::tokenize: returns success=false for invalid character, malformed number, or empty input; errorPosition is the offending index (0-based).\n- Parser::toRPN: returns success=false for mismatched parentheses, unexpected token order, or unsupported unary operator; errorPosition is the position of the problematic token.\n- Evaluator::evaluateRPN: returns success=false for insufficient operands or division by zero; errorPosition is taken from the operator token.\n- Calculator::evaluate: propagates error semantics from the first failing stage; on success, records HistoryEntry.\n\nAll APIs are stable; tests may import only include/Calculator.h and must not depend on private implementation details or formatting.",
+    "Logic Analysis": [
+      [
+        "CMakeLists.txt",
+        "dependency/build; declares core static library from non-Main sources, demo runtime target, and single test target; enables testing and registers the test"
+      ],
+      [
+        "include/Tokens.h",
+        "interface; declares TokenType enum, Token struct with position, and non-inline operator helper function declarations (precedence, associativity, operator-char) used by Lexer/Parser"
+      ],
+      [
+        "src/Tokens.cpp",
+        "domain-entity; implements non-inline Token-related helpers (precedence(char), isLeftAssociative(char), isOperatorChar(char))"
+      ],
+      [
+        "include/Lexer.h",
+        "interface; declares LexResult (success, tokens, error message/position) and class Lexer with tokenize(const std::string&) const"
+      ],
+      [
+        "src/Lexer.cpp",
+        "pure-rule; implements whitespace skipping, numeric (decimal) scanning, parentheses and operator tokenization, with position-aware error reporting"
+      ],
+      [
+        "include/Parser.h",
+        "interface; declares ParseResult (success, RPN tokens, error message/position) and class Parser with toRPN(const std::vector<Token>&) const"
+      ],
+      [
+        "src/Parser.cpp",
+        "pure-rule; implements shunting-yard algorithm with precedence/associativity from Tokens helpers, validates parentheses, and produces RPN or error with position"
+      ],
+      [
+        "include/Evaluator.h",
+        "interface; declares EvalResult (success, value, error message/position) and class Evaluator with evaluateRPN(const std::vector<Token>&) const"
+      ],
+      [
+        "src/Evaluator.cpp",
+        "pure-rule; implements stack-based RPN execution; checks operand availability and division-by-zero, reports errors with source position from operator tokens"
+      ],
+      [
+        "include/History.h",
+        "interface; declares HistoryEntry (expression, result) and class History with record(expr,value), entries() const, and clear()"
+      ],
+      [
+        "src/History.cpp",
+        "domain-entity; implements History using std::vector<HistoryEntry>; records only successful evaluations"
+      ],
+      [
+        "include/Calculator.h",
+        "interface; declares EvaluationOutcome (success, value, error message/position) and class Calculator orchestrating tokenization, parsing, evaluation, and history"
+      ],
+      [
+        "src/Calculator.cpp",
+        "orchestration; implements Calculator::evaluate() workflow: Lexer -> Parser -> Evaluator, records history on success, returns EvaluationOutcome"
+      ],
+      [
+        "src/Main.cpp",
+        "runtime/bootstrap; thin, deterministic demo that evaluates a few fixed expressions and prints results/errors; no interactive loop"
+      ],
+      [
+        "tests/test_main.cpp",
+        "automated-test; single protocol-level test file that includes only include/Calculator.h and performs concise API-level smoke and representative rule tests"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "src/Tokens.cpp",
+        "src/Lexer.cpp",
+        "src/Parser.cpp",
+        "src/Evaluator.cpp",
+        "src/History.cpp",
+        "src/Calculator.cpp"
+      ],
+      "environment_dependent_modules": [
+        "src/Main.cpp"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "CMake>=3.10",
+      "C++17",
+      "No third-party dependencies required"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "This repository builds a pure, testable core library exposing a single canonical public API in include/Calculator.h. Domain modules are split into token model, lexer, parser (shunting-yard to RPN), evaluator (RPN execution), and history. The demo runtime entry is src/Main.cpp. The single test file tests/test_main.cpp includes only include/Calculator.h. CMake builds a core static library from non-Main src/*.cpp files, links both the runtime demo and the test executable against that library, enables testing, and registers the test.",
+    "Task Protocol Audit": {
+      "For C++ projects - headers/sources parity": "All include/*.h have matching src/*.cpp; tests include headers only.",
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "tests_include_src_cpp": false,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "CMakeLists.txt",
+      "include/Tokens.h",
+      "include/Lexer.h",
+      "include/Parser.h",
+      "include/Evaluator.h",
+      "include/History.h",
+      "include/Calculator.h",
+      "src/Tokens.cpp",
+      "src/Lexer.cpp",
+      "src/Parser.cpp",
+      "src/Evaluator.cpp",
+      "src/History.cpp",
+      "src/Calculator.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.cpp",
+        "include/Calculator.h"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.cpp",
+        "basic runtime wiring via calc::Calculator: evaluate a simple expression (e.g., 1+2*3) and assert success with correct value (precedence)"
+      ],
+      [
+        "tests/test_main.cpp",
+        "parentheses override precedence: (1+2)*3 produces expected result"
+      ],
+      [
+        "tests/test_main.cpp",
+        "division-by-zero yields non-crashing error: evaluate(\"1/0\") returns success=false with a non-empty error message"
+      ],
+      [
+        "tests/test_main.cpp",
+        "history records only successful evaluations: after one success and one failure, history size increments only for the success"
+      ]
+    ]
+  }
+}

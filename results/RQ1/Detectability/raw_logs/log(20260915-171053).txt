@@ -1,0 +1,179 @@
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.720625 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.150000  thr=-0.054016
+[TPR@FPR=1.000%] TPR=0.150000  thr=-0.054016
+[TPR@FPR=5.000%] TPR=0.362500  thr=-0.436428
+[TPR@FPR=10.000%] TPR=0.362500  thr=-0.436428
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.547500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=0.000715
+  TPR@FPR=1.000% : TPR=0.050000  thr=0.000715
+  TPR@FPR=5.000% : TPR=0.150000  thr=-0.416258
+  TPR@FPR=10.000% : TPR=0.150000  thr=-0.416258
+
+[Strength=1.0] AUROC=0.647500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=-0.022741
+  TPR@FPR=1.000% : TPR=0.150000  thr=-0.022741
+  TPR@FPR=5.000% : TPR=0.300000  thr=-0.317062
+  TPR@FPR=10.000% : TPR=0.300000  thr=-0.317062
+
+[Strength=2.0] AUROC=0.835000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.200000  thr=-0.054016
+  TPR@FPR=1.000% : TPR=0.200000  thr=-0.054016
+  TPR@FPR=5.000% : TPR=0.500000  thr=-0.436428
+  TPR@FPR=10.000% : TPR=0.500000  thr=-0.436428
+
+[Strength=3.0] AUROC=0.852500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.200000  thr=-0.054016
+  TPR@FPR=1.000% : TPR=0.200000  thr=-0.054016
+  TPR@FPR=5.000% : TPR=0.500000  thr=-0.436428
+  TPR@FPR=10.000% : TPR=0.500000  thr=-0.436428
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_wllm_20260125_183802.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_wllm_20260125_183802_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.938750 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.812500  thr=2.752989
+[TPR@FPR=1.000%] TPR=0.812500  thr=2.752989
+[TPR@FPR=5.000%] TPR=0.812500  thr=2.752558
+[TPR@FPR=10.000%] TPR=0.837500  thr=2.587702
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.775000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=2.768875
+  TPR@FPR=1.000% : TPR=0.350000  thr=2.768875
+  TPR@FPR=5.000% : TPR=0.350000  thr=2.752558
+  TPR@FPR=10.000% : TPR=0.450000  thr=2.587702
+
+[Strength=1.0] AUROC=0.980000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.900000  thr=2.752989
+  TPR@FPR=1.000% : TPR=0.900000  thr=2.752989
+  TPR@FPR=5.000% : TPR=0.900000  thr=2.752558
+  TPR@FPR=10.000% : TPR=0.900000  thr=2.710687
+
+[Strength=2.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=4.389381
+  TPR@FPR=1.000% : TPR=1.000000  thr=4.389381
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.752558
+  TPR@FPR=10.000% : TPR=1.000000  thr=2.710687
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=5.000000
+  TPR@FPR=1.000% : TPR=1.000000  thr=5.000000
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.752558
+  TPR@FPR=10.000% : TPR=1.000000  thr=2.710687
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_sweet_20260126_004657.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_sweet_20260126_004657_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.876250 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.087500  thr=2.355165
+[TPR@FPR=1.000%] TPR=0.087500  thr=2.355165
+[TPR@FPR=5.000%] TPR=0.487500  thr=1.246645
+[TPR@FPR=10.000%] TPR=0.500000  thr=1.223808
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.790000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.234076
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.234076
+  TPR@FPR=5.000% : TPR=0.000000  thr=2.234076
+  TPR@FPR=10.000% : TPR=0.000000  thr=1.238207
+
+[Strength=1.0] AUROC=0.830000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.234076
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.234076
+  TPR@FPR=5.000% : TPR=0.200000  thr=1.408236
+  TPR@FPR=10.000% : TPR=0.200000  thr=1.238207
+
+[Strength=2.0] AUROC=0.917500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.234076
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.234076
+  TPR@FPR=5.000% : TPR=0.750000  thr=1.246645
+  TPR@FPR=10.000% : TPR=0.800000  thr=1.223808
+
+[Strength=3.0] AUROC=0.967500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=2.355165
+  TPR@FPR=1.000% : TPR=0.350000  thr=2.355165
+  TPR@FPR=5.000% : TPR=1.000000  thr=1.360956
+  TPR@FPR=10.000% : TPR=1.000000  thr=1.238207
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_ewd_20260126_065936.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_ewd_20260126_065936_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.460625 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.087500  thr=50.568710
+[TPR@FPR=1.000%] TPR=0.087500  thr=50.568710
+[TPR@FPR=5.000%] TPR=0.175000  thr=49.405460
+[TPR@FPR=10.000%] TPR=0.237500  thr=48.678811
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.497500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=51.545899
+  TPR@FPR=1.000% : TPR=0.050000  thr=51.545899
+  TPR@FPR=5.000% : TPR=0.100000  thr=49.826345
+  TPR@FPR=10.000% : TPR=0.250000  thr=48.678811
+
+[Strength=1.0] AUROC=0.482500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=50.568710
+  TPR@FPR=1.000% : TPR=0.100000  thr=50.568710
+  TPR@FPR=5.000% : TPR=0.250000  thr=49.694027
+  TPR@FPR=10.000% : TPR=0.300000  thr=48.709857
+
+[Strength=2.0] AUROC=0.320000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=50.530657
+  TPR@FPR=1.000% : TPR=0.000000  thr=50.530657
+  TPR@FPR=5.000% : TPR=0.150000  thr=49.405460
+  TPR@FPR=10.000% : TPR=0.150000  thr=49.227229
+
+[Strength=3.0] AUROC=0.542500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.200000  thr=51.305836
+  TPR@FPR=1.000% : TPR=0.200000  thr=51.305836
+  TPR@FPR=5.000% : TPR=0.200000  thr=50.530657
+  TPR@FPR=10.000% : TPR=0.250000  thr=48.803287
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_stone_20260126_131129.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_stone_20260126_131129_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.455625 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.050000  thr=0.021689
+[TPR@FPR=1.000%] TPR=0.050000  thr=0.021689
+[TPR@FPR=5.000%] TPR=0.225000  thr=-0.006660
+[TPR@FPR=10.000%] TPR=0.237500  thr=-0.008789
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.572500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=0.011678
+  TPR@FPR=1.000% : TPR=0.000000  thr=0.011678
+  TPR@FPR=5.000% : TPR=0.350000  thr=-0.006660
+  TPR@FPR=10.000% : TPR=0.400000  thr=-0.008789
+
+[Strength=1.0] AUROC=0.507500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=0.044772
+  TPR@FPR=1.000% : TPR=0.050000  thr=0.044772
+  TPR@FPR=5.000% : TPR=0.350000  thr=-0.006109
+  TPR@FPR=10.000% : TPR=0.350000  thr=-0.006666
+
+[Strength=2.0] AUROC=0.390000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=0.021689
+  TPR@FPR=1.000% : TPR=0.150000  thr=0.021689
+  TPR@FPR=5.000% : TPR=0.150000  thr=0.011678
+  TPR@FPR=10.000% : TPR=0.150000  thr=-0.006666
+
+[Strength=3.0] AUROC=0.352500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=0.011678
+  TPR@FPR=1.000% : TPR=0.000000  thr=0.011678
+  TPR@FPR=5.000% : TPR=0.050000  thr=0.008568
+  TPR@FPR=10.000% : TPR=0.050000  thr=-0.006666
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_waterfall_20260126_191341.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_tiny_snake_game_waterfall_20260126_191341_summary.json

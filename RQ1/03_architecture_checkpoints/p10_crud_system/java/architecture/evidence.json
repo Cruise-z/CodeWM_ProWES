@@ -1,0 +1,46 @@
+{
+  "accepted_file_count_range": [
+    10,
+    12
+  ],
+  "architecture_attempt": 131,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T12:19:59.824807+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": true,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/java/initial_repository/p10_crud_system_java",
+  "initial_repository_tree_sha256": "2bb3efc23e129a9e2c76c4a6adc75c5c9861b9365f84bc30a4cb861fb7543f5e",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "19c5dfb62c48b19d467e8d67f464e393e2872f9db1497b3e007944344ddaadfc",
+  "planned_file_count": 10,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/User.java",
+    "src/main/java/AuditEvent.java",
+    "src/main/java/UserValidator.java",
+    "src/main/java/SearchService.java",
+    "src/main/java/AuditLogService.java",
+    "src/main/java/UserRepository.java",
+    "src/main/java/InMemoryUserRepository.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "4714d31d6697e2cfcaea005f1a1b6857465388264be0471823a07a5ab037d793",
+  "rebuild_reason": "epoch130_attempts1_3_repeated_missing_java_util_list_import_in_main",
+  "started_at": "2026-09-14T12:16:29.298418+00:00",
+  "status": "complete",
+  "target_file_count": 11,
+  "task_path_normalization": "bare Java filenames mapped to Maven source roots; already-qualified paths unchanged",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p10_crud_system/java/architecture/team/team.json",
+  "team_json_sha256": "9bef45c1de998cdb31b61c312d416b98b97c5a2a95c5f3aa49a65eab42762003",
+  "unit_id": "p10_crud_system_java",
+  "valid": true
+}

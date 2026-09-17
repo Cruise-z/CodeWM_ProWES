@@ -1,0 +1,19 @@
+[INFO 2026-09-15 07:27:48,785]: Namespace(epochs=1, seed=42, method='codemark', device='cuda', preprocess_workers=4, max_train_samples=64, max_valid_samples=32, max_test_samples=32, dataset='github_c_funcs', lang='cpp', dataset_dir='./datasets/github_c_funcs', log_prefix='smoke_cuda', n_bits=4, style_only=False, var_only=False, var_nomask=False, varmask_prob=0.5, batch_size=8, wv=0.5, wt=0.5, model_arch='gru', scheduler=False, shared_encoder=True, var_transform_mode='replace')
+[INFO 2026-09-15 07:27:49,115]: Device: cuda
+[INFO 2026-09-15 07:27:49,117]: Processing original dataset
+[INFO 2026-09-15 07:27:52,308]: Vocab size: 689
+[INFO 2026-09-15 07:27:52,309]: Train size: 64
+[INFO 2026-09-15 07:27:52,309]: Test size: 32
+[INFO 2026-09-15 07:27:52,401]: Method: codemark
+[INFO 2026-09-15 07:27:52,402]: Transform capacity: 4
+[INFO 2026-09-15 07:27:52,402]: Constructing dataloaders and models
+[INFO 2026-09-15 07:27:52,402]: Using gru
+[INFO 2026-09-15 07:27:52,617]: learning rate: 0.001
+[INFO 2026-09-15 07:27:52,699]: approximator arch: ConcatApproximator
+[INFO 2026-09-15 07:27:53,040]: Starting training loop
+[INFO 2026-09-15 07:27:53,040]: w_var: 0.5, w_style: 0.5
+[INFO 2026-09-15 07:27:53,040]: var mask enabled: True
+[INFO 2026-09-15 07:27:54,710]: | train | epoch:   0 | acc: 0.5469 | real_acc: 0.4648 | loss: 1.5861 | warp_loss: 0.1310 | decode_loss: 0.6948 |
+[INFO 2026-09-15 07:27:55,147]: | valid | epoch:   0 | oracle_acc: 0.4609 | actual_acc: 0.4375 | loss: 0.7624 | warp_loss: 0.0716 | msg_acc: 0.0000 |
+[INFO 2026-09-15 07:27:55,319]: | best model saved at 0 epoch |
+[INFO 2026-09-15 07:27:55,637]: | test  | epoch:   0 | oracle_acc: 0.5156 | actual_acc: 0.4844 | loss: 0.7220 | warp_loss: 0.0772 | msg_acc: 0.0625 |

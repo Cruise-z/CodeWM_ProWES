@@ -1,0 +1,49 @@
+{
+  "accepted_file_count_range": [
+    7,
+    9
+  ],
+  "architecture_attempt": 6,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_repair_llm_output": false,
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T20:43:40.480700+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/cpp/initial_repository/p13_video_downloader_cpp",
+  "initial_repository_tree_sha256": "92b49517974bd4546a5b870dda02671d3634413cb2fa3692aef609e626c31476",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "d98fdf1b30467a023fbd9e648d086423185a72004cdc1f744f5a3c81b1913914",
+  "planned_file_count": 12,
+  "planned_files": [
+    "CMakeLists.txt",
+    "include/DownloadTypes.h",
+    "include/Url.h",
+    "src/Url.cpp",
+    "include/SafeNamer.h",
+    "src/SafeNamer.cpp",
+    "include/Transfer.h",
+    "src/Transfer.cpp",
+    "include/DownloadQueue.h",
+    "src/DownloadQueue.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "d9d23071d745ddfaf734ea629f95f9653ee0241e22dddf68abaff1d42d6416df",
+  "rebuild_reason": "architecture_attempt5_seed_attempt1_ambiguous_empty_constructor_and_host_only_test_conflict",
+  "started_at": "2026-09-14T20:40:18.142076+00:00",
+  "status": "complete",
+  "target_file_count": 8,
+  "task_path_normalization": "not required for this language",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p13_video_downloader/cpp/architecture/team/team.json",
+  "team_json_sha256": "0c3308c5aeee9258c55977229ef5b91bb5a3a7c9130d93444a59becd23faef67",
+  "unit_id": "p13_video_downloader_cpp",
+  "valid": true
+}

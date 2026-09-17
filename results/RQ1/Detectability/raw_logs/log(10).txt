@@ -1,0 +1,179 @@
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.615000 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.087500  thr=1.006207
+[TPR@FPR=1.000%] TPR=0.087500  thr=1.006207
+[TPR@FPR=5.000%] TPR=0.237500  thr=0.742059
+[TPR@FPR=10.000%] TPR=0.387500  thr=0.499986
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.247500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=0.987334
+  TPR@FPR=1.000% : TPR=0.000000  thr=0.987334
+  TPR@FPR=5.000% : TPR=0.000000  thr=0.987334
+  TPR@FPR=10.000% : TPR=0.000000  thr=0.741261
+
+[Strength=1.0] AUROC=0.455000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=0.987334
+  TPR@FPR=1.000% : TPR=0.000000  thr=0.987334
+  TPR@FPR=5.000% : TPR=0.050000  thr=0.777665
+  TPR@FPR=10.000% : TPR=0.050000  thr=0.741261
+
+[Strength=2.0] AUROC=0.815000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=1.165358
+  TPR@FPR=1.000% : TPR=0.050000  thr=1.165358
+  TPR@FPR=5.000% : TPR=0.200000  thr=0.760578
+  TPR@FPR=10.000% : TPR=0.600000  thr=0.509153
+
+[Strength=3.0] AUROC=0.942500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.300000  thr=1.006207
+  TPR@FPR=1.000% : TPR=0.300000  thr=1.006207
+  TPR@FPR=5.000% : TPR=0.700000  thr=0.742059
+  TPR@FPR=10.000% : TPR=0.900000  thr=0.499986
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_ewd_20260123_145510.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_ewd_20260123_145510_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.730625 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.200000  thr=49.960048
+[TPR@FPR=1.000%] TPR=0.200000  thr=49.960048
+[TPR@FPR=5.000%] TPR=0.250000  thr=49.440248
+[TPR@FPR=10.000%] TPR=0.350000  thr=49.079097
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.650000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=49.906479
+  TPR@FPR=1.000% : TPR=0.000000  thr=49.906479
+  TPR@FPR=5.000% : TPR=0.050000  thr=49.440248
+  TPR@FPR=10.000% : TPR=0.100000  thr=49.318657
+
+[Strength=1.0] AUROC=0.677500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=50.142960
+  TPR@FPR=1.000% : TPR=0.100000  thr=50.142960
+  TPR@FPR=5.000% : TPR=0.150000  thr=49.887941
+  TPR@FPR=10.000% : TPR=0.350000  thr=49.079097
+
+[Strength=2.0] AUROC=0.827500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=49.960048
+  TPR@FPR=1.000% : TPR=0.350000  thr=49.960048
+  TPR@FPR=5.000% : TPR=0.350000  thr=49.906479
+  TPR@FPR=10.000% : TPR=0.500000  thr=49.083515
+
+[Strength=3.0] AUROC=0.767500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=49.971897
+  TPR@FPR=1.000% : TPR=0.350000  thr=49.971897
+  TPR@FPR=5.000% : TPR=0.450000  thr=49.518404
+  TPR@FPR=10.000% : TPR=0.450000  thr=49.396948
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_stone_20260124_072349.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_stone_20260124_072349_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.961250 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.600000  thr=2.913858
+[TPR@FPR=1.000%] TPR=0.600000  thr=2.913858
+[TPR@FPR=5.000%] TPR=0.912500  thr=1.000000
+[TPR@FPR=10.000%] TPR=0.912500  thr=0.964901
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.877500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.050000  thr=3.666314
+  TPR@FPR=1.000% : TPR=0.050000  thr=3.666314
+  TPR@FPR=5.000% : TPR=0.650000  thr=1.000000
+  TPR@FPR=10.000% : TPR=0.650000  thr=0.964901
+
+[Strength=1.0] AUROC=0.970000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.400000  thr=2.913858
+  TPR@FPR=1.000% : TPR=0.400000  thr=2.913858
+  TPR@FPR=5.000% : TPR=1.000000  thr=1.492405
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.964901
+
+[Strength=2.0] AUROC=0.997500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.950000  thr=3.487429
+  TPR@FPR=1.000% : TPR=0.950000  thr=3.487429
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.645751
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.964901
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=4.129483
+  TPR@FPR=1.000% : TPR=1.000000  thr=4.129483
+  TPR@FPR=5.000% : TPR=1.000000  thr=2.745626
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.964901
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_sweet_20260123_080101.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_sweet_20260123_080101_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.903125 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.637500  thr=0.026733
+[TPR@FPR=1.000%] TPR=0.637500  thr=0.026733
+[TPR@FPR=5.000%] TPR=0.762500  thr=0.015396
+[TPR@FPR=10.000%] TPR=0.787500  thr=0.014070
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.702500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.150000  thr=0.028266
+  TPR@FPR=1.000% : TPR=0.150000  thr=0.028266
+  TPR@FPR=5.000% : TPR=0.350000  thr=0.015396
+  TPR@FPR=10.000% : TPR=0.400000  thr=0.014238
+
+[Strength=1.0] AUROC=0.920000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.550000  thr=0.026733
+  TPR@FPR=1.000% : TPR=0.550000  thr=0.026733
+  TPR@FPR=5.000% : TPR=0.750000  thr=0.017179
+  TPR@FPR=10.000% : TPR=0.750000  thr=0.014268
+
+[Strength=2.0] AUROC=0.990000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.850000  thr=0.041283
+  TPR@FPR=1.000% : TPR=0.850000  thr=0.041283
+  TPR@FPR=5.000% : TPR=0.950000  thr=0.015481
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.014070
+
+[Strength=3.0] AUROC=1.000000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=1.000000  thr=0.036434
+  TPR@FPR=1.000% : TPR=1.000000  thr=0.036434
+  TPR@FPR=5.000% : TPR=1.000000  thr=0.025197
+  TPR@FPR=10.000% : TPR=1.000000  thr=0.014268
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_waterfall_20260124_173945.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_waterfall_20260124_173945_summary.json
+
+==================== OVERALL METRICS (pos pooled across strengths) ====================
+[AUROC] overall pooled = 0.745000 (Npos=80, Nneg=20)
+[TPR@FPR=0.100%] TPR=0.187500  thr=2.296176
+[TPR@FPR=1.000%] TPR=0.187500  thr=2.296176
+[TPR@FPR=5.000%] TPR=0.375000  thr=1.855921
+[TPR@FPR=10.000%] TPR=0.575000  thr=1.492729
+
+==================== PER-STRENGTH METRICS ====================
+
+[Strength=0.5] AUROC=0.567500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.000000  thr=2.295833
+  TPR@FPR=1.000% : TPR=0.000000  thr=2.295833
+  TPR@FPR=5.000% : TPR=0.050000  thr=1.928807
+  TPR@FPR=10.000% : TPR=0.350000  thr=1.499880
+
+[Strength=1.0] AUROC=0.715000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.100000  thr=2.341049
+  TPR@FPR=1.000% : TPR=0.100000  thr=2.341049
+  TPR@FPR=5.000% : TPR=0.350000  thr=1.930232
+  TPR@FPR=10.000% : TPR=0.550000  thr=1.492729
+
+[Strength=2.0] AUROC=0.832500  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.300000  thr=2.297592
+  TPR@FPR=1.000% : TPR=0.300000  thr=2.297592
+  TPR@FPR=5.000% : TPR=0.600000  thr=1.855921
+  TPR@FPR=10.000% : TPR=0.700000  thr=1.773112
+
+[Strength=3.0] AUROC=0.865000  (Npos=20, Nneg=20)
+  TPR@FPR=0.100% : TPR=0.350000  thr=2.296176
+  TPR@FPR=1.000% : TPR=0.350000  thr=2.296176
+  TPR@FPR=5.000% : TPR=0.500000  thr=1.863112
+  TPR@FPR=10.000% : TPR=0.700000  thr=1.519012
+
+[INFO] Saved CSV: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_wllm_20260122_194227.csv
+[INFO] Saved summary JSON: /home/zhaorz/project/CodeWM/results/det_eval_flappy_bird_java_wllm_20260122_194227_summary.json

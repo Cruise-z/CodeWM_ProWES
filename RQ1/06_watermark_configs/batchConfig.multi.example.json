@@ -1,0 +1,176 @@
+{
+  "_comment": "Serial multi-processor batch example. Keys beginning with an underscore are documentation only and are never passed to the model or watermark processors. EvoSeal is not included.",
+  "_field_guide": {
+    "project_name": "Project to generate and test. paths.srcPath must contain a matching source directory and MetaGPT recovery state.",
+    "paths.srcPath": "Input root containing <project_name>/ and storage/.",
+    "paths.workspacePath": "Workspace root recreated before preflight and every strength point.",
+    "paths.resPath": "Output root for generated snapshots, Docker logs, progress JSONL, and summaries.",
+    "seed_probe_args": "Optional WM-OFF seed preflight overrides. Zero-strength audits use each experiment's own generation arguments.",
+    "rng_seed": "Default fixed generation seed. If omitted, seeds are sampled until WM-OFF generation and Docker validation pass.",
+    "wmS_config": "Shared inclusive strength series. Use start/step/end with step > 0, or an explicit values array.",
+    "continue_on_error": "Continue after an individual watermark experiment fails; WM-OFF preflight failures always stop the batch.",
+    "args": "Shared generation arguments; experiments[i].args applies a shallow override.",
+    "experiments": "Serial experiment definitions in execution order."
+  },
+  "_strength_guide": {
+    "wllm/sweet/ewd/stone/codeip/mcgmark": "Each strength is passed as processor argument delta.",
+    "waterfall": "Each strength is passed as processor argument kappa.",
+    "zero_strength_exact_noop": "WLLM, SWEET, Fourier WATERFALL, EWD, STONE, and CodeIP with use_pda=false require exact equivalence to WM-OFF at zero strength.",
+    "zero_strength_method_defined": "CodeIP with use_pda=true and MCGMark may still alter logits at zero strength; differences are recorded as method-defined behavior."
+  },
+  "_processor_arg_guide": {
+    "wllm": {
+      "gamma": "Pseudorandom greenlist vocabulary fraction.",
+      "z_threshold": "Detection z-score threshold.",
+      "ignore_repeated_bigrams": "Must be false in this implementation."
+    },
+    "sweet": {
+      "gamma": "Greenlist fraction at high-entropy positions.",
+      "ET": "Entropy threshold, mapped to entropy_threshold at runtime.",
+      "z_threshold": "Detection z-score threshold.",
+      "ignore_repeated_bigrams": "Must be false in this implementation."
+    },
+    "waterfall": {
+      "id_mu": "Watermark identity/message identifier.",
+      "k_p": "Integer frequency/index for the Fourier or Square function.",
+      "n_gram": "Context length maintained by the permutation processor.",
+      "wm_fn": "Watermark function: fourier or square.",
+      "auto_reset": "Reset continuation state when a new generation starts.",
+      "detect_mode": "Sequence restart detection: batch or row_any."
+    },
+    "ewd": {
+      "gamma": "Pseudorandom greenlist vocabulary fraction.",
+      "hash_key": "Integer seed used to construct a reproducible greenlist.",
+      "z_threshold": "Detection z-score threshold.",
+      "prefix_length": "Prefix tokens used for seeding and skipped before scoring."
+    },
+    "stone": {
+      "gamma": "Pseudorandom greenlist vocabulary fraction.",
+      "hash_key": "Integer seed used to construct a reproducible greenlist.",
+      "z_threshold": "Detection z-score threshold.",
+      "prefix_length": "Prefix tokens used for seeding and skipped before scoring.",
+      "watermark_on_pl": "String switch selecting whether to watermark syntax tokens chosen by skipping_rule.",
+      "skipping_rule": "Syntax-token set: all_pl, keywords, operators, delimiters, whitespaces, or types."
+    },
+    "codeip": {
+      "use_pda": "Enable the optional PDA/type processor after the message watermark.",
+      "gamma": "Coefficient used by the PDA/type component and detector.",
+      "message_code_len": "Encoded bit width of each integer message symbol.",
+      "encode_ratio": "Target token-length multiplier for one message interval.",
+      "top_k": "Candidate-token count within the message watermark component.",
+      "message": "Integer message-symbol array.",
+      "pda_model_path": "Optional local PDA checkpoint used only when use_pda=true."
+    },
+    "mcgmark": {
+      "watermark_info": "Fixed 12-bit binary message string.",
+      "gamma": "Pseudorandom greenlist vocabulary fraction.",
+      "hash_key": "Integer seed/key for the internal random process."
+    }
+  },
+  "project_name": "brick_breaker_game",
+  "paths": {
+    "srcPath": "/home/zhaorz/project/CodeWM/srcRepo/",
+    "workspacePath": "/home/zhaorz/project/CodeWM/MetaGPT/workspace",
+    "resPath": "/home/zhaorz/project/CodeWM/results"
+  },
+  "seed_probe_args": {
+    "temperature": 0.7,
+    "max_tokens": 4096
+  },
+  "rng_seed": 3224345906,
+  "wmS_config": {
+    "start": "0.5",
+    "step": "0.5",
+    "end": "1.5"
+  },
+  "continue_on_error": true,
+  "args": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 4096,
+    "watermark_detect": true
+  },
+  "experiments": [
+    {
+      "name": "wllm-default",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "wllm",
+        "gamma": 0.5,
+        "z_threshold": 4.0,
+        "ignore_repeated_bigrams": false
+      }
+    },
+    {
+      "name": "sweet-default",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "sweet",
+        "gamma": 0.5,
+        "ET": 0.9,
+        "z_threshold": 4.0,
+        "ignore_repeated_bigrams": false
+      }
+    },
+    {
+      "name": "waterfall-fourier",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "waterfall",
+        "id_mu": 42,
+        "k_p": 1,
+        "n_gram": 2,
+        "wm_fn": "fourier",
+        "auto_reset": true,
+        "detect_mode": "batch"
+      }
+    },
+    {
+      "name": "ewd-default",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "ewd",
+        "gamma": 0.5,
+        "hash_key": 15485863,
+        "z_threshold": 4.0,
+        "prefix_length": 1
+      }
+    },
+    {
+      "name": "stone-default",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "stone",
+        "gamma": 0.5,
+        "hash_key": 15485863,
+        "z_threshold": 4.0,
+        "prefix_length": 1,
+        "watermark_on_pl": "False",
+        "skipping_rule": "all_pl"
+      }
+    },
+    {
+      "name": "codeip-with-pda",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "codeip",
+        "use_pda": true,
+        "gamma": 3.0,
+        "message_code_len": 20,
+        "encode_ratio": 10.0,
+        "top_k": 1000,
+        "message": [2024]
+      }
+    },
+    {
+      "name": "mcgmark-default",
+      "enabled": true,
+      "args": {
+        "processor_names_ext": "mcgmark",
+        "watermark_info": "000000000000",
+        "gamma": 0.5,
+        "hash_key": 666
+      }
+    }
+  ]
+}

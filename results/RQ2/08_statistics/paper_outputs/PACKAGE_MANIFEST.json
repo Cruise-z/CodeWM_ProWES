@@ -1,0 +1,22 @@
+{
+  "generated_utc": "2026-09-16T14:23:44.636230+00:00",
+  "packages": [
+    {
+      "path": "/home/zhaorz/project/CodeWM/RQ2_Paper_Report_20260916.zip",
+      "files": 65,
+      "bytes": 2520239,
+      "sha256": "ab9bd3823d4d90ec7ad4eef134266c0ce3b9bb08e7ba8ed9f9cdd9f54244e2af"
+    },
+    {
+      "path": "/home/zhaorz/project/CodeWM/RQ2_Tables_Figures_20260916.zip",
+      "files": 21,
+      "bytes": 367661,
+      "sha256": "ee4e9ae1a81b10d34a35ce89714662c1fd8a32d114ddb791df00d937dc9fe650"
+    },
+    {
+      "path": "/home/zhaorz/project/CodeWM/RQ2_Source_Artifact_20260916.zip",
+      "bytes": 630251,
+      "sha256": "1179531a3c5c075e6477e25a5f7504d39871122a72b62a76da63fe7c90fba841"
+    }
+  ]
+}

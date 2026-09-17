@@ -1,0 +1,69 @@
+classDiagram
+    class Player {
+        <<enum>>
+        +X
+        +O
+        +next() Player
+        +toString() String
+    }
+    class Move {
+        -int row
+        -int col
+        -Player player
+        -int index
+        +Move(int row, int col, Player player, int index)
+        +getRow() int
+        +getCol() int
+        +getPlayer() Player
+        +getIndex() int
+        +equals(Object) boolean
+        +hashCode() int
+        +toString() String
+    }
+    class GameState {
+        <<value>>
+        +Status status
+        +Optional~Player~ getWinner()
+        +inProgress() GameState
+        +draw() GameState
+        +won(Player) GameState
+        enum Status { IN_PROGRESS, DRAW, X_WON, O_WON }
+    }
+    class Board {
+        -int size
+        -Player[][] grid
+        +Board(int size)
+        +getSize() int
+        +isInBounds(int,int) boolean
+        +getCell(int,int) Player
+        +isEmpty(int,int) boolean
+        +setCell(int,int,Player) boolean
+        +clearCell(int,int) void
+        +snapshot() Player[][]
+    }
+    class WinDetector {
+        +hasFiveInRow(Board,int,int,Player) boolean
+    }
+    class Game {
+        -Board board
+        -Player currentPlayer
+        -GameState state
+        -java.util.List~Move~ history
+        +Game(int size)
+        +getBoard() Board
+        +getCurrentPlayer() Player
+        +getState() GameState
+        +placeMove(int,int) boolean
+        +undo() boolean
+        +reset() void
+        +getHistory() java.util.List~Move~
+    }
+    class Main {
+        +main(String[] args) void
+    }
+    Game --> Board
+    Game --> Player
+    Game --> GameState
+    Game --> Move
+    Game --> WinDetector
+    Main --> Game

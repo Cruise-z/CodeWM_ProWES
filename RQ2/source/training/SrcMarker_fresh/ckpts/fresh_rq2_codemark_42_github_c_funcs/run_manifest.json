@@ -1,0 +1,48 @@
+{
+  "created_at_utc": "2026-09-15T07:29:00.572637+00:00",
+  "initialization": "random_from_seed",
+  "checkpoint_loaded": false,
+  "method": "codemark",
+  "dataset": "github_c_funcs",
+  "language": "cpp",
+  "seed": 42,
+  "device": "cuda",
+  "python": "3.13.5",
+  "torch": "2.6.0+cu124",
+  "arguments": {
+    "epochs": 25,
+    "seed": 42,
+    "method": "codemark",
+    "device": "cuda",
+    "preprocess_workers": 8,
+    "max_train_samples": null,
+    "max_valid_samples": null,
+    "max_test_samples": null,
+    "dataset": "github_c_funcs",
+    "lang": "cpp",
+    "dataset_dir": "./datasets/github_c_funcs",
+    "log_prefix": "fresh_rq2",
+    "n_bits": 4,
+    "style_only": false,
+    "var_only": false,
+    "var_nomask": false,
+    "varmask_prob": 0.5,
+    "batch_size": 64,
+    "wv": 0.5,
+    "wt": 0.5,
+    "model_arch": "gru",
+    "scheduler": false,
+    "shared_encoder": true,
+    "var_transform_mode": "replace"
+  },
+  "sizes": {
+    "train": 3661,
+    "valid": 457,
+    "test": 459,
+    "vocab": 10169
+  },
+  "transform_capacity": 4,
+  "transformers": [
+    "VarNameStyleTransformer"
+  ]
+}

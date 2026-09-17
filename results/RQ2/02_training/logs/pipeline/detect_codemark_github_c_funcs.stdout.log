@@ -1,0 +1,10 @@
+{
+  "files": 4,
+  "rows": 1836,
+  "device": "cuda",
+  "status_counts": {
+    "ok": 1788,
+    "skipped_invalid_attack": 48,
+    "tokenization_error": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "project_name": "brick_breaker_game",
+  "rng_seed": 3224345906,
+  "language": "java",
+  "counts": {
+    "[Build Error]": 26,
+    "[Test Error]": 0,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 3,
+    "[Pass]": 2
+  }
+}

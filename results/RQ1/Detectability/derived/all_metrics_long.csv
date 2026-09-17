@@ -1,0 +1,501 @@
+source_log,repository,method,scope,strength,auroc,npos,nneg,fpr_percent,tpr,threshold
+log(10).txt,Flappy Bird,EWD,pooled,,0.615,80,20,,,
+log(10).txt,Flappy Bird,EWD,pooled_tpr,,,80,20,0.1,0.0875,1.006207
+log(10).txt,Flappy Bird,EWD,pooled_tpr,,,80,20,1.0,0.0875,1.006207
+log(10).txt,Flappy Bird,EWD,pooled_tpr,,,80,20,5.0,0.2375,0.742059
+log(10).txt,Flappy Bird,EWD,pooled_tpr,,,80,20,10.0,0.3875,0.499986
+log(10).txt,Flappy Bird,EWD,per_strength,0.5,0.2475,20,20,,,
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,0.5,,20,20,0.1,0.0,0.987334
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,0.5,,20,20,1.0,0.0,0.987334
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,0.5,,20,20,5.0,0.0,0.987334
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,0.5,,20,20,10.0,0.0,0.741261
+log(10).txt,Flappy Bird,EWD,per_strength,1.0,0.455,20,20,,,
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,1.0,,20,20,0.1,0.0,0.987334
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,1.0,,20,20,1.0,0.0,0.987334
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,1.0,,20,20,5.0,0.05,0.777665
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,1.0,,20,20,10.0,0.05,0.741261
+log(10).txt,Flappy Bird,EWD,per_strength,2.0,0.815,20,20,,,
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,2.0,,20,20,0.1,0.05,1.165358
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,2.0,,20,20,1.0,0.05,1.165358
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,2.0,,20,20,5.0,0.2,0.760578
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,2.0,,20,20,10.0,0.6,0.509153
+log(10).txt,Flappy Bird,EWD,per_strength,3.0,0.9425,20,20,,,
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,3.0,,20,20,0.1,0.3,1.006207
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,3.0,,20,20,1.0,0.3,1.006207
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,3.0,,20,20,5.0,0.7,0.742059
+log(10).txt,Flappy Bird,EWD,per_strength_tpr,3.0,,20,20,10.0,0.9,0.499986
+log(10).txt,Flappy Bird,STONE,pooled,,0.730625,80,20,,,
+log(10).txt,Flappy Bird,STONE,pooled_tpr,,,80,20,0.1,0.2,49.960048
+log(10).txt,Flappy Bird,STONE,pooled_tpr,,,80,20,1.0,0.2,49.960048
+log(10).txt,Flappy Bird,STONE,pooled_tpr,,,80,20,5.0,0.25,49.440248
+log(10).txt,Flappy Bird,STONE,pooled_tpr,,,80,20,10.0,0.35,49.079097
+log(10).txt,Flappy Bird,STONE,per_strength,0.5,0.65,20,20,,,
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,0.5,,20,20,0.1,0.0,49.906479
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,0.5,,20,20,1.0,0.0,49.906479
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,0.5,,20,20,5.0,0.05,49.440248
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,0.5,,20,20,10.0,0.1,49.318657
+log(10).txt,Flappy Bird,STONE,per_strength,1.0,0.6775,20,20,,,
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,1.0,,20,20,0.1,0.1,50.14296
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,1.0,,20,20,1.0,0.1,50.14296
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,1.0,,20,20,5.0,0.15,49.887941
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,1.0,,20,20,10.0,0.35,49.079097
+log(10).txt,Flappy Bird,STONE,per_strength,2.0,0.8275,20,20,,,
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,2.0,,20,20,0.1,0.35,49.960048
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,2.0,,20,20,1.0,0.35,49.960048
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,2.0,,20,20,5.0,0.35,49.906479
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,2.0,,20,20,10.0,0.5,49.083515
+log(10).txt,Flappy Bird,STONE,per_strength,3.0,0.7675,20,20,,,
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,3.0,,20,20,0.1,0.35,49.971897
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,3.0,,20,20,1.0,0.35,49.971897
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,3.0,,20,20,5.0,0.45,49.518404
+log(10).txt,Flappy Bird,STONE,per_strength_tpr,3.0,,20,20,10.0,0.45,49.396948
+log(10).txt,Flappy Bird,SWEET,pooled,,0.96125,80,20,,,
+log(10).txt,Flappy Bird,SWEET,pooled_tpr,,,80,20,0.1,0.6,2.913858
+log(10).txt,Flappy Bird,SWEET,pooled_tpr,,,80,20,1.0,0.6,2.913858
+log(10).txt,Flappy Bird,SWEET,pooled_tpr,,,80,20,5.0,0.9125,1.0
+log(10).txt,Flappy Bird,SWEET,pooled_tpr,,,80,20,10.0,0.9125,0.964901
+log(10).txt,Flappy Bird,SWEET,per_strength,0.5,0.8775,20,20,,,
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,0.5,,20,20,0.1,0.05,3.666314
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,0.5,,20,20,1.0,0.05,3.666314
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,0.5,,20,20,5.0,0.65,1.0
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,0.5,,20,20,10.0,0.65,0.964901
+log(10).txt,Flappy Bird,SWEET,per_strength,1.0,0.97,20,20,,,
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,1.0,,20,20,0.1,0.4,2.913858
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,1.0,,20,20,1.0,0.4,2.913858
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,1.0,,20,20,5.0,1.0,1.492405
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,1.0,,20,20,10.0,1.0,0.964901
+log(10).txt,Flappy Bird,SWEET,per_strength,2.0,0.9975,20,20,,,
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,2.0,,20,20,0.1,0.95,3.487429
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,2.0,,20,20,1.0,0.95,3.487429
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,2.0,,20,20,5.0,1.0,2.645751
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,2.0,,20,20,10.0,1.0,0.964901
+log(10).txt,Flappy Bird,SWEET,per_strength,3.0,1.0,20,20,,,
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,3.0,,20,20,0.1,1.0,4.129483
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,3.0,,20,20,1.0,1.0,4.129483
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,3.0,,20,20,5.0,1.0,2.745626
+log(10).txt,Flappy Bird,SWEET,per_strength_tpr,3.0,,20,20,10.0,1.0,0.964901
+log(10).txt,Flappy Bird,Waterfall,pooled,,0.903125,80,20,,,
+log(10).txt,Flappy Bird,Waterfall,pooled_tpr,,,80,20,0.1,0.6375,0.026733
+log(10).txt,Flappy Bird,Waterfall,pooled_tpr,,,80,20,1.0,0.6375,0.026733
+log(10).txt,Flappy Bird,Waterfall,pooled_tpr,,,80,20,5.0,0.7625,0.015396
+log(10).txt,Flappy Bird,Waterfall,pooled_tpr,,,80,20,10.0,0.7875,0.01407
+log(10).txt,Flappy Bird,Waterfall,per_strength,0.5,0.7025,20,20,,,
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,0.5,,20,20,0.1,0.15,0.028266
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,0.5,,20,20,1.0,0.15,0.028266
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,0.5,,20,20,5.0,0.35,0.015396
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,0.5,,20,20,10.0,0.4,0.014238
+log(10).txt,Flappy Bird,Waterfall,per_strength,1.0,0.92,20,20,,,
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,1.0,,20,20,0.1,0.55,0.026733
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,1.0,,20,20,1.0,0.55,0.026733
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,1.0,,20,20,5.0,0.75,0.017179
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,1.0,,20,20,10.0,0.75,0.014268
+log(10).txt,Flappy Bird,Waterfall,per_strength,2.0,0.99,20,20,,,
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,2.0,,20,20,0.1,0.85,0.041283
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,2.0,,20,20,1.0,0.85,0.041283
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,2.0,,20,20,5.0,0.95,0.015481
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,2.0,,20,20,10.0,1.0,0.01407
+log(10).txt,Flappy Bird,Waterfall,per_strength,3.0,1.0,20,20,,,
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,3.0,,20,20,0.1,1.0,0.036434
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,3.0,,20,20,1.0,1.0,0.036434
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,3.0,,20,20,5.0,1.0,0.025197
+log(10).txt,Flappy Bird,Waterfall,per_strength_tpr,3.0,,20,20,10.0,1.0,0.014268
+log(10).txt,Flappy Bird,WLLM,pooled,,0.745,80,20,,,
+log(10).txt,Flappy Bird,WLLM,pooled_tpr,,,80,20,0.1,0.1875,2.296176
+log(10).txt,Flappy Bird,WLLM,pooled_tpr,,,80,20,1.0,0.1875,2.296176
+log(10).txt,Flappy Bird,WLLM,pooled_tpr,,,80,20,5.0,0.375,1.855921
+log(10).txt,Flappy Bird,WLLM,pooled_tpr,,,80,20,10.0,0.575,1.492729
+log(10).txt,Flappy Bird,WLLM,per_strength,0.5,0.5675,20,20,,,
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,0.5,,20,20,0.1,0.0,2.295833
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,0.5,,20,20,1.0,0.0,2.295833
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,0.5,,20,20,5.0,0.05,1.928807
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,0.5,,20,20,10.0,0.35,1.49988
+log(10).txt,Flappy Bird,WLLM,per_strength,1.0,0.715,20,20,,,
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,1.0,,20,20,0.1,0.1,2.341049
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,1.0,,20,20,1.0,0.1,2.341049
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,1.0,,20,20,5.0,0.35,1.930232
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,1.0,,20,20,10.0,0.55,1.492729
+log(10).txt,Flappy Bird,WLLM,per_strength,2.0,0.8325,20,20,,,
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,2.0,,20,20,0.1,0.3,2.297592
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,2.0,,20,20,1.0,0.3,2.297592
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,2.0,,20,20,5.0,0.6,1.855921
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,2.0,,20,20,10.0,0.7,1.773112
+log(10).txt,Flappy Bird,WLLM,per_strength,3.0,0.865,20,20,,,
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,3.0,,20,20,0.1,0.35,2.296176
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,3.0,,20,20,1.0,0.35,2.296176
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,3.0,,20,20,5.0,0.5,1.863112
+log(10).txt,Flappy Bird,WLLM,per_strength_tpr,3.0,,20,20,10.0,0.7,1.519012
+log(20260915-171046).txt,Calculator,WLLM,pooled,,0.654375,80,20,,,
+log(20260915-171046).txt,Calculator,WLLM,pooled_tpr,,,80,20,0.1,0.0375,4.518673
+log(20260915-171046).txt,Calculator,WLLM,pooled_tpr,,,80,20,1.0,0.0375,4.518673
+log(20260915-171046).txt,Calculator,WLLM,pooled_tpr,,,80,20,5.0,0.1,3.940604
+log(20260915-171046).txt,Calculator,WLLM,pooled_tpr,,,80,20,10.0,0.3,3.205373
+log(20260915-171046).txt,Calculator,WLLM,per_strength,0.5,0.4775,20,20,,,
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,0.5,,20,20,0.1,0.0,4.160251
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,0.5,,20,20,1.0,0.0,4.160251
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,0.5,,20,20,5.0,0.0,4.160251
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,0.5,,20,20,10.0,0.15,3.205373
+log(20260915-171046).txt,Calculator,WLLM,per_strength,1.0,0.65,20,20,,,
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,1.0,,20,20,0.1,0.05,5.268403
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,1.0,,20,20,1.0,0.05,5.268403
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,1.0,,20,20,5.0,0.1,3.978109
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,1.0,,20,20,10.0,0.3,3.205373
+log(20260915-171046).txt,Calculator,WLLM,per_strength,2.0,0.7475,20,20,,,
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,2.0,,20,20,0.1,0.05,4.518673
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,2.0,,20,20,1.0,0.05,4.518673
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,2.0,,20,20,5.0,0.15,4.097645
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,2.0,,20,20,10.0,0.3,3.229808
+log(20260915-171046).txt,Calculator,WLLM,per_strength,3.0,0.7425,20,20,,,
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,3.0,,20,20,0.1,0.05,5.23249
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,3.0,,20,20,1.0,0.05,5.23249
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,3.0,,20,20,5.0,0.15,3.940604
+log(20260915-171046).txt,Calculator,WLLM,per_strength_tpr,3.0,,20,20,10.0,0.45,3.280016
+log(20260915-171046).txt,Calculator,SWEET,pooled,,0.92375,80,20,,,
+log(20260915-171046).txt,Calculator,SWEET,pooled_tpr,,,80,20,0.1,0.725,1.857143
+log(20260915-171046).txt,Calculator,SWEET,pooled_tpr,,,80,20,1.0,0.725,1.857143
+log(20260915-171046).txt,Calculator,SWEET,pooled_tpr,,,80,20,5.0,0.7875,1.76141
+log(20260915-171046).txt,Calculator,SWEET,pooled_tpr,,,80,20,10.0,0.8375,1.677484
+log(20260915-171046).txt,Calculator,SWEET,per_strength,0.5,0.75,20,20,,,
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,0.5,,20,20,0.1,0.35,1.979899
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,0.5,,20,20,1.0,0.35,1.979899
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,0.5,,20,20,5.0,0.45,1.767767
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,0.5,,20,20,10.0,0.55,1.723281
+log(20260915-171046).txt,Calculator,SWEET,per_strength,1.0,0.945,20,20,,,
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,1.0,,20,20,0.1,0.55,1.857143
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,1.0,,20,20,1.0,0.55,1.857143
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,1.0,,20,20,5.0,0.7,1.76141
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,1.0,,20,20,10.0,0.8,1.677484
+log(20260915-171046).txt,Calculator,SWEET,per_strength,2.0,1.0,20,20,,,
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,2.0,,20,20,0.1,1.0,2.771435
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,2.0,,20,20,1.0,1.0,2.771435
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,2.0,,20,20,5.0,1.0,1.85164
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,2.0,,20,20,10.0,1.0,1.75292
+log(20260915-171046).txt,Calculator,SWEET,per_strength,3.0,1.0,20,20,,,
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,3.0,,20,20,0.1,1.0,3.333333
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,3.0,,20,20,1.0,1.0,3.333333
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,3.0,,20,20,5.0,1.0,1.85164
+log(20260915-171046).txt,Calculator,SWEET,per_strength_tpr,3.0,,20,20,10.0,1.0,1.75292
+log(20260915-171046).txt,Calculator,EWD,pooled,,0.038125,80,20,,,
+log(20260915-171046).txt,Calculator,EWD,pooled_tpr,,,80,20,0.1,0.0125,2.978151
+log(20260915-171046).txt,Calculator,EWD,pooled_tpr,,,80,20,1.0,0.0125,2.978151
+log(20260915-171046).txt,Calculator,EWD,pooled_tpr,,,80,20,5.0,0.0125,2.642087
+log(20260915-171046).txt,Calculator,EWD,pooled_tpr,,,80,20,10.0,0.0125,1.926079
+log(20260915-171046).txt,Calculator,EWD,per_strength,0.5,0.0,20,20,,,
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,0.5,,20,20,0.1,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,0.5,,20,20,1.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,0.5,,20,20,5.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,0.5,,20,20,10.0,0.0,1.926079
+log(20260915-171046).txt,Calculator,EWD,per_strength,1.0,0.0,20,20,,,
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,1.0,,20,20,0.1,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,1.0,,20,20,1.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,1.0,,20,20,5.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,1.0,,20,20,10.0,0.0,1.926079
+log(20260915-171046).txt,Calculator,EWD,per_strength,2.0,0.06,20,20,,,
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,2.0,,20,20,0.1,0.05,2.978151
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,2.0,,20,20,1.0,0.05,2.978151
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,2.0,,20,20,5.0,0.05,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,2.0,,20,20,10.0,0.05,1.926079
+log(20260915-171046).txt,Calculator,EWD,per_strength,3.0,0.0925,20,20,,,
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,3.0,,20,20,0.1,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,3.0,,20,20,1.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,3.0,,20,20,5.0,0.0,2.642087
+log(20260915-171046).txt,Calculator,EWD,per_strength_tpr,3.0,,20,20,10.0,0.0,1.926079
+log(20260915-171046).txt,Calculator,STONE,pooled,,0.488125,80,20,,,
+log(20260915-171046).txt,Calculator,STONE,pooled_tpr,,,80,20,0.1,0.075,57.869139
+log(20260915-171046).txt,Calculator,STONE,pooled_tpr,,,80,20,1.0,0.075,57.869139
+log(20260915-171046).txt,Calculator,STONE,pooled_tpr,,,80,20,5.0,0.075,57.661142
+log(20260915-171046).txt,Calculator,STONE,pooled_tpr,,,80,20,10.0,0.1375,56.588192
+log(20260915-171046).txt,Calculator,STONE,per_strength,0.5,0.40875,20,20,,,
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,0.5,,20,20,0.1,0.05,59.06623
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,0.5,,20,20,1.0,0.05,59.06623
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,0.5,,20,20,5.0,0.05,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,0.5,,20,20,10.0,0.15,56.755543
+log(20260915-171046).txt,Calculator,STONE,per_strength,1.0,0.43375,20,20,,,
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,1.0,,20,20,0.1,0.0,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,1.0,,20,20,1.0,0.0,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,1.0,,20,20,5.0,0.0,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,1.0,,20,20,10.0,0.0,57.435021
+log(20260915-171046).txt,Calculator,STONE,per_strength,2.0,0.48,20,20,,,
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,2.0,,20,20,0.1,0.1,58.477277
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,2.0,,20,20,1.0,0.1,58.477277
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,2.0,,20,20,5.0,0.1,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,2.0,,20,20,10.0,0.1,57.435021
+log(20260915-171046).txt,Calculator,STONE,per_strength,3.0,0.63,20,20,,,
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,3.0,,20,20,0.1,0.15,57.869139
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,3.0,,20,20,1.0,0.15,57.869139
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,3.0,,20,20,5.0,0.15,57.661142
+log(20260915-171046).txt,Calculator,STONE,per_strength_tpr,3.0,,20,20,10.0,0.3,56.588192
+log(20260915-171046).txt,Calculator,Waterfall,pooled,,0.734375,80,20,,,
+log(20260915-171046).txt,Calculator,Waterfall,pooled_tpr,,,80,20,0.1,0.2125,0.0663
+log(20260915-171046).txt,Calculator,Waterfall,pooled_tpr,,,80,20,1.0,0.2125,0.0663
+log(20260915-171046).txt,Calculator,Waterfall,pooled_tpr,,,80,20,5.0,0.2625,0.054149
+log(20260915-171046).txt,Calculator,Waterfall,pooled_tpr,,,80,20,10.0,0.4375,0.039642
+log(20260915-171046).txt,Calculator,Waterfall,per_strength,0.5,0.5975,20,20,,,
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,0.5,,20,20,0.1,0.0,0.060312
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,0.5,,20,20,1.0,0.0,0.060312
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,0.5,,20,20,5.0,0.1,0.054149
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,0.5,,20,20,10.0,0.25,0.049586
+log(20260915-171046).txt,Calculator,Waterfall,per_strength,1.0,0.65,20,20,,,
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,1.0,,20,20,0.1,0.05,0.073785
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,1.0,,20,20,1.0,0.05,0.073785
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,1.0,,20,20,5.0,0.05,0.060312
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,1.0,,20,20,10.0,0.3,0.039642
+log(20260915-171046).txt,Calculator,Waterfall,per_strength,2.0,0.76,20,20,,,
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,2.0,,20,20,0.1,0.25,0.067786
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,2.0,,20,20,1.0,0.25,0.067786
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,2.0,,20,20,5.0,0.3,0.056263
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,2.0,,20,20,10.0,0.3,0.053764
+log(20260915-171046).txt,Calculator,Waterfall,per_strength,3.0,0.93,20,20,,,
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,3.0,,20,20,0.1,0.55,0.0663
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,3.0,,20,20,1.0,0.55,0.0663
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,3.0,,20,20,5.0,0.6,0.055946
+log(20260915-171046).txt,Calculator,Waterfall,per_strength_tpr,3.0,,20,20,10.0,0.9,0.04135
+log(20260915-171053).txt,Snake Game,WLLM,pooled,,0.720625,80,20,,,
+log(20260915-171053).txt,Snake Game,WLLM,pooled_tpr,,,80,20,0.1,0.15,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,pooled_tpr,,,80,20,1.0,0.15,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,pooled_tpr,,,80,20,5.0,0.3625,-0.436428
+log(20260915-171053).txt,Snake Game,WLLM,pooled_tpr,,,80,20,10.0,0.3625,-0.436428
+log(20260915-171053).txt,Snake Game,WLLM,per_strength,0.5,0.5475,20,20,,,
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,0.5,,20,20,0.1,0.05,0.000715
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,0.5,,20,20,1.0,0.05,0.000715
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,0.5,,20,20,5.0,0.15,-0.416258
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,0.5,,20,20,10.0,0.15,-0.416258
+log(20260915-171053).txt,Snake Game,WLLM,per_strength,1.0,0.6475,20,20,,,
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,1.0,,20,20,0.1,0.15,-0.022741
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,1.0,,20,20,1.0,0.15,-0.022741
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,1.0,,20,20,5.0,0.3,-0.317062
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,1.0,,20,20,10.0,0.3,-0.317062
+log(20260915-171053).txt,Snake Game,WLLM,per_strength,2.0,0.835,20,20,,,
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,2.0,,20,20,0.1,0.2,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,2.0,,20,20,1.0,0.2,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,2.0,,20,20,5.0,0.5,-0.436428
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,2.0,,20,20,10.0,0.5,-0.436428
+log(20260915-171053).txt,Snake Game,WLLM,per_strength,3.0,0.8525,20,20,,,
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,3.0,,20,20,0.1,0.2,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,3.0,,20,20,1.0,0.2,-0.054016
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,3.0,,20,20,5.0,0.5,-0.436428
+log(20260915-171053).txt,Snake Game,WLLM,per_strength_tpr,3.0,,20,20,10.0,0.5,-0.436428
+log(20260915-171053).txt,Snake Game,SWEET,pooled,,0.93875,80,20,,,
+log(20260915-171053).txt,Snake Game,SWEET,pooled_tpr,,,80,20,0.1,0.8125,2.752989
+log(20260915-171053).txt,Snake Game,SWEET,pooled_tpr,,,80,20,1.0,0.8125,2.752989
+log(20260915-171053).txt,Snake Game,SWEET,pooled_tpr,,,80,20,5.0,0.8125,2.752558
+log(20260915-171053).txt,Snake Game,SWEET,pooled_tpr,,,80,20,10.0,0.8375,2.587702
+log(20260915-171053).txt,Snake Game,SWEET,per_strength,0.5,0.775,20,20,,,
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,0.5,,20,20,0.1,0.35,2.768875
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,0.5,,20,20,1.0,0.35,2.768875
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,0.5,,20,20,5.0,0.35,2.752558
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,0.5,,20,20,10.0,0.45,2.587702
+log(20260915-171053).txt,Snake Game,SWEET,per_strength,1.0,0.98,20,20,,,
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,1.0,,20,20,0.1,0.9,2.752989
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,1.0,,20,20,1.0,0.9,2.752989
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,1.0,,20,20,5.0,0.9,2.752558
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,1.0,,20,20,10.0,0.9,2.710687
+log(20260915-171053).txt,Snake Game,SWEET,per_strength,2.0,1.0,20,20,,,
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,2.0,,20,20,0.1,1.0,4.389381
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,2.0,,20,20,1.0,1.0,4.389381
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,2.0,,20,20,5.0,1.0,2.752558
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,2.0,,20,20,10.0,1.0,2.710687
+log(20260915-171053).txt,Snake Game,SWEET,per_strength,3.0,1.0,20,20,,,
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,3.0,,20,20,0.1,1.0,5.0
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,3.0,,20,20,1.0,1.0,5.0
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,3.0,,20,20,5.0,1.0,2.752558
+log(20260915-171053).txt,Snake Game,SWEET,per_strength_tpr,3.0,,20,20,10.0,1.0,2.710687
+log(20260915-171053).txt,Snake Game,EWD,pooled,,0.87625,80,20,,,
+log(20260915-171053).txt,Snake Game,EWD,pooled_tpr,,,80,20,0.1,0.0875,2.355165
+log(20260915-171053).txt,Snake Game,EWD,pooled_tpr,,,80,20,1.0,0.0875,2.355165
+log(20260915-171053).txt,Snake Game,EWD,pooled_tpr,,,80,20,5.0,0.4875,1.246645
+log(20260915-171053).txt,Snake Game,EWD,pooled_tpr,,,80,20,10.0,0.5,1.223808
+log(20260915-171053).txt,Snake Game,EWD,per_strength,0.5,0.79,20,20,,,
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,0.5,,20,20,0.1,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,0.5,,20,20,1.0,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,0.5,,20,20,5.0,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,0.5,,20,20,10.0,0.0,1.238207
+log(20260915-171053).txt,Snake Game,EWD,per_strength,1.0,0.83,20,20,,,
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,1.0,,20,20,0.1,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,1.0,,20,20,1.0,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,1.0,,20,20,5.0,0.2,1.408236
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,1.0,,20,20,10.0,0.2,1.238207
+log(20260915-171053).txt,Snake Game,EWD,per_strength,2.0,0.9175,20,20,,,
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,2.0,,20,20,0.1,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,2.0,,20,20,1.0,0.0,2.234076
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,2.0,,20,20,5.0,0.75,1.246645
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,2.0,,20,20,10.0,0.8,1.223808
+log(20260915-171053).txt,Snake Game,EWD,per_strength,3.0,0.9675,20,20,,,
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,3.0,,20,20,0.1,0.35,2.355165
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,3.0,,20,20,1.0,0.35,2.355165
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,3.0,,20,20,5.0,1.0,1.360956
+log(20260915-171053).txt,Snake Game,EWD,per_strength_tpr,3.0,,20,20,10.0,1.0,1.238207
+log(20260915-171053).txt,Snake Game,STONE,pooled,,0.460625,80,20,,,
+log(20260915-171053).txt,Snake Game,STONE,pooled_tpr,,,80,20,0.1,0.0875,50.56871
+log(20260915-171053).txt,Snake Game,STONE,pooled_tpr,,,80,20,1.0,0.0875,50.56871
+log(20260915-171053).txt,Snake Game,STONE,pooled_tpr,,,80,20,5.0,0.175,49.40546
+log(20260915-171053).txt,Snake Game,STONE,pooled_tpr,,,80,20,10.0,0.2375,48.678811
+log(20260915-171053).txt,Snake Game,STONE,per_strength,0.5,0.4975,20,20,,,
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,0.5,,20,20,0.1,0.05,51.545899
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,0.5,,20,20,1.0,0.05,51.545899
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,0.5,,20,20,5.0,0.1,49.826345
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,0.5,,20,20,10.0,0.25,48.678811
+log(20260915-171053).txt,Snake Game,STONE,per_strength,1.0,0.4825,20,20,,,
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,1.0,,20,20,0.1,0.1,50.56871
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,1.0,,20,20,1.0,0.1,50.56871
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,1.0,,20,20,5.0,0.25,49.694027
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,1.0,,20,20,10.0,0.3,48.709857
+log(20260915-171053).txt,Snake Game,STONE,per_strength,2.0,0.32,20,20,,,
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,2.0,,20,20,0.1,0.0,50.530657
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,2.0,,20,20,1.0,0.0,50.530657
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,2.0,,20,20,5.0,0.15,49.40546
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,2.0,,20,20,10.0,0.15,49.227229
+log(20260915-171053).txt,Snake Game,STONE,per_strength,3.0,0.5425,20,20,,,
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,3.0,,20,20,0.1,0.2,51.305836
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,3.0,,20,20,1.0,0.2,51.305836
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,3.0,,20,20,5.0,0.2,50.530657
+log(20260915-171053).txt,Snake Game,STONE,per_strength_tpr,3.0,,20,20,10.0,0.25,48.803287
+log(20260915-171053).txt,Snake Game,Waterfall,pooled,,0.455625,80,20,,,
+log(20260915-171053).txt,Snake Game,Waterfall,pooled_tpr,,,80,20,0.1,0.05,0.021689
+log(20260915-171053).txt,Snake Game,Waterfall,pooled_tpr,,,80,20,1.0,0.05,0.021689
+log(20260915-171053).txt,Snake Game,Waterfall,pooled_tpr,,,80,20,5.0,0.225,-0.00666
+log(20260915-171053).txt,Snake Game,Waterfall,pooled_tpr,,,80,20,10.0,0.2375,-0.008789
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength,0.5,0.5725,20,20,,,
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,0.5,,20,20,0.1,0.0,0.011678
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,0.5,,20,20,1.0,0.0,0.011678
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,0.5,,20,20,5.0,0.35,-0.00666
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,0.5,,20,20,10.0,0.4,-0.008789
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength,1.0,0.5075,20,20,,,
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,1.0,,20,20,0.1,0.05,0.044772
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,1.0,,20,20,1.0,0.05,0.044772
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,1.0,,20,20,5.0,0.35,-0.006109
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,1.0,,20,20,10.0,0.35,-0.006666
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength,2.0,0.39,20,20,,,
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,2.0,,20,20,0.1,0.15,0.021689
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,2.0,,20,20,1.0,0.15,0.021689
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,2.0,,20,20,5.0,0.15,0.011678
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,2.0,,20,20,10.0,0.15,-0.006666
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength,3.0,0.3525,20,20,,,
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,3.0,,20,20,0.1,0.0,0.011678
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,3.0,,20,20,1.0,0.0,0.011678
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,3.0,,20,20,5.0,0.05,0.008568
+log(20260915-171053).txt,Snake Game,Waterfall,per_strength_tpr,3.0,,20,20,10.0,0.05,-0.006666
+log(9).txt,Brick Breaker,WLLM,pooled,,0.82125,80,20,,,
+log(9).txt,Brick Breaker,WLLM,pooled_tpr,,,80,20,0.1,0.4125,-0.224168
+log(9).txt,Brick Breaker,WLLM,pooled_tpr,,,80,20,1.0,0.4125,-0.224168
+log(9).txt,Brick Breaker,WLLM,pooled_tpr,,,80,20,5.0,0.525,-0.468293
+log(9).txt,Brick Breaker,WLLM,pooled_tpr,,,80,20,10.0,0.5625,-0.651217
+log(9).txt,Brick Breaker,WLLM,per_strength,0.5,0.6275,20,20,,,
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,0.5,,20,20,0.1,0.1,-0.195881
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,0.5,,20,20,1.0,0.1,-0.195881
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,0.5,,20,20,5.0,0.2,-0.468293
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,0.5,,20,20,10.0,0.25,-0.616767
+log(9).txt,Brick Breaker,WLLM,per_strength,1.0,0.735,20,20,,,
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,1.0,,20,20,0.1,0.1,1.097106
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,1.0,,20,20,1.0,0.1,1.097106
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,1.0,,20,20,5.0,0.2,-0.392972
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,1.0,,20,20,10.0,0.3,-0.651217
+log(9).txt,Brick Breaker,WLLM,per_strength,2.0,0.9475,20,20,,,
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,2.0,,20,20,0.1,0.75,-0.224168
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,2.0,,20,20,1.0,0.75,-0.224168
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,2.0,,20,20,5.0,0.8,-0.379023
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,2.0,,20,20,10.0,0.8,-0.477818
+log(9).txt,Brick Breaker,WLLM,per_strength,3.0,0.975,20,20,,,
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,3.0,,20,20,0.1,0.7,-0.147353
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,3.0,,20,20,1.0,0.7,-0.147353
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,3.0,,20,20,5.0,0.9,-0.433264
+log(9).txt,Brick Breaker,WLLM,per_strength_tpr,3.0,,20,20,10.0,0.9,-0.477818
+log(9).txt,Brick Breaker,SWEET,pooled,,0.941875,80,20,,,
+log(9).txt,Brick Breaker,SWEET,pooled_tpr,,,80,20,0.1,0.675,2.741435
+log(9).txt,Brick Breaker,SWEET,pooled_tpr,,,80,20,1.0,0.675,2.741435
+log(9).txt,Brick Breaker,SWEET,pooled_tpr,,,80,20,5.0,0.7875,1.481487
+log(9).txt,Brick Breaker,SWEET,pooled_tpr,,,80,20,10.0,0.875,1.07349
+log(9).txt,Brick Breaker,SWEET,per_strength,0.5,0.8075,20,20,,,
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,0.5,,20,20,0.1,0.15,2.772413
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,0.5,,20,20,1.0,0.15,2.772413
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,0.5,,20,20,5.0,0.35,1.481487
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,0.5,,20,20,10.0,0.55,1.07349
+log(9).txt,Brick Breaker,SWEET,per_strength,1.0,0.96,20,20,,,
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,1.0,,20,20,0.1,0.55,2.741435
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,1.0,,20,20,1.0,0.55,2.741435
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,1.0,,20,20,5.0,0.8,1.632993
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,1.0,,20,20,10.0,0.95,1.165998
+log(9).txt,Brick Breaker,SWEET,per_strength,2.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,2.0,,20,20,0.1,1.0,3.396831
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,2.0,,20,20,1.0,1.0,3.396831
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,2.0,,20,20,5.0,1.0,2.610189
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,2.0,,20,20,10.0,1.0,1.343864
+log(9).txt,Brick Breaker,SWEET,per_strength,3.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,3.0,,20,20,0.1,1.0,4.840706
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,3.0,,20,20,1.0,1.0,4.840706
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,3.0,,20,20,5.0,1.0,2.610189
+log(9).txt,Brick Breaker,SWEET,per_strength_tpr,3.0,,20,20,10.0,1.0,1.343864
+log(9).txt,Brick Breaker,EWD,pooled,,0.99125,80,20,,,
+log(9).txt,Brick Breaker,EWD,pooled_tpr,,,80,20,0.1,0.9125,0.002407
+log(9).txt,Brick Breaker,EWD,pooled_tpr,,,80,20,1.0,0.9125,0.002407
+log(9).txt,Brick Breaker,EWD,pooled_tpr,,,80,20,5.0,0.9375,-0.107082
+log(9).txt,Brick Breaker,EWD,pooled_tpr,,,80,20,10.0,0.975,-0.210908
+log(9).txt,Brick Breaker,EWD,per_strength,0.5,0.965,20,20,,,
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,0.5,,20,20,0.1,0.65,0.002407
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,0.5,,20,20,1.0,0.65,0.002407
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,0.5,,20,20,5.0,0.75,-0.107082
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,0.5,,20,20,10.0,0.9,-0.210908
+log(9).txt,Brick Breaker,EWD,per_strength,1.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,1.0,,20,20,0.1,1.0,0.011348
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,1.0,,20,20,1.0,1.0,0.011348
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,1.0,,20,20,5.0,1.0,-0.052876
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,1.0,,20,20,10.0,1.0,-0.191514
+log(9).txt,Brick Breaker,EWD,per_strength,2.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,2.0,,20,20,0.1,1.0,0.497769
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,2.0,,20,20,1.0,1.0,0.497769
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,2.0,,20,20,5.0,1.0,-0.052876
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,2.0,,20,20,10.0,1.0,-0.191514
+log(9).txt,Brick Breaker,EWD,per_strength,3.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,3.0,,20,20,0.1,1.0,0.924935
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,3.0,,20,20,1.0,1.0,0.924935
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,3.0,,20,20,5.0,1.0,-0.052876
+log(9).txt,Brick Breaker,EWD,per_strength_tpr,3.0,,20,20,10.0,1.0,-0.191514
+log(9).txt,Brick Breaker,STONE,pooled,,0.65625,80,20,,,
+log(9).txt,Brick Breaker,STONE,pooled_tpr,,,80,20,0.1,0.15,49.80716
+log(9).txt,Brick Breaker,STONE,pooled_tpr,,,80,20,1.0,0.15,49.80716
+log(9).txt,Brick Breaker,STONE,pooled_tpr,,,80,20,5.0,0.25,48.85147
+log(9).txt,Brick Breaker,STONE,pooled_tpr,,,80,20,10.0,0.3625,48.345092
+log(9).txt,Brick Breaker,STONE,per_strength,0.5,0.5625,20,20,,,
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,0.5,,20,20,0.1,0.15,50.006535
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,0.5,,20,20,1.0,0.15,50.006535
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,0.5,,20,20,5.0,0.2,49.0323
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,0.5,,20,20,10.0,0.25,48.525415
+log(9).txt,Brick Breaker,STONE,per_strength,1.0,0.555,20,20,,,
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,1.0,,20,20,0.1,0.05,50.048744
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,1.0,,20,20,1.0,0.05,50.048744
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,1.0,,20,20,5.0,0.2,49.412172
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,1.0,,20,20,10.0,0.3,48.391979
+log(9).txt,Brick Breaker,STONE,per_strength,2.0,0.6975,20,20,,,
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,2.0,,20,20,0.1,0.2,49.80716
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,2.0,,20,20,1.0,0.2,49.80716
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,2.0,,20,20,5.0,0.3,49.176599
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,2.0,,20,20,10.0,0.35,48.675548
+log(9).txt,Brick Breaker,STONE,per_strength,3.0,0.81,20,20,,,
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,3.0,,20,20,0.1,0.2,49.895144
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,3.0,,20,20,1.0,0.2,49.895144
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,3.0,,20,20,5.0,0.3,48.85147
+log(9).txt,Brick Breaker,STONE,per_strength_tpr,3.0,,20,20,10.0,0.55,48.345092
+log(9).txt,Brick Breaker,Waterfall,pooled,,0.8,80,20,,,
+log(9).txt,Brick Breaker,Waterfall,pooled_tpr,,,80,20,0.1,0.5375,0.01583
+log(9).txt,Brick Breaker,Waterfall,pooled_tpr,,,80,20,1.0,0.5375,0.01583
+log(9).txt,Brick Breaker,Waterfall,pooled_tpr,,,80,20,5.0,0.5375,0.015661
+log(9).txt,Brick Breaker,Waterfall,pooled_tpr,,,80,20,10.0,0.55,0.014389
+log(9).txt,Brick Breaker,Waterfall,per_strength,0.5,0.4875,20,20,,,
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,0.5,,20,20,0.1,0.05,0.023256
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,0.5,,20,20,1.0,0.05,0.023256
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,0.5,,20,20,5.0,0.05,0.015661
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,0.5,,20,20,10.0,0.05,0.015383
+log(9).txt,Brick Breaker,Waterfall,per_strength,1.0,0.7925,20,20,,,
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,1.0,,20,20,0.1,0.35,0.01583
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,1.0,,20,20,1.0,0.35,0.01583
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,1.0,,20,20,5.0,0.35,0.015661
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,1.0,,20,20,10.0,0.35,0.015383
+log(9).txt,Brick Breaker,Waterfall,per_strength,2.0,0.92,20,20,,,
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,2.0,,20,20,0.1,0.75,0.016291
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,2.0,,20,20,1.0,0.75,0.016291
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,2.0,,20,20,5.0,0.75,0.015661
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,2.0,,20,20,10.0,0.8,0.014389
+log(9).txt,Brick Breaker,Waterfall,per_strength,3.0,1.0,20,20,,,
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,3.0,,20,20,0.1,1.0,0.016942
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,3.0,,20,20,1.0,1.0,0.016942
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,3.0,,20,20,5.0,1.0,0.015661
+log(9).txt,Brick Breaker,Waterfall,per_strength_tpr,3.0,,20,20,10.0,1.0,0.015383

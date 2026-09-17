@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant B as Board
+    participant WD as WinDetector
+    M->>G: new Game(15)
+    G->>B: allocate Board(15)
+    G-->>M: Game ready (currentPlayer=X, IN_PROGRESS)
+    M->>G: placeMove(1,1)
+    G->>B: setCell(1,1,X)
+    G->>WD: hasFiveInRow(B,1,1,X)?
+    WD-->>G: false
+    G-->>M: true (currentPlayer becomes O)
+    M->>G: placeMove(2,2)
+    G->>B: setCell(2,2,O)
+    G->>WD: hasFiveInRow(B,2,2,O)?
+    WD-->>G: false
+    G-->>M: true (currentPlayer becomes X)
+    M-->>M: print "Caro core ready" and return

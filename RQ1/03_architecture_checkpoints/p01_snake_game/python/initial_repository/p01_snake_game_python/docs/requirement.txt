@@ -1,0 +1,68 @@
+Generate a complete medium-size Python 3.10 repository architecture for: Snake game.
+
+This architecture will be implemented later by a seeded local code model and evaluated automatically. Produce concrete design and implementation tasks for every file; do not use placeholders.
+
+Normative evaluator protocol (these paths are mandatory and override preferences):
+- build file: requirements.txt
+- runtime entry: Main.py
+- single test target: tests/test_main.py
+- test command: python -m pytest -q
+- keep exactly one protocol-level test file; additional non-test implementation files are allowed
+
+Language/layout constraints:
+Keep Main.py as a thin entrypoint and put reusable modules in a lowercase snake_case package. List pytest in requirements.txt and avoid other external dependencies unless essential. Target Python 3.10 exactly: do not use typing.Self, StrEnum, exception groups, or other Python 3.11+ APIs. Design an acyclic import graph: foundational types/errors may not import engines, entrypoints, or demos; __init__.py may export only symbols actually defined by submodules.
+
+
+Project-specific Python 3.10 correctness contract:
+- never import or use typing.Self, typing_extensions.Self, StrEnum, or any Python 3.11 API; every module whose annotations refer to its own classes must start with from __future__ import annotations, or quote every forward reference
+- snake_game/direction.py is the sole owner of Direction; define Direction(Enum) values as exact (dx, dy) integer tuples and expose delta(self) -> tuple[int, int] plus is_opposite(self, other: Direction) -> bool
+- snake_game/grid.py defines only an immutable/hashable Position and validated Grid bounds; it must never mention or import Direction and must not define Grid.delta
+- snake_game/snake.py imports Direction and Position directly; next_head() obtains dx, dy from self.direction.delta() and returns Position(head.x + dx, head.y + dy)
+- collision.py operates only on explicit Position/Grid/body arguments and must not duplicate direction-to-delta mapping; keep the import graph direction -> none, grid -> none, snake -> direction+grid, collision -> grid, food -> grid+random_provider, game -> the preceding modules
+- use one canonical mutable Snake API consistently: turn(requested) -> bool, next_head() -> Position, and advance(grow: bool) -> None; Game and tests must not expect Snake.move to return a new object
+- Game has exact constructor Game(grid: Grid, rng: RandomProvider, start: Position, direction: Direction), initializes a live game immediately, and exposes turn, step, reset, state, is_over, and score_get without a second mandatory initialization call
+- step computes next_head once, checks wall and self collision before mutation, treats moving into the departing tail as safe when not growing, advances once, increments score only on food, and places new food only after consumption
+- state returns exactly width, height, snake, food, score, over, and direction; snake and food coordinates are (x, y) tuples and direction is the enum name string
+- Main.py defines main(), creates a deterministic provider and valid Game, performs at most two safe steps, prints one snapshot, exits, and runs main() only under the __name__ guard
+- tests contain 2--4 concise deterministic cases and import every symbol they use; no wildcard imports and no test may rely on an unimported Direction
+- the no-growth fixture is exact: grid 10x10, start Position(5,5), direction RIGHT, deterministic food Position(1,1), one step yields snake tuple [(6,5)], unchanged food (1,1), score 0, and over False
+- the growth fixture is exact: grid 10x10, start Position(5,5), direction RIGHT, deterministic food sequence Position(6,5) then Position(1,1); one step yields snake tuples [(6,5),(5,5)], new food (1,1), score 1, and over False
+- never assert growth in the no-growth fixture, never inspect private attributes such as game._snake, and do not make runtime-output formatting part of a domain-rule assertion
+- repeat the exact Python 3.10, Direction.delta, Grid non-dependency, Snake mutation, Game constructor, flat state schema, deterministic fixtures, and import rules in Full API specification, Logic Analysis, Test Scope Plan, Shared Knowledge, and every affected implementation task; vague compatibility or acyclic-import statements are insufficient
+
+
+Medium-size reference from MetaProjectDev (descriptive only; the architecture model's generated file count is authoritative):
+- about 7 repository files
+- about 31 functions or methods
+- about 590 lines of code
+
+Sizing guidance:
+- #Files, #Functions, and #LOC above are paper-table references, not acceptance bounds
+- use the number of files produced by this architecture run; do not add or remove files merely to hit the reference
+- count build, runtime, test, package markers, headers, and implementation files when reporting the realized size
+
+Required domain behavior:
+- grid-based snake movement
+- direction rules that reject immediate reversal
+- food placement and consumption
+- growth and score updates
+- wall and self collision
+- game-over and reset
+
+Cross-cutting requirements:
+- separate pure domain logic from runtime, UI, filesystem, network, clock, and randomness boundaries
+- automated tests must be deterministic, headless, offline, and require no manual interaction
+- keep the single test target concise (2 to 4 tests, preferably under 150 LOC): cover runtime wiring and representative core rules, not the full feature matrix
+- do not inflate the function/LOC target with test code; put substantive behavior in implementation files
+- make every planned file small enough for one 4096-token code completion: prefer under 150 LOC and never plan a file over 220 LOC
+- order the Task list strictly by implementation dependency: foundational types and interfaces first, then dependent implementations, then the runtime entry, and the single test target LAST (the build descriptor may be first)
+- the Engineer code_todos must preserve that dependency-first Task-list order so later files can see already-generated dependency code
+- the runtime entry must provide a small non-interactive demonstration that exits successfully or starts safely without an output loop
+- validate invalid inputs and boundary cases
+- keep public interfaces coherent across design, task list, implementation, and tests
+- specify one canonical public API; tests must use it without inventing alternate semantics
+- make Full API spec non-empty and exhaustive: for every public type/function give its exact module, signature, return value, error behavior, and key semantics; repeat these exact contracts in each affected file task
+- tests may import only the canonical public API and should assert stable externally visible behavior, not private implementation details, incidental formatting, or unplanned aliases
+- avoid circular dependencies; explicitly give the allowed import/include direction and ensure every referenced symbol is defined before a dependent file is generated
+- avoid network access and OS-specific behavior during build, tests, and runtime checks
+- all planned source, header, build, and test files must be listed exactly and consistently in the design and task documents

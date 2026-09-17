@@ -1,0 +1,983 @@
+{
+  "benchmark_git": {
+    "head": "e5630767144c1b741ba799d346f72c874e338dc7",
+    "status": "?? logs/\n?? metagpt/\n?? reproduct/\n"
+  },
+  "campaign_manifest_sha256": "8f0c8511f91eca8787dd766034766cc303d935fe7f309832f8934ae3212722d0",
+  "captured_at": "2026-09-14T12:05:04.646550+00:00",
+  "determinism": {
+    "campaign_mode": "request seed + global RNG lock + fixed runtime fingerprint",
+    "observed_error": "Qwen3-MoE CUDA _histc has no deterministic implementation",
+    "strict_pytorch_deterministic_algorithms": "unsupported"
+  },
+  "errors": [],
+  "evaluator_container": {
+    "container_inspect": {
+      "command": [
+        "podman",
+        "inspect",
+        "CodeWM-DT"
+      ],
+      "output": "[\n     {\n          \"Id\": \"4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8\",\n          \"Created\": \"2026-07-30T10:16:30.041228635Z\",\n          \"Path\": \"/usr/local/bin/xvfb-entrypoint.sh\",\n          \"Args\": [\n               \"sleep\",\n               \"infinity\"\n          ],\n          \"State\": {\n               \"OciVersion\": \"1.1.0-rc.3\",\n               \"Status\": \"running\",\n               \"Running\": true,\n               \"Paused\": false,\n               \"Restarting\": false,\n               \"OOMKilled\": false,\n               \"Dead\": false,\n               \"Pid\": 611022,\n               \"ConmonPid\": 611019,\n               \"ExitCode\": 0,\n               \"Error\": \"\",\n               \"StartedAt\": \"2026-07-30T10:16:30.094613118Z\",\n               \"FinishedAt\": \"0001-01-01T00:00:00Z\",\n               \"Health\": {\n                    \"Status\": \"healthy\",\n                    \"FailingStreak\": 0,\n                    \"Log\": [\n                         {\n                              \"Start\": \"2026-09-14T12:04:17.240356308Z\",\n                              \"End\": \"2026-09-14T12:04:17.277316112Z\",\n                              \"ExitCode\": 0,\n                              \"Output\": \"\"\n                         },\n                         {\n                              \"Start\": \"2026-09-14T12:04:28.23819928Z\",\n                              \"End\": \"2026-09-14T12:04:28.309346179Z\",\n                              \"ExitCode\": 0,\n                              \"Output\": \"\"\n                         },\n                         {\n                              \"Start\": \"2026-09-14T12:04:39.236426356Z\",\n                              \"End\": \"2026-09-14T12:04:39.307490982Z\",\n                              \"ExitCode\": 0,\n                              \"Output\": \"\"\n                         },\n                         {\n                              \"Start\": \"2026-09-14T12:04:50.239630636Z\",\n                              \"End\": \"2026-09-14T12:04:50.301247176Z\",\n                              \"ExitCode\": 0,\n                              \"Output\": \"\"\n                         },\n                         {\n                              \"Start\": \"2026-09-14T12:05:01.235589277Z\",\n                              \"End\": \"2026-09-14T12:05:01.294802252Z\",\n                              \"ExitCode\": 0,\n                              \"Output\": \"\"\n                         }\n                    ]\n               },\n               \"CgroupPath\": \"/user.slice/user-1016.slice/user@1016.service/user.slice/libpod-4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8.scope\",\n               \"CheckpointedAt\": \"0001-01-01T00:00:00Z\",\n               \"RestoredAt\": \"0001-01-01T00:00:00Z\"\n          },\n          \"Image\": \"4311e997cd8b985e7300e3aa14955f35d2d1bac7d9922b32eaa9e356d5bcaa5d\",\n          \"ImageDigest\": \"sha256:88e60a0f99d029fd830663f6df69655f06fa1c3a0b30f2942c7e37e46381d829\",\n          \"ImageName\": \"localhost/codewm_dt_docker:proWES\",\n          \"Rootfs\": \"\",\n          \"Pod\": \"\",\n          \"ResolvConfPath\": \"/run/user/1016/containers/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/resolv.conf\",\n          \"HostnamePath\": \"/run/user/1016/containers/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/hostname\",\n          \"HostsPath\": \"/run/user/1016/containers/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/hosts\",\n          \"StaticDir\": \"/home/zhaorz/.local/share/containers/storage/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata\",\n          \"OCIConfigPath\": \"/home/zhaorz/.local/share/containers/storage/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/config.json\",\n          \"OCIRuntime\": \"crun\",\n          \"ConmonPidFile\": \"/run/user/1016/containers/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/conmon.pid\",\n          \"PidFile\": \"/run/user/1016/containers/overlay-containers/4709fe2bc292c78126831ac82d3b1fa58f7da54906832cf1a464d0198fc230c8/userdata/pidfile\",\n          \"Name\": \"CodeWM-DT\",\n          \"RestartCount\": 0,\n          \"Driver\": \"overlay\",\n          \"MountLabel\": \"\",\n          \"ProcessLabel\": \"\",\n          \"AppArmorProfile\": \"\",\n          \"EffectiveCaps\": [\n               \"CAP_CHOWN\",\n               \"CAP_DAC_OVERRIDE\",\n               \"CAP_FOWNER\",\n               \"CAP_FSETID\",\n               \"CAP_KILL\",\n               \"CAP_NET_BIND_SERVICE\",\n               \"CAP_SETFCAP\",\n               \"CAP_SETGID\",\n               \"CAP_SETPCAP\",\n               \"CAP_SETUID\",\n               \"CAP_SYS_CHROOT\"\n          ],\n          \"BoundingCaps\": [\n               \"CAP_CHOWN\",\n               \"CAP_DAC_OVERRIDE\",\n               \"CAP_FOWNER\",\n               \"CAP_FSETID\",\n               \"CAP_KILL\",\n               \"CAP_NET_BIND_SERVICE\",\n               \"CAP_SETFCAP\",\n               \"CAP_SETGID\",\n               \"CAP_SETPCAP\",\n               \"CAP_SETUID\",\n               \"CAP_SYS_CHROOT\"\n          ],\n          \"ExecIDs\": [\n               \"4d92c4ea5a8843dd1c7ca8fdc9081e5aa4eec1811d46b4e9f84ee8a1cb6bf428\",\n               \"6efd2eb788ba71762dd62d99512f69732d5d0303197092632aba772b9ade5733\",\n               \"8207d022cc077197331356ef7ba148f1c9f544db40bc7b86f0070a10c0a7c859\",\n               \"8814e2530611363040dd7e2dccd23b258eedad087fad27305d823e375309da87\",\n               \"9ef1546971cc0b69a56bca8c14f730dc69f7d41d73f2657928e501c8156edf02\",\n               \"d72ada22abc72b2a5d9aeddcb1255bd8930565df20992883cb18bd27d02f49e5\",\n               \"381eccf4860d503ce306e0f1b518d1dbee48c9e30b04ad74c9e8f003ff420e67\",\n               \"466b6dc4a8c42f6234be45dcc5b561b1f1f22038b6e5d9cdc1fe240f6c8d9743\",\n               \"a41bac396414264363bd7409a2c19c4d353b0213657df41e97a6450cf97f6d60\",\n               \"ba42ed1905bb2c04cb9aa1bd5bbbe03565f4455bc2d5e2acc255e0d0c9be397a\",\n               \"d6a70127c5d3eae0879533f9655fc18aa4c70bf159fa82f2a34b7dc0fcf25449\",\n               \"979edc77cc9131453a155b5739a753de33d98bf2fd8d37102b15ec4c68354ea5\",\n               \"9cda21cc73b224bf783dca1ddc9c0b62c087d5e1770f01b44e029cdb52b3bcb3\",\n               \"6e1ae80b5795be79ea849e102e253273f3bc09ed8d993624cdcd4e04e48a5514\",\n               \"8192f3e5c9e2fdcbea8c6c817fd51fd032a2b55c26a67c668303b203363a10af\",\n               \"93ea146e13c9dc316e3f4319db5118a8239709ebb2a355de05fe8e2dbe98da52\",\n               \"98a222c25861cf80bf6f602ee8796c8ec0e2b83d6cf9e792e8ce0a1ba9a67635\",\n               \"d431b02124d4d999bf17103af4e3a7787241066d7e77fee7007256f93648051a\",\n               \"f500c8eef6fdf86a1ce00ae91d51cbe64ff3b694120ab5fc2b3783c6c8615489\",\n               \"04a7a7559c3d8b2ffea5692bf405d82dc047fc9a289892bb2c434d7e4672cc8a\",\n               \"21438b19b9cadc1f49c5b6c31aa9a181eab1ae2a361cfa4fdf68c703a847299a\",\n               \"73a41e44ad398487e5ec2eb4213a1b76e670a3000eff16dca64777b639c61709\",\n               \"b38fb112227b380b0ed63ac68d3b94ece308b442ef0692663792a59c359f49a4\",\n               \"dfc44dbe36c9e2a43595e53c1b53692d09d145e528b0cffdfd10849341ffe1aa\",\n               \"f6511c74e4b38e081477910f60b09ff14b9a275069600d707fcfc9ede8e60053\",\n               \"1b4eef4fd96019f055c682d6931d9c344c455e9e9b209e7395a8569e405dc517\",\n               \"3891ba3cfee816b9c0db50675c5e8679a6ccdafd2db925b187a63926d75b4225\",\n               \"7f704033735eda7b98047d7fcc40200bc5cdd3688e6ad43e48857fc21d9e7034\",\n               \"8dc7179234ac0a06c40552fa89ac1d5a84eab2f591a09a2b45636f9467833496\",\n               \"bf45c8a208972af2b29980aead57cc1f13e69323cf79c06a05a75c87fcbd4727\",\n               \"d8c6c5d1a16790e6058206b88bb0ace34c532c2bf016f54b9086a14ee5c88eae\",\n               \"255e5617a0c5f455b569cb5a1d342b05b72da47df72703955b49196a76aa0561\",\n               \"4e64c8cb39351fffcf8487452158c46c2903646cc5b7f9a37e91abffe1c1f0e1\",\n               \"629767895de7ff75e0b86f6f1ade5d1bf8ae8e68750b950e030f3f1d62a205a2\",\n               \"72ee9a1d753737787e39d77c8e33bda87497bff688630eee5cd7bbd628fd334e\",\n               \"801ea3ae37730c32b58e99d58b1a64071763b33e14afe2d9e2a76328cf96a582\",\n               \"b02e79e0932674dcfe4b1ed2a967b3e5a6a97d80a4cab34ff44dcabd1fe637ba\",\n               \"b524c229e1c1e94a013878041bcd35f12b3c846813ff0d95887c63495d81b860\",\n               \"3ba9661bdb5a5f63e33b3172cd59333287f8d5c484d94919314b122a79eb380e\",\n               \"5fe19c2b409afdb9edd57a0b2bbf360fc071d06bf33dae4b36a1269fe9582513\",\n               \"60f444a27764b0db1dd196f215d4ae56d685e7ea1e89107c21daf07880258b94\",\n               \"67f3d216e276b4e3827e5623e4b9a9dec3a159b49597c19947b8abde326fcc71\",\n               \"82e08ddd94d8f4736d13323d994fbf7888b99e12a47a4969345b40dc43caf32a\",\n               \"92a2aa2111f1193611557fcbd2165e7d8b308f3a38ec7bd40b1baa9f0404d90f\",\n               \"243f7058780ea5e3b96362d0e5cfff795836cabcd72c465aabe5345c6cb441ac\",\n               \"53da675dddc02d87f98aac215578ced9c6f62cee4d20d5eab0afb5d550c59162\",\n               \"b21e6579464cb354fb51605db2443ff25d65334d9912ccaec49aec36dea4cb52\",\n               \"d7614b6b431bf97d0439352a98f3fdcfcbf4ff5f0624f2a7fb0cfe0967040dc1\",\n               \"2f1bec4138303a7a8b8c50f8c4951a7a0f73536fb7ddddce470f6358b5815779\",\n               \"aa164ef3ba06158596655640e99a5eda356fe42f56659f86defd301f62842c9b\",\n               \"e7b73063a6575c64cdda9cdc7aa03d5e4c573dfa57e219d89a6a52209ace2ef6\",\n               \"6ed8f9c2d23e961579eed9f7b7e1955444050208f626c2707ff110e72568b0f0\",\n               \"9449393296ea7f36d493df531cad296539ff20fd204fd4220822fe1f7444f4f1\",\n               \"501358d103f1fde379fd8b330f9e798927f2cce47d699c263ce08766d849386e\",\n               \"646bf014521bc2545fd18a9f7de793e1c19bbf2ef475a5bcfb97d7119a0a1364\",\n               \"8a490cbd09b73668ae633df65f8afbce0873007b161bbe94f6bc15e9bc8ca72e\",\n               \"b3ae9960cb78267d40ab547e2bbb3369e5a7ab4b7ca7e1088b9f66957e92f8d7\",\n               \"b57dd80d36c8a0a2ff4b2e51ca42699631892473f662ef7879c4273643856539\",\n               \"04dea59ccefa57ad4de9690f65c86d769fdb75abe953704d4a4f54c94e23e316\",\n               \"1624ea32aefe5b1b744e01faebac2c4ced55a847a0a7f21ec36ff8f097899915\",\n               \"17d0c61142606448393a89eebc13a7bee9d5dfbbc093f31fdce891f572ad6b01\",\n               \"8fe4d1d1339eae6cfabc6c89128d0d48c3e602be006890ba145b6cf9e4aed5b4\",\n               \"4e66bc11622db2c4ae83916cfd9fa87ca588f81c3da46feeb44edb19c01ea760\",\n               \"d91f3136c30119ab854798850a51792708ed767b760c1eae099f331747d68884\",\n               \"e7e5f7057044cc0ae98557270bf03f3279d0eaee170789c178d9e63a3e95de19\",\n               \"1877b95380e47720488e359291d7f1b08728ed30ddf04715afd41e53e111d75d\",\n               \"18b21bbe6f8f6c33400d144de2958e59c48b6e12f77ec32e1cfb9165c7716e53\",\n               \"d50b0e31b8ab4219257f8d40c0e2efb1699414e5e019f55b5060bbc719cd0d5e\",\n               \"27248a45c097e77ae32e30d93fbcb2bde29427ff3befee7b5d24d30c2f177d48\",\n               \"be369515b1771424707f3d8b70beda0e962ba674e46baf802cae96c5e2a6ee08\",\n               \"fae9b4b95becbfe5e01a33ba621b8e0aebde45a35e52502a22a896184e3e67e1\",\n               \"04755d31b8c24fe1383229e382ca79cdc738149f3e814b454e6eb1624dcfb697\",\n               \"092826ede53d8a7abfdd71dac824b6ef71518275159a029c036582c525ef7871\",\n               \"bd788e93e3c186d7a91ccfc7c35949005dbd97978ac1a9a9e3bd0b20f715649a\",\n               \"91fe52fa664daa8505b3fdf8dbcc4f6c476df2de353144ba1d3149937e83767f\",\n               \"a53fe66b713c8c32f0ad797c5007e573fa2fdafaed20926208fe1a67d685ade4\"\n          ],\n          \"GraphDriver\": {\n               \"Name\": \"overlay\",\n               \"Data\": {\n                    \"LowerDir\": \"/home/zhaorz/.local/share/containers/storage/overlay/c393c1f0d00f2bc97515369930c88d9cc1b2fee201b658e4c2fcf3e0376e39fc/diff:/home/zhaorz/.local/share/containers/storage/overlay/14ecbd3f982f691b5ec3248793edbe7f8fe7518f8991dc1beef09b4976dbb009/diff:/home/zhaorz/.local/share/containers/storage/overlay/d9cd5b7226338311c96debfcd9406d953fabafc0b107679e75731e570535cad7/diff:/home/zhaorz/.local/share/containers/storage/overlay/053dda8a924e14c8a70f8176ea056fc596cad2f00c1da3166f3e0632627dbbcb/diff:/home/zhaorz/.local/share/containers/storage/overlay/440d941fe280db60c25df5576b7116ed9e2cb0e2983e5047ccea66f41c8e81c6/diff:/home/zhaorz/.local/share/containers/storage/overlay/ca6cf32d004fd5878dd0c465d437595071a322104f0534fbe586f5e625395b5e/diff:/home/zhaorz/.local/share/containers/storage/overlay/17d3d3cdd17d55cc96d6334ecf8760fc3f85a3025d11b832e38aa2c6cbdbdb1d/diff:/home/zhaorz/.local/share/containers/storage/overlay/5ee7ba1eb2adbb08e9ae86548826be2b53e5fefa30798dfce8e724f9250bf16d/diff:/home/zhaorz/.local/share/containers/storage/overlay/8e2ab4c8dffbb70ee4163bb8f04fa0910739f843bfa1a3a416e4b4c3be7c9858/diff:/home/zhaorz/.local/share/containers/storage/overlay/0c7271c5e1e452f012209d1c02503736efdd8e78241d39664aa9ae1df1c52af4/diff:/home/zhaorz/.local/share/containers/storage/overlay/fd2baf7f7301055ffa00a90cdfe441371044ca65f348c24c7a85786bec083945/diff:/home/zhaorz/.local/share/containers/storage/overlay/6bcd7ff21e278f46ca9861b9bbf8de595211d82dbb898496c5e794660ebb74aa/diff:/home/zhaorz/.local/share/containers/storage/overlay/3351132a2e840d9b22cec252c6be1c7b85d066959b2ce64a5fae20f40b403615/diff:/home/zhaorz/.local/share/containers/storage/overlay/1697fc1de1ef9a3e2519f6956127a71f5b1bbe60160f505555feb6a57eafa563/diff:/home/zhaorz/.local/share/containers/storage/overlay/53b740450244075f7653638b7e7036e11fb54402da8a9c87175f94a7aacce5fb/diff:/home/zhaorz/.local/share/containers/storage/overlay/6a3eef44ce2aa399e59aa795f8e82c64b25b5b080707876164d858c29830bf75/diff:/home/zhaorz/.local/share/containers/storage/overlay/629ca62fb7c791374ce57626d6b8b62c76378be091a0daf1a60d32700b49add7/diff\",\n                    \"MergedDir\": \"/home/zhaorz/.local/share/containers/storage/overlay/73f19dc4ea2648c99f37c39e460f625503b8089b9e4df1736fe1c72a5d1edaa3/merged\",\n                    \"UpperDir\": \"/home/zhaorz/.local/share/containers/storage/overlay/73f19dc4ea2648c99f37c39e460f625503b8089b9e4df1736fe1c72a5d1edaa3/diff\",\n                    \"WorkDir\": \"/home/zhaorz/.local/share/containers/storage/overlay/73f19dc4ea2648c99f37c39e460f625503b8089b9e4df1736fe1c72a5d1edaa3/work\"\n               }\n          },\n          \"Mounts\": [],\n          \"Dependencies\": [],\n          \"NetworkSettings\": {\n               \"EndpointID\": \"\",\n               \"Gateway\": \"\",\n               \"IPAddress\": \"\",\n               \"IPPrefixLen\": 0,\n               \"IPv6Gateway\": \"\",\n               \"GlobalIPv6Address\": \"\",\n               \"GlobalIPv6PrefixLen\": 0,\n               \"MacAddress\": \"\",\n               \"Bridge\": \"\",\n               \"SandboxID\": \"\",\n               \"HairpinMode\": false,\n               \"LinkLocalIPv6Address\": \"\",\n               \"LinkLocalIPv6PrefixLen\": 0,\n               \"Ports\": {},\n               \"SandboxKey\": \"\",\n               \"Networks\": {\n                    \"host\": {\n                         \"EndpointID\": \"\",\n                         \"Gateway\": \"\",\n                         \"IPAddress\": \"\",\n                         \"IPPrefixLen\": 0,\n                         \"IPv6Gateway\": \"\",\n                         \"GlobalIPv6Address\": \"\",\n                         \"GlobalIPv6PrefixLen\": 0,\n                         \"MacAddress\": \"\",\n                         \"NetworkID\": \"host\",\n                         \"DriverOpts\": null,\n                         \"IPAMConfig\": null,\n                         \"Links\": null\n                    }\n               }\n          },\n          \"Namespace\": \"\",\n          \"IsInfra\": false,\n          \"IsService\": false,\n          \"KubeExitCodePropagation\": \"invalid\",\n          \"lockNumber\": 0,\n          \"Config\": {\n               \"Hostname\": \"rubick\",\n               \"Domainname\": \"\",\n               \"User\": \"\",\n               \"AttachStdin\": false,\n               \"AttachStdout\": false,\n               \"AttachStderr\": false,\n               \"Tty\": false,\n               \"OpenStdin\": false,\n               \"StdinOnce\": false,\n               \"Env\": [\n                    \"http_proxy=http://192.168.129.183:7897\",\n                    \"PYTHONDONTWRITEBYTECODE=1\",\n                    \"PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\",\n                    \"TERM=xterm\",\n                    \"container=podman\",\n                    \"WORKDIR=/workspace\",\n                    \"PIP_ROOT_USER_ACTION=ignore\",\n                    \"PYTHONUNBUFFERED=1\",\n                    \"LC_ALL=en_US.UTF-8\",\n                    \"DISPLAY=:99\",\n                    \"MAVEN_HOME=/usr/share/maven\",\n                    \"DEBIAN_FRONTEND=noninteractive\",\n                    \"MAVEN_OPTS=-Dmaven.repo.local=/workspace/.m2\",\n                    \"XVFB_ARGS=-screen 0 1280x800x24 -nolisten tcp -dpi 96\",\n                    \"LANGUAGE=en_US:en\",\n                    \"PIP_DISABLE_PIP_VERSION_CHECK=1\",\n                    \"CC=/usr/bin/gcc\",\n                    \"JAVA_VERSION=jdk-11.0.23+9\",\n                    \"CXX=/usr/bin/g++\",\n                    \"TZ=Etc/UTC\",\n                    \"MAVEN_CONFIG=/root/.m2\",\n                    \"LANG=en_US.UTF-8\",\n                    \"https_proxy=http://192.168.129.183:7897\",\n                    \"JAVA_HOME=/opt/java/openjdk\",\n                    \"HOME=/root\",\n                    \"HOSTNAME=rubick\"\n               ],\n               \"Cmd\": [\n                    \"sleep\",\n                    \"infinity\"\n               ],\n               \"Image\": \"localhost/codewm_dt_docker:proWES\",\n               \"Volumes\": null,\n               \"WorkingDir\": \"/workspace\",\n               \"Entrypoint\": \"/usr/local/bin/xvfb-entrypoint.sh\",\n               \"OnBuild\": null,\n               \"Labels\": {\n                    \"io.buildah.version\": \"1.31.2\",\n                    \"org.opencontainers.image.ref.name\": \"ubuntu\",\n                    \"org.opencontainers.image.version\": \"22.04\"\n               },\n               \"Annotations\": {\n                    \"io.container.manager\": \"libpod\",\n                    \"org.opencontainers.image.stopSignal\": \"15\"\n               },\n               \"StopSignal\": 15,\n               \"Healthcheck\": {\n                    \"Test\": [\n                         \"CMD-SHELL\",\n                         \"xdpyinfo -display \\\"$DISPLAY\\\" >/dev/null 2>&1 || exit 1\"\n                    ],\n                    \"StartPeriod\": 5000000000,\n                    \"Interval\": 10000000000,\n                    \"Timeout\": 3000000000\n               },\n               \"HealthcheckOnFailureAction\": \"none\",\n               \"CreateCommand\": [\n                    \"podman\",\n                    \"run\",\n                    \"-d\",\n                    \"--network=host\",\n                    \"--name\",\n                    \"CodeWM-DT\",\n                    \"codewm_dt_docker:proWES\",\n                    \"sleep\",\n                    \"infinity\"\n               ],\n               \"Umask\": \"0022\",\n               \"Timeout\": 0,\n               \"StopTimeout\": 10,\n               \"Passwd\": true,\n               \"sdNotifyMode\": \"container\"\n          },\n          \"HostConfig\": {\n               \"Binds\": [],\n               \"CgroupManager\": \"systemd\",\n               \"CgroupMode\": \"private\",\n               \"ContainerIDFile\": \"\",\n               \"LogConfig\": {\n                    \"Type\": \"journald\",\n                    \"Config\": null,\n                    \"Path\": \"\",\n                    \"Tag\": \"\",\n                    \"Size\": \"0B\"\n               },\n               \"NetworkMode\": \"host\",\n               \"PortBindings\": {},\n               \"RestartPolicy\": {\n                    \"Name\": \"\",\n                    \"MaximumRetryCount\": 0\n               },\n               \"AutoRemove\": false,\n               \"VolumeDriver\": \"\",\n               \"VolumesFrom\": null,\n               \"CapAdd\": [],\n               \"CapDrop\": [],\n               \"Dns\": [],\n               \"DnsOptions\": [],\n               \"DnsSearch\": [],\n               \"ExtraHosts\": [],\n               \"GroupAdd\": [],\n               \"IpcMode\": \"shareable\",\n               \"Cgroup\": \"\",\n               \"Cgroups\": \"default\",\n               \"Links\": null,\n               \"OomScoreAdj\": 0,\n               \"PidMode\": \"private\",\n               \"Privileged\": false,\n               \"PublishAllPorts\": false,\n               \"ReadonlyRootfs\": false,\n               \"SecurityOpt\": [],\n               \"Tmpfs\": {},\n               \"UTSMode\": \"private\",\n               \"UsernsMode\": \"\",\n               \"ShmSize\": 65536000,\n               \"Runtime\": \"oci\",\n               \"ConsoleSize\": [\n                    0,\n                    0\n               ],\n               \"Isolation\": \"\",\n               \"CpuShares\": 0,\n               \"Memory\": 0,\n               \"NanoCpus\": 0,\n               \"CgroupParent\": \"user.slice\",\n               \"BlkioWeight\": 0,\n               \"BlkioWeightDevice\": null,\n               \"BlkioDeviceReadBps\": null,\n               \"BlkioDeviceWriteBps\": null,\n               \"BlkioDeviceReadIOps\": null,\n               \"BlkioDeviceWriteIOps\": null,\n               \"CpuPeriod\": 0,\n               \"CpuQuota\": 0,\n               \"CpuRealtimePeriod\": 0,\n               \"CpuRealtimeRuntime\": 0,\n               \"CpusetCpus\": \"\",\n               \"CpusetMems\": \"\",\n               \"Devices\": [],\n               \"DiskQuota\": 0,\n               \"KernelMemory\": 0,\n               \"MemoryReservation\": 0,\n               \"MemorySwap\": 0,\n               \"MemorySwappiness\": 0,\n               \"OomKillDisable\": false,\n               \"PidsLimit\": 2048,\n               \"Ulimits\": [\n                    {\n                         \"Name\": \"RLIMIT_NPROC\",\n                         \"Soft\": 1048576,\n                         \"Hard\": 1048576\n                    },\n                    {\n                         \"Name\": \"RLIMIT_NOFILE\",\n                         \"Soft\": 1048576,\n                         \"Hard\": 1048576\n                    }\n               ],\n               \"CpuCount\": 0,\n               \"CpuPercent\": 0,\n               \"IOMaximumIOps\": 0,\n               \"IOMaximumBandwidth\": 0,\n               \"CgroupConf\": null\n          }\n     }\n]",
+      "return_code": 0
+    },
+    "output": "CodeWM-DT\tUp 6 weeks (healthy)\tlocalhost/codewm_dt_docker:proWES",
+    "protocol_sha256": "e35cf3a5d2fd2ae4a16caafccc6607fe28867ec44adbf685b77242c993eea5c0",
+    "return_code": 0,
+    "test_script_sha256": "d94185454bc98d776786e0123d2316af95a3cd6a574ba2d786879a695ef19bb4"
+  },
+  "framework": {
+    "path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/framework/metagpt",
+    "tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c"
+  },
+  "host": {
+    "gpu_query": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=index,uuid,name,driver_version,memory.total,compute_cap",
+        "--format=csv,noheader"
+      ],
+      "output": "0, GPU-cfc87885-8270-cff8-b48d-cdd6e280c6c1, NVIDIA A800 80GB PCIe, 595.58.03, 81920 MiB, 8.0\n1, GPU-660e1514-dbd7-55d8-4634-794e3e155f28, NVIDIA A800 80GB PCIe, 595.58.03, 81920 MiB, 8.0\n2, GPU-74d72a34-794a-08bc-e62f-1759142d706a, NVIDIA A800 80GB PCIe, 595.58.03, 81920 MiB, 8.0\n3, GPU-0e11ad86-f6c7-d75b-38e4-9f2999119fb3, NVIDIA A800 80GB PCIe, 595.58.03, 81920 MiB, 8.0",
+      "return_code": 0
+    },
+    "locale": {
+      "command": [
+        "locale"
+      ],
+      "output": "LANG=C.UTF-8\nLANGUAGE=\nLC_CTYPE=\"C.UTF-8\"\nLC_NUMERIC=\"C.UTF-8\"\nLC_TIME=\"C.UTF-8\"\nLC_COLLATE=\"C.UTF-8\"\nLC_MONETARY=\"C.UTF-8\"\nLC_MESSAGES=\"C.UTF-8\"\nLC_PAPER=\"C.UTF-8\"\nLC_NAME=\"C.UTF-8\"\nLC_ADDRESS=\"C.UTF-8\"\nLC_TELEPHONE=\"C.UTF-8\"\nLC_MEASUREMENT=\"C.UTF-8\"\nLC_IDENTIFICATION=\"C.UTF-8\"\nLC_ALL=C.UTF-8",
+      "return_code": 0
+    },
+    "lscpu": {
+      "command": [
+        "lscpu"
+      ],
+      "output": "Architecture:                         x86_64\nCPU op-mode(s):                       32-bit, 64-bit\nAddress sizes:                        46 bits physical, 48 bits virtual\nByte Order:                           Little Endian\nCPU(s):                               80\nOn-line CPU(s) list:                  0-79\nVendor ID:                            GenuineIntel\nModel name:                           Intel(R) Xeon(R) Gold 5218R CPU @ 2.10GHz\nCPU family:                           6\nModel:                                85\nThread(s) per core:                   2\nCore(s) per socket:                   20\nSocket(s):                            2\nStepping:                             7\nCPU max MHz:                          4000.0000\nCPU min MHz:                          800.0000\nBogoMIPS:                             4200.00\nFlags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cdp_l3 invpcid_single intel_ppin ssbd mba ibrs ibpb stibp ibrs_enhanced tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb intel_pt avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts pku ospke avx512_vnni md_clear flush_l1d arch_capabilities\nVirtualization:                       VT-x\nL1d cache:                            1.3 MiB (40 instances)\nL1i cache:                            1.3 MiB (40 instances)\nL2 cache:                             40 MiB (40 instances)\nL3 cache:                             55 MiB (2 instances)\nNUMA node(s):                         2\nNUMA node0 CPU(s):                    0-19,40-59\nNUMA node1 CPU(s):                    20-39,60-79\nVulnerability Gather data sampling:   Mitigation; Microcode\nVulnerability Itlb multihit:          KVM: Mitigation: VMX disabled\nVulnerability L1tf:                   Not affected\nVulnerability Mds:                    Not affected\nVulnerability Meltdown:               Not affected\nVulnerability Mmio stale data:        Mitigation; Clear CPU buffers; SMT vulnerable\nVulnerability Reg file data sampling: Not affected\nVulnerability Retbleed:               Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:   Not affected\nVulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl and seccomp\nVulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:             Mitigation; Enhanced / Automatic IBRS; IBPB conditional; RSB filling; PBRSB-eIBRS SW sequence; BHI SW loop, KVM SW loop\nVulnerability Srbds:                  Not affected\nVulnerability Tsx async abort:        Mitigation; TSX disabled",
+      "return_code": 0
+    },
+    "nvidia_smi": {
+      "command": [
+        "nvidia-smi"
+      ],
+      "output": "Mon Sep 14 12:05:04 2026       \n+-----------------------------------------------------------------------------------------+\n| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |\n+-----------------------------------------+------------------------+----------------------+\n| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n|                                         |                        |               MIG M. |\n|=========================================+========================+======================|\n|   0  NVIDIA A800 80GB PCIe          On  |   00000000:1C:00.0 Off |                    0 |\n| N/A   43C    P0            243W /  300W |   70523MiB /  81920MiB |     90%      Default |\n|                                         |                        |             Disabled |\n+-----------------------------------------+------------------------+----------------------+\n|   1  NVIDIA A800 80GB PCIe          On  |   00000000:1E:00.0 Off |                    0 |\n| N/A   33C    P0             43W /  300W |       0MiB /  81920MiB |      0%      Default |\n|                                         |                        |             Disabled |\n+-----------------------------------------+------------------------+----------------------+\n|   2  NVIDIA A800 80GB PCIe          On  |   00000000:40:00.0 Off |                    0 |\n| N/A   45C    P0            149W /  300W |   74983MiB /  81920MiB |     57%      Default |\n|                                         |                        |             Disabled |\n+-----------------------------------------+------------------------+----------------------+\n|   3  NVIDIA A800 80GB PCIe          On  |   00000000:41:00.0 Off |                    0 |\n| N/A   37C    P0             65W /  300W |   77495MiB /  81920MiB |      0%      Default |\n|                                         |                        |             Disabled |\n+-----------------------------------------+------------------------+----------------------+\n\n+-----------------------------------------------------------------------------------------+\n| Processes:                                                                              |\n|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n|        ID   ID                                                               Usage      |\n|=========================================================================================|\n|    0   N/A  N/A         1345732      C   ./build-fides-witness/bc_offline      70514MiB |\n|    2   N/A  N/A          623691      C   ...nvs/Code_Watermark/bin/python      74974MiB |\n|    3   N/A  N/A          623463      C   ...nvs/Code_Watermark/bin/python      77486MiB |\n+-----------------------------------------------------------------------------------------+",
+      "return_code": 0
+    },
+    "uname": {
+      "command": [
+        "uname",
+        "-a"
+      ],
+      "output": "Linux rubick 5.15.0-142-generic #152-Ubuntu SMP Mon May 19 10:54:31 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+      "return_code": 0
+    }
+  },
+  "model_runtime": {
+    "path": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/model_runtime/modelDeployer",
+    "tree_sha256": "8081b6f3ec595e2af7ae8be44ed8138a45ae78d7cea0c110f990853a081d414b"
+  },
+  "model_service": {
+    "/healthz": {
+      "model": "/home/zhaorz/.cache/modelscope/hub/models/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "status": "ok"
+    },
+    "/v1/_processors": {
+      "external": [],
+      "external_builders": [
+        "codeip",
+        "ewd",
+        "mcgmark",
+        "stone",
+        "sweet",
+        "waterfall",
+        "wllm"
+      ],
+      "external_component_orders": {
+        "codeip": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ],
+        "ewd": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ],
+        "mcgmark": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ],
+        "stone": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ],
+        "sweet": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ],
+        "waterfall": [
+          {
+            "after": [
+              "sampling.top_p"
+            ],
+            "before": [
+              "sampling.sampler"
+            ]
+          }
+        ],
+        "wllm": [
+          {
+            "after": [
+              "host.processors"
+            ],
+            "before": [
+              "sampling.temperature"
+            ]
+          }
+        ]
+      },
+      "external_placements": {
+        "codeip": "processor_declared",
+        "ewd": "processor_declared",
+        "mcgmark": "processor_declared",
+        "stone": "processor_declared",
+        "sweet": "processor_declared",
+        "waterfall": "processor_declared",
+        "wllm": "processor_declared"
+      },
+      "internal": [],
+      "method_contracts": {
+        "codeip": {
+          "components": [
+            "watermark"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "z_score",
+              "bit_accuracy"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "use_pda",
+              "mode",
+              "language",
+              "delta",
+              "gamma",
+              "message_code_len",
+              "encode_ratio",
+              "top_k",
+              "message",
+              "pda_model_path"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "random",
+          "variants": [
+            {
+              "components": [
+                "watermark"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "random"
+            },
+            {
+              "components": [
+                "watermark",
+                "pda_type"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "method.codeip.pda_type"
+                  ]
+                },
+                {
+                  "after": [
+                    "method.codeip.watermark"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                },
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_base"
+                }
+              ],
+              "variant": "composite"
+            }
+          ]
+        },
+        "ewd": {
+          "components": [
+            "ewd"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "score"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "gamma",
+              "delta",
+              "hash_key",
+              "z_threshold",
+              "prefix_length"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "ewd"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        },
+        "mcgmark": {
+          "components": [
+            "mcgmark"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "unavailable",
+            "score_direction": null,
+            "score_fields": []
+          },
+          "final_generation_evidence": false,
+          "parameters": {
+            "accepted": [
+              "watermark_info",
+              "gamma",
+              "delta",
+              "hash_key"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "method_defined",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "mcgmark"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "method_defined",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        },
+        "stone": {
+          "components": [
+            "stone"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "score"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "gamma",
+              "delta",
+              "hash_key",
+              "z_threshold",
+              "prefix_length",
+              "language",
+              "watermark_on_pl",
+              "skipping_rule"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "stone"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        },
+        "sweet": {
+          "components": [
+            "sweet"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "z_score"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "gamma",
+              "delta",
+              "entropy_threshold",
+              "z_threshold",
+              "ignore_repeated_bigrams"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "sweet"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        },
+        "waterfall": {
+          "components": [
+            "waterfall"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "sampling.top_p"
+              ],
+              "before": [
+                "sampling.sampler"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "q_score"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "id_mu",
+              "k_p",
+              "kappa",
+              "n_gram",
+              "wm_fn",
+              "auto_reset",
+              "detect_mode"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_base"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "waterfall"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "sampling.top_p"
+                  ],
+                  "before": [
+                    "sampling.sampler"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_base"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        },
+        "wllm": {
+          "components": [
+            "wllm"
+          ],
+          "decode_orders": [
+            {
+              "after": [
+                "host.processors"
+              ],
+              "before": [
+                "sampling.temperature"
+              ]
+            }
+          ],
+          "detection": {
+            "independent_text_detection": false,
+            "mode": "processor_state",
+            "score_direction": "higher",
+            "score_fields": [
+              "z_score"
+            ]
+          },
+          "final_generation_evidence": true,
+          "parameters": {
+            "accepted": [
+              "gamma",
+              "delta",
+              "z_threshold",
+              "ignore_repeated_bigrams"
+            ],
+            "required": []
+          },
+          "resources": [
+            {
+              "out_of_domain_policy": "pass_through",
+              "score_domain": "model_output_logits",
+              "support_effect": "preserve",
+              "vocab_domain": "tokenizer_full"
+            }
+          ],
+          "variant": "default",
+          "variants": [
+            {
+              "components": [
+                "wllm"
+              ],
+              "decode_orders": [
+                {
+                  "after": [
+                    "host.processors"
+                  ],
+                  "before": [
+                    "sampling.temperature"
+                  ]
+                }
+              ],
+              "resources": [
+                {
+                  "out_of_domain_policy": "pass_through",
+                  "score_domain": "model_output_logits",
+                  "support_effect": "preserve",
+                  "vocab_domain": "tokenizer_full"
+                }
+              ],
+              "variant": "default"
+            }
+          ]
+        }
+      },
+      "method_framework_components": {
+        "codeip": [
+          "tokenizer",
+          "device"
+        ],
+        "ewd": [
+          "tokenizer",
+          "model",
+          "device"
+        ],
+        "mcgmark": [
+          "tokenizer"
+        ],
+        "stone": [
+          "tokenizer",
+          "device"
+        ],
+        "sweet": [
+          "tokenizer"
+        ],
+        "waterfall": [
+          "tokenizer"
+        ],
+        "wllm": [
+          "tokenizer"
+        ]
+      },
+      "method_plugins": [
+        "codeip",
+        "ewd",
+        "mcgmark",
+        "stone",
+        "sweet",
+        "waterfall",
+        "wllm"
+      ]
+    },
+    "/v1/models": {
+      "data": [
+        {
+          "id": "/home/zhaorz/.cache/modelscope/hub/models/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+          "object": "model"
+        }
+      ],
+      "object": "list"
+    }
+  },
+  "model_weights": {
+    "all_files_hashed": false,
+    "exists": true,
+    "files": [
+      {
+        "name": ".mdl",
+        "size": 56
+      },
+      {
+        "name": ".msc",
+        "size": 2248
+      },
+      {
+        "name": ".mv",
+        "size": 36
+      },
+      {
+        "name": "LICENSE",
+        "size": 11343
+      },
+      {
+        "name": "README.md",
+        "size": 5425
+      },
+      {
+        "name": "chat_template.jinja",
+        "sha256": "5a38bfa05833266240066aedc497decc9b00cc0d3e3b8cceea98cf530196ab06",
+        "size": 6211
+      },
+      {
+        "name": "config.json",
+        "sha256": "e2c8d8eea39471785cd93379d8b48241ad7dcda299013155dd02526e34a0de62",
+        "size": 963
+      },
+      {
+        "name": "configuration.json",
+        "sha256": "a78221ae93dd8977b26fcd1d106fa5ad7e7f1fd3a7d93bfd9d6fba5ed00ec4d2",
+        "size": 48
+      },
+      {
+        "name": "generation_config.json",
+        "sha256": "c99723ab3ba28630d26ae23def77603b540a46924895af5cf234740d3b27b51d",
+        "size": 180
+      },
+      {
+        "name": "merges.txt",
+        "size": 1671839
+      },
+      {
+        "name": "model-00001-of-00016.safetensors",
+        "size": 3998893112
+      },
+      {
+        "name": "model-00002-of-00016.safetensors",
+        "size": 3999974192
+      },
+      {
+        "name": "model-00003-of-00016.safetensors",
+        "size": 3997360832
+      },
+      {
+        "name": "model-00004-of-00016.safetensors",
+        "size": 3999975056
+      },
+      {
+        "name": "model-00005-of-00016.safetensors",
+        "size": 3999975400
+      },
+      {
+        "name": "model-00006-of-00016.safetensors",
+        "size": 3999975400
+      },
+      {
+        "name": "model-00007-of-00016.safetensors",
+        "size": 3999975472
+      },
+      {
+        "name": "model-00008-of-00016.safetensors",
+        "size": 3997362064
+      },
+      {
+        "name": "model-00009-of-00016.safetensors",
+        "size": 3999975408
+      },
+      {
+        "name": "model-00010-of-00016.safetensors",
+        "size": 3999975400
+      },
+      {
+        "name": "model-00011-of-00016.safetensors",
+        "size": 3999975408
+      },
+      {
+        "name": "model-00012-of-00016.safetensors",
+        "size": 3987924896
+      },
+      {
+        "name": "model-00013-of-00016.safetensors",
+        "size": 3999975088
+      },
+      {
+        "name": "model-00014-of-00016.safetensors",
+        "size": 3999975400
+      },
+      {
+        "name": "model-00015-of-00016.safetensors",
+        "size": 3999975400
+      },
+      {
+        "name": "model-00016-of-00016.safetensors",
+        "size": 1085307128
+      },
+      {
+        "name": "model.safetensors.index.json",
+        "sha256": "8dde190b862c7c80ec7403c6495de00c60bbaf246ed479cee4506284989c584c",
+        "size": 1699758
+      },
+      {
+        "name": "qwen3coder_tool_parser.py",
+        "size": 31613
+      },
+      {
+        "name": "tokenizer.json",
+        "sha256": "19564a48c4f71a2a1b937cce34c737a1e662b171c5f5d7edf641a15cd896f07d",
+        "size": 7032399
+      },
+      {
+        "name": "tokenizer_config.json",
+        "sha256": "60f6e8cb15c98dd07300a3cc465ea662de245d2095e4245616af21b2324db3fc",
+        "size": 13055
+      },
+      {
+        "name": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+        "size": 2776833
+      }
+    ],
+    "manifest_sha256": "1c2b365eedf9c9cd4d68a1f48328e806dfa071b896d8a982e32dabffaf210cdf",
+    "path": "/home/zhaorz/.cache/modelscope/hub/models/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+    "total_bytes": 61079827663
+  },
+  "platform": {
+    "machine": "x86_64",
+    "platform": "Linux-5.15.0-142-generic-x86_64-with-glibc2.35",
+    "python": "3.9.23 (main, Jun  5 2025, 13:40:20) \n[GCC 11.2.0]",
+    "python_executable": "/home/zhaorz/software/anaconda3/envs/myMetagpt/bin/python"
+  },
+  "python_packages": {
+    "metagpt_environment": {
+      "command": [
+        "/home/zhaorz/software/anaconda3/envs/myMetagpt/bin/python",
+        "-m",
+        "pip",
+        "freeze",
+        "--all"
+      ],
+      "output": "agentops==0.3.26\naiAPI @ file:///home/zhaorz/project/CodeWM/proWES/wheels/aiapi-1.0.3-py3-none-any.whl#sha256=263d31f7c3c0f0f877005a2a74f23ba7e526737718213e119b506faa45f5dd64\naiofiles==23.2.1\naiohttp==3.8.6\naiolimiter==1.2.1\naiosignal==1.4.0\nannotated-types==0.7.0\nanthropic==0.18.1\nanyio==4.10.0\nanytree==2.13.0\nasgiref==3.9.1\nasttokens==3.0.0\nasync-timeout==4.0.3\nasyncio==4.0.0\nattrs==25.3.0\nbackoff==2.2.1\nbce-python-sdk==0.9.46\nbeautifulsoup4==4.12.3\nboto3==1.34.162\nbotocore==1.34.162\ncachetools==5.5.2\ncamel-converter==4.0.1\ncertifi==2025.8.3\ncffi==2.0.0\nchannels==4.0.0\nchardet==5.2.0\ncharset-normalizer==3.4.3\nclick==8.1.8\ncloudpickle==3.1.1\ncomm==0.2.3\ncryptography==43.0.3\ncurl_cffi==0.7.4\ndashscope==1.19.3\ndebugpy==1.8.16\ndecorator==5.2.1\nDeprecated==1.2.18\ndeprecation==2.1.0\ndill==0.4.0\ndiskcache==5.6.3\ndistro==1.9.0\nDjango==4.2.24\ndnspython==2.7.0\net_xmlfile==2.0.0\nexceptiongroup==1.3.0\nexecuting==2.2.1\nfaiss-cpu==1.7.4\nFarama-Notifications==0.0.4\nfastjsonschema==2.21.2\nfilelock==3.19.1\nfire==0.4.0\nfrozenlist==1.7.0\nfsspec==2025.9.0\nfuture==1.0.0\ngitdb==4.0.12\ngitignore_parser==0.1.9\nGitPython==3.1.40\ngoogle-ai-generativelanguage==0.4.0\ngoogle-api-core==2.25.1\ngoogle-auth==2.40.3\ngoogle-generativeai==0.4.1\ngoogleapis-common-protos==1.70.0\ngreenlet==3.2.4\ngrpcio==1.67.1\ngrpcio-status==1.62.3\ngrpcio-tools==1.62.3\ngymnasium==0.29.1\nh11==0.16.0\nh2==4.3.0\nhf-xet==1.1.10\nhpack==4.1.0\nhttpcore==1.0.9\nhttplib2==0.22.0\nhttpx==0.27.2\nhuggingface-hub==0.35.0\nhyperframe==6.1.0\nidna==3.10\nimap-tools==1.5.0\nimportlib-metadata==6.11.0\niniconfig==2.1.0\nipykernel==6.27.1\nipython==8.17.2\nipywidgets==8.1.1\nisodate==0.7.2\njedi==0.19.2\njieba==0.42.1\nJinja2==3.1.6\njmespath==1.0.1\njoblib==1.5.2\njsonpatch==1.33\njsonpointer==3.0.0\njsonschema==4.25.1\njsonschema-path==0.3.4\njsonschema-spec==0.2.4\njsonschema-specifications==2023.7.1\njupyter_client==8.6.3\njupyter_core==5.8.1\njupyterlab_widgets==3.0.15\nlancedb==0.4.0\nlazy-object-proxy==1.12.0\nlibcst==1.0.1\nloguru==0.6.0\nlxml==6.0.1\nmarkdown-it-py==3.0.0\nMarkupSafe==3.0.2\nmatplotlib-inline==0.1.7\nmdurl==0.1.2\nmeilisearch==0.21.0\n-e git+https://github.com/FoundationAgents/MetaGPT.git@02da62cabb9b04e205b901b12e190fc2f931394b#egg=metagpt\nmore-itertools==10.8.0\nmotor==3.7.1\nmpmath==1.3.0\nmultidict==6.6.4\nmultiprocess==0.70.18\nmypy_extensions==1.1.0\nnbclient==0.9.0\nnbformat==5.9.2\nnest-asyncio==1.6.0\nnetworkx==3.2.1\nnltk==3.9.2\nnumpy==1.26.4\nnvidia-cublas-cu12==12.8.4.1\nnvidia-cuda-cupti-cu12==12.8.90\nnvidia-cuda-nvrtc-cu12==12.8.93\nnvidia-cuda-runtime-cu12==12.8.90\nnvidia-cudnn-cu12==9.10.2.21\nnvidia-cufft-cu12==11.3.3.83\nnvidia-cufile-cu12==1.13.1.3\nnvidia-curand-cu12==10.3.9.90\nnvidia-cusolver-cu12==11.7.3.90\nnvidia-cusparse-cu12==12.5.8.93\nnvidia-cusparselt-cu12==0.7.1\nnvidia-nccl-cu12==2.27.3\nnvidia-nvjitlink-cu12==12.8.93\nnvidia-nvtx-cu12==12.8.90\nopenai==1.39.0\nopenapi-core==0.18.2\nopenapi-schema-validator==0.6.3\nopenapi-spec-validator==0.7.2\nopenpyxl==3.1.5\nopentelemetry-api==1.22.0\nopentelemetry-exporter-otlp-proto-common==1.22.0\nopentelemetry-exporter-otlp-proto-http==1.22.0\nopentelemetry-instrumentation==0.48b0\nopentelemetry-proto==1.22.0\nopentelemetry-sdk==1.22.0\nopentelemetry-semantic-conventions==0.43b0\nopentelemetry-semantic-conventions-ai==0.4.13\nordered-set==4.1.0\noverrides==7.7.0\npackaging==24.2\npandas==2.1.1\nparse==1.20.2\nparso==0.8.5\npathable==0.4.4\npexpect==4.9.0\npillow==11.3.0\npip @ file:///croot/pip_1756710021410/work\nplatformdirs==4.4.0\nplaywright==1.55.0\npluggy==1.6.0\nportalocker==2.10.1\nprance==23.6.21.0\nprompt_toolkit==3.0.52\npropcache==0.3.2\nproto-plus==1.26.1\nprotobuf==4.25.8\npsutil==6.0.0\nptyprocess==0.7.0\npure_eval==0.2.3\npy==1.11.0\npyarrow==21.0.0\npyasn1==0.6.1\npyasn1_modules==0.4.2\npycparser==2.23\npycryptodome==3.23.0\npydantic==2.9.2\npydantic_core==2.23.4\npyee==13.0.0\nPygments==2.19.2\nPyJWT==2.8.0\npylance==0.9.0\npymongo==4.15.1\npyparsing==3.2.4\npytest==8.4.2\npython-dateutil==2.9.0.post0\npython-docx==0.8.11\npython-dotenv==1.0.0\npytz==2025.2\nPyYAML==6.0.1\npyzmq==27.1.0\nqdrant-client==1.7.0\nqianfan==0.4.12.3\nrank-bm25==0.2.2\nratelimiter==1.2.0.post0\nredis==5.0.8\nreferencing==0.30.2\nregex==2023.12.25\nrequests==2.32.5\nretry==0.9.2\nrfc3339-validator==0.1.4\nrich==13.6.0\nrpds-py==0.27.1\nrsa==4.9.1\nruamel.yaml==0.18.15\nruamel.yaml.clib==0.2.12\ns3transfer==0.10.4\nsafetensors==0.7.0\nscikit-learn==1.3.2\nscipy==1.13.1\nsemantic-kernel==0.4.3.dev0\nsemver==3.0.4\nsetuptools==65.6.3\nsix==1.17.0\nsmmap==5.0.2\nsniffio==1.3.1\nsocksio==1.0.0\nsoupsieve==2.8\nspark-ai-python==0.3.31\nsqlparse==0.5.3\nstack-data==0.6.3\nsympy==1.14.0\nta==0.10.2\ntenacity==8.2.3\ntermcolor==2.4.0\nthreadpoolctl==3.6.0\ntiktoken==0.7.0\ntokenizers==0.22.0\ntomli==2.2.1\ntorch==2.8.0\ntorchaudio==2.8.0\ntorchvision==0.23.0\ntornado==6.5.2\ntqdm==4.66.2\ntraitlets==5.14.3\ntransformers==4.57.6\ntree-sitter==0.23.2\ntree-sitter-java==0.23.5\ntree-sitter-python==0.23.6\ntriton==3.4.0\ntyper==0.9.0\ntyping-inspect==0.8.0\ntyping_extensions==4.15.0\ntzdata==2025.2\nurllib3==1.26.20\nvolcengine-python-sdk==1.0.130\nwcwidth==0.2.13\nwebsocket-client==1.8.0\nwebsockets==11.0.3\nWerkzeug==3.1.3\nwheel==0.45.1\nwidgetsnbextension==4.0.14\nwrapt==1.15.0\nyarl==1.20.1\nzhipuai==2.1.5.20250825\nzipp==3.23.0",
+      "return_code": 0
+    },
+    "model_environment": {
+      "command": [
+        "/home/zhaorz/software/anaconda3/envs/Code_Watermark/bin/python",
+        "-m",
+        "pip",
+        "freeze",
+        "--all"
+      ],
+      "output": "accelerate==1.10.0\naiohappyeyeballs==2.6.1\naiohttp==3.12.15\naiosignal==1.4.0\nannotated-doc==0.0.4\nannotated-types==0.7.0\nanyio==4.10.0\nastor==0.8.1\nasttokens==3.0.0\nasync-timeout==5.0.1\nattrs==25.3.0\nblake3==1.0.5\nbuild==1.3.0\ncachetools==6.2.0\ncausal_conv1d==1.6.1\ncbor2==5.7.0\ncertifi==2025.8.3\ncffi==1.17.1\ncharset-normalizer==3.4.3\nclick==8.2.1\ncloudpickle==3.1.1\ncodebleu==0.7.0\ncomm==0.2.3\ncompressed-tensors==0.10.2\ncupy-cuda12x==13.6.0\nCython==3.1.2\ndatasets==4.0.0\ndebugpy==1.8.16\ndecorator==5.2.1\ndepyf==0.19.0\ndill==0.3.8\ndiskcache==5.6.3\ndistro==1.9.0\ndnspython==2.7.0\ndocopt==0.6.2\neinops==0.8.1\nemail-validator==2.3.0\nevaluate==0.4.5\nexceptiongroup==1.3.0\nexecuting==2.2.0\nfaiss-cpu==1.12.0\nfastapi==0.116.1\nfastapi-cli==0.0.10\nfastapi-cloud-cli==0.1.5\nfastrlock==0.8.3\nfilelock==3.19.1\nfire==0.4.0\nfla-core==0.5.0\nflash-linear-attention==0.5.0\nfrozenlist==1.7.0\nfsspec==2025.3.0\ngguf==0.17.1\ngunicorn==23.0.0\nh11==0.16.0\nhf-xet==1.4.3\nhttpcore==1.0.9\nhttptools==0.6.4\nhttpx==0.28.1\nhuggingface_hub==1.11.0\nidna==3.10\ninflection==0.5.1\ninteregular==0.3.3\nipykernel==6.30.1\nipython==8.37.0\njedi==0.19.2\nJinja2==3.1.6\njiter==0.10.0\njoblib==1.5.1\njsonschema==4.25.1\njsonschema-specifications==2025.4.1\njupyter_client==8.6.3\njupyter_core==5.8.1\nlark==1.2.2\nllguidance==0.7.30\nllvmlite==0.44.0\nlm-format-enforcer==0.10.12\nlxml==6.0.2\nmarkdown-it-py==4.0.0\nMarkupSafe==3.0.2\nmatplotlib-inline==0.1.7\nmdurl==0.1.2\nmistral_common==1.8.4\nmodelscope==1.36.1\nmosestokenizer==1.2.1\nmpmath==1.3.0\nmsgpack==1.1.1\nmsgspec==0.19.0\nmultidict==6.6.4\nmultiprocess==0.70.16\nnest-asyncio==1.6.0\nnetworkx==3.4.2\nninja==1.13.0\nnltk==3.9.1\nnumba==0.61.2\nnumpy==2.2.6\nnvidia-cublas-cu12==12.6.4.1\nnvidia-cuda-cupti-cu12==12.6.80\nnvidia-cuda-nvrtc-cu12==12.6.77\nnvidia-cuda-runtime-cu12==12.6.77\nnvidia-cudnn-cu12==9.5.1.17\nnvidia-cufft-cu12==11.3.0.4\nnvidia-cufile-cu12==1.11.1.6\nnvidia-curand-cu12==10.3.7.77\nnvidia-cusolver-cu12==11.7.1.2\nnvidia-cusparse-cu12==12.5.4.2\nnvidia-cusparselt-cu12==0.6.3\nnvidia-nccl-cu12==2.26.2\nnvidia-nvjitlink-cu12==12.6.85\nnvidia-nvtx-cu12==12.6.77\nopenai==1.102.0\nopenai-harmony==0.0.4\nopencv-python-headless==4.12.0.88\nopenfile==0.0.7\noutlines_core==0.2.10\npackaging==25.0\npandas==2.3.1\nparso==0.8.5\npartial-json-parser==0.2.1.1.post6\npexpect==4.9.0\npillow==11.3.0\npip==25.2\npip-tools==7.5.0\nplatformdirs==4.4.0\nprometheus-fastapi-instrumentator==7.1.0\nprometheus_client==0.22.1\nprompt_toolkit==3.0.52\npropcache==0.3.2\nprotobuf==6.32.0\npsutil==6.1.1\nptyprocess==0.7.0\npure_eval==0.2.3\npy-cpuinfo==9.0.0\npyarrow==21.0.0\npybase64==1.4.2\npycountry==24.6.1\npycparser==2.22\npydantic==2.11.7\npydantic-extra-types==2.10.5\npydantic_core==2.33.2\nPygments==2.19.2\npyproject_hooks==1.2.0\npython-dateutil==2.9.0.post0\npython-dotenv==1.1.1\npython-json-logger==3.3.0\npython-multipart==0.0.20\npytz==2025.2\nPyYAML==6.0.2\npyzmq==27.0.2\nRapidFuzz==3.13.0\nray==2.49.0\nreferencing==0.36.2\nregex==2026.4.4\nrequests==2.32.4\nrich==14.1.0\nrich-toolkit==0.15.0\nrignore==0.6.4\nrpds-py==0.27.1\nsafetensors==0.6.2\nscikit-learn==1.7.1\nscipy==1.15.3\nsctokenizer==0.0.8\nsentencepiece==0.2.1\nsentry-sdk==2.35.2\nsetproctitle==1.3.6\nsetuptools==78.1.1\nshellingham==1.5.4\nsix==1.17.0\nsniffio==1.3.1\nsoundfile==0.13.1\nsoxr==0.5.0.post1\nstack-data==0.6.3\nstarlette==0.47.3\nsympy==1.14.0\ntermcolor==2.5.0\nthreadpoolctl==3.6.0\ntiktoken==0.11.0\ntokenizers==0.22.2\ntomli==2.2.1\ntoolwrapper==2.1.0\ntorch==2.7.1\ntorchaudio==2.7.1\ntorchvision==0.22.1\ntornado==6.5.2\ntqdm==4.67.1\ntraitlets==5.14.3\ntransformers==5.6.2\ntree-sitter==0.22.3\ntree-sitter-java==0.21.0\ntreelib==1.8.0\ntriton==3.3.1\ntyper==0.24.2\ntyping-inspection==0.4.1\ntyping_extensions==4.14.1\ntzdata==2025.2\nuctools==1.3.0\nurllib3==2.5.0\nuvicorn==0.35.0\nuvloop==0.21.0\nwatchfiles==1.1.0\nwcwidth==0.2.13\nwebsockets==15.0.1\nwheel==0.45.1\nxformers==0.0.31\nxgrammar==0.1.21\nxxhash==3.5.0\nyarl==1.20.1",
+      "return_code": 0
+    }
+  },
+  "ready": true,
+  "versions": {
+    "cmake": {
+      "command": [
+        "cmake",
+        "--version"
+      ],
+      "output": "cmake version 3.22.1\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).",
+      "return_code": 0
+    },
+    "ctags": {
+      "command": [
+        "ctags",
+        "--version"
+      ],
+      "output": "Universal Ctags 5.9.0, Copyright (C) 2015 Universal Ctags Team\nUniversal Ctags is derived from Exuberant Ctags.\nExuberant Ctags 5.8, Copyright (C) 1996-2009 Darren Hiebert\n  Compiled: Sep  3 2021, 18:12:18\n  URL: https://ctags.io/\n  Optional compiled features: +wildcards, +regex, +gnulib_regex, +iconv, +option-directory, +xpath, +json, +interactive, +sandbox, +yaml, +packcc, +optscript",
+      "return_code": 0
+    },
+    "gcc": {
+      "command": [
+        "gcc",
+        "--version"
+      ],
+      "output": "gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0\nCopyright (C) 2021 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+      "return_code": 0
+    },
+    "git": {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "output": "git version 2.34.1",
+      "return_code": 0
+    },
+    "java": {
+      "command": [
+        "java",
+        "-version"
+      ],
+      "output": "openjdk version \"11.0.27\" 2025-04-15\nOpenJDK Runtime Environment (build 11.0.27+6-post-Ubuntu-0ubuntu122.04)\nOpenJDK 64-Bit Server VM (build 11.0.27+6-post-Ubuntu-0ubuntu122.04, mixed mode, sharing)",
+      "return_code": 0
+    },
+    "maven": {
+      "command": [
+        "mvn",
+        "--version"
+      ],
+      "output": "FileNotFoundError: [Errno 2] No such file or directory: 'mvn'",
+      "return_code": 127
+    },
+    "podman": {
+      "command": [
+        "podman",
+        "--version"
+      ],
+      "output": "podman version 4.6.2",
+      "return_code": 0
+    }
+  }
+}

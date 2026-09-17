@@ -1,0 +1,46 @@
+{
+  "accepted_file_count_range": [
+    6,
+    8
+  ],
+  "architecture_attempt": 11,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_repair_llm_output": false,
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T17:53:26.458046+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/initial_repository/p09_qr_code_gen_det_cpp",
+  "initial_repository_tree_sha256": "a9386ca25780fedc7ba5c7635a3628f7610bf5c2f6c7666dc541485879fe7e8f",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "40d37386743f71f5ab5b3c5b38906e0eb8e7e91c73ea6f928d72bf89281c3ac2",
+  "planned_file_count": 9,
+  "planned_files": [
+    "CMakeLists.txt",
+    "include/QRMatrix.h",
+    "src/QRMatrix.cpp",
+    "include/QRCodec.h",
+    "src/QRCodec.cpp",
+    "include/QRRenderer.h",
+    "src/QRRenderer.cpp",
+    "src/Main.cpp",
+    "tests/test_main.cpp"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "36215389762f38f30a06b73189bee1254596070a25a49ad949db41f1123e2498",
+  "rebuild_reason": "epoch5_attempts1_2_3_header_self_containment_attempt4_finder_layout_mismatch",
+  "started_at": "2026-09-14T17:50:45.187819+00:00",
+  "status": "complete",
+  "target_file_count": 7,
+  "task_path_normalization": "not required for this language",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p09_qr_code_gen_det/cpp/architecture/team/team.json",
+  "team_json_sha256": "e45b9a7c66533f526b9dd5fbad1980d56e48f6e2a9e19381edc6ecf107c46fcc",
+  "unit_id": "p09_qr_code_gen_det_cpp",
+  "valid": true
+}

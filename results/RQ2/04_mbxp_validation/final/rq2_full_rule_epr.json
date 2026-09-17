@@ -1,0 +1,515 @@
+{
+  "generated_utc": "2026-09-15T17:26:09.477709+00:00",
+  "protocol": {
+    "attack": "deterministic rule transformation",
+    "seed": 42,
+    "scope": "all available rows in MBCPP, MBJP, and MBJSP",
+    "channels": [
+      "id",
+      "expr",
+      "block",
+      "all"
+    ],
+    "EPR_definition": "post_pass / syntax_valid_changed among baseline-pass tasks",
+    "main_dataset_mapping": {
+      "GitHub-C": "MBCPP",
+      "GitHub-Java": "MBJP",
+      "CSN-JavaScript": "MBJSP",
+      "CSN-Java": "MBJP"
+    }
+  },
+  "environment": {
+    "platform": "Linux-5.15.0-142-generic-x86_64-with-glibc2.35",
+    "python": "3.13.5",
+    "cpp_compiler": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0",
+    "java_compiler": "javac 21.0.12.1",
+    "java_runtime": "openjdk version \"21.0.12.1\" 2026-08-18 LTS",
+    "node_runtime": "v22.18.0"
+  },
+  "results": [
+    {
+      "dataset": "mbcpp",
+      "language": "C++",
+      "channel": "id",
+      "n_total": 764,
+      "n_baseline_pass": 763,
+      "n_changed": 763,
+      "n_syntax_valid_changed": 763,
+      "n_post_pass": 756,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9908256880733946,
+      "status_counts": {
+        "baseline_fail": 1,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 7,
+        "valid_attack": 756,
+        "error": 0
+      },
+      "result_sha256": "298385c956b420bf6ca775ac9af44c5237b93e10968da99ffd79ea5df2d50e14",
+      "summary_sha256": "009a6169618945abc66c70bfe4659e57780fa776d1534adaea412f74a7812507"
+    },
+    {
+      "dataset": "mbcpp",
+      "language": "C++",
+      "channel": "expr",
+      "n_total": 764,
+      "n_baseline_pass": 763,
+      "n_changed": 763,
+      "n_syntax_valid_changed": 763,
+      "n_post_pass": 763,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 1.0,
+      "status_counts": {
+        "baseline_fail": 1,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 763,
+        "error": 0
+      },
+      "result_sha256": "efc79a1798d683b509bdaa0bd7017928e746a2631c5de565ec800aecffb09caa",
+      "summary_sha256": "5806b8be8cf2a06e19b380faf0ee999bc0fe09f68c4761333a51cdb66f3b6264"
+    },
+    {
+      "dataset": "mbcpp",
+      "language": "C++",
+      "channel": "block",
+      "n_total": 764,
+      "n_baseline_pass": 763,
+      "n_changed": 763,
+      "n_syntax_valid_changed": 763,
+      "n_post_pass": 754,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9882044560943644,
+      "status_counts": {
+        "baseline_fail": 1,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 9,
+        "valid_attack": 754,
+        "error": 0
+      },
+      "result_sha256": "ac6c460e822b0348ea9eeab8fa2182443d1fd236c242a8012845bcbdbbf79252",
+      "summary_sha256": "9886ad419912e0712995a518970b37945925cbb4bf1fe57c890458916d12acd9"
+    },
+    {
+      "dataset": "mbcpp",
+      "language": "C++",
+      "channel": "all",
+      "n_total": 764,
+      "n_baseline_pass": 763,
+      "n_changed": 763,
+      "n_syntax_valid_changed": 763,
+      "n_post_pass": 748,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9803407601572739,
+      "status_counts": {
+        "baseline_fail": 1,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 15,
+        "valid_attack": 748,
+        "error": 0
+      },
+      "result_sha256": "03044b99ac50b84050a7479805a4bc22231bd007288b21d008119d6aa1f931cf",
+      "summary_sha256": "8ec1b46bf0b6069d0fd81072f595a6a2b26ebd3ec14cf452c3f6555e07b48812"
+    },
+    {
+      "dataset": "mbjp",
+      "language": "Java",
+      "channel": "id",
+      "n_total": 842,
+      "n_baseline_pass": 842,
+      "n_changed": 842,
+      "n_syntax_valid_changed": 842,
+      "n_post_pass": 834,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9904988123515439,
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 8,
+        "valid_attack": 834,
+        "error": 0
+      },
+      "result_sha256": "ea0dfff741a2aff4abf8c32738102441fd406f7c2792f3aabe1adcac55e6686b",
+      "summary_sha256": "b3172c978ddfb0c386ad8841b58539b5898fe1a5a82b1e02c6ed6f9b7b4b09d3"
+    },
+    {
+      "dataset": "mbjp",
+      "language": "Java",
+      "channel": "expr",
+      "n_total": 842,
+      "n_baseline_pass": 842,
+      "n_changed": 842,
+      "n_syntax_valid_changed": 842,
+      "n_post_pass": 842,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 1.0,
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 0,
+        "valid_attack": 842,
+        "error": 0
+      },
+      "result_sha256": "4c8f788584c2ac6ad0706a8a7f93b9491ca64bf4687e5b18a128c8916bf96d0e",
+      "summary_sha256": "8f0d512454b1e495e04c41e23b611eba85578390ba42e0035f0237fe73832fdf"
+    },
+    {
+      "dataset": "mbjp",
+      "language": "Java",
+      "channel": "block",
+      "n_total": 842,
+      "n_baseline_pass": 842,
+      "n_changed": 842,
+      "n_syntax_valid_changed": 842,
+      "n_post_pass": 835,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9916864608076009,
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 7,
+        "valid_attack": 835,
+        "error": 0
+      },
+      "result_sha256": "73d8e4a7b69a7bbf4b3f57b7094acc32a933c02625f7783913031cfe64a851fa",
+      "summary_sha256": "364865be57c50cbb5296c906b4a5ab5c8ac5c75b6f6ed917e85eb90cae1a041d"
+    },
+    {
+      "dataset": "mbjp",
+      "language": "Java",
+      "channel": "all",
+      "n_total": 842,
+      "n_baseline_pass": 842,
+      "n_changed": 842,
+      "n_syntax_valid_changed": 842,
+      "n_post_pass": 829,
+      "attack_coverage": 1.0,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9845605700712589,
+      "status_counts": {
+        "baseline_fail": 0,
+        "no_op": 0,
+        "syntax_invalid": 0,
+        "execution_invalid": 13,
+        "valid_attack": 829,
+        "error": 0
+      },
+      "result_sha256": "92c227c2b5aafead9909b47d2ae0eaa0ff663ac63aff9e7ddf3b156f6dc719d0",
+      "summary_sha256": "0bdd26a6d15e2dba1e2c8cda5ec7b7050b190fe9f135762477a852ce82dd2260"
+    },
+    {
+      "dataset": "mbjsp",
+      "language": "JavaScript",
+      "channel": "id",
+      "n_total": 797,
+      "n_baseline_pass": 795,
+      "n_changed": 788,
+      "n_syntax_valid_changed": 788,
+      "n_post_pass": 761,
+      "attack_coverage": 0.9911949685534591,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9657360406091371,
+      "status_counts": {
+        "baseline_fail": 2,
+        "no_op": 7,
+        "syntax_invalid": 0,
+        "execution_invalid": 27,
+        "valid_attack": 761,
+        "error": 0
+      },
+      "result_sha256": "1adb19c6410f8b53fe246f641b2678b460bfd86a4524562721a60a5c096bcb81",
+      "summary_sha256": "61a96e8da8b7f87ead1e10320dde95ca1865c72196c27c2ef9bf2376f03479c2"
+    },
+    {
+      "dataset": "mbjsp",
+      "language": "JavaScript",
+      "channel": "expr",
+      "n_total": 797,
+      "n_baseline_pass": 795,
+      "n_changed": 788,
+      "n_syntax_valid_changed": 788,
+      "n_post_pass": 781,
+      "attack_coverage": 0.9911949685534591,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9911167512690355,
+      "status_counts": {
+        "baseline_fail": 2,
+        "no_op": 7,
+        "syntax_invalid": 0,
+        "execution_invalid": 7,
+        "valid_attack": 781,
+        "error": 0
+      },
+      "result_sha256": "4e359667655b1c7b23d9f36fad9aa4d891450c1f8fd8458d0c38d9f35d75f2c8",
+      "summary_sha256": "ce810f37d8f838272363409e9815ec5ac6519869374d2a3969be5551ddabfce6"
+    },
+    {
+      "dataset": "mbjsp",
+      "language": "JavaScript",
+      "channel": "block",
+      "n_total": 797,
+      "n_baseline_pass": 795,
+      "n_changed": 788,
+      "n_syntax_valid_changed": 788,
+      "n_post_pass": 781,
+      "attack_coverage": 0.9911949685534591,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9911167512690355,
+      "status_counts": {
+        "baseline_fail": 2,
+        "no_op": 7,
+        "syntax_invalid": 0,
+        "execution_invalid": 7,
+        "valid_attack": 781,
+        "error": 0
+      },
+      "result_sha256": "0730a8550045c33027a40e1174548c6526c27da337c82afd0b7ae237491fe14c",
+      "summary_sha256": "c44fb9bdb6ca9c3b2520637657e730177f0475f3cc66be1ba901ae3baa907414"
+    },
+    {
+      "dataset": "mbjsp",
+      "language": "JavaScript",
+      "channel": "all",
+      "n_total": 797,
+      "n_baseline_pass": 795,
+      "n_changed": 788,
+      "n_syntax_valid_changed": 788,
+      "n_post_pass": 760,
+      "attack_coverage": 0.9911949685534591,
+      "syntax_validity_given_changed": 1.0,
+      "EPR_given_valid_changed": 0.9644670050761421,
+      "status_counts": {
+        "baseline_fail": 2,
+        "no_op": 7,
+        "syntax_invalid": 0,
+        "execution_invalid": 28,
+        "valid_attack": 760,
+        "error": 0
+      },
+      "result_sha256": "b77eaa861b57016a64269d90d099f619aa7dc97bb8f580dc793055f53b1d1333",
+      "summary_sha256": "46fe4b676388f244e25df4b11188e10999f36924a00cbc77e25e2bbed5df24e2"
+    }
+  ],
+  "aggregate": {
+    "n_cells": 12,
+    "n_attempted_across_cells": 9612,
+    "n_syntax_valid_changed_across_cells": 9572,
+    "n_post_pass_across_cells": 9444,
+    "weighted_EPR": 0.9866276640200585
+  },
+  "execution_invalid_stage_counts": {
+    "mbcpp/id": {
+      "compile": 7
+    },
+    "mbcpp/expr": {},
+    "mbcpp/block": {
+      "compile": 9
+    },
+    "mbcpp/all": {
+      "compile": 15
+    },
+    "mbjp/id": {
+      "compile": 8
+    },
+    "mbjp/expr": {},
+    "mbjp/block": {
+      "compile": 7
+    },
+    "mbjp/all": {
+      "compile": 13
+    },
+    "mbjsp/id": {
+      "test": 27
+    },
+    "mbjsp/expr": {
+      "test": 7
+    },
+    "mbjsp/block": {
+      "test": 7
+    },
+    "mbjsp/all": {
+      "test": 28
+    }
+  },
+  "artifacts": [
+    {
+      "role": "dataset",
+      "path": "training/SrcMarker_fresh/datasets/mbcpp/test.jsonl",
+      "sha256": "3d0a9914953e0c8669f56d5c6929d13ac2cc001889345cacaebf8999bd942535"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_id.jsonl",
+      "sha256": "298385c956b420bf6ca775ac9af44c5237b93e10968da99ffd79ea5df2d50e14"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_id_summary.json",
+      "sha256": "009a6169618945abc66c70bfe4659e57780fa776d1534adaea412f74a7812507"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_expr.jsonl",
+      "sha256": "efc79a1798d683b509bdaa0bd7017928e746a2631c5de565ec800aecffb09caa"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_expr_summary.json",
+      "sha256": "5806b8be8cf2a06e19b380faf0ee999bc0fe09f68c4761333a51cdb66f3b6264"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_block.jsonl",
+      "sha256": "ac6c460e822b0348ea9eeab8fa2182443d1fd236c242a8012845bcbdbbf79252"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_block_summary.json",
+      "sha256": "9886ad419912e0712995a518970b37945925cbb4bf1fe57c890458916d12acd9"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_all.jsonl",
+      "sha256": "03044b99ac50b84050a7479805a4bc22231bd007288b21d008119d6aa1f931cf"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbcpp_rule_all_summary.json",
+      "sha256": "8ec1b46bf0b6069d0fd81072f595a6a2b26ebd3ec14cf452c3f6555e07b48812"
+    },
+    {
+      "role": "dataset",
+      "path": "training/SrcMarker_fresh/datasets/mbjp/test.jsonl",
+      "sha256": "6d95361e9d2a43f471a8ddc1575a977cf50bf3a8d916ac748aa264b8e31588e1"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_id.jsonl",
+      "sha256": "ea0dfff741a2aff4abf8c32738102441fd406f7c2792f3aabe1adcac55e6686b"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_id_summary.json",
+      "sha256": "b3172c978ddfb0c386ad8841b58539b5898fe1a5a82b1e02c6ed6f9b7b4b09d3"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_expr.jsonl",
+      "sha256": "4c8f788584c2ac6ad0706a8a7f93b9491ca64bf4687e5b18a128c8916bf96d0e"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_expr_summary.json",
+      "sha256": "8f0d512454b1e495e04c41e23b611eba85578390ba42e0035f0237fe73832fdf"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_block.jsonl",
+      "sha256": "73d8e4a7b69a7bbf4b3f57b7094acc32a933c02625f7783913031cfe64a851fa"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_block_summary.json",
+      "sha256": "364865be57c50cbb5296c906b4a5ab5c8ac5c75b6f6ed917e85eb90cae1a041d"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_all.jsonl",
+      "sha256": "92c227c2b5aafead9909b47d2ae0eaa0ff663ac63aff9e7ddf3b156f6dc719d0"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjp_rule_all_summary.json",
+      "sha256": "0bdd26a6d15e2dba1e2c8cda5ec7b7050b190fe9f135762477a852ce82dd2260"
+    },
+    {
+      "role": "dataset",
+      "path": "training/SrcMarker_fresh/datasets/mbjsp/test.jsonl",
+      "sha256": "ab13688a41424e237cd856ca96984951f766ee3e271e580846d227857f289950"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_id.jsonl",
+      "sha256": "1adb19c6410f8b53fe246f641b2678b460bfd86a4524562721a60a5c096bcb81"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_id_summary.json",
+      "sha256": "61a96e8da8b7f87ead1e10320dde95ca1865c72196c27c2ef9bf2376f03479c2"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_expr.jsonl",
+      "sha256": "4e359667655b1c7b23d9f36fad9aa4d891450c1f8fd8458d0c38d9f35d75f2c8"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_expr_summary.json",
+      "sha256": "ce810f37d8f838272363409e9815ec5ac6519869374d2a3969be5551ddabfce6"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_block.jsonl",
+      "sha256": "0730a8550045c33027a40e1174548c6526c27da337c82afd0b7ae237491fe14c"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_block_summary.json",
+      "sha256": "c44fb9bdb6ca9c3b2520637657e730177f0475f3cc66be1ba901ae3baa907414"
+    },
+    {
+      "role": "per_sample_results",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_all.jsonl",
+      "sha256": "b77eaa861b57016a64269d90d099f619aa7dc97bb8f580dc793055f53b1d1333"
+    },
+    {
+      "role": "summary",
+      "path": "outputs/fresh/epr_rule/mbjsp_rule_all_summary.json",
+      "sha256": "46fe4b676388f244e25df4b11188e10999f36924a00cbc77e25e2bbed5df24e2"
+    },
+    {
+      "role": "implementation",
+      "path": "project/srcMarker/SrcMarker/validate_mbxp_rq2.py",
+      "sha256": "1b9563ada7309525178e8f60be174badedd55fd90d54c39f2fa069495d8297ba"
+    },
+    {
+      "role": "implementation",
+      "path": "merge_mbxp_epr_chunks.py",
+      "sha256": "9b722d716702f98189430ddd08c216f4b8803652f4921ba1f86732502d17850d"
+    },
+    {
+      "role": "implementation",
+      "path": "rq2_revision/rule_attack.py",
+      "sha256": "83799c87c1b37b87f717f50b95426cc49bf8d595197102636f8d463abbd076b6"
+    },
+    {
+      "role": "implementation",
+      "path": "rq2_revision/common.py",
+      "sha256": "205c1b7be647ee3d7f08ff9e5720596f2f7fd471323959efefde9ef331436836"
+    },
+    {
+      "role": "implementation",
+      "path": "rq2_revision/node_shims/lodash/index.js",
+      "sha256": "0fd9d2a13a44e7ef249116e21577b95f98efd598e1b3203144109f27e9065655"
+    },
+    {
+      "role": "implementation",
+      "path": "training/SrcMarker_fresh/parser/languages.so",
+      "sha256": "eb31f22f6d0cf7127afde90c5957e8d6f74f4e8cfcd88896b6090a462df57479"
+    }
+  ]
+}

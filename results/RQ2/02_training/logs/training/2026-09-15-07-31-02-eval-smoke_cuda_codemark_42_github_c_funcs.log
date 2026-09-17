@@ -1,0 +1,61 @@
+Namespace(method='codemark', device='cpu', preprocess_workers=2, max_samples=4, output_path='./results/smoke_cuda_codemark.jsonl', dataset='github_c_funcs', lang='cpp', dataset_dir='./datasets/github_c_funcs', n_bits=4, checkpoint_path='./ckpts/smoke_cuda_codemark_42_github_c_funcs/models_best.pt', seed=42, trans_adv=False, n_trans_adv=1, var_adv=False, var_nomask=False, varmask_prob=0.5, var_adv_proportion=None, var_adv_budget=None, all_adv=False, model_arch='gru', shared_encoder=True, var_transform_mode='replace', write_output=True)
+Using gru
+Sample No.1
+Watermark: [0, 0, 0, 0]
+Predicted: [1, 1, 0, 0]
+Original Code: int main ( ) { struct stack * sp = ( struct stack * ) malloc ( sizeof ( struct stack ) ) ; sp -> size = 10 ; sp -> top = - 1 ; sp -> arr = ( int * ) malloc ( sp -> size * sizeof ( int ) ) ; printf ( " Before pushing, Full: %d\n " , isFull ( sp ) ) ; printf ( " Before pushing, Empty: %d\n " , isEmpty ( sp ) ) ; push ( sp , 56 ) ; push ( sp , 55 ) ; push ( sp , 54 ) ; push ( sp , 53 ) ; push ( sp , 52 ) ; push ( sp , 51 ) ; push ( sp , 50 ) ; push ( sp , 49 ) ; push ( sp , 48 ) ; push ( sp , 47 ) ; push ( sp , 46 ) ; printf ( " After pushing, Full: %d\n " , isFull ( sp ) ) ; printf ( " After pushing, Empty: %d\n " , isEmpty ( sp ) ) ; printf ( " Popped %d from the stack\n " , pop ( sp ) ) ; for ( int j = 1 ; j <= sp -> top + 1 ; j ++ ) { printf ( " The value at position %d is %d\n " , j , peek ( sp , j ) ) ; } return 0 ; }
+Transformed Code: int main ( ) { struct stack * File = ( struct stack * ) malloc ( sizeof ( struct stack ) ) ; File -> size = 10 ; File -> top = - 1 ; File -> arr = ( int * ) malloc ( File -> size * sizeof ( int ) ) ; printf ( " Before pushing, Full: %d\n " , isFull ( File ) ) ; printf ( " Before pushing, Empty: %d\n " , isEmpty ( File ) ) ; push ( File , 56 ) ; push ( File , 55 ) ; push ( File , 54 ) ; push ( File , 53 ) ; push ( File , 52 ) ; push ( File , 51 ) ; push ( File , 50 ) ; push ( File , 49 ) ; push ( File , 48 ) ; push ( File , 47 ) ; push ( File , 46 ) ; printf ( " After pushing, Full: %d\n " , isFull ( File ) ) ; printf ( " After pushing, Empty: %d\n " , isEmpty ( File ) ) ; printf ( " Popped %d from the stack\n " , pop ( File ) ) ; for ( int J = 1 ; J <= File -> top + 1 ; J ++ ) { printf ( " The value at position %d is %d\n " , J , peek ( File , J ) ) ; } return 0 ; }
+Variable Updates: ('sp', 'file')
+Style Changes: ('VarNameStyleTransformer.pascal_case',)
+================================================================================
+Sample No.2
+Watermark: [1, 1, 0, 0]
+Predicted: [1, 0, 0, 1]
+Original Code: void display ( int matrix [ R ] [ C ] ) { int i , j = 0 ; for ( i = 0 ; i < R ; i ++ ) { for ( j = 0 ; j < C ; j ++ ) { printf ( " %d\t " , matrix [ i ] [ j ] ) ; } printf ( " \n " ) ; } }
+Transformed Code: void display ( int Is [ R ] [ C ] ) { int I , J = 0 ; for ( I = 0 ; I < R ; I ++ ) { for ( J = 0 ; J < C ; J ++ ) { printf ( " %d\t " , Is [ I ] [ J ] ) ; } printf ( " \n " ) ; } }
+Variable Updates: ('matrix', 'Is')
+Style Changes: ('VarNameStyleTransformer.pascal_case',)
+================================================================================
+Sample No.3
+Watermark: [0, 1, 0, 1]
+Predicted: [0, 0, 0, 1]
+Original Code: TERM * parsetermnullified ( PARSER * p ) { TOKENTYPE type = p -> current -> type ; if ( type == integer ) return parseint ( p ) ; if ( type == string ) return parsestr ( p ) ; if ( type == keyword ) return parsekeyword ( p ) ; if ( type == identifier ) return parseidentifierterm ( p ) ; if ( equals ( p , " - " ) || equals ( p , " ~ " ) ) return parseunaryopterm ( p ) ; if ( equals ( p , " ( " ) ) return parseinnerexpression ( p ) ; return NULL ; }
+Transformed Code: TERM * Parsetermnullified ( PARSER * P ) { TOKENTYPE Type = P -> current -> type ; if ( Type == integer ) return parseint ( P ) ; if ( Type == string ) return parsestr ( P ) ; if ( Type == mark ) return parsekeyword ( P ) ; if ( Type == identifier ) return parseidentifierterm ( P ) ; if ( equals ( P , " - " ) || equals ( P , " ~ " ) ) return parseunaryopterm ( P ) ; if ( equals ( P , " ( " ) ) return parseinnerexpression ( P ) ; return NULL ; }
+Variable Updates: ('keyword', 'mark')
+Style Changes: ('VarNameStyleTransformer.pascal_case',)
+================================================================================
+Sample No.4
+Watermark: [1, 0, 0, 0]
+Predicted: [1, 1, 0, 0]
+Original Code: int main ( ) { int i ; pthread_t tid ; for ( i = 0 ; i < 3 ; i ++ ) pthread_create ( & tid , NULL , myThreadFun , ( void * ) & tid ) ; pthread_exit ( NULL ) ; return 0 ; }
+Transformed Code: int main ( ) { int I ; pthread_t M ; for ( I = 0 ; I < 3 ; I ++ ) pthread_create ( & M , NULL , myThreadFun , ( void * ) & M ) ; pthread_exit ( NULL ) ; return 0 ; }
+Variable Updates: ('tid', 'm')
+Style Changes: ('VarNameStyleTransformer.pascal_case',)
+================================================================================
+Namespace(method='codemark', device='cpu', preprocess_workers=2, max_samples=4, output_path='./results/smoke_cuda_codemark.jsonl', dataset='github_c_funcs', lang='cpp', dataset_dir='./datasets/github_c_funcs', n_bits=4, checkpoint_path='./ckpts/smoke_cuda_codemark_42_github_c_funcs/models_best.pt', seed=42, trans_adv=False, n_trans_adv=1, var_adv=False, var_nomask=False, varmask_prob=0.5, var_adv_proportion=None, var_adv_budget=None, all_adv=False, model_arch='gru', shared_encoder=True, var_transform_mode='replace', write_output=True)
+Number of samples:     4
+Accuracy: 0.6250
+Msg Accuracy: 0.0000
+CodeBLEU scores:
+Original vs Transformed
+em: 0.0000
+--------------------------------------------------------------------------------
+Original vs Transformed
+bleu: 0.6263
+--------------------------------------------------------------------------------
+Original vs Transformed
+wbleu: 0.6325
+--------------------------------------------------------------------------------
+Original vs Transformed
+syntax: 1.0000
+--------------------------------------------------------------------------------
+Original vs Transformed
+dataflow: 0.9790
+--------------------------------------------------------------------------------
+Original vs Transformed
+codebleu: 0.8095
+--------------------------------------------------------------------------------
+Valid transformed: 4/4 (1.0000)
+Average Embedding Time: 0.0600
+Average Extraction Time: 0.0432
+Average Total Time: 0.1032

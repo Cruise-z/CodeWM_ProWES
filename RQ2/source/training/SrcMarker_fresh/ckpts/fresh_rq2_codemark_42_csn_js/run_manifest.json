@@ -1,0 +1,48 @@
+{
+  "created_at_utc": "2026-09-15T07:56:05.333372+00:00",
+  "initialization": "random_from_seed",
+  "checkpoint_loaded": false,
+  "method": "codemark",
+  "dataset": "csn_js",
+  "language": "javascript",
+  "seed": 42,
+  "device": "cuda",
+  "python": "3.13.5",
+  "torch": "2.6.0+cu124",
+  "arguments": {
+    "epochs": 25,
+    "seed": 42,
+    "method": "codemark",
+    "device": "cuda",
+    "preprocess_workers": 8,
+    "max_train_samples": null,
+    "max_valid_samples": null,
+    "max_test_samples": null,
+    "dataset": "csn_js",
+    "lang": "javascript",
+    "dataset_dir": "./datasets/csn_js",
+    "log_prefix": "fresh_rq2",
+    "n_bits": 4,
+    "style_only": false,
+    "var_only": false,
+    "var_nomask": false,
+    "varmask_prob": 0.5,
+    "batch_size": 64,
+    "wv": 0.5,
+    "wt": 0.5,
+    "model_arch": "gru",
+    "scheduler": false,
+    "shared_encoder": true,
+    "var_transform_mode": "replace"
+  },
+  "sizes": {
+    "train": 56393,
+    "valid": 3716,
+    "test": 3150,
+    "vocab": 134456
+  },
+  "transform_capacity": 4,
+  "transformers": [
+    "VarNameStyleTransformer"
+  ]
+}

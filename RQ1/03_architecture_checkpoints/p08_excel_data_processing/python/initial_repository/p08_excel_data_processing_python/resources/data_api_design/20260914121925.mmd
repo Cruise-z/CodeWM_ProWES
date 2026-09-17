@@ -1,0 +1,40 @@
+classDiagram
+    class Cell {
+        +value: object|None
+        +Cell(value: object|None = None)
+    }
+    class Row {
+        -_cells: list~Cell~
+        +Row(cells: list~Cell~)
+        +values() list~object~
+    }
+    class Sheet {
+        -_rows: list~Row~
+        +Sheet(rows: list~Row~)
+        +from_values(values: list~list~object~~) Sheet
+        +to_values() list~list~object~~
+        +row_count() int
+        +column_count() int
+        +get_cell(row: int, column: int) Cell
+        +set_cell(row: int, column: int, value: object) None
+    }
+    class Operations {
+        <<module>>
+        +filter_rows(sheet: Sheet, predicate: Callable~Row,bool~) Sheet
+        +sort_rows(sheet: Sheet, key: Callable~Row,object~, reverse: bool=False) Sheet
+        +aggregate_column(sheet: Sheet, column: int) dict~str,object~
+    }
+    class CsvIO {
+        <<module>>
+        +loads_csv(text: str) Sheet
+        +dumps_csv(sheet: Sheet) str
+    }
+    class Report {
+        <<module>>
+        +build_report(sheet: Sheet) dict~str,object~
+    }
+    Sheet o--> Row
+    Row o--> Cell
+    Operations ..> Sheet
+    CsvIO ..> Sheet
+    Report ..> Sheet

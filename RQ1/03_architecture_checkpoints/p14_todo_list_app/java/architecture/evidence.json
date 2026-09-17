@@ -1,0 +1,47 @@
+{
+  "accepted_file_count_range": [
+    7,
+    9
+  ],
+  "architecture_attempt": 7,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_repair_llm_output": false,
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-15T02:02:25.641752+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/java/initial_repository/p14_todo_list_app_java",
+  "initial_repository_tree_sha256": "c0fc3be48e3b2cd7459bed7657e25286931cacf0e4427eec015325178e64bdb7",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "483981cc8c20b8a71e5d31a6e2eefe364eda284ee7e768204f50053f1902f197",
+  "planned_file_count": 10,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/Priority.java",
+    "src/main/java/Task.java",
+    "src/main/java/TaskRepository.java",
+    "src/main/java/InMemoryTaskRepository.java",
+    "src/main/java/TaskFilter.java",
+    "src/main/java/TaskSorter.java",
+    "src/main/java/TodoService.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "c0adbf31112ba5291f5240afd93d7f841a93ed527d389c5811d2477838abfa47",
+  "rebuild_reason": "architecture_attempt6_seed_attempts1_2_repeated_missing_literal_imports_and_private_normalizer_call",
+  "started_at": "2026-09-15T02:00:01.480829+00:00",
+  "status": "complete",
+  "target_file_count": 8,
+  "task_path_normalization": "bare Java filenames mapped to Maven source roots; already-qualified paths unchanged",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p14_todo_list_app/java/architecture/team/team.json",
+  "team_json_sha256": "7c75dd9c4c0fc17e4e6a40d9602283826a79cfb9a3119306db7cd75fe350fcc3",
+  "unit_id": "p14_todo_list_app_java",
+  "valid": true
+}

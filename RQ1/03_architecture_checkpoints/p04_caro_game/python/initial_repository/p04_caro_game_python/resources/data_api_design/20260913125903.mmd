@@ -1,0 +1,66 @@
+classDiagram
+    class CaroGame {
+        -Board _board
+        -Player _current_player
+        -Player _first_player
+        -Status _status
+        -Player~nullable~ _winner
+        -list~Move~ _history
+        +__init__(size: int = 15, first_player: Player = Player.X)
+        +move(row: int, col: int)
+        +reset()
+        +board() list~list~Player|None~~
+        +current_player() Player
+        +status() Status
+        +winner() Player|None
+        +history() list~Move~
+    }
+
+    class Board {
+        -int size
+        -list~list~Player|None~~ grid
+        +__init__(size: int = 15)
+        +get_cell(row: int, col: int) Player|None
+        +set_cell(row: int, col: int, player: Player)
+        +in_bounds(row: int, col: int) bool
+        +is_empty(row: int, col: int) bool
+        +is_full() bool
+        +to_matrix() list~list~Player|None~~
+    }
+
+    class Move {
+        +row: int
+        +col: int
+        +player: Player
+    }
+
+    class Player {
+        <<enum>>
+        X
+        O
+    }
+
+    class Status {
+        <<enum>>
+        IN_PROGRESS
+        X_WON
+        O_WON
+        DRAW
+    }
+
+    class Rules {
+        <<function>> has_five_or_more(board: Board, row: int, col: int, player: Player) bool
+    }
+
+    class InvalidMoveError
+    class GameOverError
+
+    CaroGame --> Board
+    CaroGame ..> Move
+    CaroGame ..> Player
+    CaroGame ..> Status
+    CaroGame ..> Rules : uses
+    CaroGame ..> InvalidMoveError
+    CaroGame ..> GameOverError
+    Rules ..> Board
+    Rules ..> Player

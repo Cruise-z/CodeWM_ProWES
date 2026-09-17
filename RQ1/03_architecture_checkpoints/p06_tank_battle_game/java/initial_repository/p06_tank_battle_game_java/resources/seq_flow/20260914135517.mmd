@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant R as Main (runtime)
+    participant A as Arena
+    participant OM as ObstacleMap
+    participant T as Tank
+    participant GE as GameEngine
+    R->>OM: ObstacleMap.empty(); add(Position)
+    R->>A: new Arena(width,height,obstacles)
+    R->>T: new Tank(id, pos, orient, health) x2
+    R->>GE: new GameEngine(Arena, List<Tank>)
+    R->>GE: enqueue(tankId, Command)
+    R->>GE: tick()
+    GE->>GE: process commands (lexicographic ids, live only)
+    GE->>GE: spawn projectiles for FIRE (if in bounds, not obstacle)
+    GE->>GE: advance projectiles; detect collisions; update ScoreBoard
+    R->>GE: getTanksCopy(); getProjectilesCopy(); getScoreBoardCopy()
+    R-->>R: print one concise snapshot and exit

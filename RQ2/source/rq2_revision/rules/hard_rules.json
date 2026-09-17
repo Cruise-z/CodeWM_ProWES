@@ -1,0 +1,110 @@
+[
+  {
+    "id": "id.rename_local",
+    "channel": "id",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Local identifier renaming",
+    "description": "Rename local variables and parameters consistently while leaving function names, field names, and call callees unchanged.",
+    "preconditions": ["rename only locally declared identifiers", "avoid collisions and reserved keywords", "update all bound uses consistently"],
+    "example": "count -> totalCount (all bound uses updated)"
+  },
+  {
+    "id": "id.naming_style",
+    "channel": "id",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Identifier naming-style conversion",
+    "description": "Convert a local identifier among camelCase, PascalCase, snake_case, and underscore-prefixed variants while preserving binding.",
+    "preconditions": ["local identifiers only", "avoid collisions", "preserve binding"],
+    "example": "itemCount <-> item_count"
+  },
+  {
+    "id": "expr.update_ops",
+    "channel": "expr",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Standalone update-form equivalence",
+    "description": "Rewrite standalone increment/decrement statements among prefix, postfix, compound assignment, and binary assignment forms.",
+    "preconditions": ["the update value must not be consumed", "operate only on standalone update statements in safe mode"],
+    "example": "i++; <-> i += 1; <-> i = i + 1;"
+  },
+  {
+    "id": "expr.predicate_loop_literal",
+    "channel": "expr",
+    "languages": ["cpp", "javascript", "java"],
+    "title": "Loop-condition representation",
+    "description": "Rewrite equivalent infinite-loop condition forms using only language-valid alternatives.",
+    "preconditions": ["Java never uses integer 1 as a boolean condition", "while-loop omission is not allowed", "for-loop omission is allowed"],
+    "example": "C++/JS: while(true) <-> while(1); Java: for(;;) <-> for(;true;)"
+  },
+  {
+    "id": "expr.default_param_indexof",
+    "channel": "expr",
+    "languages": ["java", "javascript"],
+    "title": "Explicit default indexOf start position",
+    "description": "Make the default start position explicit for a conservatively recognized built-in string/array indexOf call.",
+    "preconditions": ["receiver must be recognized as a built-in string/array value", "do not rewrite unknown user-defined indexOf methods"],
+    "example": "text.indexOf(c) <-> text.indexOf(c, 0)"
+  },
+  {
+    "id": "expr.null_operand_swap",
+    "channel": "expr",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Null-comparison operand swap",
+    "description": "Swap operands of equality/inequality comparisons around null-like literals.",
+    "preconditions": ["comparison operator must be equality or inequality", "one operand must be null/nullptr/NULL"],
+    "example": "x != null <-> null != x"
+  },
+  {
+    "id": "expr.empty_size",
+    "channel": "expr",
+    "languages": ["java", "cpp"],
+    "title": "Emptiness and size equivalence",
+    "description": "Rewrite emptiness checks for statically recognized standard containers.",
+    "preconditions": ["receiver type must be a recognized standard container", "unknown/custom types must be skipped"],
+    "example": "Java: xs.isEmpty() <-> xs.size() == 0; C++: xs.empty() <-> xs.size() == 0"
+  },
+  {
+    "id": "block.var_decl_reposition",
+    "channel": "block",
+    "languages": ["java", "cpp"],
+    "title": "Variable declaration repositioning",
+    "description": "Move declaration-only statements within lexical scope while leaving initialization at the original logical point.",
+    "preconditions": ["move only before first use", "C++ safe mode restricts to scalar built-in types", "JavaScript is skipped because TDZ/hoisting can change behavior"],
+    "example": "int x = f(); -> int x; ... x = f();"
+  },
+  {
+    "id": "block.loop_stmt",
+    "channel": "block",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "for/while loop conversion",
+    "description": "Convert between for and while forms while preserving initialization, updates, and same-loop continue behavior.",
+    "preconditions": ["preserve update execution before same-loop continue", "do not move updates across nested loop boundaries"],
+    "example": "for(init; cond; upd){B} <-> {init; while(cond){B; upd;}}"
+  },
+  {
+    "id": "block.if_flat_nest",
+    "channel": "block",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Nested/compound if conversion",
+    "description": "Convert nested if statements without else branches to a conjunction, and vice versa.",
+    "preconditions": ["neither participating if may have an else branch"],
+    "example": "if(a){if(b){S;}} <-> if(a && b){S;}"
+  },
+  {
+    "id": "block.conditionals",
+    "channel": "block",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Conditional structural rewriting",
+    "description": "Rewrite eligible switch statements to if/else chains and ternary assignments to if/else assignments.",
+    "preconditions": ["switch cases must not fall through", "switch selector must be side-effect-free because an if-chain may reevaluate it", "ternary rewrite is restricted to simple assignments"],
+    "example": "x = c ? a : b; <-> if(c){x=a;}else{x=b;}"
+  },
+  {
+    "id": "block.if_swap",
+    "channel": "block",
+    "languages": ["java", "cpp", "javascript"],
+    "title": "Conditional branch swap",
+    "description": "Negate an if condition and exchange then/else branches.",
+    "preconditions": ["an else branch must exist", "condition negation must preserve precedence"],
+    "example": "if(a){S1;}else{S2;} <-> if(!a){S2;}else{S1;}"
+  }
+]

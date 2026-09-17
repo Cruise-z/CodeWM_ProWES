@@ -1,0 +1,12 @@
+{
+  "project_name": "tank_battle_game",
+  "rng_seed": 1210046855,
+  "language": "python",
+  "counts": {
+    "[Build Error]": 0,
+    "[Test Error]": 11,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 4,
+    "[Pass]": 18
+  }
+}

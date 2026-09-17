@@ -1,0 +1,189 @@
+{
+  "20260914120207.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {},
+    "Canonical File References": [
+      "requirements.txt",
+      "tank_battle/directions.py",
+      "tank_battle/geometry.py",
+      "tank_battle/obstacle.py",
+      "tank_battle/arena.py",
+      "tank_battle/tank.py",
+      "tank_battle/projectile.py",
+      "tank_battle/commands.py",
+      "tank_battle/scoring.py",
+      "tank_battle/game.py",
+      "tank_battle/configs.py",
+      "tank_battle/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Execution Protocol": "Test command: python -m pytest -q. Runtime entry: Main.py with run_demo()->dict. Exactly one protocol-level test file: tests/test_main.py. Tests are deterministic, headless, and require no manual interaction or network. Additional implementation files do not alter protocol or introduce extra tests.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 14,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 14,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 14,
+      "task_list_count": 14
+    },
+    "Full API spec": "Public API surface and exact contracts (Python 3.10):\n\n- Module tank_battle/directions.py:\n  - from enum import Enum\n  - class Direction(Enum): with exact members N=(0,-1), E=(1,0), S=(0,1), W=(-1,0)\n  - Methods:\n    - delta(self)->tuple[int,int]: returns self.value\n    - left(self)->Direction: return the left-turn enum (N<-W<-S<-E<-N)\n    - right(self)->Direction: return the right-turn enum (N->E->S->W->N)\n  - Used by Tank.barrel_ahead and Projectile.move; all movement uses Direction.delta() rather than re-implemented mappings.\n\n- Module tank_battle/geometry.py:\n  - Class Rect(x:int,y:int,w:int,h:int): immutable value object. Raises ValueError if w<=0 or h<=0. Method contains(px:int,py:int)->bool uses half-open rule: x<=px<x+w and y<=py<y+h.\n\n- Module tank_battle/obstacle.py:\n  - Class Obstacle(rect:Rect): encapsulates one Rect via attribute rect.\n\n- Module tank_battle/arena.py:\n  - Class Arena(width:int,height:int,obstacles:list[Obstacle]): rejects nonpositive width/height via ValueError. Methods:\n    - in_bounds(x:int,y:int)->bool: 0<=x<width and 0<=y<height\n    - is_blocked(x:int,y:int)->bool: returns True if out-of-bounds or any obstacle.rect.contains(x,y) is True\n\n- Module tank_battle/tank.py:\n  - Class Tank(id:str,name:str,x:int,y:int,direction:Direction,health:int=3,speed:int=1)\n  - Public attributes include direction; no alias like dir.\n  - Methods:\n    - barrel_ahead(self)->tuple[int,int]: compute the next cell in the facing direction using direction.delta()\n    - alive(self)->bool: health>0\n    - clone(self)->Tank: deep copy value\n\n- Module tank_battle/projectile.py:\n  - Class Projectile(pid:int,owner_id:str,x:int,y:int,direction:Direction,speed:int=1) with attribute direction\n  - Methods:\n    - move(self)->None: advance one unit using direction.delta()\n    - clone(self)->Projectile: deep copy value\n\n- Module tank_battle/commands.py:\n  - Class Command: instantiable marker; Command has no execute method; no ABC and no @abstractmethod\n  - Subclasses:\n    - MoveForward(steps:int=1): rejects steps<1 via ValueError\n    - RotateLeft(): no arguments\n    - RotateRight(): no arguments\n    - RotateTo(direction:Direction): stores attribute direction\n    - Fire(): no arguments\n  - None of these defines execute; polymorphic callbacks are forbidden.\n\n- Module tank_battle/scoring.py:\n  - Class ScoreBoard(player_ids:list[str]): initializes hits and kills as {player_id:0 for player_id in player_ids}\n  - Methods:\n    - record_hit(player_id:str)->None\n    - record_kill(player_id:str)->None\n    - score(player_id:str)->int defined as score(player_id)=hits+5*kills\n\n- Module tank_battle/game.py:\n  - Must literally include: from .commands import Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire\n  - Class Game(arena:Arena,tanks:dict[str,Tank])\n    - Constructor validates:\n      - every tank has a unique (x,y)\n      - all tank cells are in-bounds and unblocked by obstacles\n      - stores deep immutable initial snapshot of arena and tanks\n    - Public mutable attributes: arena, tanks, projectiles, scores, command_queue, next_projectile_id\n    - queue_command(self, player_id:str, command:Command)->None: appends (player_id,command) to command_queue without reordering\n    - tick(self)->None: deterministic order\n      - stable-sort queued commands by player id\n      - dispatch solely with isinstance(command, MoveForward/RotateLeft/RotateRight/RotateTo/Fire); command.execute or any other polymorphic call is forbidden\n      - Apply commands:\n        - MoveForward: attempt steps one cell at a time; stop before moving into out-of-bounds, obstacle, or a live tank cell\n        - RotateLeft/RotateRight: change direction accordingly\n        - RotateTo: set tank.direction to given direction\n        - Fire: if barrel_ahead is free (in-bounds, not obstacle, not occupied by a live tank), spawn Projectile(pid=self.next_projectile_id, owner_id=player_id, x,y=barrel cell, direction=tank.direction), increment next_projectile_id\n      - Clear command_queue after applying\n      - Process projectiles by pid ascending. For each projectile, move by speed one unit at a time within the same tick; after each unit step:\n        - If out-of-bounds or obstacle, remove the projectile\n        - If hitting the first non-owner live tank at that cell, reduce that tank's health by exactly 1; literally call self.scores.record_hit(projectile.owner_id); only when health becomes zero, literally call self.scores.record_kill(projectile.owner_id); then remove the projectile\n      - Projectile same-tick movement rule: Fire first creates a projectile at barrel_ahead; tick one therefore leaves it at (3,2); tick two moves it to (4,2) and hits p2. A test expecting (2,2) after tick one is forbidden.\n    - reset(self)->None: restore deep clones of the constructor-supplied initial arena and tanks (position, direction, health, speed), clear projectiles and command_queue, set scores=ScoreBoard(list(self._initial_tanks)), and next_projectile_id=0\n    - winner(self)->str|None: returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks; else None\n    - snapshot(self)->dict: returns only plain dict/list/scalars; arena as dict, tanks as dict of dicts with direction serialized via .name, projectiles similarly, scores as a dict with hits, kills, and per-player score mapping, and winner as scalar id or None\n  - Scoring calls must be exactly: self.scores.record_hit(projectile.owner_id) and self.scores.record_kill(projectile.owner_id) on kill only.\n\n- Module tank_battle/configs.py:\n  - build_default_demo()->Game constructs exactly Arena(8,5,[]) and two tanks: Tank(\"p1\",\"P1\",1,2,Direction.E,3,1) and Tank(\"p2\",\"P2\",6,2,Direction.W,3,1); returns Game(arena,tanks:dict[str,Tank])\n\n- Module tank_battle/__init__.py:\n  - Explicitly import and re-export exactly these public symbols: Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, and build_default_demo; __all__ lists those exact names; no wildcard imports; no nested aliases such as Game.Arena; no package attribute named commands\n\n- Module Main.py:\n  - from tank_battle import build_default_demo, RotateRight\n  - Function run_demo()->dict: constructs game=build_default_demo(); literally calls game.queue_command(\"p1\", RotateRight()); then calls game.tick() exactly once; returns game.snapshot()\n  - main() prints that snapshot and runs only under if __name__==\"__main__\"\n\nImport graph policy:\n- Foundational modules (directions.py, geometry.py, obstacle.py) never import engines or entrypoints.\n- tank_battle/game.py directly imports command classes via the literal line and dispatches with isinstance only.\n- tank_battle/__init__.py re-exports the public API only; Main.py imports only build_default_demo and RotateRight.\n\nDeterministic fixtures and rules (literal):\n- Arena(8,5,[])\n- Tank(\"p1\",\"P1\",1,2,Direction.E,3,1)\n- Tank(\"p2\",\"P2\",6,2,Direction.W,3,1)\n- Winner rule: winner returns the sole surviving tank id only when exactly one remains alive from at least two initial tanks.\n- MoveForward rejects steps<1.\n- ScoreBoard(player_ids:list[str]) used in Game construction and reset as ScoreBoard(list(self._initial_tanks)).\n- Snapshot returns only plain dict/list/scalars with Direction serialized via .name.\n- Tests import only absolute symbols: from tank_battle import Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, build_default_demo and from Main import run_demo.",
+    "Logic Analysis": [
+      [
+        "requirements.txt",
+        "dependency/build; declares pytest only for running the single protocol-level test"
+      ],
+      [
+        "tank_battle/directions.py",
+        "domain-entity; Direction enum with turning and movement delta used by Tank and Projectile; foundational and imported by others"
+      ],
+      [
+        "tank_battle/geometry.py",
+        "domain-entity; immutable Rect with validation and half-open contains; used by Obstacle and Arena"
+      ],
+      [
+        "tank_battle/obstacle.py",
+        "domain-entity; Obstacle encapsulates one Rect; used by Arena"
+      ],
+      [
+        "tank_battle/arena.py",
+        "pure-rule; Arena bounds and blocking logic; in_bounds and is_blocked; used by Game"
+      ],
+      [
+        "tank_battle/tank.py",
+        "domain-entity; Tank state and helpers (barrel_ahead, alive, clone); depends on Direction; used by Game"
+      ],
+      [
+        "tank_battle/projectile.py",
+        "domain-entity; Projectile movement and clone; depends on Direction; used by Game"
+      ],
+      [
+        "tank_battle/commands.py",
+        "interface; Command marker and concrete commands MoveForward, RotateLeft, RotateRight, RotateTo, Fire; no execute method; used by Game"
+      ],
+      [
+        "tank_battle/scoring.py",
+        "domain-entity; ScoreBoard(player_ids:list[str]) with hits/kills maps and score(player_id)=hits+5*kills; used by Game"
+      ],
+      [
+        "tank_battle/game.py",
+        "orchestration; Game lifecycle: validation, deterministic tick with isinstance dispatch, projectile processing, scoring calls, winner, reset restoring deep clones, and snapshot serialization"
+      ],
+      [
+        "tank_battle/configs.py",
+        "package; build_default_demo()->Game constructs Arena(8,5,[]) and two exact Tanks; sole owner of demo wiring"
+      ],
+      [
+        "tank_battle/__init__.py",
+        "package; explicit re-exports of public API symbols; sets __all__ without wildcards or nested aliases"
+      ],
+      [
+        "Main.py",
+        "environment-dependent; thin runtime entry; run_demo queues RotateRight for p1, ticks once, returns snapshot; prints under guard"
+      ],
+      [
+        "tests/test_main.py",
+        "automated-test; single protocol test file with exactly four concise tests covering runtime demo, obstacle blocking, projectile hit/scoring, and reset fixture"
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "tank_battle/directions.py",
+        "tank_battle/geometry.py",
+        "tank_battle/obstacle.py",
+        "tank_battle/arena.py",
+        "tank_battle/tank.py",
+        "tank_battle/projectile.py",
+        "tank_battle/commands.py",
+        "tank_battle/scoring.py",
+        "tank_battle/game.py",
+        "tank_battle/configs.py",
+        "tank_battle/__init__.py"
+      ],
+      "environment_dependent_modules": [
+        "Main.py"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": []
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "Only pytest is required; tests are deterministic and headless; target Python 3.10 APIs only",
+      "not_applicable": false,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [],
+    "Required packages": [
+      "pytest"
+    ],
+    "Shared Knowledge": "Roles: Alice (foundations), Bob (Architect), Alex (game orchestration). Foundational modules (directions, geometry, obstacle) define core types. Arena encodes bounds and blocking. Tank and Projectile encapsulate entities. Commands file declares marker and concrete commands with no execute method. ScoreBoard tracks hits/kills and score(player_id)=hits+5*kills. Game orchestrates validation, deterministic tick with isinstance dispatch, projectile processing, literal scoring calls, reset restoring deep clones and zeroed ScoreBoard(list(self._initial_tanks)), winner, and snapshot serialization. configs.py is the sole owner of build_default_demo()->Game. __init__.py re-exports the public API. Main.py is a thin, headless entrypoint used by tests. tests/test_main.py is the only test file and uses absolute imports only.",
+    "Task Protocol Audit": {
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "requirements.txt",
+      "tank_battle/directions.py",
+      "tank_battle/geometry.py",
+      "tank_battle/obstacle.py",
+      "tank_battle/arena.py",
+      "tank_battle/tank.py",
+      "tank_battle/projectile.py",
+      "tank_battle/commands.py",
+      "tank_battle/scoring.py",
+      "tank_battle/game.py",
+      "tank_battle/configs.py",
+      "tank_battle/__init__.py",
+      "Main.py",
+      "tests/test_main.py"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.py",
+        "from tank_battle import Game, Arena, Obstacle, Rect, Tank, Projectile, ScoreBoard, Direction, Command, MoveForward, RotateLeft, RotateRight, RotateTo, Fire, build_default_demo"
+      ],
+      [
+        "tests/test_main.py",
+        "from Main import run_demo"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.py",
+        "Runtime demo: from Main import run_demo; result is a dict with keys exactly arena, tanks, projectiles, scores, winner, and result[\"tanks\"][\"p1\"][\"direction\"] == \"S\" after RotateRight applied once on p1"
+      ],
+      [
+        "tests/test_main.py",
+        "Obstacle blocking: Arena(8,5,[Obstacle(Rect(3,1,1,1))]), p1=Tank(\"p1\",\"P1\",2,1,Direction.E), p2=Tank(\"p2\",\"P2\",6,4,Direction.W); queue MoveForward(2) for p1; tick; assert p1 remains at (2,1)"
+      ],
+      [
+        "tests/test_main.py",
+        "Projectile hit/scoring: Arena(8,5,[]), p1=Tank(\"p1\",\"P1\",1,2,Direction.E), p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1); queue Fire for p1; tick once -> one projectile at (3,2); tick again -> p2.health==1, no projectiles, hits[\"p1\"]==1, kills[\"p1\"]==0, score(\"p1\")==1, winner() is None"
+      ],
+      [
+        "tests/test_main.py",
+        "Reset fixture: build fresh Arena(8,5,[]) with p1=Tank(\"p1\",\"P1\",1,2,Direction.E) and p2=Tank(\"p2\",\"P2\",4,2,Direction.W,2,1); capture initial=game.snapshot() immediately with no Fire and no tick; then queue MoveForward(1) for p1 and tick once, set game.tanks[\"p2\"].health=0; reset(); assert snapshot()==initial; command_queue/projectiles empty; scores.hits=={\"p1\":0,\"p2\":0}, scores.kills=={\"p1\":0,\"p2\":0}, score(\"p1\")==0, score(\"p2\")==0, next_projectile_id==0"
+      ]
+    ]
+  }
+}

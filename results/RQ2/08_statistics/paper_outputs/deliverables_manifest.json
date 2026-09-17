@@ -1,0 +1,110 @@
+{
+  "generated_utc": "2026-09-16T14:23:11.049926+00:00",
+  "files": [
+    {
+      "path": "deliverables/01_paper_report/RQ2_PAPER_AND_APPENDIX_REPORT.md",
+      "bytes": 26248,
+      "sha256": "2afc672f4095aad18b74fadc6e7f72fb409e33e024bb4c4fce329560c9052a74"
+    },
+    {
+      "path": "deliverables/01_paper_report/rq2_complete_results.json",
+      "bytes": 100412,
+      "sha256": "d4d9c4d180e120bbf32fd6d20956ebfd33ef1d74baa5699e702dc0408ec741ed"
+    },
+    {
+      "path": "deliverables/03_tables_figures/README.md",
+      "bytes": 1022,
+      "sha256": "2d883abc3a595e45c245d80c17f71e4c84335edd2bc00d29086dc639f0b9d3f0"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_clean.csv",
+      "bytes": 1167,
+      "sha256": "a832fc73b4932007e5c433dbe020c0c70b61a2e838adf14b19e7e1d6c6fb5403"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_llm_generation.csv",
+      "bytes": 1342,
+      "sha256": "db7245de10f4e7ae3838ea22fbae3c75af113dc7b5c98e15cf006f3a9baca0d5"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_llm_method_contrasts.csv",
+      "bytes": 1793,
+      "sha256": "dc0c2177aa411100761ccfc59988746267117cbe64f8f5fe399b1887a7178176"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_llm_robustness.csv",
+      "bytes": 3049,
+      "sha256": "bd96e28723dbaacd3c3bc42d9258bdb2e5d114f1eada27edb503914e1b9a3b00"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_llm_rule_usage.csv",
+      "bytes": 4478,
+      "sha256": "38910adc70cad245d44fa2f48683dceaa7ec145ad59efcc3edf685567be22b3f"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_paper_main.csv",
+      "bytes": 1663,
+      "sha256": "7ee422c0470ff07e03b36ac2e5c7beca1c28773e4dd1384781a31de1e53c05c4"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_paper_main.tex",
+      "bytes": 1129,
+      "sha256": "0b02a838d83e411f10628f7fb5552187628b15d79c21941456d40a1d2171c0a1"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_rule_epr.csv",
+      "bytes": 1035,
+      "sha256": "64102f3e7f8bc764cf8aa2fd127e0b5f0d64ff8d0fd9c0deb189292f3539ddf2"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_rule_epr.tex",
+      "bytes": 860,
+      "sha256": "9645d6823ed080c0ca4ccf066f196fabaad95e5f8197445f5e450c5a4e7ef9ec"
+    },
+    {
+      "path": "deliverables/03_tables_figures/tables/rq2_rule_robustness.csv",
+      "bytes": 13185,
+      "sha256": "f213b4f5787e0ea31aa2a42065e0f6e5ffc39fe19780502af0196ebdb95132f5"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_attack_bar_mar.pdf",
+      "bytes": 12895,
+      "sha256": "7ab0b48790f26b31c43c11ba17e6060db9c1bfbf8bce6a9862d542746aa24e24"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_attack_bar_mar.png",
+      "bytes": 115739,
+      "sha256": "0a20ced7befe3445d5ae222715ac45d97c71a6edbd0ffe87f1221308c1bcd5b3"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_llm_validity_coverage.pdf",
+      "bytes": 9468,
+      "sha256": "bd7c551bcbba267fc489f6236ab3778e15191ca7ad00d711455d53a323b7b24a"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_llm_validity_coverage.png",
+      "bytes": 72919,
+      "sha256": "19e53cf9dcb8b153d9535fb3bc53d5ac3f3956f0c8bc0f9c97096c8b7e21a4ea"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_rule_delta_bar_heatmap.pdf",
+      "bytes": 17075,
+      "sha256": "b18f4a4b3243bf108c1c7e1d48ec0cf32bdf4581c59542a715f684dc4f56315f"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_rule_delta_bar_heatmap.png",
+      "bytes": 114409,
+      "sha256": "16b1c96c5f7944325dbf2c6321f9ef1c2a459f02d23d49527f11f7683ae8794d"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_rule_epr.pdf",
+      "bytes": 10216,
+      "sha256": "d80ed4892bf37deaab33b28d9793d022686d3994e0bf9c7b0ba60f9013414bd4"
+    },
+    {
+      "path": "deliverables/03_tables_figures/figures/rq2_rule_epr.png",
+      "bytes": 74991,
+      "sha256": "3e5b85cda91978f0dc388aa0464f3b7940bdd0255d381020820945019919e551"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "project_name": "python_snake_game",
+  "rng_seed": 2012703279,
+  "language": "python",
+  "counts": {
+    "[Build Error]": 0,
+    "[Test Error]": 16,
+    "[Packaging Error]": 0,
+    "[Runtime Error]": 1,
+    "[Pass]": 0
+  }
+}

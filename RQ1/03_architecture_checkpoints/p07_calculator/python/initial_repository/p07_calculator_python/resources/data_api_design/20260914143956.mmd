@@ -1,0 +1,68 @@
+classDiagram
+    class CalculatorError {
+    }
+    class TokenizationError {
+        <<exception>>
+    }
+    class ParseError {
+        <<exception>>
+    }
+    class EvaluationError {
+        <<exception>>
+    }
+
+    class History {
+        -_records: list[tuple[str, float]]
+        +add(expression: str, result: float) -> None
+        +records() -> list[tuple[str, float]]
+        +__len__() -> int
+    }
+
+    class Token {
+        <<marker>>
+    }
+    class NumberToken {
+        +value: float
+        +__init__(value: float)
+    }
+    class OpToken {
+        +op: str
+        +__init__(op: str)  // one of '+', '-', '*', '/'
+    }
+    class LParenToken {
+        +__init__()
+    }
+    class RParenToken {
+        +__init__()
+    }
+    Token <|-- NumberToken
+    Token <|-- OpToken
+    Token <|-- LParenToken
+    Token <|-- RParenToken
+
+    class Tokenizer {
+        +tokenize(expression: str) list~Token~
+    }
+
+    class Engine {
+        <<module>>
+        +to_rpn(tokens: list~Token~) list~Token~
+        +eval_rpn(rpn: list~Token~) float
+    }
+
+    class API {
+        <<module>>
+        +tokenize(expression: str) list~Token~
+        +evaluate(expression: str, history: History|None=None) float
+    }
+
+    class Main {
+        +run_demo() dict
+    }
+
+    Tokenizer ..> Token : emits
+    Engine ..> Token : consumes
+    API ..> Tokenizer : uses
+    API ..> Engine : uses
+    API ..> History : optional
+    Main ..> API : uses

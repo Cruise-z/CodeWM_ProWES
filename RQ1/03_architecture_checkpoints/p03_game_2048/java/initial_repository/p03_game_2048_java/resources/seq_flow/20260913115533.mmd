@@ -1,0 +1,27 @@
+sequenceDiagram
+    participant M as Main
+    participant G as Game
+    participant S as SequenceSpawner
+    participant B as Board
+    M->>S: defaultSequence()
+    M->>B: new Board()
+    M->>G: new Game(B, S)
+    M->>G: reset()
+    G->>B: clear()
+    G->>S: nextSpawn()
+    S-->>G: Spawn(r,c,val)
+    G->>B: setCell(r,c,val)
+    G->>S: nextSpawn()
+    S-->>G: Spawn(r2,c2,val2)
+    G->>B: setCell(r2,c2,val2)
+    M->>G: move(Direction.LEFT)
+    G->>B: move(LEFT)
+    B-->>G: MoveResult(changed, scoreGained)
+    alt changed==true
+        G->>S: nextSpawn()
+        S-->>G: Spawn(sr,sc,sv)
+        G->>B: setCell(sr,sc,sv)
+    end
+    G->>G: updateStatus(WON/LOST/IN_PROGRESS)
+    M-->>M: print grid, score, status
+    M-->>M: exit

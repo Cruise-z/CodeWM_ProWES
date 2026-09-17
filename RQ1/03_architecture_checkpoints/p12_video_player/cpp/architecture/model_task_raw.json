@@ -1,0 +1,245 @@
+{
+  "20260914124539.json": {
+    "Anything UNCLEAR": "",
+    "Architecture Collapse Audit": {
+      "collapse_risks": [],
+      "generic_bucket_modules": [],
+      "has_generic_bucket_modules": false,
+      "passes_architecture_quality_gate": true,
+      "recommended_replacements": []
+    },
+    "C++ Build Link Audit": {
+      "add_test_declared": true,
+      "core_library_declared": true,
+      "declared_headers_match_declared_sources": true,
+      "enable_testing_declared": true,
+      "exact_contract_repeats": [
+        "include/Time/IClock.h directly includes <cstdint> and declares virtual std::int64_t now_ms() const noexcept = 0;",
+        "ManualClock and MonotonicClock override exactly std::int64_t now_ms() const noexcept in headers and sources; signatures match const and noexcept",
+        "Every header that names a signed 64-bit integer directly includes <cstdint> and spells std::int64_t; bare int64_t is forbidden",
+        "tests/test_main.cpp is a single self-contained test main; no third-party test frameworks; CMake defines add_executable(video_player_tests tests/test_main.cpp) and add_test(NAME video_player_tests COMMAND video_player_tests)",
+        "src/Main.cpp contains only minimal int main() returning Runtime::App().run_demo()"
+      ],
+      "missing_interface_files": [],
+      "runtime_links_core_library": true,
+      "suspected_build_breakers": [],
+      "test_links_core_library": true,
+      "tests_include_headers_only": true,
+      "undeclared_test_includes": []
+    },
+    "Canonical File References": [
+      "CMakeLists.txt",
+      "include/Time/IClock.h",
+      "include/Time/ManualClock.h",
+      "include/Time/MonotonicClock.h",
+      "include/Media/MediaMetadata.h",
+      "include/Playlist/Playlist.h",
+      "include/Player/PlaybackState.h",
+      "include/Player/Player.h",
+      "include/Runtime/App.h",
+      "src/Time/ManualClock.cpp",
+      "src/Time/MonotonicClock.cpp",
+      "src/Media/MediaMetadata.cpp",
+      "src/Playlist/Playlist.cpp",
+      "src/Player/Player.cpp",
+      "src/Runtime/App.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Execution Protocol": "Build with CMake and C++17. Run tests with: ctest --test-dir build --output-on-failure. One protocol-level test file exists: tests/test_main.cpp. It includes headers only and links to the core library. The runtime entry is src/Main.cpp, which contains only a minimal int main() returning Runtime::App().run_demo(). No interactive or long-running loops; no network or OS-dependent behavior. The core library contains all implementation sources except src/Main.cpp.",
+    "File Coverage Audit": {
+      "coverage_passed": true,
+      "design_file_list_count": 17,
+      "extra_in_pm_canonical": [],
+      "extra_in_task_list": [],
+      "logic_analysis_count": 17,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "pm_canonical_count": 17,
+      "task_list_count": 17
+    },
+    "Full API spec": "Module: include/Time/IClock.h\n- Namespace: Time\n- class IClock { public:\n  - virtual ~IClock() = default;\n  - virtual std::int64_t now_ms() const noexcept = 0;\n}\nContract:\n- Header must directly contain #include <cstdint>.\n- Returns current monotonic time in milliseconds as std::int64_t. No throws; noexcept.\n- Derived classes must override the exact signature with identical const and noexcept.\n\nModule: include/Time/ManualClock.h\n- Namespace: Time\n- class ManualClock : public IClock { public:\n  - explicit ManualClock(std::int64_t start_ms);\n  - void set_now(std::int64_t ms);\n  - void advance(std::int64_t delta_ms);\n  - std::int64_t now_ms() const noexcept override;\n  private: std::int64_t current_ms_;\n}\nContract:\n- Header must directly contain #include <cstdint>.\n- ManualClock is deterministic and only changes when set_now/advance are called.\n- set_now sets the internal current time to ms; advance adds delta_ms (delta may be negative; advancing backwards is allowed for tests).\n- now_ms returns current_ms_. noexcept.\n\nModule: include/Time/MonotonicClock.h\n- Namespace: Time\n- class MonotonicClock : public IClock { public:\n  - MonotonicClock();\n  - std::int64_t now_ms() const noexcept override;\n}\nContract:\n- Header must directly contain #include <cstdint>.\n- Implementation uses std::chrono::steady_clock to return milliseconds as std::int64_t. noexcept.\n\nModule: include/Media/MediaMetadata.h\n- Namespace: Media\n- class MediaMetadata { public:\n  - MediaMetadata(std::string title, std::int64_t duration_ms);\n  - std::string title() const;\n  - std::int64_t duration_ms() const;\n  private:\n  - std::string title_;\n  - std::int64_t duration_ms_;\n}\nContract:\n- Header must directly contain #include <cstdint> and #include <string>.\n- duration_ms must be >= 0; constructor throws std::invalid_argument if negative.\n- Accessors return copies of fields; no mutation after construction.\n\nModule: include/Playlist/Playlist.h\n- Namespace: Playlist\n- class Playlist { public:\n  - Playlist();\n  - void add(const Media::MediaMetadata& item);\n  - std::size_t size() const noexcept;\n  - const Media::MediaMetadata* get(std::size_t index) const noexcept;\n  - const Media::MediaMetadata* current() const noexcept;\n  - int current_index() const noexcept;\n  - bool select(std::size_t index) noexcept;\n  - bool next() noexcept;\n  - bool prev() noexcept;\n  private:\n  - std::vector<Media::MediaMetadata> items_;\n  - int current_index_; // -1 means no selection\n}\nContract:\n- Includes <vector>, <cstddef>, and Media/MediaMetadata.h.\n- add appends an item by value.\n- size returns number of items.\n- get returns pointer to item at index or nullptr if out-of-range.\n- current returns pointer to currently selected item or nullptr if none is selected.\n- current_index returns -1 if none is selected; otherwise the zero-based index.\n- select(index) selects index if in range, returns true on change; returns false and leaves selection unchanged when out-of-range or same index re-selected.\n- next moves selection +1 if possible; returns true if moved; false if at end or no items or no selection. prev similarly moves -1 if possible; returns true if moved.\n\nModule: include/Player/PlaybackState.h\n- Namespace: Player\n- enum class PlaybackState { Stopped, Paused, Playing };\nContract:\n- Pure enum; no streaming operators are provided or required.\n\nModule: include/Player/Player.h\n- Namespace: Player\n- class Player { public:\n  - explicit Player(const Time::IClock& clock);\n  - void set_current_media(const Media::MediaMetadata* media);\n  - const Media::MediaMetadata* current_media() const;\n  - PlaybackState state() const noexcept;\n  - std::int64_t position_ms() const noexcept;\n  - std::int64_t duration_ms() const noexcept;\n  - bool play();\n  - void pause() noexcept;\n  - void stop() noexcept;\n  - void seek(std::int64_t ms) noexcept;\n  - void update_to_now() noexcept;\n  - int set_volume(int v) noexcept;\n  - int volume() const noexcept;\n  - void mute(bool m) noexcept;\n  - bool muted() const noexcept;\n  - int effective_volume() const noexcept;\n  private:\n  - const Time::IClock& clock_;\n  - PlaybackState state_;\n  - const Media::MediaMetadata* current_media_;\n  - std::int64_t position_ms_;\n  - std::int64_t last_tick_ms_;\n  - int volume_;\n  - bool muted_;\n}\nContract:\n- Header must directly contain #include <cstdint> and include Time/IClock.h, Media/MediaMetadata.h, and Player/PlaybackState.h.\n- state_ initially Stopped; position_ms_ initially 0; current_media_ initially nullptr; last_tick_ms_ initialized from clock_.now_ms(). volume_ default 100, muted_ default false.\n- set_current_media sets pointer; resets position to 0 and sets state to Stopped; updates last_tick_ms_ to clock_.now_ms(). Caller owns lifetime of media; pointer may be nullptr to clear.\n- current_media returns the pointer (may be nullptr).\n- state returns current playback state.\n- position_ms returns current position in ms; always in [0, duration]. If no media, duration is 0 and position is 0.\n- duration_ms returns media duration or 0 if no media.\n- play returns true if state becomes Playing (when media is set and either Stopped or Paused); returns false if no media; if already Playing, leaves state and returns true; updates last_tick_ms_ to clock_.now_ms() when entering Playing.\n- pause sets state to Paused if it was Playing; no-op otherwise.\n- stop sets state to Stopped and position to 0; updates last_tick_ms_ to clock_.now_ms().\n- seek clamps ms to [0, duration]; sets position; if state is Playing and position becomes >= duration, clamps to duration and sets state to Paused (end-of-media); updates last_tick_ms_ to clock_.now_ms() when state is Playing; otherwise leaves last_tick_ms_ as-is.\n- update_to_now when state is Playing and media set: calculates delta = clock_.now_ms() - last_tick_ms_ (if delta <= 0, only updates last_tick_ms_); adds delta to position, clamps to duration; when clamped at end, sets state to Paused; always sets last_tick_ms_ to current clock_.now_ms(). When not Playing or no media, does nothing but may refresh last_tick_ms_ only when transitioning to Playing elsewhere.\n- set_volume clamps v to [0, 100], stores, and returns the clamped value.\n- volume returns the stored unclamped volume value (clamped in setter).\n- mute sets muted_ flag; muted returns flag.\n- effective_volume returns 0 if muted, otherwise volume().\n- All methods marked noexcept in signature must not throw. All std::int64_t types are spelled exactly and headers include <cstdint> directly.\n\nModule: include/Runtime/App.h\n- Namespace: Runtime\n- class App { public:\n  - App();\n  - int run_demo();\n}\nContract:\n- run_demo constructs Time::ManualClock with a deterministic start, a Playlist::Playlist, creates Media::MediaMetadata (non-negative duration), adds/selects item 0, constructs Player::Player with ManualClock, sets current media, calls play, advances ManualClock by a known delta (e.g., 1000 ms), calls update_to_now, then pauses or stops. Returns 0. No streaming or interactive loops; deterministic behavior suitable for headless environments.\n\nAllowed include direction and boundaries:\n- include/Time/IClock.h is the lowest-level boundary; it may include only <cstdint> and standard library.\n- ManualClock.h and MonotonicClock.h include IClock.h and <cstdint>.\n- MediaMetadata.h stands alone and depends only on <string> and <cstdint>.\n- Playlist.h depends on MediaMetadata.h.\n- PlaybackState.h stands alone.\n- Player.h depends on Time/IClock.h, Media/MediaMetadata.h, and Player/PlaybackState.h.\n- Runtime/App.h depends on Time/ManualClock.h, Playlist/Playlist.h, Player/Player.h, and Media/MediaMetadata.h.\n\nNon-negotiable compile protocol:\n- Every header that names a signed 64-bit integer directly includes <cstdint> and spells std::int64_t; bare int64_t is forbidden.\n- include/Time/IClock.h declares exactly virtual std::int64_t now_ms() const noexcept = 0; and derived clocks override exactly that signature with identical const and noexcept in both headers and sources.\n- tests/test_main.cpp is a single self-contained program using only standard library and the declared headers; no third-party test frameworks.\n- CMake defines a core library from non-Main sources, a demo executable src/Main.cpp linked to that library, and a test executable linked to that library; enable_testing() and add_test() are present.\n- src/Main.cpp only returns Runtime::App().run_demo() and does not stream enums.",
+    "Logic Analysis": [
+      [
+        "CMakeLists.txt",
+        "dependency/build; single top-level build descriptor. Defines a reusable core library from all src/*.cpp except src/Main.cpp; builds a demo executable from src/Main.cpp; builds a single self-contained test executable from tests/test_main.cpp; links both exe targets to the core library; calls enable_testing() and registers add_test(). No external packages."
+      ],
+      [
+        "include/Time/IClock.h",
+        "interface; boundary interface for a monotonic millisecond clock. Must directly include <cstdint> and declare exactly virtual std::int64_t now_ms() const noexcept = 0;. Provides a virtual destructor."
+      ],
+      [
+        "include/Time/ManualClock.h",
+        "interface; deterministic clock for tests. Declares ManualClock(std::int64_t start_ms), void set_now(std::int64_t ms), void advance(std::int64_t delta_ms), and std::int64_t now_ms() const noexcept override. Must directly include <cstdint>."
+      ],
+      [
+        "include/Time/MonotonicClock.h",
+        "interface; real monotonic clock adapter. Declares std::int64_t now_ms() const noexcept override. Must directly include <cstdint>."
+      ],
+      [
+        "include/Media/MediaMetadata.h",
+        "interface/domain-entity; declares MediaMetadata with validation and accessors. Must directly include <cstdint> and <string>. duration_ms is std::int64_t."
+      ],
+      [
+        "include/Playlist/Playlist.h",
+        "interface/domain-entity; declares Playlist container with selection and bounded navigation. Includes <vector>, <cstddef>, and forward references/headers for Media::MediaMetadata."
+      ],
+      [
+        "include/Player/PlaybackState.h",
+        "interface; declares enum class PlaybackState { Stopped, Paused, Playing }."
+      ],
+      [
+        "include/Player/Player.h",
+        "interface/domain-entity; declares Player core logic with state transitions, seek clamping, time-based advancement using Time::IClock, and volume/mute. Must directly include <cstdint> and include needed headers."
+      ],
+      [
+        "include/Runtime/App.h",
+        "interface/orchestration; declares Runtime::App with App() and int run_demo(). Assembles ManualClock, Playlist, MediaMetadata, and Player deterministically; no I/O loops."
+      ],
+      [
+        "src/Time/ManualClock.cpp",
+        "implementation/pure-rule; implements ManualClock methods exactly matching header signatures and qualifiers. Maintains std::int64_t current_ms."
+      ],
+      [
+        "src/Time/MonotonicClock.cpp",
+        "implementation/environment-dependent; implements MonotonicClock using std::chrono::steady_clock, returning milliseconds since an epoch as std::int64_t."
+      ],
+      [
+        "src/Media/MediaMetadata.cpp",
+        "implementation/pure-rule; validates duration (throws std::invalid_argument if negative); stores title and duration; implements accessors."
+      ],
+      [
+        "src/Playlist/Playlist.cpp",
+        "implementation/pure-rule; manages vector of MediaMetadata, current index (default -1 meaning no selection), add/get/select/current/next/prev/size logic with bounded navigation and no wrap-around."
+      ],
+      [
+        "src/Player/Player.cpp",
+        "implementation/pure-rule; implements Player: play/pause/stop/seek/update_to_now, duration/position accessors, volume/mute. Clamps seek to [0, duration]. update_to_now uses IClock deltas, clamps at duration, auto-pauses when end reached. Maintains last_tick_ms_ for accumulation."
+      ],
+      [
+        "src/Runtime/App.cpp",
+        "implementation/orchestration; constructs a ManualClock, Playlist, some MediaMetadata, selects an item, constructs Player, sets current media, plays, advances clock, updates, then pauses or stops; returns 0."
+      ],
+      [
+        "src/Main.cpp",
+        "runtime/bootstrap; minimal int main() returning Runtime::App().run_demo(). No output, no loops."
+      ],
+      [
+        "tests/test_main.cpp",
+        "automated-test; single self-contained test main using only standard library and declared headers. Covers: MediaMetadata negative duration throws; deterministic Player::update_to_now advancement and clamping with ManualClock; Playlist navigation bounds; Runtime::App smoke returns 0."
+      ]
+    ],
+    "Module Boundary Audit": {
+      "core_domain_logic_modules": [
+        "include/Time/IClock.h",
+        "include/Time/ManualClock.h",
+        "include/Media/MediaMetadata.h",
+        "include/Playlist/Playlist.h",
+        "include/Player/PlaybackState.h",
+        "include/Player/Player.h",
+        "include/Runtime/App.h",
+        "src/Time/ManualClock.cpp",
+        "src/Media/MediaMetadata.cpp",
+        "src/Playlist/Playlist.cpp",
+        "src/Player/Player.cpp",
+        "src/Runtime/App.cpp"
+      ],
+      "environment_dependent_modules": [
+        "include/Time/MonotonicClock.h",
+        "src/Time/MonotonicClock.cpp",
+        "src/Main.cpp"
+      ],
+      "environment_test_coupling_risks": [],
+      "headless_testing_risks": [],
+      "notes": "Tests will exclusively use ManualClock and pure domain logic; MonotonicClock and Main are not used in tests."
+    },
+    "Python Dependency Compatibility Audit": {
+      "headless_test_notes": "",
+      "not_applicable": true,
+      "uses_outdated_pins": false,
+      "version_range_recommendations": []
+    },
+    "Required Other language third-party packages": [
+      "CMake>=3.10",
+      "C++17",
+      "No third-party dependencies required"
+    ],
+    "Required packages": [],
+    "Shared Knowledge": "This repository is a headless, deterministic C++17 video player domain model. The reusable interfaces are under include/*.h and must be self-contained: every header includes its own needed standard headers explicitly. All time values in public APIs use std::int64_t and headers that name them directly include <cstdint>. The Player advances based on a Time::IClock; tests use Time::ManualClock for determinism. Runtime::App wires ManualClock, Playlist, Player, and MediaMetadata together for a small demo. CMake builds a core library from all src/*.cpp except src/Main.cpp; both the demo and the single test target link against this core library. tests/test_main.cpp includes only declared include/*.h headers; it never includes src/*.cpp files or external frameworks.",
+    "Task Protocol Audit": {
+      "forbidden_test_includes": [],
+      "logic_analysis_covers_all_canonical_files": true,
+      "missing_from_logic_analysis": [],
+      "missing_from_pm_canonical": [],
+      "missing_from_task_list": [],
+      "noncanonical_file_references": [],
+      "notes": "All protocol-required files are planned exactly once; tests/test_main.cpp will include only declared headers.",
+      "pm_canonical_matches_design_file_list": true,
+      "renamed_required_files": [],
+      "required_files_present_exactly": true,
+      "task_list_covers_all_canonical_files": true,
+      "undeclared_file_references": [],
+      "unexpected_additional_test_files": []
+    },
+    "Task list": [
+      "CMakeLists.txt",
+      "include/Time/IClock.h",
+      "include/Time/ManualClock.h",
+      "include/Time/MonotonicClock.h",
+      "include/Media/MediaMetadata.h",
+      "include/Playlist/Playlist.h",
+      "include/Player/PlaybackState.h",
+      "include/Player/Player.h",
+      "include/Runtime/App.h",
+      "src/Time/ManualClock.cpp",
+      "src/Time/MonotonicClock.cpp",
+      "src/Media/MediaMetadata.cpp",
+      "src/Playlist/Playlist.cpp",
+      "src/Player/Player.cpp",
+      "src/Runtime/App.cpp",
+      "src/Main.cpp",
+      "tests/test_main.cpp"
+    ],
+    "Test Include Plan": [
+      [
+        "tests/test_main.cpp",
+        "include/Time/ManualClock.h"
+      ],
+      [
+        "tests/test_main.cpp",
+        "include/Media/MediaMetadata.h"
+      ],
+      [
+        "tests/test_main.cpp",
+        "include/Playlist/Playlist.h"
+      ],
+      [
+        "tests/test_main.cpp",
+        "include/Player/Player.h"
+      ],
+      [
+        "tests/test_main.cpp",
+        "include/Runtime/App.h"
+      ]
+    ],
+    "Test Scope Plan": [
+      [
+        "tests/test_main.cpp",
+        "Media::MediaMetadata negative duration validation throws std::invalid_argument"
+      ],
+      [
+        "tests/test_main.cpp",
+        "Player::update_to_now deterministic advancement with Time::ManualClock: play, advance known ms, update, assert position increments and clamps to duration, and state becomes Paused at end"
+      ],
+      [
+        "tests/test_main.cpp",
+        "Playlist navigation without wrap-around: add multiple items, select, next/prev succeed/fail at bounds as expected"
+      ],
+      [
+        "tests/test_main.cpp",
+        "Runtime::App smoke: construct and run, expect return 0"
+      ]
+    ]
+  }
+}

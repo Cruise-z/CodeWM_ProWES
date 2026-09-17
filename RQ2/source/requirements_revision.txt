@@ -1,0 +1,7 @@
+# Add these to the existing SrcMarker environment.
+# SrcMarker itself also requires PyTorch, transformers, sctokenizer, etc.
+tree-sitter>=0.20,<0.22
+inflection>=0.5.1
+tqdm>=4.0
+numpy>=1.23
+pytest>=7.0  # only for the bundled smoke/unit tests

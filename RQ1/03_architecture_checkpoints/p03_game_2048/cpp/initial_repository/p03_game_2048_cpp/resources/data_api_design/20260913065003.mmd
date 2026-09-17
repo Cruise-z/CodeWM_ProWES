@@ -1,0 +1,47 @@
+classDiagram
+    class Board {
+        +Board()
+        +void clear()
+        +std::uint16_t at(std::size_t r, std::size_t c) const
+        +void set(std::size_t r, std::size_t c, std::uint16_t v)
+        +void getRow(std::size_t r, std::array<std::uint16_t,4>& out) const
+        +void setRow(std::size_t r, const std::array<std::uint16_t,4>& in)
+        +void getCol(std::size_t c, std::array<std::uint16_t,4>& out) const
+        +void setCol(std::size_t c, const std::array<std::uint16_t,4>& in)
+        +bool isFull() const
+        +bool hasEmpty() const
+        +std::uint16_t maxTile() const
+        +static std::size_t side()
+    }
+    class Move {
+        <<namespace>> Move
+        Direction : enum {Left, Right, Up, Down}
+        LineMoveResult : struct
+        BoardMoveResult : struct
+        +LineMoveResult processLine(const std::array<std::uint16_t,4>& line)
+        +BoardMoveResult applyMove(Board& board, Direction dir)
+        +bool hasLegalMove(const Board& board)
+    }
+    class Spawner {
+        +bool spawn(Board& board)
+        +void initialFill(Board& board)
+    }
+    class Game {
+        -Board board_
+        -std::uint32_t score_
+        -GameState state_
+        -Spawner spawner_
+        +Game()
+        +void reset()
+        +bool move(Move::Direction dir)
+        +const Board& board() const
+        +std::uint32_t score() const
+        +GameState state() const
+    }
+    class GameState {
+        <<enum>> Ongoing, Won, Lost
+    }
+    Game --> Board
+    Game --> Spawner
+    Game --> Move
+    Move ..> Board

@@ -1,0 +1,52 @@
+{
+  "accepted_file_count_range": [
+    5,
+    7
+  ],
+  "architecture_attempt": 8,
+  "architecture_model": {
+    "api_type": "LLMType.OPENAI",
+    "base_url": "https://api.chatanywhere.tech/v1",
+    "model": "gpt-5"
+  },
+  "architecture_requirement_propagation": "full prompt copied into PRD and made the authoritative task Full API before downstream roles; QR Python uses a compact binding in system design to keep planner JSON valid, all other units copy the full prompt there; raw model task preserved by hash",
+  "completed_at": "2026-09-14T12:11:29.451554+00:00",
+  "duplicate_planned_files": [],
+  "file_count_in_range": false,
+  "file_count_reference_only": true,
+  "framework_tree_sha256": "f2bc31639a0fbf4131c67b5bf7fbc9e8965134bbbb100d706fd944892c0c762c",
+  "initial_repository": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/java/initial_repository/p07_calculator_java",
+  "initial_repository_tree_sha256": "f9f69c3db2124382ef683f3c011826ae6aac36bf0136f84e3e8971d594030310",
+  "missing_required_files": [],
+  "model_task_raw_sha256": "e343878cbc56cd8a4bb1a3da41714aa505d0cc0e2ff3676e4857b6dfce05b5c3",
+  "planned_file_count": 16,
+  "planned_files": [
+    "pom.xml",
+    "src/main/java/TokenType.java",
+    "src/main/java/Token.java",
+    "src/main/java/CalculatorException.java",
+    "src/main/java/TokenizationException.java",
+    "src/main/java/ParseException.java",
+    "src/main/java/EvaluationException.java",
+    "src/main/java/DivisionByZeroException.java",
+    "src/main/java/CalculationResult.java",
+    "src/main/java/HistoryEntry.java",
+    "src/main/java/CalculationHistory.java",
+    "src/main/java/Tokenizer.java",
+    "src/main/java/Parser.java",
+    "src/main/java/Calculator.java",
+    "src/main/java/Main.java",
+    "src/test/java/MainTest.java"
+  ],
+  "project_contract_issues": [],
+  "prompt_sha256": "1ce82ea36dc01d90e406b00473cede289e6d4da9df398d61f0c0c17e9edc632c",
+  "rebuild_reason": "replace_local_architecture_with_remote_api_after_refill",
+  "started_at": "2026-09-14T12:08:09.258009+00:00",
+  "status": "complete",
+  "target_file_count": 6,
+  "task_path_normalization": "bare Java filenames mapped to Maven source roots; already-qualified paths unchanged",
+  "team_json": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/units/p07_calculator/java/architecture/team/team.json",
+  "team_json_sha256": "5ac9209cf64e5f3ee76152de30272816532264cc2344a68cf2de98661dfd6e39",
+  "unit_id": "p07_calculator_java",
+  "valid": true
+}
