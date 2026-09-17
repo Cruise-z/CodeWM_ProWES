@@ -373,6 +373,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
 
     # Optional watermark detection (only for external processors that implement detect_last()).
     wm_detection_result: Dict[str, Any] = {}
+    processor_metrics: Dict[str, Dict[str, Any]] = {}
     det_elapsed_s: Optional[float] = None
 
     if lp_external is not None and comp_tok > 0:
@@ -382,6 +383,7 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                 for idx, proc in enumerate(list(lp_external)):
                     if hasattr(proc, "timing") and callable(getattr(proc, "timing")):
                         tinfo = proc.timing()
+                        processor_metrics[f"{proc.__class__.__name__}[{idx}]"] = dict(tinfo)
                         total_s = float(tinfo.get("lp_total_time_s", 0.0))
                         calls = int(tinfo.get("lp_calls", 0))
                         avg_us = float(tinfo.get("lp_avg_per_call_us", 0.0))
@@ -395,6 +397,8 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                 logger.info("[timing] wm_lp timing read failed: %s: %s", _e.__class__.__name__, _e)
 
             if bool(req.watermark_detect):
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
                 t_det_start = time.perf_counter()
                 for idx, proc in enumerate(list(lp_external)):
                     if hasattr(proc, "detect_last") and callable(getattr(proc, "detect_last")):
@@ -405,6 +409,8 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
                             wm_detection_result[key] = result
                         except Exception as _e:
                             wm_detection_result[key] = {"error": f"detection_failed: {_e.__class__.__name__}: {_e}"}
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()
                 t_det_end = time.perf_counter()
                 det_elapsed_s = float(t_det_end - t_det_start)
             else:
@@ -420,6 +426,11 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         "index": 0,
         "message": {"role": "assistant", "content": text},
         "finish_reason": finish_reason,
+        "generation_metrics": {
+            "generation_elapsed_s": float(gen_elapsed_s),
+            "watermark_detection_elapsed_s": det_elapsed_s,
+        },
+        "processor_metrics": processor_metrics,
     }
 
     # Attach detection results only when external processors were used

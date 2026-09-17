@@ -14,9 +14,9 @@ path,bytes,sha256,rq,stage,role,paper_mapping
 00_common/hardware/README.md,566,ae77676909590b567f1a491bddd4c15091be19b9bb4c81fe83086bc3b9012d20,Common,00_common,metadata-or-reproduction,
 00_common/patches/LANGUAGE_NORMALIZATION.md,3014,ee5433d65746c523da8709b4d1217cb409b9fcc263cebf78e81c58295b2e3d1e,Common,00_common,metadata-or-reproduction,
 00_common/patches/README.md,855,c05947c6e3c229c28ec3172d0873e9c70224aaa097b99fdd2772f421eccd720f,Common,00_common,metadata-or-reproduction,
-00_common/upstream_commits/METHODS.md,2240,8df6641768b3d5206e9ed46113421400a548280aa6d5861e1c9729a13015fc4e,Common,00_common,metadata-or-reproduction,
-ARTIFACT_COMPLETENESS.md,4072,72c07b39e3d86bb77d95445ba08b67490cf7ea1cd6e8e988f897c79dcbdb8e5a,Common,ARTIFACT_COMPLETENESS.md,metadata-or-reproduction,
-README.md,5840,4db77288e3795edb2de43059dc8f8e910775e1254ef49ef6f52dd07001bf603d,Common,README.md,metadata-or-reproduction,
+00_common/upstream_commits/METHODS.md,2240,1e08df7c2ffe05e54483482bbf7af8887a8c11e8714f36992b9e6ad3faecdfcb,Common,00_common,metadata-or-reproduction,
+ARTIFACT_COMPLETENESS.md,4395,230733373562741d0d351924ac922fc3422cdc12f63a3e8519784e25eaf6192b,Common,ARTIFACT_COMPLETENESS.md,metadata-or-reproduction,
+README.md,5687,536d69e7325cf12b257716bf048ae23fcf1c915c6aa4f0883ed78c3a9bfba40d,Common,README.md,metadata-or-reproduction,
 RQ1/01_task_specs/manifest.json,6712,8f0c8511f91eca8787dd766034766cc303d935fe7f309832f8934ae3212722d0,RQ1,01_task_specs,source-or-input,
 RQ1/02_prompts/templates/__init__.py,168,82bf065467aa851c5f3382060c9c69969bb1d627dc19400bc1b0e9f1ccdd6230,RQ1,02_prompts,source-or-input,
 RQ1/02_prompts/templates/cpp/__init__.py,334,3a771e808fb809739e31a91fed42d4171c32e7b0c81375f8cb5b1de8751837e1,RQ1,02_prompts,source-or-input,
@@ -1818,7 +1818,7 @@ RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/__init__.py,79,1584
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/base_message_model.py,989,3175fd599dc05ec04f2961b71de82781eb83588ef52a9be494a04de9afe14d59,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/base_processor.py,572,e6231f5883db34547389895c4c089363ab126d5c6646cc85dbbac0eeaf269fa6,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/checkpoints/lstm_model_java.pth,1705581,6f83b7495154500c9bf531a8045d680621adaf93f3f3f1897676b38fbdde0708,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/codeipLP.py,30528,b2aad58fd6010f4138de9eb8f0b476ad6cbcf652348a079f241aa6dcfe18e20b,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/codeipLP.py,30581,2b80726277362d0ef66310000edb648ca8b6f6fce9850d5990b51d739c51b45d,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/codewm_integration.py,3250,15032df2b285b42cced090466687d4bb03177958e87511b4546286f0d5380884,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/hash_fn.py,589,fec4a68e78ab1d239050c4e648a8d9653a32bebc5df34b98800f77f2d635502e,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/message_model.py,9002,e3f34ede69d329a814d3598219cea328d681779a65784016674c0946f51677ef,RQ1,source,source-or-input,
@@ -1835,7 +1835,7 @@ RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/base.py,2078,eebc80b69
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/codewm_integration.py,1606,6a6daba11250b5cc3c81b6be4340255f8768f86422e9af660e5f505c910de490,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/data_for_visualization.py,1745,76af9668ac741275690d0667e011fc4bfded82217a784989371c41467f68cc3c,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/ewd.py,12094,4df9c1b58c2d8f3fc9cd76fe46dcbd2062f98a6f551e03c74aa859aab9f5b69c,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/ewdLP.py,11816,6fdf5c18dfd39fe84d489d660ca470efe04122b73f5135e6b96140e7df52980e,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/ewdLP.py,11868,746017f01de01f94d5a58650a55bdfe8a367fb6d55c1b394fac85628d5ebfa0e,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/exceptions.py,4068,6fb2a863f43a03adf71739604e4d6c5d359c8147237fa2cf4970c80dbb945dd4,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/transformers_config.py,1551,a45a0c253e05aac06059a1237a82d39c3409f6b9fe8c928d2d569b19e9a46853,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/mcgMark/codewm_integration.py,1328,ab0c9bc5fbb1bf8f7758fe263d6380c4343d58163e35300db6a4c0a5e8744905,RQ1,source,source-or-input,
@@ -1850,12 +1850,13 @@ RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/codewm_integration.p
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/data_for_visualization.py,1745,76af9668ac741275690d0667e011fc4bfded82217a784989371c41467f68cc3c,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/exceptions.py,4068,6fb2a863f43a03adf71739604e4d6c5d359c8147237fa2cf4970c80dbb945dd4,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/stone.py,21663,a57f92a73838731fdb786cdab27077a8a1be56dfd46317f99ef7fe791c829dc7,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/stoneLP.py,11565,b4fe80b5cce722b95e00e626f4c4a7dcd079c6d1ac0a7f8118ea9a23c266ae91,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/stoneLP.py,11222,b7436c3696db4180a3c1be36ba805bfaae381e55a62e6fe62f2a64566f572f09,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/transformers_config.py,1551,a45a0c253e05aac06059a1237a82d39c3409f6b9fe8c928d2d569b19e9a46853,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/__init__.py,76,42b1923b8ff4a9c90e1f518ea42a6088820a1052676ef8d938431347739d4e8b,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/codewm_integration.py,1621,4794804eaf0925715930d5845c2c88ac283cdbc5a952ad4449f59462deb9fed4,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/sweet.py,5555,02dc9da01f146b0813a11fefd45621d13dd482b3db1b642f5b14f664891424b8,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/sweetLP.py,12763,4bad6452dd0ae413ad9ee267e01f490d5ebcfc8ebf8af1f5c295c9f0c29eeb69,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/sweetLP.py,12218,d2328675ec760799149f7e0d847c35d994cdf40399a546487a1b802e6cd0f9ae,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/timing.py,944,ebfe20401888f31bf071b57cfa4b1167aec9d8319db659ce80c71de33f3d388f,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/WatermarkerBase.py,22041,a63362d10c246cd3ca54d4c3f5dcc6ade26d3e0226ed77fcd44b4414151853c2,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/WatermarkingFn.py,1952,a568f618c4fb9f50d492c64852fb7abdb5be2263abc79e46042224931846904d,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/WatermarkingFnFourier.py,1377,baf97015e64a285d04839afb5aae90ebe2c992d3a064c7c0ed55d517cfde0b87,RQ1,source,source-or-input,
@@ -1863,15 +1864,15 @@ RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/WatermarkingFnSq
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/__init__.py,88,b0cec52a92069d3521c4a8c9177c9db1aa11c1e2f7b861fd4b94756aa0880a31,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/codewm_integration.py,1635,24d5ed91b04080fe740cbccc2efb0003f99d6785e78c3da2cf38c480ccce5a2b,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/permute.py,2797,bb54b207be95ea53cc928c4944826fd9c73cafdb54ac989181654bf7b81779f8,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/waterfallLP.py,16334,020db409e8370e4d318c1e09f1452bdabdf861c42d4c9497c9353b263f110d79,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/waterfallLP.py,15302,ea18334e33204e9db7dafdad7a3b918ade39da8b8bffc5d47afcb7e60e0c9a1d,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/__init__.py,73,5d6d4ab5e4d8865522985d9655861130c8046b3a5c9c7aef947a96519bc0ad3b,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/codewm_integration.py,1530,c292a0534377f3a433b05a6e43b590cc09aa44caa141af610eba93c280f0b5b2,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/watermark.py,11748,94a570ec8ba1bd88012e29e97b45dbe8e116da98ade98dc62aa0db766bf3e0de,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/wllmLP.py,10552,8a374e419377146fad9f97732dff4c4255afdbb2193a190fc77100988c1ec5ec,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/wllmLP.py,10225,3c09d0d21505ac957a6dd9e4cf1372cf7967c9f527955f3a0045b17b53bb1668,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/processors.py,51045,4a0f7455eff5102d772ace39ecd211cb81e68ece1e95f65c8d6f75cb5d5ea349,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/regWM.py,2706,8159d84219f6415a70a3d8c1d371aa6684fca7fc5d977501050abd3fd4c04f6e,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/runtime.py,3373,9783bdf4833b813282aa8dbecfedafb3893a2812eeeac3334d64ac9d2c1c6462,RQ1,source,source-or-input,
-RQ1/source/DT/codeGen/modelDeploy/modelDeployer/server.py,18148,67894e55e73c32eab5a8fe4e3a79b9eeaef942b12f2a93ae0e4748902fa597ff,RQ1,source,source-or-input,
+RQ1/source/DT/codeGen/modelDeploy/modelDeployer/server.py,18686,783b6c7b44d3729040e915632df6fab1116b859e9c8171f9c895895d94566d96,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/test/server_test.py,46823,21640b4167f449771554cedf37d1ae34400b841226eb71f49d53b6b57bff96c3,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/test/test.py,135,16f44bdb33a8a81c898877ae5f4fba3e285f1a08c09dae84ad05e8e93b3c9029,RQ1,source,source-or-input,
 RQ1/source/DT/codeGen/modelDeploy/modelDeployer/test/testAPI.py,2218,63e5105db8968fe7e3095e4343a54f468e27c1ad0939a200ada5fc935f99740d,RQ1,source,source-or-input,
@@ -2498,10 +2499,12 @@ RQ1/source/reproduct/manifest.json,6712,8f0c8511f91eca8787dd766034766cc303d935fe
 RQ1/source/reproduct/metagpt_runtime/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ1,source,source-or-input,
 RQ1/source/reproduct/migrate_attempt_epochs.py,17098,2d35393ce5e2f673772117e854138393790371d1c721fe08d95a9c72eb2173df,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/README.md,5859,f6102c2fba5cfc921cb8d5ff518df19f3bc9ce1e02cae2cdb25b4eee0f3d3fdd,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/__pycache__/server.cpython-313.pyc,25719,dd2123edfe459399676122782bf9fa1e54571310ac168521fe42b75e93ee9605,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/config.py,2353,cd7208ac02b7bb70e6bd8a4df3d15d6e539b7000fd60580ce337c04395b99ebb,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/error_report.py,5460,280d0caed6881562426fb05b4551994033e04d966eb728f4511de838025321df,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/generation.py,25785,f5f62933ca40dd07720965644329aee37e87cbdf524417f1aca16c8f61cc6ec9,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__init__.py,266,1d7c8e570ae08e324f40f8b4591347f0043d516988df5ade9e754f20f1dcdcc8,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__pycache__/timing.cpython-313.pyc,1418,b6cec859d90d73ce0e4792f572e40b0e8013798e5a5b5a18d621a9f80f580006,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/PDA_message_model.py,3782,f02c29355a6a4e0bdad125a293c4c3367046b5095085bfc91e97f4cf196962a2,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/PDA_model_processor.py,1367,a36fe6340afe70c8628e94ad515c7830cb2666a19821ecab6821624f85e04d16,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/SOURCE_PROVENANCE.md,1904,50381195979a5c5bee31c8e7d2da27e7433733ca532649ee60c65e30ae1da306,RQ1,source,source-or-input,
@@ -2509,7 +2512,7 @@ RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/__init__.py,79,158
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/base_message_model.py,989,3175fd599dc05ec04f2961b71de82781eb83588ef52a9be494a04de9afe14d59,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/base_processor.py,572,e6231f5883db34547389895c4c089363ab126d5c6646cc85dbbac0eeaf269fa6,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/checkpoints/lstm_model_java.pth,1705581,6f83b7495154500c9bf531a8045d680621adaf93f3f3f1897676b38fbdde0708,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/codeipLP.py,30528,b2aad58fd6010f4138de9eb8f0b476ad6cbcf652348a079f241aa6dcfe18e20b,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/codeipLP.py,30581,2b80726277362d0ef66310000edb648ca8b6f6fce9850d5990b51d739c51b45d,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/codewm_integration.py,3250,15032df2b285b42cced090466687d4bb03177958e87511b4546286f0d5380884,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/hash_fn.py,589,fec4a68e78ab1d239050c4e648a8d9653a32bebc5df34b98800f77f2d635502e,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/message_model.py,9002,e3f34ede69d329a814d3598219cea328d681779a65784016674c0946f51677ef,RQ1,source,source-or-input,
@@ -2526,7 +2529,7 @@ RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/base.py,2078,eebc80b6
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/codewm_integration.py,1606,6a6daba11250b5cc3c81b6be4340255f8768f86422e9af660e5f505c910de490,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/data_for_visualization.py,1745,76af9668ac741275690d0667e011fc4bfded82217a784989371c41467f68cc3c,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/ewd.py,12094,4df9c1b58c2d8f3fc9cd76fe46dcbd2062f98a6f551e03c74aa859aab9f5b69c,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/ewdLP.py,11816,6fdf5c18dfd39fe84d489d660ca470efe04122b73f5135e6b96140e7df52980e,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/ewdLP.py,11868,746017f01de01f94d5a58650a55bdfe8a367fb6d55c1b394fac85628d5ebfa0e,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/exceptions.py,4068,6fb2a863f43a03adf71739604e4d6c5d359c8147237fa2cf4970c80dbb945dd4,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/transformers_config.py,1551,a45a0c253e05aac06059a1237a82d39c3409f6b9fe8c928d2d569b19e9a46853,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/mcgMark/codewm_integration.py,1328,ab0c9bc5fbb1bf8f7758fe263d6380c4343d58163e35300db6a4c0a5e8744905,RQ1,source,source-or-input,
@@ -2541,12 +2544,13 @@ RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/codewm_integration.
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/data_for_visualization.py,1745,76af9668ac741275690d0667e011fc4bfded82217a784989371c41467f68cc3c,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/exceptions.py,4068,6fb2a863f43a03adf71739604e4d6c5d359c8147237fa2cf4970c80dbb945dd4,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/stone.py,21663,a57f92a73838731fdb786cdab27077a8a1be56dfd46317f99ef7fe791c829dc7,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/stoneLP.py,11565,b4fe80b5cce722b95e00e626f4c4a7dcd079c6d1ac0a7f8118ea9a23c266ae91,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/stoneLP.py,11222,b7436c3696db4180a3c1be36ba805bfaae381e55a62e6fe62f2a64566f572f09,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/transformers_config.py,1551,a45a0c253e05aac06059a1237a82d39c3409f6b9fe8c928d2d569b19e9a46853,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/__init__.py,76,42b1923b8ff4a9c90e1f518ea42a6088820a1052676ef8d938431347739d4e8b,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/codewm_integration.py,1621,4794804eaf0925715930d5845c2c88ac283cdbc5a952ad4449f59462deb9fed4,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/sweet.py,5555,02dc9da01f146b0813a11fefd45621d13dd482b3db1b642f5b14f664891424b8,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/sweetLP.py,12763,4bad6452dd0ae413ad9ee267e01f490d5ebcfc8ebf8af1f5c295c9f0c29eeb69,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/sweetLP.py,12218,d2328675ec760799149f7e0d847c35d994cdf40399a546487a1b802e6cd0f9ae,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/timing.py,944,ebfe20401888f31bf071b57cfa4b1167aec9d8319db659ce80c71de33f3d388f,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/WatermarkerBase.py,22041,a63362d10c246cd3ca54d4c3f5dcc6ade26d3e0226ed77fcd44b4414151853c2,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/WatermarkingFn.py,1952,a568f618c4fb9f50d492c64852fb7abdb5be2263abc79e46042224931846904d,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/WatermarkingFnFourier.py,1377,baf97015e64a285d04839afb5aae90ebe2c992d3a064c7c0ed55d517cfde0b87,RQ1,source,source-or-input,
@@ -2554,15 +2558,15 @@ RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/WatermarkingFnS
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/__init__.py,88,b0cec52a92069d3521c4a8c9177c9db1aa11c1e2f7b861fd4b94756aa0880a31,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/codewm_integration.py,1635,24d5ed91b04080fe740cbccc2efb0003f99d6785e78c3da2cf38c480ccce5a2b,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/permute.py,2797,bb54b207be95ea53cc928c4944826fd9c73cafdb54ac989181654bf7b81779f8,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/waterfallLP.py,16334,020db409e8370e4d318c1e09f1452bdabdf861c42d4c9497c9353b263f110d79,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/waterfallLP.py,15302,ea18334e33204e9db7dafdad7a3b918ade39da8b8bffc5d47afcb7e60e0c9a1d,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/__init__.py,73,5d6d4ab5e4d8865522985d9655861130c8046b3a5c9c7aef947a96519bc0ad3b,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/codewm_integration.py,1530,c292a0534377f3a433b05a6e43b590cc09aa44caa141af610eba93c280f0b5b2,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/watermark.py,11748,94a570ec8ba1bd88012e29e97b45dbe8e116da98ade98dc62aa0db766bf3e0de,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/wllmLP.py,10552,8a374e419377146fad9f97732dff4c4255afdbb2193a190fc77100988c1ec5ec,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/wllmLP.py,10225,3c09d0d21505ac957a6dd9e4cf1372cf7967c9f527955f3a0045b17b53bb1668,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/processors.py,51045,4a0f7455eff5102d772ace39ecd211cb81e68ece1e95f65c8d6f75cb5d5ea349,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/regWM.py,2706,8159d84219f6415a70a3d8c1d371aa6684fca7fc5d977501050abd3fd4c04f6e,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/runtime.py,3373,9783bdf4833b813282aa8dbecfedafb3893a2812eeeac3334d64ac9d2c1c6462,RQ1,source,source-or-input,
-RQ1/source/reproduct/model_runtime/modelDeployer/server.py,18148,67894e55e73c32eab5a8fe4e3a79b9eeaef942b12f2a93ae0e4748902fa597ff,RQ1,source,source-or-input,
+RQ1/source/reproduct/model_runtime/modelDeployer/server.py,18686,783b6c7b44d3729040e915632df6fab1116b859e9c8171f9c895895d94566d96,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/test/server_test.py,46823,21640b4167f449771554cedf37d1ae34400b841226eb71f49d53b6b57bff96c3,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/test/test.py,135,16f44bdb33a8a81c898877ae5f4fba3e285f1a08c09dae84ad05e8e93b3c9029,RQ1,source,source-or-input,
 RQ1/source/reproduct/model_runtime/modelDeployer/test/testAPI.py,2218,63e5105db8968fe7e3095e4343a54f468e27c1ad0939a200ada5fc935f99740d,RQ1,source,source-or-input,
@@ -2812,6 +2816,7 @@ RQ2/source/tests/test_new_rules.py,3185,1ee00ed5943b1f09bdd1704a71a27de8d0637e93
 RQ2/source/tests/test_rag.py,1629,773b7a6a5cd3592fac40f9420d0dd7026ec195ddd37823452e375ba952c1e892,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/LICENSE,1062,afc1a0aa94218bf4f74f9b4f167a70dec67082757775b0240b30063000013c5d,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/README.md,18602,78219b16ff33cac565ee6440a9acae9cf52584fb3b85eaf8402d121c35833692,RQ2,source,source-or-input,
+RQ2/source/training/SrcMarker_fresh/__pycache__/rq3_benchmark_semantic.cpython-313.pyc,26209,f2cce88ba8cbd32fb12afbe35185d8c4c708697a54fc180ecc007ff4aa751d1e,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/benchmark_mbxp.py,14112,89f3350d053073473a47c4dcbfd5e2b70c3a7eeddf085b5d34a81b350742b2b2,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/benchmark_mbxp_natgen.py,4725,68b99113833bed785ddcffcb39dd4f5ba3a6d534fbf83d847d2f3a37aabb1420,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/benchmark_mbxp_ropgen.py,5395,6b022d956b1581d2901da1fca56634ce7be135023611f855afdfb1ff75807b4b,RQ2,source,source-or-input,
@@ -3050,6 +3055,7 @@ RQ2/source/training/SrcMarker_fresh/ropgen_transform/py/while_for.py,3088,20b7f3
 RQ2/source/training/SrcMarker_fresh/ropgen_transform/srcml_interface.py,1157,ab83cc89960d257be50272c20a71cc85e27ec04f6991daa3d2abecdbb2c95977,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/ropgen_transform/style_stats.py,3534,b6dac8537b6879e74d297cf2aa9c1fc8feb3a0021b0dddf32fc40704040df624,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/ropgen_transform/xml_utils.py,425,59019c509fc4ac301760d598943f6bc57f788aba4d189e53e475453849c02c33,RQ2,source,source-or-input,
+RQ2/source/training/SrcMarker_fresh/rq3_benchmark_semantic.py,19757,568ed6431a17a8fe9dec5fb13f6025c7818a0c6569982724805a9d0744e00195,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/run_fresh_evaluation.sh,2090,694df83879c220994226a8a58e482d77d3dbc9aca9860c5c984709ef8f8ca909,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/run_fresh_rq2.sh,3839,0e57a6d5db4f67cefa5bfca5d1ff62b21c189d9cb9aa1d8356a0ab885f3cf5a4,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/run_fresh_training.sh,1828,e15b27704d637a0c992804753e22d2209e220b514cedb939e205d5aa0904af55,RQ2,source,source-or-input,
@@ -3067,12 +3073,33 @@ RQ2/source/training/SrcMarker_fresh/trainers/ultimate_transform_trainer.py,13445
 RQ2/source/training/SrcMarker_fresh/trainers/ultimate_var_trainer.py,12535,a2d6519c10c1f7142000078dd632392a70b6796a1f2c7333d0fccddb6c2ade98,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/transform_benchmark.py,4451,235e8af85f23980d2795ef849385f1c2e2dbbe7ee27ee8f654d8bc2aef24c840,RQ2,source,source-or-input,
 RQ2/source/training/SrcMarker_fresh/varname_utils.py,2285,07161e4ea25bbb3bc4e245ff05ed045980f7d75ce2e216ae8e9ff40d58dce89f,RQ2,source,source-or-input,
-RQ3/01_timing_harness/README.md,606,8cf50b521d2bba1784cc4164e71b5611de172c5e043ab656584d6e7436a6ae20,RQ3,01_timing_harness,source-or-input,
-RQ3/02_raw_timings/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,02_raw_timings,source-or-input,
-RQ3/03_training_logs/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,03_training_logs,source-or-input,
-RQ3/04_token_counts/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,04_token_counts,source-or-input,
-RQ3/05_analysis/README.md,220,2d20b413be4d6729900d6c74d7d096e178200445f8197838dd7b8e0c45915ddc,RQ3,05_analysis,source-or-input,
-RQ3/README.md,544,4d377baed1335675cff1eacb11a9bf3066d634b40d921eda6d362b0ea77856c9,RQ3,README.md,source-or-input,
+RQ3/01_timing_harness/README.md,939,5b4730197a073aaec993a94dcf01fb76d3c75b4d653a5c4a0cb64f200e1552a5,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/__pycache__/benchmark_logits_bias.cpython-313.pyc,21366,04453462d161678fc6808c1b09c76ca12197c3a819958a47a207b60715b65a9a,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/__pycache__/benchmark_semantic.cpython-313.pyc,26191,6c06c6b819c78653ffe9d49021435998b4caa98fa7db4aeca82932f4abae3cff,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/benchmark_logits_bias.py,16151,92fc2197a707da4feee462ebfe7f64863d2050422066a891a0625d337e59bd4f,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/benchmark_semantic.py,19757,568ed6431a17a8fe9dec5fb13f6025c7818a0c6569982724805a9d0744e00195,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/workloads/event_scheduler_requirement.txt,1502,a11b01595fc4fe21aece9a71aac288a4c04008227b9992d37cfa8793eacd2690,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/workloads/order_inventory_requirement.txt,1510,65edc7859af388286b4aa2b8609f5f398c6bb9ac466796440efa0d6f5ebb2cdf,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/01_timing_harness/workloads.json,988,796ae0e07b55f625c4ec53948382afd8ff15da9d7497b24966603012d51bcf47,RQ3,01_timing_harness,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/README.md,755,ed3de8c7d5e3dad50c470442e09ea5813b7e4fcccf0750970658c8b49be30e04,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/codemark_csn_js_raw.json,2976488,47a2891797143d936560c5e0071d39d86ff3f8917f1d971e710ff9e097f46e8a,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/logits_bias_raw.json,203751,59af3ef278423545cb60b85a2a23f3fdc536006ed81218f44a0bb78b1aee2065,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/raw_timings.csv,715622,16d208020af9d54557e603b838ca833d1cb8818faeb6bd3e951b07ae75cacbe5,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/02_raw_timings/srcmarker_csn_js_raw.json,2977587,8f7b07fb8b3a8c02d0b597fb9d670bea9dea129337d6e5ba5c0cd16ff7b48e21,RQ3,02_raw_timings,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/03_training_logs/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,03_training_logs,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/03_training_logs/README.md,421,167ce6358aa178e421df05b1f92b5aeb49f117bbe9660919f8bfa4de2f4a6026,RQ3,03_training_logs,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/03_training_logs/codemark_csn_js_training.log,12749,e01ec59d0594c465b8c2cdc1c301e6105138a3452de895bee023507257e7d1e1,RQ3,03_training_logs,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/03_training_logs/srcmarker_csn_js_training.log,12881,c03065e17826de63cc436ad3bd1d55e9ea321d6f04b0a1c7a2ce137cda8c0869,RQ3,03_training_logs,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/03_training_logs/training_times.csv,158,78a114b36688470da6e0859804146541c72d73724bdf466ac7b0d1c7528d460e,RQ3,03_training_logs,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/04_token_counts/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ3,04_token_counts,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/04_token_counts/README.md,454,2ecac52580ed6f4b0d7a756aa2a5e3e8040d8c6037ed5ee39da6d852802198fa,RQ3,04_token_counts,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/04_token_counts/token_counts.csv,1400203,7b781d6c1a5b1d57af58516bb875dfa7f9eabf659f7214a6e948f0b860d6b3e3,RQ3,04_token_counts,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/04_token_counts/tokenizer_manifest.json,610,25195b91d984c2e4de3ae9dce309edd2e0bb24a292c842e26b7a722d976f3d22,RQ3,04_token_counts,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/05_analysis/README.md,1050,0ad2318f8b27ae7fd9d6def6a4e8034399d6735aa70ae6aac729ba850e74cd33,RQ3,05_analysis,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/05_analysis/__pycache__/reproduce_table_x.cpython-313.pyc,18451,beea5a895da042c0d81ceae2b1a8ab5eb80cb1b379f3729f43fe9ebe6523aaa2,RQ3,05_analysis,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/05_analysis/reproduce_table_x.py,16945,35cfaf92000181ad77b6c595a91bdc2dbffb94d9634b5eb6933b548cb6ece3d3,RQ3,05_analysis,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
+RQ3/README.md,1747,3668799bb3f86b92a7baf43468e7726aa33d33096ec6cbab658829b5cdaee417,RQ3,README.md,source-or-input,"Main Table X; raw timing, token normalization, and training-cost evidence"
 THIRD_PARTY_NOTICES.md,1203,9c5e2276615a9f00b02379b936e0006dd25c583cf5001ba79270c05f939efdb6,Common,THIRD_PARTY_NOTICES.md,metadata-or-reproduction,
 paper_reproduction/README.md,790,6a6c79df5ec13b34761daec45493899a3828ff802eb93b15f9674605fcc4fb48,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/figures/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,Common,paper_reproduction,metadata-or-reproduction,
@@ -3106,7 +3133,7 @@ paper_reproduction/reproduce_all.sh,422,e095acb19f57d67823491d4c96ae2373ecf9ede3
 paper_reproduction/reproduce_rq1.sh,2286,fbfda329429a43e2d94082dc6b6965935c9053c99ba0f15a0c32a83386347b47,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/reproduce_rq2.py,2477,c528fbd1879620e079cee01b2f86fc06ddcedc768ce074ce815b051f909b6a97,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/reproduce_rq2.sh,254,95514651c60457c92f342e72b06a09ab0c895610ac076c21ec48072fdc3719e6,Common,paper_reproduction,metadata-or-reproduction,
-paper_reproduction/reproduce_rq3.sh,163,490f2c2f34df231b2f1604a211901a18bcad657e46009bb3721d6a92b49e97e5,Common,paper_reproduction,metadata-or-reproduction,
+paper_reproduction/reproduce_rq3.sh,265,97793f30f3b326fdcd358b786a01ae7fc007ad18975d7682f9af5f5bc048a0f7,Common,paper_reproduction,metadata-or-reproduction,"Main Table X; raw timing, token normalization, and training-cost evidence"
 paper_reproduction/tables/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/tables/rq1/applicability/classification_provenance.csv,139,9db8bddd4dcdd3d72d5607f8f450d16be24b35ab8bcca8de8ff2f848280d40cb,Common,paper_reproduction,metadata-or-reproduction,RQ1 applicability; medium-project strength-sweep derived outputs
 paper_reproduction/tables/rq1/applicability/seed_inventory.csv,1190,9fc16c3a750727b9b9c48c00461fd67e9d6fa06305919bfe3b3c170578248400,Common,paper_reproduction,metadata-or-reproduction,RQ1 applicability; medium-project strength-sweep derived outputs
@@ -3132,6 +3159,9 @@ paper_reproduction/tables/rq2_paper_main.tex,1129,0b02a838d83e411f10628f7fb55521
 paper_reproduction/tables/rq2_rule_epr.csv,1035,64102f3e7f8bc764cf8aa2fd127e0b5f0d64ff8d0fd9c0deb189292f3539ddf2,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/tables/rq2_rule_epr.tex,860,9645d6823ed080c0ca4ccf066f196fabaad95e5f8197445f5e450c5a4e7ef9ec,Common,paper_reproduction,metadata-or-reproduction,
 paper_reproduction/tables/rq2_rule_robustness.csv,13185,f213b4f5787e0ea31aa2a42065e0f6e5ffc39fe19780502af0196ebdb95132f5,Common,paper_reproduction,metadata-or-reproduction,
+paper_reproduction/tables/rq3/table_x.csv,1435,64348a738db0a9e090250dbb016a4ce2121518270d5bd3ee2d58eb4129de05a5,Common,paper_reproduction,metadata-or-reproduction,"Main Table X; raw timing, token normalization, and training-cost evidence"
+paper_reproduction/tables/rq3/table_x.json,4352,eb24ee9210bd4a87268facc5c68805a84e6e6034845be67292ee43ebe8ef46c2,Common,paper_reproduction,metadata-or-reproduction,"Main Table X; raw timing, token normalization, and training-cost evidence"
+paper_reproduction/tables/rq3/table_x.tex,482,f4e8c1a46140324cc0c8b748e39eb96a40e970235bd990aedca8912d3d76d9c8,Common,paper_reproduction,metadata-or-reproduction,"Main Table X; raw timing, token normalization, and training-cost evidence"
 results/RQ1/.gitkeep,0,e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855,RQ1,.gitkeep,result,
 results/RQ1/05_baseline_qualification/PROVENANCE.json,2427,b52bef52063c258adf31abf64b0746090017ea14d7588c4e1f4ddb5d6e3ff320,RQ1,05_baseline_qualification,result,"RQ1 baseline qualification; 88 attempts, 42 accepted repositories, 42 verified replays"
 results/RQ1/05_baseline_qualification/README.md,2525,7c4aa3a92b67a2e013d1ccc9ab92cf58d0e08ff463ef0c500c6f8ede56a5679a,RQ1,05_baseline_qualification,result,"RQ1 baseline qualification; 88 attempts, 42 accepted repositories, 42 verified replays"
@@ -10310,7 +10340,9 @@ results/RQ2/08_statistics/paper_outputs/03_tables_figures/tables/rq2_rule_robust
 results/RQ2/08_statistics/paper_outputs/PACKAGE_MANIFEST.json,703,dfc6e6d58e5863c5dd1945c8e8053723c5a330a352ac82e9889cec6173877cf0,RQ2,08_statistics,result,
 results/RQ2/08_statistics/paper_outputs/deliverables_manifest.json,4160,08f5bfb96bd814cf870109ad6e7575c085b750d20fc43df3477b82e5fb6bc95f,RQ2,08_statistics,result,
 results/RQ2/README.md,440,78e110b14086dd1165e7316d5c1ba58e2e74eacacf5971e607566bc048cd7164,RQ2,README.md,result,
-tools/artifact_manifest.py,5344,1d5e5c550715f9c4446764e31311b2187b96bf02a7b1ce30df8e23119c9c92eb,Common,tools,metadata-or-reproduction,
+tools/__pycache__/artifact_manifest.cpython-313.pyc,8284,1923af044be18f88fbe06235dba4cbb557f981fac15ccfe94b2c51d55e90f5c7,Common,tools,metadata-or-reproduction,
+tools/__pycache__/build_rq1_baseline_ledgers.cpython-313.pyc,6471,42576458f09b7005a49c7ac4b6ba9743986edf1a3e398e3917bff8f5d2551eb2,Common,tools,metadata-or-reproduction,
+tools/artifact_manifest.py,5519,8d7928b5547dd5d32318c5e1ad509c1bcb0d26fde6d0b334b75c97dad4e2108b,Common,tools,metadata-or-reproduction,
 tools/build_rq1_baseline_ledgers.py,6040,1ebe8044a9a0274ec2f10b1666a232c3d63a93dd2ef1b2b0869978e350c54b97,Common,tools,metadata-or-reproduction,
 tools/check_release_language.py,3310,69153e77ba48aac287cd7b5919a6bbd54ff65c9d8b322d2ae0178dfa00f2f8dd,Common,tools,metadata-or-reproduction,
 tools/verify_rq1_evidence.py,16131,620321bb626563c305c41c6074881bda3f74ab328f3bcf08442a4bb9a0aae285,Common,tools,metadata-or-reproduction,

@@ -1,0 +1,14 @@
+\begin{tabular}{llrrr}
+\toprule
+Paradigm & Method & Training (s) & Embedding (ms/1K tok.) & Extraction (ms/1K tok.) \\
+\midrule
+Logits-bias & WLLM & -- & 4451.34 & 242437.39 \\
+ & EWD & -- & 423.29 & 2874.50 \\
+ & SWEET & -- & 4628.14 & 2.57 \\
+ & STONE & -- & 598.28 & 962.61 \\
+ & CodeIP & -- & 819.59 & 3604.21 \\
+ & Waterfall & -- & 1235.29 & 2574.95 \\
+Semantic-preserving & CodeMark & 11604 & 79.23 & 59.32 \\
+ & SrcMarker & 13017 & 74.56 & 48.01 \\
+\bottomrule
+\end{tabular}

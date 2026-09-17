@@ -39,9 +39,10 @@ from typing import Any, Dict, Optional
 
 import torch
 import torch.nn as nn
-import time as _time
 import logging
 from transformers import LogitsProcessor, LogitsProcessorList
+
+from ..timing import synchronized_perf_counter
 
 from .message_model_processor import WmProcessorRandomMessageModel
 from .PDA_model_processor import PDAProcessorMessageModel
@@ -264,7 +265,7 @@ class CodeipLogitsProcessor(LogitsProcessor):
     #     return out
 
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
-        t0 = _time.perf_counter()
+        t0 = synchronized_perf_counter(scores)
 
         try:
             out = self.processor(input_ids, scores)
@@ -283,7 +284,7 @@ class CodeipLogitsProcessor(LogitsProcessor):
             raise
         finally:
             try:
-                self._lp_time_s += float(_time.perf_counter() - t0)
+                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
                 self._lp_calls += 1
             except Exception:
                 pass

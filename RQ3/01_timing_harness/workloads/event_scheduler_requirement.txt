@@ -1,0 +1,35 @@
+Generate a complete Java 11 Maven Event Scheduler Service project.
+
+All required files must be generated exactly as specified. Do not rename, omit, replace, or add
+protocol files. Use the default package consistently. The project must build, test, package, and
+exit normally in a non-interactive automated environment.
+
+Required files:
+* pom.xml
+* src/main/java/Main.java
+* src/main/java/SchedulerService.java
+* src/main/java/Event.java
+* src/main/java/TimeSlot.java
+* src/main/java/EventListener.java
+* src/main/java/ScheduleException.java
+* src/test/java/MainTest.java
+
+Required domain behavior:
+* create events with nonblank identifiers and start time before end time
+* reject overlapping half-open time slots with ScheduleException
+* allow adjacent events whose end and start times are equal
+* cancel a known event and reject unknown identifiers
+* query events for a calendar day in chronological order
+* notify registered EventListener callbacks after schedule and cancel operations
+
+The implementation must use reusable domain classes and keep Main as a thin non-interactive
+bootstrap. Do not require a GUI, network, database, current wall-clock time, or user input.
+
+MainTest must be fully automated and cover:
+* overlapping events are rejected
+* adjacent events are accepted
+* invalid intervals are rejected
+* listeners receive schedule and cancel callbacks
+* daily queries are chronologically sorted
+
+Use Java 11 APIs and declare every dependency in pom.xml. The command `mvn test` must pass.

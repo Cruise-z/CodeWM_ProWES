@@ -1,0 +1,13 @@
+{
+  "identifier": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "resolved_path": "/home/zhaorz/.cache/modelscope/hub/models/Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "class": "Qwen2Tokenizer",
+  "length": 151669,
+  "vocab_size": 151643,
+  "files_sha256": {
+    "tokenizer.json": "19564a48c4f71a2a1b937cce34c737a1e662b171c5f5d7edf641a15cd896f07d",
+    "tokenizer_config.json": "60f6e8cb15c98dd07300a3cc465ea662de245d2095e4245616af21b2324db3fc",
+    "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+  }
+}

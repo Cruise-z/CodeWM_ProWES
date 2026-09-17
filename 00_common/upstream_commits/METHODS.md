@@ -2,7 +2,7 @@
 
 | Component | Upstream / source | Revision available in workspace | Local implementation |
 |---|---|---|---|
-| ProWES logits implementation | `git@github.com:Cruise-z/CodeWM_ProWES_Logits.git` | `9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa` | `RQ1/source/` |
+| ProWES logits implementation | `git@github.com:Cruise-z/CodeWM_ProWES_Logits.git` | `1d4f0cbad7fb76a31684b615dfe4f880ca7ee176` | `RQ1/source/` |
 | MetaGPT reference checkout | `https://github.com/FoundationAgents/MetaGPT.git` | `02da62cabb9b04e205b901b12e190fc2f931394b` in the adjacent workspace; the experiment uses the frozen snapshot under `RQ1/source/reproduct/framework/` | RQ1 framework snapshot and patches |
 | SWEET | `https://github.com/hongcheki/sweet-watermark` | Upstream commit was not recorded in the supplied RQ1 workspace | `RQ1/source/DT/codeGen/modelDeploy/` |
 | WLLM | Paper implementation cited in source as `https://arxiv.org/abs/2301.10226` | Upstream repository/commit not recorded | `RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/` |

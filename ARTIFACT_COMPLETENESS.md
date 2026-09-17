@@ -30,8 +30,10 @@ three supplied inputs and was not fabricated.
 | RQ2 LLM cohort, rule base, prompts, calls and responses | Present | `RQ2/source/rq2_revision/`, `results/RQ2/05_llm_rag/` |
 | RQ2 45-program LLM MBXP pilot | Present | `results/RQ2/06_llm_rag_mbxp_pilot/epr/` |
 | RQ2 predictions/statistics/bootstrap/table/figures | Present | `results/RQ2/`, `RQ2/source/`, `paper_reproduction/` |
-| RQ3 timing implementation hooks | Partial | `RQ3/01_timing_harness/README.md` points to retained code. |
-| RQ3 raw timings/token counts/repetition statistics | Missing | Must be supplied before claiming reproducibility of main-paper Table X. |
+| RQ3 timing implementation hooks | Present | `RQ3/01_timing_harness/` plus synchronized instrumentation under `RQ1/source/` and `RQ2/source/`. |
+| RQ3 raw timings/token counts/repetition statistics | Present | `RQ3/02_raw_timings/`, `RQ3/04_token_counts/`, and embedded run-level 95% bootstrap intervals. |
+| RQ3 training cost evidence | Present | Canonical CSN-JavaScript fresh-training logs and parsed durations in `RQ3/03_training_logs/`. |
+| RQ3 Table X reproduction | Present | `paper_reproduction/reproduce_rq3.sh` regenerates CSV/JSON/LaTeX from raw records. |
 
 Before public release, run:
 

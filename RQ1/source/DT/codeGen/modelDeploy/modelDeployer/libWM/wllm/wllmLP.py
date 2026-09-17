@@ -1,49 +1,50 @@
 # wllmLP.py
-# 将检出逻辑“收编”为 WatermarkLogitsProcessor 的方法版本
-# 说明：
-# - 不修改原文件；通过继承保持完全兼容的嵌入逻辑
-# - 将 WLLM 的 Detector 以离线零参检出方式收编进 logits processor
-# - 在运行时自动缓存所需侧信道数据 (prefix_len、full_ids) 用于Detector检测
+# Integrate detection into the WatermarkLogitsProcessor implementation.
+# Notes:
+# - Preserve the upstream embedding logic through inheritance.
+# - Expose the WLLM detector as an offline, zero-argument method.
+# - Cache the required side information (prefix_len and full_ids) at runtime.
 
 from __future__ import annotations
 from math import sqrt
 from typing import Dict, Optional, List
 
 import torch
-import time as _time
 from torch import Tensor
 import scipy.stats
 
-# 复用你项目里的基础实现
+from ..timing import synchronized_perf_counter
+
+# Reuse the upstream implementation.
 from .watermark import WatermarkBase, WatermarkLogitsProcessor
 
 
 class WLLMLogitsProcessor(WatermarkLogitsProcessor):
     """
-    在严格保留“水印嵌入/偏置”调用逻辑的前提下，
-    将 Detector 的检出逻辑以**离线零参**形式收编进处理器：
-      - 运行时自动缓存：prefix_len / full_ids（batch=1 场景）
-      - 提供 detect_last()：无需 server 透传任何 ids/entropy 等
-      - 与 WatermarkDetector 的 z/p 计算、假设检验完全对齐
+    Preserve the watermark embedding/biasing behavior while integrating the
+    detector as an offline zero-argument method:
+      - cache prefix_len and full_ids at runtime for batch size one;
+      - expose detect_last() without requiring server-provided side data;
+      - retain WatermarkDetector-compatible z/p calculations and testing.
     """
 
     def __init__(
         self,
         *args,
-        tokenizer=None,                 # 可选，仅作扩展使用；当前零参检测不依赖
+        tokenizer=None,                 # Optional extension; not needed here.
         z_threshold: float = 4.0,
         ignore_repeated_bigrams: bool = False,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
-        # ---- 检测期配置（不影响嵌入逻辑）----
+        # Detection configuration; it does not alter embedding.
         self._tokenizer = tokenizer
         self._z_threshold = float(z_threshold)
         self._ignore_repeated_bigrams = bool(ignore_repeated_bigrams)
         if getattr(self, "rng", None) is None:
             self.rng = torch.Generator()
 
-        # ---- 运行时缓存（用于零参检出）----
+        # Runtime cache for zero-argument detection.
         self._cache_prev_len: Optional[int] = None
         self._cache_prefix_len: Optional[int] = None
         self._cache_full_ids: Optional[torch.LongTensor] = None
@@ -52,37 +53,36 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         self._lp_time_s: float = 0.0
         self._lp_calls: int = 0
 
-        # simple_1 播种至少需要一个 token 作为前缀
+        # simple_1 seeding requires at least one prefix token.
         self._min_prefix_len: int = 1 if getattr(self, "seeding_scheme", "simple_1") == "simple_1" else 1
 
-    # -------------- 保留原嵌入逻辑（仅在末尾追加缓存） --------------
+    # Preserve upstream embedding and append caching only.
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
         # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = _time.perf_counter()
+        t0 = synchronized_perf_counter(scores)
         try:
-            # 直接复用上游 WatermarkLogitsProcessor.__call__()
-            # 保证嵌入逻辑与原实现完全一致、无“手写复刻偏离”风险
+            # Delegate directly to the upstream embedding implementation.
             scores_out = super().__call__(input_ids, scores)
         finally:
             # Best-effort timing: must never affect generation behavior
             try:
-                self._lp_time_s += float(_time.perf_counter() - t0)
+                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
                 self._lp_calls += 1
             except Exception:
                 pass
 
-        # ---- 运行时缓存：用于零参检出（仅 batch=1；多 batch 可按需扩展为列表态）----
+        # Runtime cache for zero-argument detection (batch size one).
         try:
             bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
             if bsz == 1:
                 if self._cache_prev_len is None or cur_len <= self._cache_prev_len:
-                    # 视为“新一轮生成”开始：当前长度即为 prefix_len
+                    # A shorter/equal sequence starts a new generation.
                     self._cache_prefix_len = cur_len
                 self._cache_prev_len = cur_len
-                # 保存完整序列（拷贝到 CPU，避免显存占用 & 生命周期问题）
+                # Copy the full sequence to CPU to avoid GPU lifetime issues.
                 self._cache_full_ids = input_ids[0].detach().to("cpu").clone()
         except Exception:
-            # 缓存失败不影响主流程
+            # Cache failures must not affect generation.
             pass
 
         return scores
@@ -106,7 +106,7 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         self._lp_time_s = 0.0
         self._lp_calls = 0
 
-    # ---------------------- 以下为离线检出实现 ----------------------
+    # Offline detection implementation.
     @staticmethod
     def _compute_z_score(green_count: int, T: int, gamma: float) -> float:
         expected = gamma
@@ -130,13 +130,14 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         return_p_value: bool = True,
     ) -> Dict:
         """
-        与 WatermarkDetector._score_sequence 对齐：
-          - 遍历 prefix_len..len(ids)-1，每步用 _get_greenlist_ids(seed_ids) 判定命中
-          - 统计 G、T，并计算 z/p
+        Match WatermarkDetector._score_sequence: iterate over generated tokens,
+        test green-list membership, and compute G, T, z, and p.
         """
         score_dict: Dict = {}
         if self._ignore_repeated_bigrams:
-            raise NotImplementedError("ignore_repeated_bigrams=True 尚未实现（与官方实现一致）")
+            raise NotImplementedError(
+                "ignore_repeated_bigrams=True is not implemented upstream"
+            )
 
         prefix_len = max(self._min_prefix_len, int(prefix_len))
         num_tokens_scored = int(len(input_ids) - prefix_len)
@@ -176,8 +177,8 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
 
     def detect_last(self) -> Dict:
         """
-        零参离线检出：基于生成期间自动缓存的 full_ids/prefix_len 完成检出。
-        默认：返回分数与判决，阈值取初始化的 self._z_threshold。
+        Detect from the full_ids/prefix_len cached during generation. Return
+        the score and decision using the configured z threshold.
         """
         if self._cache_full_ids is None or self._cache_prefix_len is None:
             raise RuntimeError("No cached sequence for detection. Run generate() with this processor first.")
@@ -186,18 +187,18 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         pre_len = int(self._cache_prefix_len)
 
         out: Dict = {}
-        # 1) 打分（与 WatermarkDetector._score_sequence 对齐）
+        # 1) Score using WatermarkDetector-compatible semantics.
         score_dict = self._score_sequence(input_ids=full_ids, prefix_len=pre_len)
         out.update(score_dict)
-        # 若文本过短，直接返回 invalid
+        # Return invalid for a sequence that is too short.
         if out.pop("invalid", False):
             self._last_detection = {"invalid": True}
-            # 清理一次轨迹缓存，避免下一轮误用
+            # Clear the trace cache before the next generation.
             self._cache_full_ids = None
             self._cache_prefix_len = None
             self._cache_prev_len = None
             return {"invalid": True}
-        # 2) 进行假设检验并补齐 z/p
+        # 2) Run the hypothesis test and populate z/p.
         if "z_score" not in out:
             T = int(out.get("num_tokens_scored", 0))
             G = int(out.get("num_green_tokens", 0))
@@ -208,7 +209,7 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         out["prediction"] = bool(float(out["z_score"]) > thr)
         if out["prediction"]:
             out["confidence"] = float(1.0 - float(out.get("p_value", 1.0)))
-        # 3) 记录最近一次结果并清除轨迹缓存
+        # 3) Save the result and clear the trace cache.
         self._last_detection = dict(out)
         self._cache_full_ids = None
         self._cache_prefix_len = None

@@ -26,7 +26,7 @@ from typing import Any, Dict, List, Optional
 
 import torch
 from torch import Tensor
-import time as _time
+from ..timing import synchronized_perf_counter
 # Adjust the import path to your project layout if needed
 from .ewd import EWDUtils, EWDLogitsProcessor
 
@@ -123,13 +123,13 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
 
         # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = _time.perf_counter()
+        t0 = synchronized_perf_counter(scores)
         try:
             scores_out = super().__call__(input_ids, scores)  # original behavior unchanged
         finally:
             # Must never affect generation; keep it best-effort
             try:
-                self._lp_time_s += float(_time.perf_counter() - t0)
+                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
                 self._lp_calls += 1
             except Exception:
                 pass

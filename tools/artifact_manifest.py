@@ -74,6 +74,8 @@ def classify(relative: str) -> tuple[str, str, str, str]:
         mapping = "Main Table IX and Figure 5; Supplement Tables XIII-XVII"
     elif "03_rule_attacks" in relative:
         mapping = "Main Table VIII and Figures 4-5; Supplement Tables X-XII"
+    elif rq == "RQ3" or "tables/rq3" in relative or "reproduce_rq3" in relative:
+        mapping = "Main Table X; raw timing, token normalization, and training-cost evidence"
     return rq, stage, role, mapping
 
 

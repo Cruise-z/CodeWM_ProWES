@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-echo "RQ3 reproduction is unavailable: raw timing/token-count records were not found in the supplied workspaces." >&2
-exit 2
+artifact_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+python "$artifact_root/RQ3/05_analysis/reproduce_table_x.py" \
+  --artifact-root "$artifact_root" \
+  --output-dir "$artifact_root/paper_reproduction/tables/rq3"

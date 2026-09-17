@@ -17,8 +17,7 @@ input/configuration -> intermediate artifact -> raw observation
 python tools/verify_rq1_evidence.py
 python tools/verify_rq2_evidence.py
 
-# Regenerate all currently supported paper outputs (RQ3 is skipped with a
-# disclosure because its raw timing bundle was not supplied).
+# Regenerate all supported paper outputs, including Table X from raw timings.
 ./paper_reproduction/reproduce_all.sh
 
 # Confirm reviewer-facing first-party source and documentation are English.
@@ -27,6 +26,7 @@ python tools/check_release_language.py
 # Or run one RQ independently.
 ./paper_reproduction/reproduce_rq1.sh
 ./paper_reproduction/reproduce_rq2.sh
+./paper_reproduction/reproduce_rq3.sh
 
 # Verify every released payload against SHA256SUMS.txt.
 python tools/artifact_manifest.py --verify
@@ -43,7 +43,7 @@ experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 | `00_common/` | Environment, hardware, revisions, upstream repositories, and disclosure of known gaps. |
 | `RQ1/` | Latest logits-bias implementation, task specifications, rendered Stage-0 prompts, serialized architecture checkpoints, initial repositories, and evaluator. |
 | `RQ2/` | Fresh-training, rule attack, MBXP, LLM+RAG, detector, and statistics source code. |
-| `RQ3/` | Timing hooks plus an explicit disclosure of the missing raw timing bundle. |
+| `RQ3/` | Synchronized timing harnesses, raw per-run records, shared-tokenizer counts, training logs, normalization, and Table X reproduction. |
 | `results/RQ1/` | Complete baseline qualification evidence plus expanded applicability and detectability evidence. |
 | `results/RQ2/` | Formal RQ2 datasets/splits, checkpoints, logs, raw attacks, predictions, MBXP executions, LLM manifests/responses, statistics, tables, and figures. |
 | `paper_reproduction/` | Reviewer entry points for rebuilding paper outputs. |
@@ -68,9 +68,6 @@ missing observation was synthesized.
   not present in the release workspace; stable test observations and cohort
   UIDs are present, while the original CSN train/validation downloads must be
   obtained as documented by SrcMarker.
-- Raw RQ3 timing records were not present in either supplied experiment
-  repository. Timing instrumentation is retained, but Table X cannot honestly
-  be recomputed from this handoff alone.
 - API credentials are deliberately excluded. Formal LLM rows retain request
   parameters, per-sample seeds, response identifiers, returned model snapshot,
   token usage, retrieved rules, prompt digest, raw response-derived source,
@@ -116,7 +113,7 @@ RQ2:
 ## Source revisions
 
 The RQ1 source was taken from `CodeWM_ProWES_Logits` commit
-`9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa`. RQ2 was taken from the supplied
+`1d4f0cbad7fb76a31684b615dfe4f880ca7ee176`. RQ2 was taken from the supplied
 `RQ2_Final_Codex_Release` bundle dated 2026-09-16; its source archive manifest
 is retained at `RQ2/source/SOURCE_MANIFEST.json`. Further provenance is in
 `00_common/upstream_commits/METHODS.md`.

@@ -139,7 +139,7 @@
     {
       "path": "00_common/upstream_commits/METHODS.md",
       "bytes": 2240,
-      "sha256": "8df6641768b3d5206e9ed46113421400a548280aa6d5861e1c9729a13015fc4e",
+      "sha256": "1e08df7c2ffe05e54483482bbf7af8887a8c11e8714f36992b9e6ad3faecdfcb",
       "rq": "Common",
       "stage": "00_common",
       "role": "metadata-or-reproduction",
@@ -147,8 +147,8 @@
     },
     {
       "path": "ARTIFACT_COMPLETENESS.md",
-      "bytes": 4072,
-      "sha256": "72c07b39e3d86bb77d95445ba08b67490cf7ea1cd6e8e988f897c79dcbdb8e5a",
+      "bytes": 4395,
+      "sha256": "230733373562741d0d351924ac922fc3422cdc12f63a3e8519784e25eaf6192b",
       "rq": "Common",
       "stage": "ARTIFACT_COMPLETENESS.md",
       "role": "metadata-or-reproduction",
@@ -156,8 +156,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5840,
-      "sha256": "4db77288e3795edb2de43059dc8f8e910775e1254ef49ef6f52dd07001bf603d",
+      "bytes": 5687,
+      "sha256": "536d69e7325cf12b257716bf048ae23fcf1c915c6aa4f0883ed78c3a9bfba40d",
       "rq": "Common",
       "stage": "README.md",
       "role": "metadata-or-reproduction",
@@ -16374,8 +16374,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/codeip/codeipLP.py",
-      "bytes": 30528,
-      "sha256": "b2aad58fd6010f4138de9eb8f0b476ad6cbcf652348a079f241aa6dcfe18e20b",
+      "bytes": 30581,
+      "sha256": "2b80726277362d0ef66310000edb648ca8b6f6fce9850d5990b51d739c51b45d",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16527,8 +16527,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/ewd/ewdLP.py",
-      "bytes": 11816,
-      "sha256": "6fdf5c18dfd39fe84d489d660ca470efe04122b73f5135e6b96140e7df52980e",
+      "bytes": 11868,
+      "sha256": "746017f01de01f94d5a58650a55bdfe8a367fb6d55c1b394fac85628d5ebfa0e",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16662,8 +16662,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/stone/stoneLP.py",
-      "bytes": 11565,
-      "sha256": "b4fe80b5cce722b95e00e626f4c4a7dcd079c6d1ac0a7f8118ea9a23c266ae91",
+      "bytes": 11222,
+      "sha256": "b7436c3696db4180a3c1be36ba805bfaae381e55a62e6fe62f2a64566f572f09",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16707,8 +16707,17 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/sweet/sweetLP.py",
-      "bytes": 12763,
-      "sha256": "4bad6452dd0ae413ad9ee267e01f490d5ebcfc8ebf8af1f5c295c9f0c29eeb69",
+      "bytes": 12218,
+      "sha256": "d2328675ec760799149f7e0d847c35d994cdf40399a546487a1b802e6cd0f9ae",
+      "rq": "RQ1",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
+      "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/timing.py",
+      "bytes": 944,
+      "sha256": "ebfe20401888f31bf071b57cfa4b1167aec9d8319db659ce80c71de33f3d388f",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16779,8 +16788,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/waterfall/waterfallLP.py",
-      "bytes": 16334,
-      "sha256": "020db409e8370e4d318c1e09f1452bdabdf861c42d4c9497c9353b263f110d79",
+      "bytes": 15302,
+      "sha256": "ea18334e33204e9db7dafdad7a3b918ade39da8b8bffc5d47afcb7e60e0c9a1d",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16815,8 +16824,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/libWM/wllm/wllmLP.py",
-      "bytes": 10552,
-      "sha256": "8a374e419377146fad9f97732dff4c4255afdbb2193a190fc77100988c1ec5ec",
+      "bytes": 10225,
+      "sha256": "3c09d0d21505ac957a6dd9e4cf1372cf7967c9f527955f3a0045b17b53bb1668",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -16851,8 +16860,8 @@
     },
     {
       "path": "RQ1/source/DT/codeGen/modelDeploy/modelDeployer/server.py",
-      "bytes": 18148,
-      "sha256": "67894e55e73c32eab5a8fe4e3a79b9eeaef942b12f2a93ae0e4748902fa597ff",
+      "bytes": 18686,
+      "sha256": "783b6c7b44d3729040e915632df6fab1116b859e9c8171f9c895895d94566d96",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22493,6 +22502,15 @@
       "paper_mapping": ""
     },
     {
+      "path": "RQ1/source/reproduct/model_runtime/modelDeployer/__pycache__/server.cpython-313.pyc",
+      "bytes": 25719,
+      "sha256": "dd2123edfe459399676122782bf9fa1e54571310ac168521fe42b75e93ee9605",
+      "rq": "RQ1",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/config.py",
       "bytes": 2353,
       "sha256": "cd7208ac02b7bb70e6bd8a4df3d15d6e539b7000fd60580ce337c04395b99ebb",
@@ -22523,6 +22541,15 @@
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__init__.py",
       "bytes": 266,
       "sha256": "1d7c8e570ae08e324f40f8b4591347f0043d516988df5ade9e754f20f1dcdcc8",
+      "rq": "RQ1",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
+      "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/__pycache__/timing.cpython-313.pyc",
+      "bytes": 1418,
+      "sha256": "b6cec859d90d73ce0e4792f572e40b0e8013798e5a5b5a18d621a9f80f580006",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22593,8 +22620,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/codeip/codeipLP.py",
-      "bytes": 30528,
-      "sha256": "b2aad58fd6010f4138de9eb8f0b476ad6cbcf652348a079f241aa6dcfe18e20b",
+      "bytes": 30581,
+      "sha256": "2b80726277362d0ef66310000edb648ca8b6f6fce9850d5990b51d739c51b45d",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22746,8 +22773,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/ewd/ewdLP.py",
-      "bytes": 11816,
-      "sha256": "6fdf5c18dfd39fe84d489d660ca470efe04122b73f5135e6b96140e7df52980e",
+      "bytes": 11868,
+      "sha256": "746017f01de01f94d5a58650a55bdfe8a367fb6d55c1b394fac85628d5ebfa0e",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22881,8 +22908,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/stone/stoneLP.py",
-      "bytes": 11565,
-      "sha256": "b4fe80b5cce722b95e00e626f4c4a7dcd079c6d1ac0a7f8118ea9a23c266ae91",
+      "bytes": 11222,
+      "sha256": "b7436c3696db4180a3c1be36ba805bfaae381e55a62e6fe62f2a64566f572f09",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22926,8 +22953,17 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/sweet/sweetLP.py",
-      "bytes": 12763,
-      "sha256": "4bad6452dd0ae413ad9ee267e01f490d5ebcfc8ebf8af1f5c295c9f0c29eeb69",
+      "bytes": 12218,
+      "sha256": "d2328675ec760799149f7e0d847c35d994cdf40399a546487a1b802e6cd0f9ae",
+      "rq": "RQ1",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
+      "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/timing.py",
+      "bytes": 944,
+      "sha256": "ebfe20401888f31bf071b57cfa4b1167aec9d8319db659ce80c71de33f3d388f",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -22998,8 +23034,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/waterfall/waterfallLP.py",
-      "bytes": 16334,
-      "sha256": "020db409e8370e4d318c1e09f1452bdabdf861c42d4c9497c9353b263f110d79",
+      "bytes": 15302,
+      "sha256": "ea18334e33204e9db7dafdad7a3b918ade39da8b8bffc5d47afcb7e60e0c9a1d",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -23034,8 +23070,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/libWM/wllm/wllmLP.py",
-      "bytes": 10552,
-      "sha256": "8a374e419377146fad9f97732dff4c4255afdbb2193a190fc77100988c1ec5ec",
+      "bytes": 10225,
+      "sha256": "3c09d0d21505ac957a6dd9e4cf1372cf7967c9f527955f3a0045b17b53bb1668",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -23070,8 +23106,8 @@
     },
     {
       "path": "RQ1/source/reproduct/model_runtime/modelDeployer/server.py",
-      "bytes": 18148,
-      "sha256": "67894e55e73c32eab5a8fe4e3a79b9eeaef942b12f2a93ae0e4748902fa597ff",
+      "bytes": 18686,
+      "sha256": "783b6c7b44d3729040e915632df6fab1116b859e9c8171f9c895895d94566d96",
       "rq": "RQ1",
       "stage": "source",
       "role": "source-or-input",
@@ -25319,6 +25355,15 @@
       "paper_mapping": ""
     },
     {
+      "path": "RQ2/source/training/SrcMarker_fresh/__pycache__/rq3_benchmark_semantic.cpython-313.pyc",
+      "bytes": 26209,
+      "sha256": "f2cce88ba8cbd32fb12afbe35185d8c4c708697a54fc180ecc007ff4aa751d1e",
+      "rq": "RQ2",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
       "path": "RQ2/source/training/SrcMarker_fresh/benchmark_mbxp.py",
       "bytes": 14112,
       "sha256": "89f3350d053073473a47c4dcbfd5e2b70c3a7eeddf085b5d34a81b350742b2b2",
@@ -27461,6 +27506,15 @@
       "paper_mapping": ""
     },
     {
+      "path": "RQ2/source/training/SrcMarker_fresh/rq3_benchmark_semantic.py",
+      "bytes": 19757,
+      "sha256": "568ed6431a17a8fe9dec5fb13f6025c7818a0c6569982724805a9d0744e00195",
+      "rq": "RQ2",
+      "stage": "source",
+      "role": "source-or-input",
+      "paper_mapping": ""
+    },
+    {
       "path": "RQ2/source/training/SrcMarker_fresh/run_fresh_evaluation.sh",
       "bytes": 2090,
       "sha256": "694df83879c220994226a8a58e482d77d3dbc9aca9860c5c984709ef8f8ca909",
@@ -27615,12 +27669,75 @@
     },
     {
       "path": "RQ3/01_timing_harness/README.md",
-      "bytes": 606,
-      "sha256": "8cf50b521d2bba1784cc4164e71b5611de172c5e043ab656584d6e7436a6ae20",
+      "bytes": 939,
+      "sha256": "5b4730197a073aaec993a94dcf01fb76d3c75b4d653a5c4a0cb64f200e1552a5",
       "rq": "RQ3",
       "stage": "01_timing_harness",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/__pycache__/benchmark_logits_bias.cpython-313.pyc",
+      "bytes": 21366,
+      "sha256": "04453462d161678fc6808c1b09c76ca12197c3a819958a47a207b60715b65a9a",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/__pycache__/benchmark_semantic.cpython-313.pyc",
+      "bytes": 26191,
+      "sha256": "6c06c6b819c78653ffe9d49021435998b4caa98fa7db4aeca82932f4abae3cff",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/benchmark_logits_bias.py",
+      "bytes": 16151,
+      "sha256": "92fc2197a707da4feee462ebfe7f64863d2050422066a891a0625d337e59bd4f",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/benchmark_semantic.py",
+      "bytes": 19757,
+      "sha256": "568ed6431a17a8fe9dec5fb13f6025c7818a0c6569982724805a9d0744e00195",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/workloads/event_scheduler_requirement.txt",
+      "bytes": 1502,
+      "sha256": "a11b01595fc4fe21aece9a71aac288a4c04008227b9992d37cfa8793eacd2690",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/workloads/order_inventory_requirement.txt",
+      "bytes": 1510,
+      "sha256": "65edc7859af388286b4aa2b8609f5f398c6bb9ac466796440efa0d6f5ebb2cdf",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/01_timing_harness/workloads.json",
+      "bytes": 988,
+      "sha256": "796ae0e07b55f625c4ec53948382afd8ff15da9d7497b24966603012d51bcf47",
+      "rq": "RQ3",
+      "stage": "01_timing_harness",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "RQ3/02_raw_timings/.gitkeep",
@@ -27629,7 +27746,52 @@
       "rq": "RQ3",
       "stage": "02_raw_timings",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/02_raw_timings/README.md",
+      "bytes": 755,
+      "sha256": "ed3de8c7d5e3dad50c470442e09ea5813b7e4fcccf0750970658c8b49be30e04",
+      "rq": "RQ3",
+      "stage": "02_raw_timings",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/02_raw_timings/codemark_csn_js_raw.json",
+      "bytes": 2976488,
+      "sha256": "47a2891797143d936560c5e0071d39d86ff3f8917f1d971e710ff9e097f46e8a",
+      "rq": "RQ3",
+      "stage": "02_raw_timings",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/02_raw_timings/logits_bias_raw.json",
+      "bytes": 203751,
+      "sha256": "59af3ef278423545cb60b85a2a23f3fdc536006ed81218f44a0bb78b1aee2065",
+      "rq": "RQ3",
+      "stage": "02_raw_timings",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/02_raw_timings/raw_timings.csv",
+      "bytes": 715622,
+      "sha256": "16d208020af9d54557e603b838ca833d1cb8818faeb6bd3e951b07ae75cacbe5",
+      "rq": "RQ3",
+      "stage": "02_raw_timings",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/02_raw_timings/srcmarker_csn_js_raw.json",
+      "bytes": 2977587,
+      "sha256": "8f7b07fb8b3a8c02d0b597fb9d670bea9dea129337d6e5ba5c0cd16ff7b48e21",
+      "rq": "RQ3",
+      "stage": "02_raw_timings",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "RQ3/03_training_logs/.gitkeep",
@@ -27638,7 +27800,43 @@
       "rq": "RQ3",
       "stage": "03_training_logs",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/03_training_logs/README.md",
+      "bytes": 421,
+      "sha256": "167ce6358aa178e421df05b1f92b5aeb49f117bbe9660919f8bfa4de2f4a6026",
+      "rq": "RQ3",
+      "stage": "03_training_logs",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/03_training_logs/codemark_csn_js_training.log",
+      "bytes": 12749,
+      "sha256": "e01ec59d0594c465b8c2cdc1c301e6105138a3452de895bee023507257e7d1e1",
+      "rq": "RQ3",
+      "stage": "03_training_logs",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/03_training_logs/srcmarker_csn_js_training.log",
+      "bytes": 12881,
+      "sha256": "c03065e17826de63cc436ad3bd1d55e9ea321d6f04b0a1c7a2ce137cda8c0869",
+      "rq": "RQ3",
+      "stage": "03_training_logs",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/03_training_logs/training_times.csv",
+      "bytes": 158,
+      "sha256": "78a114b36688470da6e0859804146541c72d73724bdf466ac7b0d1c7528d460e",
+      "rq": "RQ3",
+      "stage": "03_training_logs",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "RQ3/04_token_counts/.gitkeep",
@@ -27647,25 +27845,70 @@
       "rq": "RQ3",
       "stage": "04_token_counts",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/04_token_counts/README.md",
+      "bytes": 454,
+      "sha256": "2ecac52580ed6f4b0d7a756aa2a5e3e8040d8c6037ed5ee39da6d852802198fa",
+      "rq": "RQ3",
+      "stage": "04_token_counts",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/04_token_counts/token_counts.csv",
+      "bytes": 1400203,
+      "sha256": "7b781d6c1a5b1d57af58516bb875dfa7f9eabf659f7214a6e948f0b860d6b3e3",
+      "rq": "RQ3",
+      "stage": "04_token_counts",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/04_token_counts/tokenizer_manifest.json",
+      "bytes": 610,
+      "sha256": "25195b91d984c2e4de3ae9dce309edd2e0bb24a292c842e26b7a722d976f3d22",
+      "rq": "RQ3",
+      "stage": "04_token_counts",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "RQ3/05_analysis/README.md",
-      "bytes": 220,
-      "sha256": "2d20b413be4d6729900d6c74d7d096e178200445f8197838dd7b8e0c45915ddc",
+      "bytes": 1050,
+      "sha256": "0ad2318f8b27ae7fd9d6def6a4e8034399d6735aa70ae6aac729ba850e74cd33",
       "rq": "RQ3",
       "stage": "05_analysis",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/05_analysis/__pycache__/reproduce_table_x.cpython-313.pyc",
+      "bytes": 18451,
+      "sha256": "beea5a895da042c0d81ceae2b1a8ab5eb80cb1b379f3729f43fe9ebe6523aaa2",
+      "rq": "RQ3",
+      "stage": "05_analysis",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "RQ3/05_analysis/reproduce_table_x.py",
+      "bytes": 16945,
+      "sha256": "35cfaf92000181ad77b6c595a91bdc2dbffb94d9634b5eb6933b548cb6ece3d3",
+      "rq": "RQ3",
+      "stage": "05_analysis",
+      "role": "source-or-input",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "RQ3/README.md",
-      "bytes": 544,
-      "sha256": "4d377baed1335675cff1eacb11a9bf3066d634b40d921eda6d362b0ea77856c9",
+      "bytes": 1747,
+      "sha256": "3668799bb3f86b92a7baf43468e7726aa33d33096ec6cbab658829b5cdaee417",
       "rq": "RQ3",
       "stage": "README.md",
       "role": "source-or-input",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -27966,12 +28209,12 @@
     },
     {
       "path": "paper_reproduction/reproduce_rq3.sh",
-      "bytes": 163,
-      "sha256": "490f2c2f34df231b2f1604a211901a18bcad657e46009bb3721d6a92b49e97e5",
+      "bytes": 265,
+      "sha256": "97793f30f3b326fdcd358b786a01ae7fc007ad18975d7682f9af5f5bc048a0f7",
       "rq": "Common",
       "stage": "paper_reproduction",
       "role": "metadata-or-reproduction",
-      "paper_mapping": ""
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "paper_reproduction/tables/.gitkeep",
@@ -28197,6 +28440,33 @@
       "stage": "paper_reproduction",
       "role": "metadata-or-reproduction",
       "paper_mapping": ""
+    },
+    {
+      "path": "paper_reproduction/tables/rq3/table_x.csv",
+      "bytes": 1435,
+      "sha256": "64348a738db0a9e090250dbb016a4ce2121518270d5bd3ee2d58eb4129de05a5",
+      "rq": "Common",
+      "stage": "paper_reproduction",
+      "role": "metadata-or-reproduction",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "paper_reproduction/tables/rq3/table_x.json",
+      "bytes": 4352,
+      "sha256": "eb24ee9210bd4a87268facc5c68805a84e6e6034845be67292ee43ebe8ef46c2",
+      "rq": "Common",
+      "stage": "paper_reproduction",
+      "role": "metadata-or-reproduction",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
+    },
+    {
+      "path": "paper_reproduction/tables/rq3/table_x.tex",
+      "bytes": 482,
+      "sha256": "f4e8c1a46140324cc0c8b748e39eb96a40e970235bd990aedca8912d3d76d9c8",
+      "rq": "Common",
+      "stage": "paper_reproduction",
+      "role": "metadata-or-reproduction",
+      "paper_mapping": "Main Table X; raw timing, token normalization, and training-cost evidence"
     },
     {
       "path": "results/RQ1/.gitkeep",
@@ -92801,9 +93071,27 @@
       "paper_mapping": ""
     },
     {
+      "path": "tools/__pycache__/artifact_manifest.cpython-313.pyc",
+      "bytes": 8284,
+      "sha256": "1923af044be18f88fbe06235dba4cbb557f981fac15ccfe94b2c51d55e90f5c7",
+      "rq": "Common",
+      "stage": "tools",
+      "role": "metadata-or-reproduction",
+      "paper_mapping": ""
+    },
+    {
+      "path": "tools/__pycache__/build_rq1_baseline_ledgers.cpython-313.pyc",
+      "bytes": 6471,
+      "sha256": "42576458f09b7005a49c7ac4b6ba9743986edf1a3e398e3917bff8f5d2551eb2",
+      "rq": "Common",
+      "stage": "tools",
+      "role": "metadata-or-reproduction",
+      "paper_mapping": ""
+    },
+    {
       "path": "tools/artifact_manifest.py",
-      "bytes": 5344,
-      "sha256": "1d5e5c550715f9c4446764e31311b2187b96bf02a7b1ce30df8e23119c9c92eb",
+      "bytes": 5519,
+      "sha256": "8d7928b5547dd5d32318c5e1ad509c1bcb0d26fde6d0b334b75c97dad4e2108b",
       "rq": "Common",
       "stage": "tools",
       "role": "metadata-or-reproduction",

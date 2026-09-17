@@ -1,0 +1,18 @@
+{
+  "workloads": [
+    {
+      "name": "event_scheduler_timeslot",
+      "repository": "metaProjectDEV/event_scheduler",
+      "context_file": "workloads/event_scheduler_requirement.txt",
+      "target_file": "src/main/java/TimeSlot.java",
+      "instruction": "Generate only the complete contents of TimeSlot.java. Implement an immutable Java 11 half-open time interval with validation and an overlaps method. Output source code only and use the full response budget."
+    },
+    {
+      "name": "order_inventory_product",
+      "repository": "metaProjectDEV/order_inventory",
+      "context_file": "workloads/order_inventory_requirement.txt",
+      "target_file": "src/main/java/Product.java",
+      "instruction": "Generate only the complete contents of Product.java. Implement the Java 11 product domain entity with validated SKU, BigDecimal price, nonnegative stock, reservation, and stock restoration behavior. Output source code only and use the full response budget."
+    }
+  ]
+}
