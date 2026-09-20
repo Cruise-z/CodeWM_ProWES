@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import csv
 from datetime import datetime
 import hashlib
@@ -81,6 +82,8 @@ def mappings_with_field(value: Any, field: str) -> list[dict[str, Any]]:
 
 
 def verify_logits_records(payload: dict[str, Any]) -> None:
+    if int(payload.get("schema_version", 0)) < 6:
+        raise ValueError("logits timing evidence predates the paired schema v6 contract")
     if tuple(payload["workload"]["method_order"]) != LOGITS_ORDER:
         raise ValueError("logits method order does not match the Table X contract")
     for case in payload["workload"]["cases"]:
@@ -89,10 +92,33 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
     sweet_params = payload["workload"]["method_params"]["sweet"]
     if float(sweet_params["entropy_threshold"]) != 0.5:
         raise ValueError("SWEET Table X campaign must use the paper's ET=0.5 setting")
+    baselines = payload.get("baseline_runs") or []
+    expected_baselines = sum(len(payload["runs"][method]) for method in LOGITS_ORDER)
+    if len(baselines) != expected_baselines:
+        raise ValueError(
+            f"expected one WM-OFF baseline per method row: {len(baselines)} != {expected_baselines}"
+        )
+    baseline_index = {
+        (
+            row["paired_method"],
+            row["workload"],
+            int(row["repeat"]),
+            int(row["rng_seed"]),
+            row["pair_order"],
+        ): row
+        for row in baselines
+    }
+    if len(baseline_index) != len(baselines):
+        raise ValueError("WM-OFF pair manifest contains duplicate pair keys")
     for method in LOGITS_ORDER:
         records = payload["runs"][method]
         if len(records) != int(payload["summary"][method]["runs"]):
             raise ValueError(f"{method}: raw-run count disagrees with summary")
+        order_counts = Counter(row.get("pair_order") for row in records)
+        if order_counts != Counter(
+            {"baseline_then_watermark": 5, "watermark_then_baseline": 5}
+        ):
+            raise ValueError(f"{method}: pair order is not 5/5 counterbalanced")
         for index, row in enumerate(records):
             tokens = int(row["completion_tokens"])
             if tokens <= 0:
@@ -121,6 +147,26 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
                 float(row["paired_generation_delta_seconds"]) * 1_000_000.0 / tokens,
                 float(row["paired_generation_delta_ms_per_1k_tokens"]),
                 f"{method} run {index} paired generation delta",
+            )
+            baseline_key = (
+                method,
+                row["workload"],
+                int(row["repeat"]),
+                int(row["rng_seed"]),
+                row["pair_order"],
+            )
+            baseline = baseline_index.get(baseline_key)
+            if baseline is None:
+                raise ValueError(f"{method} run {index}: paired WM-OFF row is missing")
+            if int(baseline["completion_tokens"]) != tokens:
+                raise ValueError(f"{method} run {index}: paired token counts differ")
+            if baseline["generated_text_sha256"] != row["baseline_generated_text_sha256"]:
+                raise ValueError(f"{method} run {index}: baseline output digest mismatch")
+            assert_close(
+                float(row["generation_seconds"])
+                - float(baseline["generation_seconds"]),
+                float(row["paired_generation_delta_seconds"]),
+                f"{method} run {index} paired subtraction",
             )
             if sha256_text(row["generated_text"]) != row["generated_text_sha256"]:
                 raise ValueError(f"{method} run {index}: generated-text digest mismatch")
@@ -203,6 +249,7 @@ def flatten_records(
         "sample_or_seed",
         "repeat",
         "embedding_seconds",
+        "processor_only_embedding_seconds",
         "baseline_generation_seconds",
         "watermarked_generation_seconds",
         "paired_generation_delta_seconds",
@@ -210,6 +257,7 @@ def flatten_records(
         "embedding_reference_tokens",
         "extraction_reference_tokens",
         "embedding_ms_per_1k_tokens",
+        "processor_only_embedding_ms_per_1k_tokens",
         "baseline_generation_ms_per_1k_tokens",
         "watermarked_generation_ms_per_1k_tokens",
         "paired_generation_delta_ms_per_1k_tokens",
@@ -223,9 +271,12 @@ def flatten_records(
         "repeat",
         "input_or_prompt_tokens",
         "generated_or_watermarked_tokens",
+        "baseline_generated_tokens",
         "input_sha256",
         "output_sha256",
+        "baseline_output_sha256",
         "tokenizer_identifier",
+        "pair_order",
     ]
     timing_path.parent.mkdir(parents=True, exist_ok=True)
     token_path.parent.mkdir(parents=True, exist_ok=True)
@@ -245,14 +296,16 @@ def flatten_records(
                         "dataset_or_workload": row["workload"],
                         "sample_or_seed": row["rng_seed"],
                         "repeat": row["repeat"],
-                        "embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
+                        "embedding_seconds": f"{float(row['paired_generation_delta_seconds']):.12f}",
+                        "processor_only_embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
                         "baseline_generation_seconds": f"{float(row['baseline_generation_seconds']):.12f}",
                         "watermarked_generation_seconds": f"{float(row['generation_seconds']):.12f}",
                         "paired_generation_delta_seconds": f"{float(row['paired_generation_delta_seconds']):.12f}",
                         "extraction_seconds": f"{float(row['extraction_seconds']):.12f}",
                         "embedding_reference_tokens": row["completion_tokens"],
                         "extraction_reference_tokens": row["completion_tokens"],
-                        "embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
+                        "embedding_ms_per_1k_tokens": f"{float(row['paired_generation_delta_ms_per_1k_tokens']):.9f}",
+                        "processor_only_embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
                         "baseline_generation_ms_per_1k_tokens": f"{float(row['baseline_generation_ms_per_1k_tokens']):.9f}",
                         "watermarked_generation_ms_per_1k_tokens": f"{float(row['watermarked_generation_ms_per_1k_tokens']):.9f}",
                         "paired_generation_delta_ms_per_1k_tokens": f"{float(row['paired_generation_delta_ms_per_1k_tokens']):.9f}",
@@ -268,9 +321,12 @@ def flatten_records(
                         "repeat": row["repeat"],
                         "input_or_prompt_tokens": row["prompt_tokens"],
                         "generated_or_watermarked_tokens": row["completion_tokens"],
+                        "baseline_generated_tokens": row["completion_tokens"],
                         "input_sha256": row["prompt_sha256"],
                         "output_sha256": row["generated_text_sha256"],
+                        "baseline_output_sha256": row["baseline_generated_text_sha256"],
                         "tokenizer_identifier": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+                        "pair_order": row["pair_order"],
                     }
                 )
         for method in ("codemark", "srcmarker"):
@@ -285,6 +341,7 @@ def flatten_records(
                         "sample_or_seed": row["sample_uid"],
                         "repeat": row["repeat"],
                         "embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
+                        "processor_only_embedding_seconds": "",
                         "baseline_generation_seconds": "",
                         "watermarked_generation_seconds": "",
                         "paired_generation_delta_seconds": "",
@@ -292,6 +349,7 @@ def flatten_records(
                         "embedding_reference_tokens": row["input_tokens"],
                         "extraction_reference_tokens": row["watermarked_tokens"],
                         "embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
+                        "processor_only_embedding_ms_per_1k_tokens": "",
                         "baseline_generation_ms_per_1k_tokens": "",
                         "watermarked_generation_ms_per_1k_tokens": "",
                         "paired_generation_delta_ms_per_1k_tokens": "",
@@ -307,9 +365,12 @@ def flatten_records(
                         "repeat": row["repeat"],
                         "input_or_prompt_tokens": row["input_tokens"],
                         "generated_or_watermarked_tokens": row["watermarked_tokens"],
+                        "baseline_generated_tokens": "",
                         "input_sha256": row["input_source_sha256"],
                         "output_sha256": row["watermarked_source_sha256"],
+                        "baseline_output_sha256": "",
                         "tokenizer_identifier": tokenizer,
+                        "pair_order": "",
                     }
                 )
 

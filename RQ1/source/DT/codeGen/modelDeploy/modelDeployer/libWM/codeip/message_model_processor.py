@@ -141,14 +141,14 @@ class WmProcessorRandomMessageModel(WmProcessorBase):
         for i in range(0, all_log_Ps.shape[0], self.encode_len):
             if not non_analyze:
                 nums = (all_log_Ps[i:i + self.encode_len] > 0).sum(0)
-                # nums 是各候选消息的阳性计数，可能是一维或标量
+                # Positive counts per candidate message may be a vector or scalar.
                 if nums.numel() == 0:
-                    # 没有候选时返回默认
+                    # Return the default when no candidate exists.
                     decoded_messages.append(0)
                     decoded_confidences.append((0, 0, 0.0))
                     continue
 
-                # 取最大索引/值
+                # Select the maximum index and value.
                 if nums.dim() == 0:
                     max_indices = torch.tensor(0, device=nums.device)
                     max_values = nums
@@ -158,13 +158,13 @@ class WmProcessorRandomMessageModel(WmProcessorBase):
                 decoded_message = messages[max_indices]
                 decoded_confidence = int(max_values)
 
-                # 计算概率时也要处理标量情况
+                # Handle scalar inputs when calculating probabilities.
                 if nums.dim() == 0:
                     decoded_probs = float(torch.softmax(nums.float().unsqueeze(0), dim=-1)[0])
                 else:
                     decoded_probs = float(torch.softmax(nums.float(), dim=-1)[max_indices])
 
-                # 处理 topk 的情况：当 nums 的元素少于 2 个时
+                # Handle top-k when nums contains fewer than two elements.
                 if nums.numel() >= 2:
                     top_values, top_indices = torch.topk(nums, 2)
                     relative_decoded_confidence = int(max_values) - int(top_values[1])

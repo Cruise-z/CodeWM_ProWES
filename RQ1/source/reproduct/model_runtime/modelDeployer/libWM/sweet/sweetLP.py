@@ -17,7 +17,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
     SWEET processor with integrated embedding and offline detection.
     - Preserve entropy-gated green-list biasing.
     - Cache prefix_len, full_ids, and per-step entropy at runtime.
-    - Recompute detector entropy from the completed sequence, matching the
+    - Recompute detector entropy from the configured detector sequence, matching the
       standalone SWEET detection protocol instead of relying on generation
       side information.
     """
@@ -146,7 +146,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         return float(scipy.stats.norm.sf(z))
 
     def _detector_entropy(self, input_ids: Tensor, prefix_len: int) -> tuple[List[float], Dict[str, Any]]:
-        """Recompute per-token entropy from the completed sequence.
+        """Recompute per-token entropy from the configured detector sequence.
 
         A causal LM logit at position ``i - 1`` predicts token ``i``.  The
         prompt is therefore retained as model context, while only continuation
@@ -161,7 +161,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         sequence_length = int(input_ids.numel())
         if prefix_len < 1 or sequence_length <= prefix_len:
             raise ValueError(
-                "SWEET detector requires a non-empty prompt and continuation: "
+                "SWEET detector requires a prefix and scoreable suffix: "
                 f"prefix_len={prefix_len}, sequence_length={sequence_length}"
             )
 
@@ -293,7 +293,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
     def detect_last(self) -> Dict:
         """
         Detect from cached token IDs with entropy independently recomputed by
-        the model over the completed prompt and continuation.
+        the model over the configured detector token scope.
         """
         if self._cache_full_ids is None or self._cache_prefix_len is None:
             raise RuntimeError("No cached sequence for detection. Generate with this processor first.")

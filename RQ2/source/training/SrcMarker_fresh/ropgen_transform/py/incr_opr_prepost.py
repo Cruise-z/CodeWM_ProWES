@@ -166,7 +166,7 @@ def transform(evaluator, src_style, dst_style):
 
 
 def transform_all(evaluator, dst_style: str):
-    raise NotImplementedError("屎山代码。改不动了。")
+    raise NotImplementedError("This legacy transformation is not implemented.")
 
 
 def program_transform(

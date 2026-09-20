@@ -27,6 +27,8 @@ CHECK_TREES = [
     "RQ1/07_strength_sweep",
     "RQ1/08_detectability",
     "RQ1/09_analysis",
+    "RQ1/source/reproduct/model_runtime",
+    "RQ1/source/DT/codeGen/modelDeploy/modelDeployer",
     "RQ2/01_datasets",
     "RQ2/02_training",
     "RQ2/03_rule_attacks",
@@ -39,6 +41,7 @@ CHECK_TREES = [
     "RQ2/source/cStyleLang",
     "RQ2/source/project",
     "RQ2/source/tests",
+    "RQ2/source/training/SrcMarker_fresh",
     "RQ3",
 ]
 

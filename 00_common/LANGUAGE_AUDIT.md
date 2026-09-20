@@ -16,10 +16,8 @@ The check deliberately excludes these immutable evidence classes:
   byte-faithfully from those documents and accepted-run sources;
 - the frozen MetaGPT tree under `RQ1/source/reproduct/framework/metagpt/` and
   its experiment-time patched copy under `RQ1/source/DT/codeGen/MetaGPT/`;
-- frozen watermark implementation/model-runtime snapshots under
-  `RQ1/source/**/modelDeploy/`;
-- the frozen SrcMarker checkout under
-  `RQ2/source/training/SrcMarker_fresh/`.
+- frozen auxiliary RAG/sweet-watermark snapshots under
+  `RQ1/source/DT/codeGen/modelDeploy/RAG/`.
 
 Those files are provenance-bearing inputs or third-party/upstream snapshots.
 Some contain Chinese comments, strings, or original sample text. Translating
@@ -36,10 +34,14 @@ observation and is omitted from the newly imported baseline package. This
 matches the campaign's canonical tree-hash policy, which excludes `.git`.
 
 First-party comments, reviewer documentation, configuration annotations, and
-report labels outside those immutable scopes were normalized to English. The
-only experiment fixture touched in executable RQ1 campaign code was rewritten
-as an equivalent Unicode escape, preserving its runtime value. No raw result,
-prediction, checkpoint, prompt response, or statistical value was translated.
+report labels outside those immutable scopes were normalized to English. This
+now includes the active RQ1 model runtime, its synchronized DT copy, and the
+RQ2 SrcMarker source copy. Obsolete multilingual manual server tests were
+removed; they were not invoked by any released experiment or reproduction
+entry point. The only experiment fixture touched in executable RQ1 campaign
+code was rewritten as an equivalent Unicode escape, preserving its runtime
+value. No raw result, prediction, checkpoint, prompt response, or statistical
+value was translated.
 
 Exact local source-normalization details and pre/post hashes are recorded in
 `patches/LANGUAGE_NORMALIZATION.md`.

@@ -47,5 +47,6 @@ root artifact manifest records the released hashes.
 | `build_llm_pilot_report.py` | `33ff9ddb1672351c2f9d5bd61caef6a27f6ba0ae449805c2088a551b6bc77fd5` | `80008ea5031fb29b07f3fa99d94af6b7af5559efc69aaeb22b45fa0e053616fe` |
 | `build_rq2_deliverables.py` | `73143938bd45a80f75204299daffaad847484d0131047e23ba178de13635389a` | `99952ed0b8ed043d3bca23421572bd95b4a194081cbd7dae59ce77564041f47a` |
 
-The four remaining CJK-bearing RQ2 source files are in the frozen SrcMarker
-checkout and are intentionally covered by the exclusion above.
+The four formerly CJK-bearing SrcMarker source files now use equivalent English
+comments and an English legacy `NotImplementedError` message. These edits do
+not affect successful transformation paths or released observations.

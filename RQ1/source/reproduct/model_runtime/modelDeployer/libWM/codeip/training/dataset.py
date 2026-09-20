@@ -1,10 +1,10 @@
 import os
 from datasets import load_dataset
 
-# 下载 CodeSearchNet Java 子集
+# Download the CodeSearchNet Java subset.
 dataset = load_dataset('code_search_net', 'java')
 
-# 保存为 JSONL 格式
+# Save it in JSONL format.
 import json
 output_dir = './java_data'
 os.makedirs(output_dir, exist_ok=True)

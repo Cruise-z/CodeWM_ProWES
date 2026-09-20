@@ -21,7 +21,7 @@ class WmBaseArgs:
     message_code_len: int = 20 
     encode_ratio: float = 10.
     top_k: int = 1000
-    dataset_name: str = 'codebleu'  # 数据集选择: 'c4' 或 'codebleu'
-    use_pda: bool = False  # 是否使用 PDA 类型预测器
+    dataset_name: str = 'codebleu'  # Dataset selection: 'c4' or 'codebleu'.
+    use_pda: bool = False  # Whether to use the PDA type predictor.
     device: str = 'cuda'
     save_path: str = "../results.json"

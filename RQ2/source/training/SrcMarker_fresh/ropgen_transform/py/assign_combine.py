@@ -224,7 +224,7 @@ def expr_stmt_transfrom(
 
 
 def trans_tree(e, ignore_list=[], instances=None):
-    # 得到所有的expr
+    # Collect all expressions.
     tree_root = e("/*")[0].getroottree()
     new_ignore_list = []
 

@@ -65,17 +65,16 @@ def main(args: WmBaseArgs):
     )
     lstm_model.to(args.device)
 
-    # 使用 allenai/c4 hub 数据集（支持新版本 datasets）
-    # 注意：第一次运行会自动下载，较耗时
+    # Use the allenai/c4 hub dataset with current datasets releases.
+    # The first run downloads the dataset and may take considerable time.
     
-    # 根据参数选择数据集
+    # Select the dataset from the command-line configuration.
     if args.dataset_name == 'codebleu':
-        # 加载 CodeBLEU 数据集
-        # CodeBLEU 可从 Hugging Face Hub 加载，需要指定语言和分割
+        # Load CodeBLEU from the Hugging Face Hub for the requested language.
         try:
             codebleu_dataset = load_dataset('neulab/codebleu', args.language, split='train', streaming=True)
         except:
-            # 如果上述方式失败，尝试备选方案
+            # Try the CodeSearchNet source if the primary dataset is unavailable.
             print(f"Warning: Could not load 'neulab/codebleu' for language '{args.language}'")
             print("Trying alternative CodeBLEU dataset source...")
             try:
@@ -85,7 +84,7 @@ def main(args: WmBaseArgs):
                 codebleu_dataset = None
 
         if codebleu_dataset is not None:
-            # 转换为可索引的格式
+            # Materialize an indexable subset.
             codebleu_list = []
             for i, sample in enumerate(codebleu_dataset):
                 if i >= args.sample_num:
@@ -96,8 +95,7 @@ def main(args: WmBaseArgs):
                 print("No samples found in CodeBLEU dataset, falling back to C4")
                 codebleu_dataset = None
             else:
-                # 将列表转换回 Dataset 格式便于访问
-                # CodeBLEU/CodeSearchNet 数据集的代码字段可能叫 'code', 'func', 'text' 等
+                # Convert the list to Dataset form and resolve common code fields.
                 first_sample = codebleu_list[0]
                 if 'code' in first_sample:
                     code_field = 'code'
@@ -110,9 +108,9 @@ def main(args: WmBaseArgs):
                 elif 'func_code_string' in first_sample:  # CodeSearchNet
                     code_field = 'func_code_string'
                 else:
-                    # 打印可用字段以便调试
+                    # Print available fields for diagnostics.
                     print(f"Available fields in dataset: {list(first_sample.keys())}")
-                    # 尝试常见的代码字段名
+                    # Try common code-field names.
                     for field in ['code', 'func', 'text', 'content', 'body', 'whole_func_string', 'func_code_string']:
                         if field in first_sample:
                             code_field = field
@@ -127,7 +125,7 @@ def main(args: WmBaseArgs):
                         'original_string': [item[code_field] for item in codebleu_list]
                     })
                 else:
-                    # 回退到 C4 数据集
+                    # Fall back to C4.
                     c4_sliced_and_filted = load_dataset('allenai/c4', 'en', split='train', streaming=True)
                     c4_list = []
                     for i, sample in enumerate(c4_sliced_and_filted):
@@ -138,7 +136,7 @@ def main(args: WmBaseArgs):
                         'original_string': [item['text'] for item in c4_list]
                     })
         else:
-            # 回退到 C4 数据集
+            # Fall back to C4.
             c4_sliced_and_filted = load_dataset('allenai/c4', 'en', split='train', streaming=True)
             c4_list = []
             for i, sample in enumerate(c4_sliced_and_filted):
@@ -149,17 +147,17 @@ def main(args: WmBaseArgs):
                 'original_string': [item['text'] for item in c4_list]
             })
     else:
-        # 默认使用 C4 数据集
+        # Use C4 by default.
         c4_sliced_and_filted = load_dataset('allenai/c4', 'en', split='train', streaming=True)
 
-        # 由于使用 streaming=True，需要转换为可索引的格式
+        # Materialize an indexable subset from the streaming dataset.
         c4_list = []
         for i, sample in enumerate(c4_sliced_and_filted):
             if i >= args.sample_num:
                 break
             c4_list.append(sample)
 
-        # 将列表转换回 Dataset 格式便于访问
+        # Convert the list back to Dataset form.
         c4_sliced_and_filted = Dataset.from_dict({
             'original_string': [item['text'] for item in c4_list]
         })
@@ -180,7 +178,7 @@ def main(args: WmBaseArgs):
 
     min_length_processor = MinLengthLogitsProcessor(min_length=10000,
                                                     eos_token_id=tokenizer.eos_token_id)
-    # 确保 eos_token_id 在正确的设备上
+    # Keep eos_token_id on the model device.
     if hasattr(min_length_processor, 'eos_token_id'):
         min_length_processor.eos_token_id = torch.tensor(min_length_processor.eos_token_id, device=model.device)
     rep_processor = RepetitionPenaltyLogitsProcessor(penalty=args.repeat_penalty)
@@ -197,7 +195,7 @@ def main(args: WmBaseArgs):
     
     pda_processor = PDAProcessorMessageModel(message_model=pda_model,tokenizer=tokenizer, gamma=args.gamma)
 
-    # 根据参数选择是否使用 PDA 预测器
+    # Select whether to enable the PDA predictor.
     if args.use_pda:
         logit_processor = LogitsProcessorList(
             [min_length_processor, rep_processor, ngram_processor, watermark_processor, pda_processor])
@@ -209,25 +207,25 @@ def main(args: WmBaseArgs):
         'text': [],
         'prefix_and_output_text': [],
         'output_text': [],
-        'reference_text': [],  # 新增：与 output_text 对齐的 ground-truth continuation
+        'reference_text': [],  # Ground-truth continuation aligned with output_text.
         'decoded_message': [],
         'acc': []
     }
 
     try:
         for text in tqdm(c4_sliced_and_filted["original_string"]):
-            # 统一：同一个 tokenization 配置
+            # Use one tokenization configuration throughout.
             full = tokenizer(text, return_tensors="pt", add_special_tokens=False)
             full_ids = full["input_ids"][0]  # shape: [T]
 
-            # 你“调整后的 prompt_len”就写在这里（示例：仍用 args.prompt_length）
+            # Resolve prompt length in the full-token coordinate system.
             prompt_len = min(int(args.prompt_length), full_ids.size(0))
 
-            # reference continuation：与 prompt_len 同一坐标系
+            # Slice the reference continuation in the same coordinate system.
             ref_ids = full_ids[prompt_len : prompt_len + int(args.generated_length)]
             reference_text = tokenizer.decode(ref_ids, skip_special_tokens=True)
 
-            # prompt 输入：直接从 full_ids 切，不再二次 tokenize + truncate
+            # Slice the prompt directly without a second tokenize/truncate pass.
             input_ids = full_ids[:prompt_len].unsqueeze(0).to(model.device)
             attention_mask = torch.ones_like(input_ids, device=model.device)
 

@@ -43,7 +43,7 @@ experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 | `00_common/` | Environment, hardware, revisions, upstream repositories, and disclosure of known gaps. |
 | `RQ1/` | Latest logits-bias implementation, task specifications, 42 Stage-0 prompts, 480 accepted-run Stage-1 prompts/contexts, serialized architecture checkpoints, initial repositories, and evaluator. |
 | `RQ2/` | Fresh-training, rule attack, MBXP, LLM+RAG, detector, and statistics source code. |
-| `RQ3/` | Synchronized timing harnesses, raw per-run records, shared-tokenizer counts, training logs, normalization, and Table X reproduction. |
+| `RQ3/` | Counterbalanced paired WM-OFF timing harnesses, processor-only attribution records, detector timings, shared-tokenizer counts, training logs, normalization, and Table X reproduction. |
 | `results/RQ1/` | Complete baseline qualification evidence plus expanded applicability and detectability evidence. |
 | `results/RQ2/` | Formal RQ2 datasets/splits, checkpoints, logs, raw attacks, predictions, MBXP executions, LLM manifests/responses, statistics, tables, and figures. |
 | `paper_reproduction/` | Reviewer entry points for rebuilding paper outputs. |
