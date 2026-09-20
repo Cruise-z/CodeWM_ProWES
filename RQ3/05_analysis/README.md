@@ -7,7 +7,9 @@ versions of Table X. It also materializes reviewer-friendly flat ledgers in
 `RQ3/02_raw_timings/raw_timings.csv` and `RQ3/04_token_counts/token_counts.csv`.
 Before writing outputs it verifies per-row normalization, generated-text and
 rendered-prompt hashes, run counts, and both released semantic checkpoint
-digests.
+digests. For SWEET it additionally requires the paper's `ET=0.5` setting,
+positive scored-token counts, and independently recomputed detector-entropy
+provenance. See `../SWEET_TIMING_CORRECTION.md` for the correction audit.
 
 From the artifact root:
 

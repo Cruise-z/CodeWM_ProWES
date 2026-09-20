@@ -1,14 +1,15 @@
 {
-  "schema_version": 3,
-  "created_at_utc": "2026-09-17T09:58:15.663293+00:00",
+  "schema_version": 4,
+  "created_at_utc": "2026-09-17T11:00:25.944695+00:00",
   "measurement_contract": {
     "embedding": "method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
-    "extraction": "complete detect_last() invocation with CUDA synchronized before and after",
+    "extraction": "complete detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the completed sequence",
     "normalization": "elapsed_seconds * 1,000,000 / authoritative completion_tokens",
     "aggregation": "sum elapsed seconds / sum reference tokens",
     "model_forward_in_embedding": false,
     "codeip_variant": "released random-message branch without PDA/type predictor",
-    "strength": "arithmetic midpoint of each method's RQ1 EEI"
+    "strength": "arithmetic midpoint of each method's RQ1 EEI",
+    "sweet_admission": "every measured run must score at least one token and report detector_model_forward entropy provenance"
   },
   "workload": {
     "manifest": "/home/zhaorz/project/CodeWM/CodeWM_ProWES_Logits/reproduct/rq3/workloads.json",
@@ -98,7 +99,7 @@
       "sweet": {
         "gamma": 0.5,
         "delta": 1.785,
-        "entropy_threshold": 0.9,
+        "entropy_threshold": 0.5,
         "z_threshold": 4.0,
         "ignore_repeated_bigrams": false
       },
@@ -136,12 +137,8 @@
     }
   },
   "environment": {
-    "python": "3.13.5",
-    "platform": "Linux-5.15.0-142-generic-x86_64-with-glibc2.35",
-    "nvidia_smi": "0, NVIDIA A800 80GB PCIe, GPU-cfc87885-8270-cff8-b48d-cdd6e280c6c1, 595.58.03, 81920 MiB\n1, NVIDIA A800 80GB PCIe, GPU-660e1514-dbd7-55d8-4634-794e3e155f28, 595.58.03, 81920 MiB\n2, NVIDIA A800 80GB PCIe, GPU-74d72a34-794a-08bc-e62f-1759142d706a, 595.58.03, 81920 MiB\n3, NVIDIA A800 80GB PCIe, GPU-0e11ad86-f6c7-d75b-38e4-9f2999119fb3, 595.58.03, 81920 MiB",
-    "source_commit_at_run": "9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa",
-    "released_source_commit": "05622a57a5cb5df536a545b652d8df8e42df8984",
-    "benchmark_wall_seconds": 1677.8043375657871
+    "mixed_campaigns": true,
+    "details": "See measurement_campaigns for method-specific environments and source revisions."
   },
   "server_catalog": {
     "internal": [],
@@ -182,7 +179,9 @@
         "device"
       ],
       "sweet": [
-        "tokenizer"
+        "tokenizer",
+        "model",
+        "device"
       ],
       "waterfall": [
         "tokenizer"
@@ -844,19 +843,19 @@
     "sweet": {
       "runs": 10,
       "completion_tokens": 2560,
-      "embedding_ms_per_1k_tokens": 4628.1350772915175,
-      "embedding_median_ms_per_1k_tokens": 4659.555410398752,
-      "embedding_sd_ms_per_1k_tokens": 360.0088855797842,
+      "embedding_ms_per_1k_tokens": 4131.164792124764,
+      "embedding_median_ms_per_1k_tokens": 4158.186451604706,
+      "embedding_sd_ms_per_1k_tokens": 117.28781351435346,
       "embedding_95ci_ms_per_1k_tokens": [
-        4423.73685235907,
-        4834.703981714483
+        4062.294608202137,
+        4200.126140931388
       ],
-      "extraction_ms_per_1k_tokens": 2.5714762159623206,
-      "extraction_median_ms_per_1k_tokens": 2.3608135961694643,
-      "extraction_sd_ms_per_1k_tokens": 1.1687484227577132,
+      "extraction_ms_per_1k_tokens": 12205.308859847719,
+      "extraction_median_ms_per_1k_tokens": 11709.599943060311,
+      "extraction_sd_ms_per_1k_tokens": 2466.3332199580695,
       "extraction_95ci_ms_per_1k_tokens": [
-        1.8984900634677615,
-        3.264883234805893
+        10719.771007943564,
+        13662.871277228987
       ]
     },
     "stone": {
@@ -989,46 +988,6 @@
     },
     {
       "phase": "warmup",
-      "method": "sweet",
-      "workload": "event_scheduler_timeslot",
-      "repeat": 0,
-      "rng_seed": 20260916,
-      "prompt_sha256": "7a1b6fee8a7f752a8ea79530cc3710b7d2939379b797e9eda8dfd749ae136dc5",
-      "prompt_tokens": 389,
-      "completion_tokens": 256,
-      "total_tokens": 645,
-      "finish_reason": "length",
-      "embedding_seconds": 1.2342170560732484,
-      "extraction_seconds": 0.00032963044941425323,
-      "generation_seconds": 17.97158883418888,
-      "client_seconds": 18.073773434385657,
-      "embedding_ms_per_1k_tokens": 4821.1603752861265,
-      "extraction_ms_per_1k_tokens": 1.2876189430244267,
-      "processor_calls": 256,
-      "processor_components": {
-        "SWEETLogitsProcessor[0]": {
-          "lp_total_time_s": 1.2342170560732484,
-          "lp_calls": 256,
-          "lp_avg_per_call_us": 4821.1603752861265
-        }
-      },
-      "wm_detection": {
-        "SWEETLogitsProcessor[0]": {
-          "num_tokens_generated": 256,
-          "num_tokens_scored": 0,
-          "num_green_tokens": 0,
-          "watermarking_fraction": 0.0,
-          "green_fraction": 0.0,
-          "z_score": -100.0,
-          "p_value": 1.0,
-          "prediction": false
-        }
-      },
-      "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\n\npublic final class TimeSlot {\n    private final LocalDateTime start;\n    private final LocalDateTime end;\n\n    public TimeSlot(LocalDateTime start, LocalDateTime end) {\n        if (start == null || end == null) {\n            throw new IllegalArgumentException(\"Start and end times cannot be null\");\n        }\n        if (start.isAfter(end)) {\n            throw new IllegalArgumentException(\"Start time must be before or equal to end time\");\n        }\n        this.start = start;\n        this.end = end;\n    }\n\n    public LocalDateTime getStart() {\n        return start;\n    }\n\n    public LocalDateTime getEnd() {\n        return end;\n    }\n\n    public boolean overlaps(TimeSlot other) {\n        if (other == null) {\n            return false;\n        }\n        // Two half-open intervals [a,b) and [c,d) overlap if a < d and c < b\n        return !start.isAfter(other.end) && !end.isBefore(other.start);\n    }\n\n    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj == null || getClass() != obj.getClass()) {\n            return false;\n        }\n        TimeSlot timeSlot = (",
-      "generated_text_sha256": "adf3abb739b4ac5269ec569bd2ced047398445d4e827a349e64424ab7102dbf0"
-    },
-    {
-      "phase": "warmup",
       "method": "stone",
       "workload": "event_scheduler_timeslot",
       "repeat": 0,
@@ -1130,6 +1089,55 @@
       },
       "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\n\n/**\n * Represents an immutable half-open time slot [start, end) with validation.\n */\npublic class TimeSlot {\n    private final LocalDateTime start;\n    private final LocalDateTime end;\n\n    /**\n     * Constructs a TimeSlot with validated start and end times.\n     *\n     * @param start the start of the time slot (inclusive)\n     * @param end   the end of the time slot (exclusive)\n     * @throws IllegalArgumentException if start is null, end is null,\n     *                                  or start is after or equal to end\n     */\n    public TimeSlot(LocalDateTime start, LocalDateTime end) {\n        if (start == null) {\n            throw new IllegalArgumentException(\"Start time cannot be null\");\n        }\n        if (end == null) {\n            throw new IllegalArgumentException(\"End time cannot be null\");\n        }\n        if (start.isAfter(end)) {\n            throw new IllegalArgumentException(\"Start time must be before end time\");\n        }\n        if (start.equals(end)) {\n            throw new IllegalArgumentException(\"Start time must be strictly before end time\");\n        }\n        this.start = start;\n        this.end = end;\n    }\n\n    /**\n     * Checks if this time slot overlaps with another time slot.\n     * Two time",
       "generated_text_sha256": "2e8dbaff7e636f9c3c7952b3a4052bd8a6e07b9a26cf24eea0bad0a2dbce1700"
+    },
+    {
+      "phase": "warmup",
+      "method": "sweet",
+      "workload": "event_scheduler_timeslot",
+      "repeat": 0,
+      "rng_seed": 20260916,
+      "prompt_sha256": "7a1b6fee8a7f752a8ea79530cc3710b7d2939379b797e9eda8dfd749ae136dc5",
+      "prompt_tokens": 389,
+      "completion_tokens": 256,
+      "total_tokens": 645,
+      "finish_reason": "length",
+      "embedding_seconds": 1.3037311965599656,
+      "extraction_seconds": 2.14650912117213,
+      "generation_seconds": 24.1714362539351,
+      "client_seconds": 26.520027833990753,
+      "embedding_ms_per_1k_tokens": 5092.699986562366,
+      "extraction_ms_per_1k_tokens": 8384.801254578633,
+      "processor_calls": 256,
+      "processor_components": {
+        "SWEETLogitsProcessor[0]": {
+          "lp_total_time_s": 1.3037311965599656,
+          "lp_calls": 256,
+          "lp_avg_per_call_us": 5092.699986562366
+        }
+      },
+      "wm_detection": {
+        "SWEETLogitsProcessor[0]": {
+          "num_tokens_generated": 256,
+          "num_tokens_scored": 3,
+          "num_green_tokens": 2,
+          "watermarking_fraction": 0.01171875,
+          "green_fraction": 0.6666666666666666,
+          "z_score": 0.5773502691896258,
+          "p_value": 0.28185143082538655,
+          "entropy": {
+            "source": "detector_model_forward",
+            "continuation_tokens": 256,
+            "qualified_tokens": 3,
+            "threshold": 0.5,
+            "minimum": 2.552935640665055e-10,
+            "maximum": 0.6274905204772949,
+            "mean": 0.02040795398086847
+          },
+          "prediction": false
+        }
+      },
+      "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\n\npublic final class TimeSlot {\n    private final LocalDateTime startTime;\n    private final LocalDateTime endTime;\n\n    public TimeSlot(LocalDateTime startTime, LocalDateTime endTime) {\n        if (startTime == null || endTime == null) {\n            throw new IllegalArgumentException(\"Start time and end time cannot be null\");\n        }\n        if (startTime.isAfter(endTime)) {\n            throw new IllegalArgumentException(\"Start time must be before or equal to end time\");\n        }\n        this.startTime = startTime;\n        this.endTime = endTime;\n    }\n\n    public LocalDateTime getStartTime() {\n        return startTime;\n    }\n\n    public LocalDateTime getEndTime() {\n        return endTime;\n    }\n\n    public boolean overlaps(TimeSlot other) {\n        if (other == null) {\n            return false;\n        }\n        // Two half-open intervals [a,b) and [c,d) overlap if a < d and c < b\n        return !this.endTime.isBefore(other.startTime) && !other.endTime.isBefore(this.startTime);\n    }\n\n    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj == null || getClass() != obj.getClass()) {\n            return false;\n        }\n        TimeSlot",
+      "generated_text_sha256": "077455660c38c2722f8ce6958aedead3e9acb5c3dd01cd792cee3025ac9f277f"
     }
   ],
   "runs": {
@@ -1874,29 +1882,38 @@
         "completion_tokens": 256,
         "total_tokens": 645,
         "finish_reason": "length",
-        "embedding_seconds": 1.2546035666018724,
-        "extraction_seconds": 0.0010368498042225838,
-        "generation_seconds": 17.79227873776108,
-        "client_seconds": 17.882397609762847,
-        "embedding_ms_per_1k_tokens": 4900.795182038564,
-        "extraction_ms_per_1k_tokens": 4.050194547744468,
+        "embedding_seconds": 1.0744465254247189,
+        "extraction_seconds": 4.054784351028502,
+        "generation_seconds": 26.337403625249863,
+        "client_seconds": 30.46790276374668,
+        "embedding_ms_per_1k_tokens": 4197.056739940308,
+        "extraction_ms_per_1k_tokens": 15839.001371205086,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.2546035666018724,
+            "lp_total_time_s": 1.0744465254247189,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4900.795182038564
+            "lp_avg_per_call_us": 4197.056739940308
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 11,
+            "num_green_tokens": 6,
+            "watermarking_fraction": 0.04296875,
+            "green_fraction": 0.5454545454545454,
+            "z_score": 0.30151134457776363,
+            "p_value": 0.3815123002764975,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 11,
+              "threshold": 0.5,
+              "minimum": 5.253759666895563e-12,
+              "maximum": 0.8488104939460754,
+              "mean": 0.03725481793963398
+            },
             "prediction": false
           }
         },
@@ -1914,29 +1931,38 @@
         "completion_tokens": 256,
         "total_tokens": 654,
         "finish_reason": "length",
-        "embedding_seconds": 1.209456281736493,
-        "extraction_seconds": 0.0009374627843499184,
-        "generation_seconds": 22.379937051795423,
-        "client_seconds": 22.486817211844027,
-        "embedding_ms_per_1k_tokens": 4724.438600533176,
-        "extraction_ms_per_1k_tokens": 3.6619640013668686,
+        "embedding_seconds": 1.0637586107477546,
+        "extraction_seconds": 2.997566070407629,
+        "generation_seconds": 26.523684890009463,
+        "client_seconds": 29.601226469501853,
+        "embedding_ms_per_1k_tokens": 4155.307073233416,
+        "extraction_ms_per_1k_tokens": 11709.2424625298,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.209456281736493,
+            "lp_total_time_s": 1.0637586107477546,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4724.438600533176
+            "lp_avg_per_call_us": 4155.307073233416
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 6,
+            "num_green_tokens": 5,
+            "watermarking_fraction": 0.0234375,
+            "green_fraction": 0.8333333333333334,
+            "z_score": 1.6329931618554523,
+            "p_value": 0.051235217429874684,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 6,
+              "threshold": 0.5,
+              "minimum": 7.409325930574084e-11,
+              "maximum": 0.7383944392204285,
+              "mean": 0.025118338835715997
+            },
             "prediction": false
           }
         },
@@ -1954,34 +1980,43 @@
         "completion_tokens": 256,
         "total_tokens": 645,
         "finish_reason": "length",
-        "embedding_seconds": 1.1097901416942477,
-        "extraction_seconds": 0.0007153181359171867,
-        "generation_seconds": 17.644571060314775,
-        "client_seconds": 17.743717120029032,
-        "embedding_ms_per_1k_tokens": 4335.117740993155,
-        "extraction_ms_per_1k_tokens": 2.7942114684265107,
+        "embedding_seconds": 1.0659483969211578,
+        "extraction_seconds": 3.919684828259051,
+        "generation_seconds": 26.48122829850763,
+        "client_seconds": 30.479725792072713,
+        "embedding_ms_per_1k_tokens": 4163.860925473273,
+        "extraction_ms_per_1k_tokens": 15311.268860386917,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.1097901416942477,
+            "lp_total_time_s": 1.0659483969211578,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4335.117740993155
+            "lp_avg_per_call_us": 4163.860925473273
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 10,
+            "num_green_tokens": 8,
+            "watermarking_fraction": 0.0390625,
+            "green_fraction": 0.8,
+            "z_score": 1.8973665961010275,
+            "p_value": 0.028889785561798623,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 10,
+              "threshold": 0.5,
+              "minimum": 6.946522784073705e-12,
+              "maximum": 0.6946569085121155,
+              "mean": 0.03849867776874504
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\nimport java.util.Objects;\n\n/**\n * Represents an immutable half-open time interval [start, end).\n * A half-open interval includes the start time but excludes the end time.\n */\npublic final class TimeSlot {\n    private final LocalDateTime start;\n    private final LocalDateTime end;\n\n    /**\n     * Constructs a new TimeSlot with the given start and end times.\n     *\n     * @param start the start time (inclusive), must not be null\n     * @param end the end time (exclusive), must not be null\n     * @throws IllegalArgumentException if start is after or equal to end\n     */\n    public TimeSlot(LocalDateTime start, LocalDateTime end) {\n        Objects.requireNonNull(start, \"Start time cannot be null\");\n        Objects.requireNonNull(end, \"End time cannot be null\");\n        \n        if (start.isAfter(end)) {\n            throw new IllegalArgumentException(\"Start time must be before end time\");\n        }\n        \n        this.start = start;\n        this.end = end;\n    }\n\n    /**\n     * Returns the start time of this time slot.\n     *\n     * @return the start time (inclusive)\n     */\n    public LocalDateTime getStart() {\n        return start;\n    }\n\n    /**\n     * Returns the end time",
-        "generated_text_sha256": "fad621e748ad8f672a18efe166a386fab6da10a3361c83e4ddebac246f495ed4"
+        "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\nimport java.util.Objects;\n\n/**\n * Represents an immutable half-open time interval [start, end).\n * A half-open interval includes the start time but excludes the end time.\n */\npublic final class TimeSlot {\n    private final LocalDateTime start;\n    private final LocalDateTime end;\n\n    /**\n     * Constructs a new TimeSlot with the given start and end times.\n     *\n     * @param start the start time (inclusive), must not be null\n     * @param end the end time (exclusive), must not be null\n     * @throws IllegalArgumentException if start is after or equal to end\n     */\n    public TimeSlot(LocalDateTime start, LocalDateTime end) {\n        Objects.requireNonNull(start, \"Start time cannot be null\");\n        Objects.requireNonNull(end, \"End time cannot be null\");\n        \n        if (start.isAfter(end)) {\n            throw new IllegalArgumentException(\"Start time must be before end time\");\n        }\n        \n        this.start = start;\n        this.end = end;\n    }\n\n    /**\n     * Returns the start time of this time slot.\n     *\n     * @return the start time\n     */\n    public LocalDateTime getStart() {\n        return start;\n    }\n\n    /**\n     * Returns the end time of this",
+        "generated_text_sha256": "511818dd2caebd43a8c194cde385e3fccc5b5384d2e819552b0423497c8d0f1e"
       },
       {
         "phase": "measured",
@@ -1994,34 +2029,43 @@
         "completion_tokens": 256,
         "total_tokens": 654,
         "finish_reason": "length",
-        "embedding_seconds": 1.1370145650580525,
-        "extraction_seconds": 0.001119726337492466,
-        "generation_seconds": 17.610942559316754,
-        "client_seconds": 17.708648388274014,
-        "embedding_ms_per_1k_tokens": 4441.463144758018,
-        "extraction_ms_per_1k_tokens": 4.373931005829945,
+        "embedding_seconds": 1.062962980940938,
+        "extraction_seconds": 2.786561663262546,
+        "generation_seconds": 26.373981526121497,
+        "client_seconds": 29.23859118670225,
+        "embedding_ms_per_1k_tokens": 4152.199144300539,
+        "extraction_ms_per_1k_tokens": 10885.00649711932,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.1370145650580525,
+            "lp_total_time_s": 1.062962980940938,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4441.463144758018
+            "lp_avg_per_call_us": 4152.199144300539
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 6,
+            "num_green_tokens": 6,
+            "watermarking_fraction": 0.0234375,
+            "green_fraction": 1.0,
+            "z_score": 2.4494897427831783,
+            "p_value": 0.007152939217714809,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 6,
+              "threshold": 0.5,
+              "minimum": 6.054960699497514e-11,
+              "maximum": 0.6855114698410034,
+              "mean": 0.02227893872716942
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public synchronized boolean reserveStock(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Reservation quantity must be positive\");\n        }\n        if (stock >= quantity) {\n            stock -= quantity;\n            return true;\n        }\n        return false",
-        "generated_text_sha256": "6917593aedb06be3238388c68105cdb2070c30d2c2f353720458d2685059461c"
+        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public boolean reserveStock(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Quantity must be positive\");\n        }\n        synchronized (this) {\n            if (stock >= quantity) {\n                stock -= quantity;\n                return true;\n           ",
+        "generated_text_sha256": "99b609cdecc89bae8d1094a966663ebb971bd0a88e2a1454fdee164891edd97c"
       },
       {
         "phase": "measured",
@@ -2034,29 +2078,38 @@
         "completion_tokens": 256,
         "total_tokens": 645,
         "finish_reason": "length",
-        "embedding_seconds": 1.267498791217804,
-        "extraction_seconds": 0.0004819529131054878,
-        "generation_seconds": 17.607349884696305,
-        "client_seconds": 17.70356860663742,
-        "embedding_ms_per_1k_tokens": 4951.167153194547,
-        "extraction_ms_per_1k_tokens": 1.8826285668183118,
+        "embedding_seconds": 1.1084471652284265,
+        "extraction_seconds": 2.6823978014290333,
+        "generation_seconds": 26.42716207448393,
+        "client_seconds": 29.187138923443854,
+        "embedding_ms_per_1k_tokens": 4329.871739173541,
+        "extraction_ms_per_1k_tokens": 10478.116411832161,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.267498791217804,
+            "lp_total_time_s": 1.1084471652284265,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4951.167153194547
+            "lp_avg_per_call_us": 4329.871739173541
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 5,
+            "num_green_tokens": 3,
+            "watermarking_fraction": 0.01953125,
+            "green_fraction": 0.6,
+            "z_score": 0.4472135954999579,
+            "p_value": 0.32736042300928847,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 5,
+              "threshold": 0.5,
+              "minimum": 9.716505378065676e-12,
+              "maximum": 0.8004377484321594,
+              "mean": 0.03535027942496072
+            },
             "prediction": false
           }
         },
@@ -2074,34 +2127,43 @@
         "completion_tokens": 256,
         "total_tokens": 654,
         "finish_reason": "length",
-        "embedding_seconds": 1.3244179300963879,
-        "extraction_seconds": 0.00047262106090784073,
-        "generation_seconds": 17.908662607893348,
-        "client_seconds": 18.002160469070077,
-        "embedding_ms_per_1k_tokens": 5173.507539439015,
-        "extraction_ms_per_1k_tokens": 1.8461760191712528,
+        "embedding_seconds": 1.079334787093103,
+        "extraction_seconds": 2.747018037363887,
+        "generation_seconds": 26.523803932592273,
+        "client_seconds": 29.3498349012807,
+        "embedding_ms_per_1k_tokens": 4216.151512082433,
+        "extraction_ms_per_1k_tokens": 10730.539208452683,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.3244179300963879,
+            "lp_total_time_s": 1.079334787093103,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 5173.507539439015
+            "lp_avg_per_call_us": 4216.151512082433
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 6,
+            "num_green_tokens": 6,
+            "watermarking_fraction": 0.0234375,
+            "green_fraction": 1.0,
+            "z_score": 2.4494897427831783,
+            "p_value": 0.007152939217714809,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 6,
+              "threshold": 0.5,
+              "minimum": 5.24404582258331e-11,
+              "maximum": 0.6896559000015259,
+              "mean": 0.026863421825135677
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        \n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public synchronized boolean reserveStock(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Reservation quantity must be positive\");\n        }\n        if (stock >= quantity) {\n            stock -= quantity;\n            return true;\n        }\n        return false;\n    }\n\n   ",
-        "generated_text_sha256": "fd0906e18a6df133b0aadc915730c246d2274551403cde845f9cbf14054c8c88"
+        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        \n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public boolean canReserve(int quantity) {\n        return quantity > 0 && stock >= quantity;\n    }\n\n    public void reserve(int quantity) {\n        if (!canReserve(quantity)) {\n            throw new IllegalArgumentException(\"Cannot reserve \" + quantity + \" units of \" + sku);\n",
+        "generated_text_sha256": "7c77f8778ce7d5c8448fa5867a736ea6795df5a686b8c6743c80b438b378b713"
       },
       {
         "phase": "measured",
@@ -2114,29 +2176,38 @@
         "completion_tokens": 256,
         "total_tokens": 645,
         "finish_reason": "length",
-        "embedding_seconds": 1.1762360883876681,
-        "extraction_seconds": 0.0003646351397037506,
-        "generation_seconds": 17.526752777397633,
-        "client_seconds": 17.632736678235233,
-        "embedding_ms_per_1k_tokens": 4594.672220264329,
-        "extraction_ms_per_1k_tokens": 1.4243560144677758,
+        "embedding_seconds": 1.0186424730345607,
+        "extraction_seconds": 3.69232389703393,
+        "generation_seconds": 20.871086158789694,
+        "client_seconds": 24.69647087343037,
+        "embedding_ms_per_1k_tokens": 3979.0721602912527,
+        "extraction_ms_per_1k_tokens": 14423.140222788788,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.1762360883876681,
+            "lp_total_time_s": 1.0186424730345607,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4594.672220264329
+            "lp_avg_per_call_us": 3979.0721602912527
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 10,
+            "num_green_tokens": 8,
+            "watermarking_fraction": 0.0390625,
+            "green_fraction": 0.8,
+            "z_score": 1.8973665961010275,
+            "p_value": 0.028889785561798623,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 10,
+              "threshold": 0.5,
+              "minimum": 6.946522784073705e-12,
+              "maximum": 0.6946569085121155,
+              "mean": 0.03849867776874504
+            },
             "prediction": false
           }
         },
@@ -2154,34 +2225,43 @@
         "completion_tokens": 256,
         "total_tokens": 654,
         "finish_reason": "length",
-        "embedding_seconds": 1.2525582239031792,
-        "extraction_seconds": 0.0007315538823604584,
-        "generation_seconds": 17.53798205871135,
-        "client_seconds": 17.63720839098096,
-        "embedding_ms_per_1k_tokens": 4892.805562121794,
-        "extraction_ms_per_1k_tokens": 2.8576323529705405,
+        "embedding_seconds": 1.0197110623121262,
+        "extraction_seconds": 2.9977491004392505,
+        "generation_seconds": 20.84074905794114,
+        "client_seconds": 23.928782190196216,
+        "embedding_ms_per_1k_tokens": 3983.246337156743,
+        "extraction_ms_per_1k_tokens": 11709.957423590822,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.2525582239031792,
+            "lp_total_time_s": 1.0197110623121262,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4892.805562121794
+            "lp_avg_per_call_us": 3983.246337156743
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 6,
+            "num_green_tokens": 5,
+            "watermarking_fraction": 0.0234375,
+            "green_fraction": 0.8333333333333334,
+            "z_score": 1.6329931618554523,
+            "p_value": 0.051235217429874684,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 6,
+              "threshold": 0.5,
+              "minimum": 7.845899624436825e-11,
+              "maximum": 0.6628477573394775,
+              "mean": 0.02465773813045751
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n    private volatile int reserved;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.trim().isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        \n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n        this.reserved = 0;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public int getReserved() {\n        return reserved;\n    }\n\n    public int getAvailable() {\n        return stock - reserved;\n    }\n\n    public boolean reserve(int quantity) {\n       ",
-        "generated_text_sha256": "570107578697ff60fa4c64ad034905e3e4af8a07f7c7bba5be6f5819d7ce23cb"
+        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.trim().isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        this.sku = sku.trim();\n        \n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        this.price = price;\n        \n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public boolean isAvailable(int quantity) {\n        return stock >= quantity;\n    }\n\n    public void reserveStock(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Reservation quantity must be positive\");\n        }\n       ",
+        "generated_text_sha256": "4504215ee0b0ed84a77384a519962d9dd4495222c9edf4576efdf58014c2c572"
       },
       {
         "phase": "measured",
@@ -2194,34 +2274,43 @@
         "completion_tokens": 256,
         "total_tokens": 645,
         "finish_reason": "length",
-        "embedding_seconds": 1.060998635366559,
-        "extraction_seconds": 0.0002294406294822693,
-        "generation_seconds": 17.15375999175012,
-        "client_seconds": 17.278897415846586,
-        "embedding_ms_per_1k_tokens": 4144.525919400621,
-        "extraction_ms_per_1k_tokens": 0.8962524589151144,
+        "embedding_seconds": 1.065232852473855,
+        "extraction_seconds": 2.014885798096657,
+        "generation_seconds": 21.02068422269076,
+        "client_seconds": 23.113465141505003,
+        "embedding_ms_per_1k_tokens": 4161.065829975996,
+        "extraction_ms_per_1k_tokens": 7870.647648815066,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.060998635366559,
+            "lp_total_time_s": 1.065232852473855,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4144.525919400621
+            "lp_avg_per_call_us": 4161.065829975996
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 3,
+            "num_green_tokens": 2,
+            "watermarking_fraction": 0.01171875,
+            "green_fraction": 0.6666666666666666,
+            "z_score": 0.5773502691896258,
+            "p_value": 0.28185143082538655,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 3,
+              "threshold": 0.5,
+              "minimum": 2.552935640665055e-10,
+              "maximum": 0.6274905204772949,
+              "mean": 0.02040795398086847
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\n\npublic final class TimeSlot {\n    private final LocalDateTime startTime;\n    private final LocalDateTime endTime;\n\n    public TimeSlot(LocalDateTime startTime, LocalDateTime endTime) {\n        if (startTime == null || endTime == null) {\n            throw new IllegalArgumentException(\"Start time and end time cannot be null\");\n        }\n        if (startTime.isAfter(endTime)) {\n            throw new IllegalArgumentException(\"Start time must be before or equal to end time\");\n        }\n        this.startTime = startTime;\n        this.endTime = endTime;\n    }\n\n    public LocalDateTime getStartTime() {\n        return startTime;\n    }\n\n    public LocalDateTime getEndTime() {\n        return endTime;\n    }\n\n    public boolean overlaps(TimeSlot other) {\n        if (other == null) {\n            return false;\n        }\n        // Two half-open intervals [a,b) and [c,d) overlap if max(a,c) < min(b,d)\n        return !startTime.equals(other.endTime) && !other.startTime.equals(endTime) &&\n               !(startTime.isAfter(other.endTime) || other.startTime.isAfter(endTime));\n    }\n\n    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) return true;\n        if (obj == null || getClass() != obj.getClass",
-        "generated_text_sha256": "fc353eff50ae5b414c0f1a1501bff824b25d4c66dd8dec755783f7ea5c4b721e"
+        "generated_text": "```java\npackage main.java;\n\nimport java.time.LocalDateTime;\n\npublic final class TimeSlot {\n    private final LocalDateTime startTime;\n    private final LocalDateTime endTime;\n\n    public TimeSlot(LocalDateTime startTime, LocalDateTime endTime) {\n        if (startTime == null || endTime == null) {\n            throw new IllegalArgumentException(\"Start time and end time cannot be null\");\n        }\n        if (startTime.isAfter(endTime)) {\n            throw new IllegalArgumentException(\"Start time must be before or equal to end time\");\n        }\n        this.startTime = startTime;\n        this.endTime = endTime;\n    }\n\n    public LocalDateTime getStartTime() {\n        return startTime;\n    }\n\n    public LocalDateTime getEndTime() {\n        return endTime;\n    }\n\n    public boolean overlaps(TimeSlot other) {\n        if (other == null) {\n            return false;\n        }\n        // Two half-open intervals [a,b) and [c,d) overlap if a < d and c < b\n        return !this.endTime.isBefore(other.startTime) && !other.endTime.isBefore(this.startTime);\n    }\n\n    @Override\n    public boolean equals(Object obj) {\n        if (this == obj) {\n            return true;\n        }\n        if (obj == null || getClass() != obj.getClass()) {\n            return false;\n        }\n        TimeSlot",
+        "generated_text_sha256": "077455660c38c2722f8ce6958aedead3e9acb5c3dd01cd792cee3025ac9f277f"
       },
       {
         "phase": "measured",
@@ -2234,34 +2323,43 @@
         "completion_tokens": 256,
         "total_tokens": 654,
         "finish_reason": "length",
-        "embedding_seconds": 1.0554515738040209,
-        "extraction_seconds": 0.000493418425321579,
-        "generation_seconds": 17.313458306714892,
-        "client_seconds": 17.412277757190168,
-        "embedding_ms_per_1k_tokens": 4122.857710171957,
-        "extraction_ms_per_1k_tokens": 1.9274157239124179,
+        "embedding_seconds": 1.0172970136627555,
+        "extraction_seconds": 3.352619133889675,
+        "generation_seconds": 20.896938268095255,
+        "client_seconds": 24.326879646629095,
+        "embedding_ms_per_1k_tokens": 3973.8164596201386,
+        "extraction_ms_per_1k_tokens": 13096.168491756544,
         "processor_calls": 256,
         "processor_components": {
           "SWEETLogitsProcessor[0]": {
-            "lp_total_time_s": 1.0554515738040209,
+            "lp_total_time_s": 1.0172970136627555,
             "lp_calls": 256,
-            "lp_avg_per_call_us": 4122.857710171957
+            "lp_avg_per_call_us": 3973.8164596201386
           }
         },
         "wm_detection": {
           "SWEETLogitsProcessor[0]": {
             "num_tokens_generated": 256,
-            "num_tokens_scored": 0,
-            "num_green_tokens": 0,
-            "watermarking_fraction": 0.0,
-            "green_fraction": 0.0,
-            "z_score": -100.0,
-            "p_value": 1.0,
+            "num_tokens_scored": 7,
+            "num_green_tokens": 5,
+            "watermarking_fraction": 0.02734375,
+            "green_fraction": 0.7142857142857143,
+            "z_score": 1.1338934190276817,
+            "p_value": 0.12841962897892828,
+            "entropy": {
+              "source": "detector_model_forward",
+              "continuation_tokens": 256,
+              "qualified_tokens": 7,
+              "threshold": 0.5,
+              "minimum": 6.420819431696145e-11,
+              "maximum": 0.6853955984115601,
+              "mean": 0.028153339385469038
+            },
             "prediction": false
           }
         },
-        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.trim().isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be null or negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public boolean reserveStock(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Reservation quantity must be positive\");\n        }\n        synchronized (this) {\n            if (stock >= quantity) {\n                stock -= quantity;\n                return true;\n            }\n            return false;\n        }\n    }\n\n    public",
-        "generated_text_sha256": "92ffbf4d7e2656949b1697dc7cc766efa6927ec1a3b3125e64932995e6ea3b1b"
+        "generated_text": "```java\npackage main.java;\n\nimport java.math.BigDecimal;\nimport java.util.Objects;\n\npublic class Product {\n    private final String sku;\n    private final BigDecimal price;\n    private volatile int stock;\n\n    public Product(String sku, BigDecimal price, int stock) {\n        if (sku == null || sku.trim().isEmpty()) {\n            throw new IllegalArgumentException(\"SKU cannot be null or empty\");\n        }\n        if (price == null) {\n            throw new IllegalArgumentException(\"Price cannot be null\");\n        }\n        if (price.compareTo(BigDecimal.ZERO) < 0) {\n            throw new IllegalArgumentException(\"Price cannot be negative\");\n        }\n        if (stock < 0) {\n            throw new IllegalArgumentException(\"Stock cannot be negative\");\n        }\n        this.sku = sku;\n        this.price = price;\n        this.stock = stock;\n    }\n\n    public String getSku() {\n        return sku;\n    }\n\n    public BigDecimal getPrice() {\n        return price;\n    }\n\n    public int getStock() {\n        return stock;\n    }\n\n    public boolean isReserved(int quantity) {\n        return stock >= quantity;\n    }\n\n    public void reserve(int quantity) {\n        if (quantity <= 0) {\n            throw new IllegalArgumentException(\"Reservation quantity must be positive\");\n        }\n        if (!isReserved",
+        "generated_text_sha256": "6c5206bfe9649c501e7b11649fd1b16460d8a8f291045be24f32fee3a8ca2156"
       }
     ],
     "stone": [
@@ -3310,5 +3408,38 @@
         "generated_text_sha256": "768b5228027d274578409b187ddbe870213444f7006e340223d106a8916c9bf5"
       }
     ]
-  }
+  },
+  "measurement_campaigns": [
+    {
+      "methods": [
+        "wllm",
+        "ewd",
+        "stone",
+        "codeip",
+        "waterfall"
+      ],
+      "created_at_utc": "2026-09-17T09:58:15.663293+00:00",
+      "environment": {
+        "python": "3.13.5",
+        "platform": "Linux-5.15.0-142-generic-x86_64-with-glibc2.35",
+        "nvidia_smi": "0, NVIDIA A800 80GB PCIe, GPU-cfc87885-8270-cff8-b48d-cdd6e280c6c1, 595.58.03, 81920 MiB\n1, NVIDIA A800 80GB PCIe, GPU-660e1514-dbd7-55d8-4634-794e3e155f28, 595.58.03, 81920 MiB\n2, NVIDIA A800 80GB PCIe, GPU-74d72a34-794a-08bc-e62f-1759142d706a, 595.58.03, 81920 MiB\n3, NVIDIA A800 80GB PCIe, GPU-0e11ad86-f6c7-d75b-38e4-9f2999119fb3, 595.58.03, 81920 MiB",
+        "source_commit_at_run": "9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa",
+        "released_source_commit": "05622a57a5cb5df536a545b652d8df8e42df8984",
+        "benchmark_wall_seconds": 1677.8043375657871
+      }
+    },
+    {
+      "methods": [
+        "sweet"
+      ],
+      "created_at_utc": "2026-09-17T11:00:25.944695+00:00",
+      "environment": {
+        "python": "3.13.5",
+        "platform": "Linux-5.15.0-142-generic-x86_64-with-glibc2.35",
+        "nvidia_smi": "0, NVIDIA A800 80GB PCIe, GPU-cfc87885-8270-cff8-b48d-cdd6e280c6c1, 595.58.03, 81920 MiB\n1, NVIDIA A800 80GB PCIe, GPU-660e1514-dbd7-55d8-4634-794e3e155f28, 595.58.03, 81920 MiB\n2, NVIDIA A800 80GB PCIe, GPU-74d72a34-794a-08bc-e62f-1759142d706a, 595.58.03, 81920 MiB\n3, NVIDIA A800 80GB PCIe, GPU-0e11ad86-f6c7-d75b-38e4-9f2999119fb3, 595.58.03, 81920 MiB",
+        "source_commit": "fe55e272b9a9296a03639456180bc8e090eed59e",
+        "benchmark_wall_seconds": 274.4372290382162
+      }
+    }
+  ]
 }

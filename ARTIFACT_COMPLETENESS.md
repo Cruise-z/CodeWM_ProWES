@@ -31,7 +31,7 @@ three supplied inputs and was not fabricated.
 | RQ2 45-program LLM MBXP pilot | Present | `results/RQ2/06_llm_rag_mbxp_pilot/epr/` |
 | RQ2 predictions/statistics/bootstrap/table/figures | Present | `results/RQ2/`, `RQ2/source/`, `paper_reproduction/` |
 | RQ3 timing implementation hooks | Present | `RQ3/01_timing_harness/` plus synchronized instrumentation under `RQ1/source/` and `RQ2/source/`. |
-| RQ3 raw timings/token counts/repetition statistics | Present | `RQ3/02_raw_timings/`, `RQ3/04_token_counts/`, and embedded run-level 95% bootstrap intervals. |
+| RQ3 raw timings/token counts/repetition statistics | Present | `RQ3/02_raw_timings/`, `RQ3/04_token_counts/`, embedded run-level 95% bootstrap intervals, and the audited SWEET detector-forward correction in `RQ3/SWEET_TIMING_CORRECTION.md`. |
 | RQ3 training cost evidence | Present | Canonical CSN-JavaScript fresh-training logs and parsed durations in `RQ3/03_training_logs/`. |
 | RQ3 Table X reproduction | Present | `paper_reproduction/reproduce_rq3.sh` regenerates CSV/JSON/LaTeX from raw records. |
 
