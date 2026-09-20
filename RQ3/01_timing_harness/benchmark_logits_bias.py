@@ -546,7 +546,10 @@ def main() -> int:
                     (repeat * len(workloads) + workload_index) * len(methods)
                     + method_index
                 )
-                baseline_first = pair_index % 2 == 0
+                # Counterbalance within every method: the two workloads use
+                # opposite orders in each repeat, yielding exactly 5/5 over
+                # the ten measured rows for every method.
+                baseline_first = (repeat + workload_index + method_index) % 2 == 0
                 pair_order = (
                     "baseline_then_watermark"
                     if baseline_first
@@ -609,6 +612,16 @@ def main() -> int:
                         pair_order=pair_order,
                     )
                 )
+
+    for method, rows in rows_by_method.items():
+        order_counts = {
+            order: sum(row["pair_order"] == order for row in rows)
+            for order in ("baseline_then_watermark", "watermark_then_baseline")
+        }
+        if abs(order_counts["baseline_then_watermark"] - order_counts["watermark_then_baseline"]) > 1:
+            raise RuntimeError(
+                f"{method} pair order is not counterbalanced: {order_counts}"
+            )
 
     result = {
         "schema_version": 6,
