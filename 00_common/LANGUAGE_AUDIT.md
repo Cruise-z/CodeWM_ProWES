@@ -34,14 +34,10 @@ observation and is omitted from the newly imported baseline package. This
 matches the campaign's canonical tree-hash policy, which excludes `.git`.
 
 First-party comments, reviewer documentation, configuration annotations, and
-report labels outside those immutable scopes were normalized to English. This
-now includes the active RQ1 model runtime, its synchronized DT copy, and the
-RQ2 SrcMarker source copy. Obsolete multilingual manual server tests were
-removed; they were not invoked by any released experiment or reproduction
-entry point. The only experiment fixture touched in executable RQ1 campaign
-code was rewritten as an equivalent Unicode escape, preserving its runtime
-value. No raw result, prediction, checkpoint, prompt response, or statistical
-value was translated.
+report labels outside those immutable scopes are English. This includes the
+active RQ1 model runtime, its synchronized DT copy, and the RQ2 SrcMarker
+source copy. Experiment fixtures retain equivalent runtime values. No raw
+result, prediction, checkpoint, prompt response, or statistical value is
+translated.
 
-Exact local source-normalization details and pre/post hashes are recorded in
-`patches/LANGUAGE_NORMALIZATION.md`.
+The final release policy is recorded in `patches/LANGUAGE_NORMALIZATION.md`.

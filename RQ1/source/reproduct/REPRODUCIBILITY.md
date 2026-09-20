@@ -1,140 +1,62 @@
-# Reproduction boundary and environment granularity
+# RQ1 reproducibility boundary
 
-## Summary
+## Reproduction targets
 
-A fixed `rng_seed` fixes only the sampling random stream; it does not uniquely
-determine a generated repository. Reconstructing identical content also
-requires fixed prompts, architecture state, file-generation order, model and
-tokenizer, sampling implementation and parameters, framework source, inference
-software stack, and the hardware/driver conditions that affect floating-point
-execution.
+The experiment distinguishes two targets:
 
-This experiment distinguishes two targets:
+1. **Functional reproduction:** a retained repository builds, tests, and runs
+   under the frozen evaluator. This is the mandatory acceptance criterion.
+2. **Byte-identical replay:** regeneration with the same inputs produces the
+   same canonical source-tree SHA-256. This stricter property is verified by
+   the 42 released same-seed replays in the recorded environment.
 
-1. **Functional reproduction:** the repository still builds, tests, and runs
-   under the frozen ProWES container protocol. This is the mandatory acceptance
-   criterion for the 42 retained project-language inputs and is generally
-   portable across machines.
-2. **Byte-identical generation reproduction:** regenerating with the model
-   yields identical SHA-256 values for every source file. This is substantially
-   stricter. The current Qwen3-MoE/CUDA stack cannot guarantee it across
-   arbitrary machines, so it is assessed empirically through replay and hashes.
+## Fixed generation inputs
 
-## Architecture versions and attempt accounting
+- task, language, and sampling parameters from `manifest.json`;
+- serialized architecture state in `architecture/team/team.json`;
+- initial repository and ordered `Engineer.code_todos` file list;
+- exact Stage-1 rendered prompts and prior-file context;
+- Qwen3-Coder-30B-A3B-Instruct model weights, tokenizer, and chat template;
+- `temperature=0.7`, `top_p=1.0`, `max_tokens=4096`, and per-request RNG seed;
+- frozen MetaGPT, `WriteCode`, model-server, and generation source;
+- disabled watermark processors for the delta-zero baseline.
 
-A seed is valid only for the architecture version against which it was tried.
-An architecture version is jointly identified by the SHA-256 of
-`architecture/team/team.json` and the tree hash of `initial_repository/`.
-Changing either input invalidates all seeds tried against the previous pair;
-those attempts cannot count toward a new architecture or serve as acceptance
-evidence for it.
+## Fixed runtime and evaluator
 
-When an architecture is rebuilt, the old architecture, initial repository,
-attempts, accepted repository, and replays move together to
-`architecture_failures/<epoch>/`. Attempt numbering restarts from one for the
-new architecture. An accepted seed from an older epoch remains historical
-evidence only and is not copied into the new epoch or counted as a current
-success. Individually interrupted attempts from early accounting migrations are
-retained in `interrupted_attempts/`; attempts interrupted directly by an
-architecture replacement are archived with the complete old epoch. Neither
-counts as a seed trial for the new architecture. Migration details are recorded
-in `evidence/attempt_epoch_migration_latest.json`.
+- Python, PyTorch, Transformers, CUDA, cuDNN, and driver versions;
+- GPU model, dtype, device map, memory policy, and concurrency policy;
+- Docker/Podman version and evaluator image identity;
+- Java/Maven, Python/pytest, and CMake/GCC versions;
+- evaluator scripts, timeouts, and dependency configuration.
 
-## Conditions that must be fixed
+The exact recorded environment is under `00_common/environment/` and
+`00_common/hardware/`.
 
-### Generation inputs
+## Determinism boundary
 
-- task, language, size, and sampling parameters in `manifest.json`;
-- each unit's `architecture/prompt.txt`;
-- the actual code-generation input `architecture/team/team.json`;
-- the file list and order in `Engineer.code_todos`;
-- the rule for appending previously generated files as later-file
-  `Legacy Code`;
-- ProWES first-line `## filename` normalization.
+The model service injects the request seed and serializes access to the global
+CPU/CUDA RNG when the model path cannot accept a private generator. Strict
+deterministic-algorithm mode is unavailable because the recorded Qwen3-MoE
+stack uses CUDA operations without deterministic implementations. Therefore a
+seed alone is not a cross-machine byte-identity guarantee.
 
-### Model and algorithm
+The defensible portable claim is functional reproduction with the frozen
+evaluator. Byte identity is an observed result for the released replays under
+the recorded software and hardware fingerprint and is checked through source
+tree hashes.
 
-- the remote OpenAI-compatible API endpoint and `gpt-5` model fixed by
-  `manifest.json` for architecture generation; the realized endpoint/model
-  for each current epoch is in `architecture/evidence.json`, and the final
-  audit rejects local or missing provenance;
-- the retained `team.json`, raw/normalized task documents, and their hashes as
-  the canonical downstream input, because a hosted architecture response is
-  not claimed to be byte-reconstructible from a seed alone; code-generation
-  seed replay does not call the architecture API again;
-- exact Qwen3-Coder-30B-A3B-Instruct weights, configuration, tokenizer, and
-  chat template;
-- `temperature=0.7`, `top_p=1.0`, `max_tokens=4096`, sampling switch, and
-  `rng_seed`;
-- watermark/logits-processor names, parameters, and registration order; all
-  processors are disabled for baseline generation;
-- the model service, Transformers `generate()` path, and MetaGPT/WriteCode
-  source;
-- explicit per-request seed injection and the server-side global RNG lock.
+## Final evidence entry points
 
-### Runtime environment
-
-- Python, PyTorch, Transformers, CUDA runtime, cuDNN, and CUBLAS versions;
-- NVIDIA driver, GPU model, compute capability, and preferably the same GPU
-  SKU;
-- dtype, device map, memory policy, deterministic environment variables, and
-  concurrency policy;
-- operating system, CPU architecture, locale, timezone, and thread-related
-  environment variables.
-
-### Acceptance environment
-
-- Podman/Docker version and immutable evaluator image ID/digest;
-- SHA-256 values for `evaluator/test_podman.sh` and
-  `evaluator/docker/eval_protocol.sh`;
-- Java/Maven, Python/pip/pytest, CMake/GCC, and dependency-source versions;
-- network availability and dependency-cache state. The strongest replay setup
-  preinstalls all dependencies in an immutable image and runs offline.
-
-## Determinism limitations in the recorded environment
-
-The model service first attempts to use a request-private
-`torch.Generator`. The recorded Transformers/Qwen3-MoE path does not accept
-that generator, so the implementation resets the global CPU/CUDA RNG under a
-process-wide mutex before generation. This isolates concurrent requests within
-one service process.
-
-Strict deterministic-algorithm mode is unavailable for the recorded model:
-Qwen3-MoE calls `_histc`, which lacks a deterministic CUDA implementation.
-The same seed therefore is not a mathematical guarantee across GPU models,
-drivers, or PyTorch versions. The retained repository and tree hash are the
-canonical result; replay must compare file hashes rather than only checking
-whether tests pass.
-
-## Cross-machine expectations
-
-- **Move and execute a retained repository:** high feasibility when using the
-  same evaluator image and protocol.
-- **Regenerate on the same GPU model with identical driver, CUDA, PyTorch,
-  Transformers, weights, and source:** medium-to-high feasibility, but hashes
-  must still be checked.
-- **Demand byte-identical source across different GPUs or numerical stacks:**
-  not a defensible guarantee. Floating-point reductions, kernel choice, or a
-  tiny logits difference can change one sampled token and amplify into wholly
-  different text.
-
-The defensible paper claim is that retained repositories pass the frozen
-evaluator. A claim that a fixed seed regenerates the same SHA-256 is limited to
-the recorded hardware/software fingerprint and must report the observed replay
-success rate separately.
-
-## Evidence entry points
-
-- `evidence/preflight.json`: model, framework, container, and environment
-  fingerprints;
-- `campaign_state.json`: progress index for all 42 units;
-- `audit.json`: final integrity audit, architecture API provenance, seeds, and
-  repository tree hashes by unit;
-- `units/*/*/architecture/evidence.json`: architecture-input and snapshot
-  hashes;
-- `units/*/*/attempts/*/evidence.json`: every random attempt and failure
-  stage;
-- `evidence/attempt_epoch_migration_latest.json`: archived older-architecture
-  attempts, current-architecture renumbering, and exclusions;
-- `units/*/*/accepted/`: final seed, passing-log reference, and canonical
-  repository.
+- `results/RQ1/05_baseline_qualification/ledger/`: final campaign state,
+  result tables, and integrity audit;
+- `results/RQ1/05_baseline_qualification/indexes/attempt_ledger.csv`: all 88
+  completed attempts;
+- `results/RQ1/05_baseline_qualification/indexes/accepted_ledger.csv`: 42
+  accepted seeds and repositories;
+- `results/RQ1/05_baseline_qualification/indexes/replay_ledger.csv`: 42 replay
+  comparisons;
+- `results/RQ1/05_baseline_qualification/units/*/*/`: generation reports,
+  evaluator logs, accepted repositories, replay repositories, and hashes;
+- `RQ1/02_prompts/`: exact rendered Stage-0 and accepted-run Stage-1 prompts;
+- `RQ1/03_architecture_checkpoints/`: serialized architecture state and initial
+  repositories.

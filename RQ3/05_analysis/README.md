@@ -10,8 +10,7 @@ rendered-prompt hashes, one-to-one baseline linkage, paired subtraction, 5/5
 within-method pair-order balance, run counts, and both released semantic
 checkpoint digests. For SWEET it additionally requires the paper's `ET=0.5`
 setting, positive scored-token counts, and independently recomputed
-detector-entropy provenance. See `../TIMING_DESIGN_AUDIT.md` and
-`../SWEET_TIMING_CORRECTION.md` for the correction audit.
+detector-entropy provenance.
 
 From the artifact root:
 

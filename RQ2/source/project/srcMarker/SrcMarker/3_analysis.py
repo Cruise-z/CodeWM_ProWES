@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Paired robustness analysis for attacked watermark results.
 
-Reports clean/attacked BAR, clean/attacked MAR, DeltaBAR, attack validity coverage,
-and paired sample-bootstrap confidence intervals.  Unlike the legacy script, attacked
-bit accuracy is not conditioned on the clean extractor being correct bit-by-bit.
+Reports clean/attacked BAR, clean/attacked MAR, DeltaBAR, attack validity
+coverage, and paired sample-bootstrap confidence intervals. Attacked bit
+accuracy is not conditioned on clean bit-level correctness.
 """
 from __future__ import annotations
 import argparse

@@ -2,10 +2,10 @@
 set -euo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 BASE="$ROOT/results/RQ1/05_baseline_qualification"
-APP="$ROOT/results/RQ1/Applicability"
-DET="$ROOT/results/RQ1/Detectability"
-TABLES="$ROOT/paper_reproduction/tables/rq1"
-FIGURES="$ROOT/paper_reproduction/figures/rq1"
+APP="$ROOT/results/RQ1/07_strength_sweep"
+DET="$ROOT/results/RQ1/08_detectability"
+TABLES="$ROOT/paper_reproduction/tables/RQ1"
+FIGURES="$ROOT/paper_reproduction/figures/RQ1"
 WORK=$(mktemp -d /tmp/prowes-rq1-reproduction-XXXXXX)
 
 if [[ ! -d "$BASE" || ! -d "$APP" || ! -d "$DET" ]]; then

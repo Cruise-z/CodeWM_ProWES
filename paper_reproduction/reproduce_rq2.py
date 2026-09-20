@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "RQ2" / "source"
 RESULTS = ROOT / "results" / "RQ2"
 OUTPUT = ROOT / "paper_reproduction"
+TABLE_OUTPUT = OUTPUT / "tables" / "RQ2"
+FIGURE_OUTPUT = OUTPUT / "figures" / "RQ2"
 
 
 def link(source: Path, destination: Path) -> None:
@@ -27,18 +29,18 @@ def main() -> None:
         build_root = Path(temporary)
         shutil.copy2(SOURCE / "build_rq2_deliverables.py", build_root)
         shutil.copy2(SOURCE / "plot_rq2_results.py", build_root)
-        link(SOURCE / "rq2_revision", build_root / "rq2_revision")
-        link(RESULTS / "08_statistics" / "fresh", build_root / "outputs/fresh/final")
+        link(SOURCE / "pipeline", build_root / "pipeline")
+        link(RESULTS / "08_statistics" / "fresh", build_root / "inputs/training")
         link(
             RESULTS / "04_mbxp_validation" / "final",
-            build_root / "outputs/fresh/epr_rule/final",
+            build_root / "inputs/rule_epr",
         )
         link(
             RESULTS / "06_llm_rag_mbxp_pilot" / "final",
-            build_root / "outputs/fresh/llm_pilot_minimal/final",
+            build_root / "inputs/llm_mbxp",
         )
-        link(RESULTS / "05_llm_rag", build_root / "outputs/fresh/llm_full_1000")
-        link(RESULTS / "05_llm_rag" / "cohort", build_root / "outputs/fresh/llm_input")
+        link(RESULTS / "05_llm_rag", build_root / "inputs/llm_rag")
+        link(RESULTS / "05_llm_rag" / "cohort", build_root / "inputs/cohort")
         link(
             RESULTS / "02_training" / "checkpoints",
             build_root / "training/SrcMarker_fresh/ckpts",
@@ -56,14 +58,14 @@ def main() -> None:
         )
 
         generated = build_root / "deliverables/03_tables_figures"
-        shutil.copytree(generated / "tables", OUTPUT / "tables", dirs_exist_ok=True)
-        shutil.copytree(generated / "figures", OUTPUT / "figures", dirs_exist_ok=True)
+        shutil.copytree(generated / "tables", TABLE_OUTPUT, dirs_exist_ok=True)
+        shutil.copytree(generated / "figures", FIGURE_OUTPUT, dirs_exist_ok=True)
         shutil.copy2(
             build_root / "deliverables/01_paper_report/rq2_complete_results.json",
-            OUTPUT / "tables/rq2_complete_results.json",
+            TABLE_OUTPUT / "rq2_complete_results.json",
         )
-    print(f"RQ2 tables: {OUTPUT / 'tables'}")
-    print(f"RQ2 figures: {OUTPUT / 'figures'}")
+    print(f"RQ2 tables: {TABLE_OUTPUT}")
+    print(f"RQ2 figures: {FIGURE_OUTPUT}")
 
 
 if __name__ == "__main__":

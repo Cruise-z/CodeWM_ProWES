@@ -44,7 +44,4 @@ receive a stable `h=<hash>` suffix derived from the complete parameter name.
 
 The reproducibility campaign under `../../reproduct/` is the architecture and
 baseline entry point for the released 42-unit experiment because it pins task
-inputs, model identities, seeds, checkpoints, and audit records. The older
-incomplete DT prompt modules and their two direct-generation examples were
-removed; they remain recoverable from Git tag
-`artifact-backup-before-legacy-dt-removal-20260917`.
+inputs, model identities, seeds, checkpoints, and audit records.

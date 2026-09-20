@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Portable CPU/CUDA SrcMarker extractor for an attacked JSONL file.
 
-This entry point loads only the trained extractor encoder and watermark decoder.  It
-therefore avoids the CUDA-only and training-time transform-manager assumptions in the
-legacy evaluator while preserving its tokenization and 512-token truncation protocol.
+This entry point loads only the trained extractor encoder and watermark decoder
+while preserving the experiment's tokenization and 512-token truncation
+protocol.
 """
 from __future__ import annotations
 

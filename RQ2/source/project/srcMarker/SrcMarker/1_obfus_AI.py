@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
-"""LLM + local hard-rule RAG semantic-restatement attack.
+"""Final LLM + local hard-rule RAG semantic-restatement attack.
 
-Unlike the legacy file-chat script, this version performs explicit reproducible retrieval
-(BM25 over an archived rule knowledge base), injects the retrieved rule cards into the
-prompt, records the retrieved IDs and prompt hash, and validates syntax when tree-sitter
-is available.
+The driver performs deterministic BM25 retrieval, injects retrieved rule cards
+into the prompt, records rule IDs and the prompt hash, and validates syntax.
 """
 from __future__ import annotations
 import argparse
@@ -20,10 +18,10 @@ for p in [BUNDLE, BUNDLE / "cStyleLang"]:
     if p.exists() and str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from rq2_revision.common import read_jsonl, write_jsonl, select_rows, stable_uid, resolve_parser_lib
-from rq2_revision.rag import BM25RuleRetriever
-from rq2_revision.llm_rag import rewrite_with_rag
-from rq2_revision.llm_provider import OpenAICompatibleProvider, LegacyAiAPIProvider, MockIdentityProvider
+from pipeline.common import read_jsonl, write_jsonl, select_rows, stable_uid, resolve_parser_lib
+from pipeline.rag import BM25RuleRetriever
+from pipeline.llm_rag import rewrite_with_rag
+from pipeline.llm_provider import OpenAICompatibleProvider, MockIdentityProvider
 
 
 def parse_args():
@@ -48,25 +46,18 @@ def parse_args():
     ap.add_argument("--resume", action="store_true")
     ap.add_argument("--progress-every", type=int, default=25)
     ap.add_argument("--parser-lib", default=None)
-    ap.add_argument("--rules", default=str(BUNDLE / "rq2_revision" / "rules" / "hard_rules.json"))
+    ap.add_argument("--rules", default=str(BUNDLE / "pipeline" / "rules" / "hard_rules.json"))
 
-    ap.add_argument("--provider", choices=["openai-compatible", "legacy-aiapi", "mock"], default="openai-compatible")
+    ap.add_argument("--provider", choices=["openai-compatible", "mock"], default="openai-compatible")
     ap.add_argument("--base-url", default="https://api.openai.com/v1")
     ap.add_argument("--model", default="gpt-4o-mini")
     ap.add_argument("--api-key-env", default="OPENAI_API_KEY")
-    ap.add_argument("--legacy-config", default=None)
-    ap.add_argument("--legacy-profile", default="paid")
-    ap.add_argument("--legacy-model-attr", default="gpt4")
     return ap.parse_args()
 
 
 def provider_from_args(a):
     if a.provider == "mock":
         return MockIdentityProvider()
-    if a.provider == "legacy-aiapi":
-        if not a.legacy_config:
-            raise ValueError("--legacy-config is required for --provider legacy-aiapi")
-        return LegacyAiAPIProvider(a.legacy_config, a.legacy_profile, a.legacy_model_attr)
     return OpenAICompatibleProvider(a.base_url, a.model, a.api_key_env)
 
 
@@ -113,7 +104,7 @@ def main():
                     )
                     item[a.output_field] = code
                     meta["provider"] = a.provider
-                    meta["model"] = a.model if a.provider == "openai-compatible" else a.legacy_model_attr
+                    meta["model"] = a.model if a.provider == "openai-compatible" else "mock"
                     meta["attempts"] = attempt
                     if not meta.get("syntax_valid", True):
                         status = "syntax_invalid"

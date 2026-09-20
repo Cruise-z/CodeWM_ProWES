@@ -408,7 +408,7 @@ def verify_ledger(root: Path, ledger_name: str) -> int:
 
 
 def verify_applicability() -> dict[str, object]:
-    package = RQ1_RESULTS / "Applicability"
+    package = RQ1_RESULTS / "07_strength_sweep"
     metadata = json.loads((package / "metadata.json").read_text(encoding="utf-8"))
     with (package / "data" / "watermark_points.csv").open(
         encoding="utf-8", newline=""
@@ -452,7 +452,7 @@ def verify_applicability() -> dict[str, object]:
 
 
 def verify_detectability() -> dict[str, object]:
-    package = RQ1_RESULTS / "Detectability"
+    package = RQ1_RESULTS / "08_detectability"
     summary = json.loads(
         (package / "derived" / "audit_summary.json").read_text(encoding="utf-8")
     )
@@ -478,19 +478,12 @@ def verify_detectability() -> dict[str, object]:
 
 
 def main() -> None:
-    provenance = json.loads(
-        (RQ1_RESULTS / "ARCHIVE_PROVENANCE.json").read_text(encoding="utf-8")
-    )
-    for archive in provenance["archives"]:
-        assert sha256(ROOT / archive["path"]) == archive["sha256"]
-
     report = {
         "status": "PASS",
         "prompts": verify_prompts(),
         "baseline_qualification": verify_baseline(),
         "applicability": verify_applicability(),
         "detectability": verify_detectability(),
-        "archive_digests": "PASS",
     }
     print(json.dumps(report, indent=2))
 

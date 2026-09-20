@@ -16,9 +16,9 @@ three supplied inputs and was not fabricated.
 | RQ1 current initial repositories | Present | Beside each architecture checkpoint. |
 | RQ1 frozen generator/framework/evaluator | Present | `RQ1/source/`, `RQ1/04_docker/` |
 | RQ1 baseline attempts, accepted repositories, replay logs | Present | `results/RQ1/05_baseline_qualification/` contains 88 attempts, 42 accepted snapshots, 42 verified replays, worker/evaluator logs, hashes, and reviewer indexes. |
-| RQ1 applicability observations | Partial | `results/RQ1/Applicability/` has 9,141 point rows and 298 aggregate batch summaries, but not the referenced per-point Docker logs or repository snapshots. |
-| RQ1 detectability observations | Partial | `results/RQ1/Detectability/` has four aggregate raw logs and audited values, but not per-sample detector-score CSVs. |
-| RQ1 supplied-result reproduction | Present | `paper_reproduction/reproduce_rq1.sh` verifies the baseline plus both archives and regenerates three baseline ledgers, six applicability tables, 18 figures, and three detectability outputs. |
+| RQ1 applicability observations | Partial | `results/RQ1/07_strength_sweep/` has 9,141 point rows and 298 aggregate batch summaries, but not the referenced per-point Docker logs or repository snapshots. |
+| RQ1 detectability observations | Partial | `results/RQ1/08_detectability/` has four aggregate raw logs and audited values, but not per-sample detector-score CSVs. |
+| RQ1 supplied-result reproduction | Present | `paper_reproduction/reproduce_rq1.sh` verifies the baseline and both final expanded result trees, then regenerates three baseline ledgers, six applicability tables, 18 figures, and three detectability outputs. |
 | RQ1 complete main-paper table reproduction | Partial | The archives cover the supplied medium-project applicability and aggregate detectability outputs; small-project rows and all paper bootstrap/sensitivity intermediates were not supplied. |
 | RQ2 GitHub/MBXP splits and stable LLM cohort | Present | `results/RQ2/01_datasets/`, `results/RQ2/05_llm_rag/cohort/` |
 | RQ2 CSN train/validation source files | Missing | Upstream download/preprocessing instructions are in the SrcMarker README; test observations and UIDs are present. |
@@ -27,17 +27,18 @@ three supplied inputs and was not fabricated.
 | RQ2 clean per-sample predictions | Present | `results/RQ2/02_training/clean_predictions/` |
 | RQ2 32 rule attack/evaluation cells | Present | `results/RQ2/03_rule_attacks/` |
 | RQ2 full MBXP validity matrix | Present | `results/RQ2/04_mbxp_validation/` |
-| RQ2 LLM cohort, rule base, prompts, calls and responses | Present | `RQ2/source/rq2_revision/`, `results/RQ2/05_llm_rag/` |
+| RQ2 LLM cohort, rule base, prompts, calls and responses | Present | `RQ2/source/pipeline/`, `results/RQ2/05_llm_rag/` |
 | RQ2 45-program LLM MBXP pilot | Present | `results/RQ2/06_llm_rag_mbxp_pilot/epr/` |
-| RQ2 predictions/statistics/bootstrap/table/figures | Present | `results/RQ2/`, `RQ2/source/`, `paper_reproduction/` |
+| RQ2 predictions/statistics/bootstrap/table/figures | Present | `results/RQ2/`, `RQ2/source/`, `paper_reproduction/tables/RQ2/`, `paper_reproduction/figures/RQ2/` |
 | RQ3 timing implementation hooks | Present | `RQ3/01_timing_harness/` plus synchronized instrumentation under `RQ1/source/` and `RQ2/source/`. |
-| RQ3 raw timings/token counts/repetition statistics | Present | `RQ3/02_raw_timings/`, `RQ3/04_token_counts/`, 60 adjacent and within-method counterbalanced WM-OFF pairs, embedded 95% bootstrap intervals, and the audits in `RQ3/TIMING_DESIGN_AUDIT.md` and `RQ3/SWEET_TIMING_CORRECTION.md`. |
+| RQ3 raw timings/token counts/repetition statistics | Present | `RQ3/02_raw_timings/`, `RQ3/04_token_counts/`, 60 adjacent and within-method counterbalanced WM-OFF pairs, and embedded 95% bootstrap intervals. |
 | RQ3 training cost evidence | Present | Canonical CSN-JavaScript fresh-training logs and parsed durations in `RQ3/03_training_logs/`. |
 | RQ3 Table X reproduction | Present | `paper_reproduction/reproduce_rq3.sh` regenerates CSV/JSON/LaTeX from raw records. |
 
 Before public release, run:
 
 ```bash
+python tools/verify_release_layout.py
 python tools/verify_rq1_evidence.py
 python tools/verify_rq2_evidence.py
 ./paper_reproduction/reproduce_all.sh

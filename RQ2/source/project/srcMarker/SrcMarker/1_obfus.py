@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Revised reproducible rule-based RQ2 attack driver.
+"""Final reproducible rule-based RQ2 attack driver.
 
 This script is intended to be copied into the SrcMarker repository together with the
-``rq2_revision`` package and the revised ``cStyleCodeObfuscator`` package.
+``pipeline`` and ``cStyleCodeObfuscator`` packages.
 """
 from __future__ import annotations
 import argparse
@@ -10,15 +10,15 @@ import copy
 import sys
 from pathlib import Path
 
-# Make the revision bundle importable when run in-place.
+# Make the Artifact source tree importable when run in-place.
 HERE = Path(__file__).resolve()
 BUNDLE = HERE.parents[3] if len(HERE.parents) >= 4 else HERE.parent
 for p in [BUNDLE, BUNDLE / "cStyleLang"]:
     if p.exists() and str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from rq2_revision.common import read_jsonl, write_jsonl, select_rows, stable_uid, resolve_parser_lib
-from rq2_revision.rule_attack import attack_code
+from pipeline.common import read_jsonl, write_jsonl, select_rows, stable_uid, resolve_parser_lib
+from pipeline.rule_attack import attack_code
 
 
 def parse_args():
@@ -34,8 +34,6 @@ def parse_args():
     ap.add_argument("--sample-size", type=int, default=None)
     ap.add_argument("--max-chars", type=int, default=None)
     ap.add_argument("--selection", choices=["input", "longest"], default="input")
-    ap.add_argument("--legacy-unsafe", action="store_true",
-                    help="Disable safety guards for update-expression rewrites")
     return ap.parse_args()
 
 
@@ -54,7 +52,7 @@ def main():
         try:
             attacked, meta = attack_code(
                 src, a.lang, a.channel, a.seed, item["_attack_uid"], parser_lib,
-                safe_mode=not a.legacy_unsafe,
+                safe_mode=True,
             )
             item[a.output_field] = attacked
             item["attack_meta"] = meta

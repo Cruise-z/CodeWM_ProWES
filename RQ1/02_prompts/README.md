@@ -10,11 +10,8 @@ project modules.
 | `stage1/` | Exact accepted-run `WriteCode` system/user prompts and input contexts | 480 file-generation actions |
 
 The formal campaign inventory is defined by
-`../01_task_specs/manifest.json`. The incomplete historical DT prompt set and
-its two obsolete direct-generation examples were removed from the reviewer
-package because they did not define or participate in the released campaign.
-The complete pre-removal tree remains recoverable at Git tag
-`artifact-backup-before-legacy-dt-removal-20260917`.
+`../01_task_specs/manifest.json`. This directory contains only prompts that
+define or participate in the released 42-unit campaign.
 
 `build_prompt_bundle.py` deterministically rebuilds both prompt manifests and
 all rendered prompt files from the immutable architecture checkpoints and

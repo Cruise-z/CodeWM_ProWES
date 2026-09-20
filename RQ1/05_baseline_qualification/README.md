@@ -3,8 +3,8 @@
 Implementation: `../source/reproduct/campaign.py`.
 
 The code enforces complete generation, no truncation, evaluator return code 0,
-architecture-epoch scoping, accepted-seed capture, and same-seed/hash replay.
-The complete final-epoch evidence is released at
+checkpoint scoping, accepted-seed capture, and same-seed/hash replay.
+The complete final evidence is released at
 `../../results/RQ1/05_baseline_qualification/`: 88 per-attempt records, 42
 accepted repositories, and 42 verified replays, together with generation
 reports, evaluator logs, hashes, and flattened reviewer indexes.

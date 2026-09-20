@@ -46,9 +46,9 @@
       "method": "srcmarker",
       "dataset": "github_c_funcs",
       "language": "cpp",
-      "input": "outputs/fresh/llm_input/srcmarker_github_c_funcs.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/srcmarker_github_c_funcs_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_srcmarker_github_c_funcs.log"
+      "input": "results/RQ2/05_llm_rag/cohort/srcmarker_github_c_funcs.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/srcmarker_github_c_funcs_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_srcmarker_github_c_funcs.log"
     },
     {
       "rows": 125,
@@ -71,9 +71,9 @@
       "method": "srcmarker",
       "dataset": "github_java_funcs",
       "language": "java",
-      "input": "outputs/fresh/llm_input/srcmarker_github_java_funcs.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/srcmarker_github_java_funcs_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_srcmarker_github_java_funcs.log"
+      "input": "results/RQ2/05_llm_rag/cohort/srcmarker_github_java_funcs.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/srcmarker_github_java_funcs_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_srcmarker_github_java_funcs.log"
     },
     {
       "rows": 125,
@@ -95,9 +95,9 @@
       "method": "srcmarker",
       "dataset": "csn_js",
       "language": "javascript",
-      "input": "outputs/fresh/llm_input/srcmarker_csn_js.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/srcmarker_csn_js_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_srcmarker_csn_js.log"
+      "input": "results/RQ2/05_llm_rag/cohort/srcmarker_csn_js.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/srcmarker_csn_js_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_srcmarker_csn_js.log"
     },
     {
       "rows": 125,
@@ -119,9 +119,9 @@
       "method": "srcmarker",
       "dataset": "csn_java",
       "language": "java",
-      "input": "outputs/fresh/llm_input/srcmarker_csn_java.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/srcmarker_csn_java_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_srcmarker_csn_java.log"
+      "input": "results/RQ2/05_llm_rag/cohort/srcmarker_csn_java.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/srcmarker_csn_java_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_srcmarker_csn_java.log"
     },
     {
       "rows": 125,
@@ -144,9 +144,9 @@
       "method": "codemark",
       "dataset": "github_c_funcs",
       "language": "cpp",
-      "input": "outputs/fresh/llm_input/codemark_github_c_funcs.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/codemark_github_c_funcs_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_codemark_github_c_funcs.log"
+      "input": "results/RQ2/05_llm_rag/cohort/codemark_github_c_funcs.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/codemark_github_c_funcs_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_codemark_github_c_funcs.log"
     },
     {
       "rows": 125,
@@ -168,9 +168,9 @@
       "method": "codemark",
       "dataset": "github_java_funcs",
       "language": "java",
-      "input": "outputs/fresh/llm_input/codemark_github_java_funcs.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/codemark_github_java_funcs_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_codemark_github_java_funcs.log"
+      "input": "results/RQ2/05_llm_rag/cohort/codemark_github_java_funcs.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/codemark_github_java_funcs_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_codemark_github_java_funcs.log"
     },
     {
       "rows": 125,
@@ -192,9 +192,9 @@
       "method": "codemark",
       "dataset": "csn_js",
       "language": "javascript",
-      "input": "outputs/fresh/llm_input/codemark_csn_js.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/codemark_csn_js_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_codemark_csn_js.log"
+      "input": "results/RQ2/05_llm_rag/cohort/codemark_csn_js.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/codemark_csn_js_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_codemark_csn_js.log"
     },
     {
       "rows": 125,
@@ -216,9 +216,9 @@
       "method": "codemark",
       "dataset": "csn_java",
       "language": "java",
-      "input": "outputs/fresh/llm_input/codemark_csn_java.jsonl",
-      "output": "outputs/fresh/llm_full_1000/main/codemark_csn_java_llm_all.jsonl",
-      "log": "outputs/fresh/llm_full_1000/logs/main_codemark_csn_java.log"
+      "input": "results/RQ2/05_llm_rag/cohort/codemark_csn_java.jsonl",
+      "output": "results/RQ2/05_llm_rag/main/codemark_csn_java_llm_all.jsonl",
+      "log": "results/RQ2/05_llm_rag/logs/main_codemark_csn_java.log"
     }
   ],
   "completed_utc": "2026-09-16T03:59:00.981921+00:00",

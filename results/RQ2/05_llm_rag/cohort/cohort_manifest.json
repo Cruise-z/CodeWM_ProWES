@@ -15,11 +15,11 @@
       "selected_uids_sha256": "703e7e96686cfc3f35828bbc2d1a8eb9a9c568ce2b367f56883998ebc00dd7c1",
       "outputs": {
         "srcmarker": {
-          "path": "outputs/fresh/llm_input/srcmarker_github_c_funcs.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/srcmarker_github_c_funcs.jsonl",
           "sha256": "60c42efa526c369f1bc2ca4280795a1ab1ca204ea7989edd39da650842db3e04"
         },
         "codemark": {
-          "path": "outputs/fresh/llm_input/codemark_github_c_funcs.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/codemark_github_c_funcs.jsonl",
           "sha256": "dedcb51605feecbc1a5f8d001f6a9c756f27109a4692028a64af1f6c299a20e2"
         }
       }
@@ -35,11 +35,11 @@
       "selected_uids_sha256": "bd41c73340c3f7f648dc56d2320fce4daee740185d4194ca043de3a5954c1b22",
       "outputs": {
         "srcmarker": {
-          "path": "outputs/fresh/llm_input/srcmarker_github_java_funcs.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/srcmarker_github_java_funcs.jsonl",
           "sha256": "10e103bc9ed51e906f56921760c0f25e019633990409fbdf2a4e5a5d51d87a04"
         },
         "codemark": {
-          "path": "outputs/fresh/llm_input/codemark_github_java_funcs.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/codemark_github_java_funcs.jsonl",
           "sha256": "b904903c3e7efd48b6f2db2b7497f4914d943ff51ae9588005c3ff9e2fa3549c"
         }
       }
@@ -55,11 +55,11 @@
       "selected_uids_sha256": "7eaf5c92c2a09543b97becf927b9d7c58ab44d4861fd21eb3dcfbff60ae7f0dd",
       "outputs": {
         "srcmarker": {
-          "path": "outputs/fresh/llm_input/srcmarker_csn_js.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/srcmarker_csn_js.jsonl",
           "sha256": "2c9afa0b8a0f629e2f46b297c6b3dcf7f1d1f82f7e55d4aa13ec5d0e2779cc51"
         },
         "codemark": {
-          "path": "outputs/fresh/llm_input/codemark_csn_js.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/codemark_csn_js.jsonl",
           "sha256": "4a088d613157faf05cb2ec731d7eeccffd3a68a8f0ceef88f6575ed3ba0ace08"
         }
       }
@@ -75,11 +75,11 @@
       "selected_uids_sha256": "7b6e641bf184dec6c171bcbf11786228af8bb4305c9c9d99ecc109127da24f86",
       "outputs": {
         "srcmarker": {
-          "path": "outputs/fresh/llm_input/srcmarker_csn_java.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/srcmarker_csn_java.jsonl",
           "sha256": "2b7580fa8f15db2ba80134a373a215c09db639a8ea9db526c86b2d03c48a0029"
         },
         "codemark": {
-          "path": "outputs/fresh/llm_input/codemark_csn_java.jsonl",
+          "path": "results/RQ2/05_llm_rag/cohort/codemark_csn_java.jsonl",
           "sha256": "b25c651f5378aa0c65fd7d0b3244215c5199a6dfe1828d6f4a089aeeb14ee12d"
         }
       }

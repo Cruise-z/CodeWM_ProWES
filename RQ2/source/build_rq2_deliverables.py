@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -37,6 +38,13 @@ CHANNEL_ORDER = ["id", "expr", "block", "all"]
 
 def read_json(path: Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def generation_timestamp() -> str:
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if epoch is not None:
+        return datetime.fromtimestamp(int(epoch), timezone.utc).isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 def read_jsonl(path: Path):
@@ -188,16 +196,16 @@ def build_llm_method_contrasts(llm_dir: Path):
 
 
 def main():
-    fresh_path = ROOT / "outputs/fresh/final/rq2_fresh_results.json"
-    epr_path = ROOT / "outputs/fresh/epr_rule/final/rq2_full_rule_epr.json"
-    pilot_path = ROOT / "outputs/fresh/llm_pilot_minimal/final/rq2_llm_pilot.json"
-    llm_dir = ROOT / "outputs/fresh/llm_full_1000"
+    fresh_path = ROOT / "inputs/training/rq2_fresh_results.json"
+    epr_path = ROOT / "inputs/rule_epr/rq2_full_rule_epr.json"
+    pilot_path = ROOT / "inputs/llm_mbxp/rq2_llm_pilot.json"
+    llm_dir = ROOT / "inputs/llm_rag"
     protocol_path = llm_dir / "protocol.json"
     detection_path = llm_dir / "detection_manifest.json"
-    cohort_path = ROOT / "outputs/fresh/llm_input/cohort_manifest.json"
-    system_prompt_path = ROOT / "rq2_revision/prompts/system_prompt.txt"
-    user_prompt_path = ROOT / "rq2_revision/prompts/user_prompt_template.txt"
-    rule_kb_path = ROOT / "rq2_revision/rules/hard_rules.json"
+    cohort_path = ROOT / "inputs/cohort/cohort_manifest.json"
+    system_prompt_path = ROOT / "pipeline/prompts/system_prompt.txt"
+    user_prompt_path = ROOT / "pipeline/prompts/user_prompt_template.txt"
+    rule_kb_path = ROOT / "pipeline/rules/hard_rules.json"
     for path in (
         fresh_path, epr_path, pilot_path, protocol_path, detection_path, cohort_path,
         system_prompt_path, user_prompt_path, rule_kb_path,
@@ -645,9 +653,9 @@ The `attack_meta` field in each JSONL row stores the rendered prompt SHA-256, re
 
 1. `training/SrcMarker_fresh/train_main.py`, `experiment_config.py`, and `run_one_fresh_training.sh`: train from random initialization and write the checkpoint, per-epoch history, and run manifest.
 2. `training/SrcMarker_fresh/eval_main.py`: generate watermarked test-split code and record `watermark`, clean `extract`, original source, and watermarked source.
-3. `project/srcMarker/SrcMarker/1_obfus.py` and `rq2_revision/rule_attack.py`: deterministic rule attacks, syntax checks, and status recording.
+3. `project/srcMarker/SrcMarker/1_obfus.py` and `pipeline/rule_attack.py`: deterministic rule attacks, syntax checks, and status recording.
 4. `prepare_fresh_llm_cohorts.py`: paired cohorts from shared source, with length and syntax screening completed before API calls.
-5. `rq2_revision/rag.py`, `llm_rag.py`, `llm_provider.py`, and `1_obfus_AI.py`: rule retrieval, prompt assembly, Chat Completions calls, output parsing, syntax validation, and resumable output.
+5. `pipeline/rag.py`, `llm_rag.py`, `llm_provider.py`, and `1_obfus_AI.py`: rule retrieval, prompt assembly, Chat Completions calls, output parsing, syntax validation, and resumable output.
 6. `validate_mbxp_rq2.py`: baseline qualification, attack, compilation/execution, and test comparison on MBCPP, MBJP, and MBJSP to compute EPR.
 7. `run_watermark_detector_portable.py`: load the extractor encoder/decoder for each checkpoint and produce attacked predictions only for `valid_attack`, while retaining syntax-invalid, no-op, and error rows explicitly.
 8. `3_analysis.py`: clean/attacked BAR, MAR, ΔBAR, coverage, and sample-level paired bootstrap confidence intervals.
@@ -667,7 +675,7 @@ PYTHONPATH=.deps python build_rq2_deliverables.py
 PYTHONPATH=.deps python plot_rq2_results.py
 ```
 
-Training commands are frozen in `training/SrcMarker_fresh/run_fresh_training.sh` and `run_one_fresh_training.sh`. See `README_REVISION.md` and the archived scripts for rule-attack and full-EPR commands.
+Training commands are frozen in `training/SrcMarker_fresh/run_fresh_training.sh` and `run_one_fresh_training.sh`. See `README.md` for the final rule-attack and full-EPR protocol.
 
 ## 8. Interpretation boundary
 
@@ -676,8 +684,9 @@ Functional-correctness evidence for the LLM main experiment comes from the indep
     report_path = REPORT_DIR / "RQ2_PAPER_AND_APPENDIX_REPORT.md"
     report_path.write_text(report, encoding="utf-8")
 
+    generated_utc = generation_timestamp()
     combined = {
-        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_utc": generated_utc,
         "protocol": {
             "training": fresh["protocol"],
             "llm": {key: protocol[key] for key in (
@@ -742,7 +751,7 @@ Generation script SHA-256: `{sha256_file(ROOT / 'plot_rq2_results.py')}`.
     manifest_paths.extend(sorted(TABLE_DIR.glob("*")))
     manifest_paths.extend(sorted(FIGURE_DIR.glob("*")))
     manifest = {
-        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "generated_utc": generated_utc,
         "files": [
             {"path": str(path.relative_to(ROOT)), "bytes": path.stat().st_size, "sha256": sha256_file(path)}
             for path in manifest_paths

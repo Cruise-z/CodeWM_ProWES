@@ -8,9 +8,9 @@ and observations are under `../results/RQ2/`.
 |---|---|---|
 | Dataset/split/cohort | `source/training/SrcMarker_fresh/`, `source/prepare_fresh_llm_cohorts.py` | `results/RQ2/01_datasets/`, `results/RQ2/05_llm_rag/cohort/` |
 | Fresh SrcMarker/CodeMark training | `source/training/SrcMarker_fresh/` | checkpoints, manifests, 25-epoch histories, clean predictions, logs |
-| Rule attack | `source/rq2_revision/rule_attack.py`, `source/cStyleLang/` | 32 raw/evaluated JSONL cells |
+| Rule attack | `source/pipeline/rule_attack.py`, `source/cStyleLang/` | 32 raw/evaluated JSONL cells |
 | MBXP execution | `source/project/srcMarker/SrcMarker/validate_mbxp_rq2.py` | 12 complete per-sample matrices and summaries |
-| LLM+RAG | `source/rq2_revision/`, `source/run_llm_full_1000.py` | fixed prompts/rules, cohort, 1,000 responses, usage, validity, predictions |
+| LLM+RAG | `source/pipeline/`, `source/run_llm_full_1000.py` | fixed prompts/rules, cohort, 1,000 responses, usage, validity, predictions |
 | LLM MBXP pilot | same implementation and validator | 45 per-sample execution records |
 | Statistics | `source/project/srcMarker/SrcMarker/3_analysis.py`, builders | paired predictions, 10,000-bootstrap summaries, CSV/LaTeX/figures |
 

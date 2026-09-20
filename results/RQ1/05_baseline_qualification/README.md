@@ -1,6 +1,6 @@
 # RQ1 baseline qualification evidence
 
-This directory preserves the final architecture-epoch evidence for the 42
+This directory preserves the final evidence for the 42
 project-language baselines used by RQ1. It closes the qualification chain:
 
 ```text
@@ -53,7 +53,6 @@ and local VCS metadata are deliberately excluded by that canonical algorithm.
 
 ## Scope
 
-Only the final current-architecture attempt epoch is included here. Historical
-`architecture_failures/` and interrupted pre-final epochs are not part of the
-paper's reported 88 attempts and are intentionally excluded. The exact import
-scope and source revision are recorded in `PROVENANCE.json`.
+This package contains only the final paper-reported campaign: 88 attempts, 42
+accepted repositories, and 42 verified replays. The exact import scope and
+source revision are recorded in `PROVENANCE.json`.

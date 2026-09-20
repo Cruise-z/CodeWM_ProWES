@@ -1,4 +1,4 @@
-# LLM + hard-rule RAG prompt used by the revised RQ2 module
+# LLM + hard-rule RAG prompt used by RQ2
 
 The runtime prompt is assembled from two archived templates plus the retrieved rule cards.
 
@@ -47,11 +47,11 @@ Rewrite the source code using only safe, applicable retrieved rules from the req
 
 ## Retrieval protocol
 
-- Knowledge base: `rq2_revision/rules/hard_rules.json`.
-- Retriever: deterministic local BM25 (`rq2_revision/rag.py`).
+- Knowledge base: `pipeline/rules/hard_rules.json`.
+- Retriever: deterministic local BM25 (`pipeline/rag.py`).
 - Filter: language-compatible rules; for Id/Expr/Block attacks, also filter to the requested channel.
 - ALL: retrieve a channel-diverse set, forcing at least one candidate from Id, Expr, and Block when available.
 - Default `top_k`: 6.
 - The exact retrieved rule IDs and SHA-256 of the final prompt are stored in `attack_meta` for every generated sample.
 
-This design is a reproducible **local rule-RAG** pipeline. It is materially different from the legacy script, which only uploaded a static rules file to the LLM API and therefore should not itself have been described as RAG.
+This is the final reproducible local rule-RAG protocol used by the experiment.

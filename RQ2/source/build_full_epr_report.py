@@ -107,9 +107,9 @@ def main():
     code_paths = [
         ROOT / "project/srcMarker/SrcMarker/validate_mbxp_rq2.py",
         ROOT / "merge_mbxp_epr_chunks.py",
-        ROOT / "rq2_revision/rule_attack.py",
-        ROOT / "rq2_revision/common.py",
-        ROOT / "rq2_revision/node_shims/lodash/index.js",
+        ROOT / "pipeline/rule_attack.py",
+        ROOT / "pipeline/common.py",
+        ROOT / "pipeline/node_shims/lodash/index.js",
         ROOT / "training/SrcMarker_fresh/parser/languages.so",
     ]
     artifacts.extend({"role": "implementation", "path": str(path.relative_to(ROOT)),

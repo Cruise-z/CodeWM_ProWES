@@ -14,6 +14,7 @@ input/configuration -> intermediate artifact -> raw observation
 
 ```bash
 # Check the released RQ1 bundles and the formal RQ2 evidence.
+python tools/verify_release_layout.py
 python tools/verify_rq1_evidence.py
 python tools/verify_rq2_evidence.py
 
@@ -34,7 +35,7 @@ python tools/artifact_manifest.py --verify
 
 The reproduction steps do not call an LLM or retrain a model. They rebuild
 paper outputs from released observations and statistical summaries. Full RQ2
-experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
+experiment-rerun commands are documented in `RQ2/source/README.md`.
 
 ## Layout
 
@@ -46,9 +47,14 @@ experiment-rerun commands are documented in `RQ2/source/README_REVISION.md`.
 | `RQ3/` | Counterbalanced paired WM-OFF timing harnesses, processor-only attribution records, detector timings, shared-tokenizer counts, training logs, normalization, and Table X reproduction. |
 | `results/RQ1/` | Complete baseline qualification evidence plus expanded applicability and detectability evidence. |
 | `results/RQ2/` | Formal RQ2 datasets/splits, checkpoints, logs, raw attacks, predictions, MBXP executions, LLM manifests/responses, statistics, tables, and figures. |
-| `paper_reproduction/` | Reviewer entry points for rebuilding paper outputs. |
+| `paper_reproduction/` | Reviewer entry points and final outputs, partitioned as `tables/{RQ1,RQ2,RQ3}` and `figures/{RQ1,RQ2,RQ3}`. |
 | `ARTIFACT_MANIFEST.csv/json` | Machine-readable file-to-RQ/evidence map. |
 | `SHA256SUMS.txt` | Integrity digests for the released payload. |
+
+This release contains only the final experiment implementation, authoritative
+observations, and current paper outputs. Failed trials that belong to a
+paper-defined selection protocol, such as RQ1 baseline qualification, remain
+part of the final evidence.
 
 See `ARTIFACT_COMPLETENESS.md` before release. It distinguishes present
 evidence from material that was not found in the supplied workspaces. No
@@ -56,10 +62,10 @@ missing observation was synthesized.
 
 ## Scope and important boundaries
 
-- RQ1 contains all 88 current-epoch baseline attempts, 42 accepted repository
+- RQ1 contains all 88 formal baseline attempts, 42 accepted repository
   snapshots, 42 verified replays, 9,141 point-level applicability rows, 298
   batch summaries, four aggregate detectability logs, and reproducible derived
-  tables/figures. The strength-sweep bundles do not contain their referenced
+  tables/figures. The strength-sweep results do not contain their referenced
   per-point Docker logs/repository snapshots, and the detectability bundle does
   not contain per-sample detector scores; those portions remain explicitly
   incomplete.
@@ -114,8 +120,8 @@ RQ2:
 
 ## Source revisions
 
-The RQ1 source was taken from `CodeWM_ProWES_Logits` commit
+The final RQ1 source snapshot was taken from `CodeWM_ProWES_Logits` commit
 `1d4f0cbad7fb76a31684b615dfe4f880ca7ee176`. RQ2 was taken from the supplied
-`RQ2_Final_Codex_Release` bundle dated 2026-09-16; its source archive manifest
-is retained at `RQ2/source/SOURCE_MANIFEST.json`. Further provenance is in
+`RQ2_Final_Codex_Release` bundle dated 2026-09-16 and reduced to its final
+implementation and formal outputs. Further provenance is in
 `00_common/upstream_commits/METHODS.md`.

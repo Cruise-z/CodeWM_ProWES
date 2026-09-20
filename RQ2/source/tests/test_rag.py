@@ -1,10 +1,10 @@
 from pathlib import Path
-from rq2_revision.rag import BM25RuleRetriever
-from rq2_revision.llm_rag import build_messages, parse_llm_output, rewrite_with_rag
-from rq2_revision.llm_provider import MockIdentityProvider
+from pipeline.rag import BM25RuleRetriever
+from pipeline.llm_rag import build_messages, parse_llm_output, rewrite_with_rag
+from pipeline.llm_provider import MockIdentityProvider
 
 ROOT = Path(__file__).resolve().parents[1]
-RULES = ROOT / "rq2_revision" / "rules" / "hard_rules.json"
+RULES = ROOT / "pipeline" / "rules" / "hard_rules.json"
 
 
 def test_retrieval_is_channel_scoped_and_deterministic():

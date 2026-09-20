@@ -9,10 +9,10 @@ fi
 method="$1"
 physical_gpu_id="$2"
 root_dir="$(cd "$(dirname "$0")" && pwd)"
-revision_dir="$(cd "$root_dir/../.." && pwd)"
-deps_dir="$revision_dir/.deps"
+artifact_dir="$(cd "$root_dir/../.." && pwd)"
+deps_dir="$artifact_dir/.deps"
 run_log_dir="$root_dir/run_logs"
-result_dir="$revision_dir/outputs/fresh/base"
+result_dir="$artifact_dir/outputs/fresh/base"
 mkdir -p "$run_log_dir" "$result_dir"
 cd "$root_dir"
 

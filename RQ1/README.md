@@ -1,7 +1,7 @@
 # RQ1 — project-structured applicability and detectability
 
-This directory contains the latest source and immutable inputs from
-`CodeWM_ProWES_Logits` commit `9c647f9a8d4e9bd519aefac7c0a8b6dc501cafaa`.
+This directory contains the final source and immutable inputs from
+`CodeWM_ProWES_Logits` commit `1d4f0cbad7fb76a31684b615dfe4f880ca7ee176`.
 
 Evidence map:
 

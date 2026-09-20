@@ -383,7 +383,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
     root = args.artifact_root.resolve()
-    output = (args.output_dir or root / "paper_reproduction/tables/rq3").resolve()
+    output = (args.output_dir or root / "paper_reproduction/tables/RQ3").resolve()
     raw = root / "RQ3/02_raw_timings"
     logits = load(raw / "logits_bias_raw.json")
     semantics = {

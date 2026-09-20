@@ -48,4 +48,4 @@ Run:
 
 The command verifies the embedded aggregates against the raw records, writes
 the flat raw-timing and token-count ledgers, parses the training logs, and
-regenerates `paper_reproduction/tables/rq3/table_x.{csv,json,tex}`.
+regenerates `paper_reproduction/tables/RQ3/table_x.{csv,json,tex}`.

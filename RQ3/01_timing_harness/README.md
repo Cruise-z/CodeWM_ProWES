@@ -13,9 +13,6 @@
   continuation before entropy gating and z-score calculation. A run
   with zero entropy-qualified tokens is rejected instead of being recorded as
   a near-zero detector timing.
-- `merge_logits_bias_rerun.py` is retained as a maintenance utility; the
-  released authoritative record is a complete all-method campaign rather than
-  a merged partial rerun.
 - `benchmark_semantic.py` loads the fresh RQ2 checkpoint and canonical
   CodeSearchNet JavaScript test split and records one row per sample.
 - `workloads.json` and `workloads/` contain the two complete rendered-input

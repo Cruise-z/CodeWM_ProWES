@@ -23,11 +23,11 @@ for p in [BUNDLE, BUNDLE / "cStyleLang"]:
     if p.exists() and str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from rq2_revision.common import read_jsonl, stable_uid, resolve_parser_lib, sha256_text
-from rq2_revision.rule_attack import attack_code
-from rq2_revision.rag import BM25RuleRetriever
-from rq2_revision.llm_rag import rewrite_with_rag
-from rq2_revision.llm_provider import OpenAICompatibleProvider, LegacyAiAPIProvider, MockIdentityProvider
+from pipeline.common import read_jsonl, stable_uid, resolve_parser_lib, sha256_text
+from pipeline.rule_attack import attack_code
+from pipeline.rag import BM25RuleRetriever
+from pipeline.llm_rag import rewrite_with_rag
+from pipeline.llm_provider import OpenAICompatibleProvider, MockIdentityProvider
 
 
 def run(cmd, cwd=None, timeout=20, env=None):
@@ -57,7 +57,7 @@ def execute_program(program: str, lang: str, work: Path, timeout: int, *,
     if lang == "javascript":
         src = work / "main.js"; src.write_text(program, encoding="utf-8")
         env = os.environ.copy()
-        shim_root = str(BUNDLE / "rq2_revision" / "node_shims")
+        shim_root = str(BUNDLE / "pipeline" / "node_shims")
         env["NODE_PATH"] = shim_root + (os.pathsep + env["NODE_PATH"] if env.get("NODE_PATH") else "")
         ok, so, se = run([node_bin, str(src)], cwd=str(work), timeout=timeout, env=env)
         return ok, "pass" if ok else "test", se or so
@@ -115,14 +115,11 @@ def parse_args():
     ap.add_argument("--offset", type=int, default=0)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--timeout", type=int, default=20)
-    ap.add_argument("--rules", default=str(BUNDLE / "rq2_revision" / "rules" / "hard_rules.json"))
-    ap.add_argument("--provider", choices=["openai-compatible", "legacy-aiapi", "mock"], default="mock")
+    ap.add_argument("--rules", default=str(BUNDLE / "pipeline" / "rules" / "hard_rules.json"))
+    ap.add_argument("--provider", choices=["openai-compatible", "mock"], default="mock")
     ap.add_argument("--base-url", default="https://api.openai.com/v1")
     ap.add_argument("--model", default="gpt-4o-mini")
     ap.add_argument("--api-key-env", default="OPENAI_API_KEY")
-    ap.add_argument("--legacy-config", default=None)
-    ap.add_argument("--legacy-profile", default="paid")
-    ap.add_argument("--legacy-model-attr", default="gpt4")
     ap.add_argument("--top-k", type=int, default=6)
     ap.add_argument("--temperature", type=float, default=0.0)
     ap.add_argument("--max-completion-tokens", type=int, default=None)
@@ -141,8 +138,6 @@ def parse_args():
 
 def make_provider(a):
     if a.provider == "mock": return MockIdentityProvider()
-    if a.provider == "legacy-aiapi":
-        return LegacyAiAPIProvider(a.legacy_config, a.legacy_profile, a.legacy_model_attr)
     return OpenAICompatibleProvider(a.base_url, a.model, a.api_key_env)
 
 

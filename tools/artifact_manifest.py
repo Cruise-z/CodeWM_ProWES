@@ -58,7 +58,7 @@ def classify(relative: str) -> tuple[str, str, str, str]:
     else:
         stage = parts[0]
     mapping = ""
-    if "05_baseline_qualification" in relative or "tables/rq1/baseline" in relative:
+    if "05_baseline_qualification" in relative or "tables/RQ1/baseline" in relative:
         mapping = (
             "RQ1 baseline qualification; 88 attempts, 42 accepted repositories, "
             "42 verified replays"
@@ -69,16 +69,16 @@ def classify(relative: str) -> tuple[str, str, str, str]:
             "accepted-run Stage-1 file-generation prompts"
         )
     elif (
-        "results/RQ1/Applicability" in relative
-        or "tables/rq1/applicability" in relative
-        or "figures/rq1/applicability" in relative
+        "results/RQ1/07_strength_sweep" in relative
+        or "tables/RQ1/applicability" in relative
+        or "figures/RQ1/applicability" in relative
     ):
         mapping = "RQ1 applicability; medium-project strength-sweep derived outputs"
-    elif "results/RQ1/Detectability" in relative or "tables/rq1/detectability" in relative:
+    elif "results/RQ1/08_detectability" in relative or "tables/RQ1/detectability" in relative:
         mapping = "RQ1 detectability; per-strength AUROC and FNR@5% FPR"
-    elif "03_tables_figures/tables" in relative:
+    elif "tables/RQ2" in relative:
         mapping = "Main Tables VIII-IX; Supplement Tables VIII-XVII"
-    elif "03_tables_figures/figures" in relative:
+    elif "figures/RQ2" in relative:
         mapping = "Main Figures 4-5; RQ2 supplemental figures"
     elif "04_mbxp_validation" in relative:
         mapping = "Main Table VIII; Supplement Table IX"
@@ -86,7 +86,7 @@ def classify(relative: str) -> tuple[str, str, str, str]:
         mapping = "Main Table IX and Figure 5; Supplement Tables XIII-XVII"
     elif "03_rule_attacks" in relative:
         mapping = "Main Table VIII and Figures 4-5; Supplement Tables X-XII"
-    elif rq == "RQ3" or "tables/rq3" in relative or "reproduce_rq3" in relative:
+    elif rq == "RQ3" or "tables/RQ3" in relative or "reproduce_rq3" in relative:
         mapping = "Main Table X; raw timing, token normalization, and training-cost evidence"
     return rq, stage, role, mapping
 

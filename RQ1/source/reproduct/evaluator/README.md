@@ -33,17 +33,6 @@ docker exec CodeWM-DT /usr/local/bin/eval_protocol.sh /workspace/project
 The protocol writes build, test, runtime, and packaged-artifact evidence below
 the evaluated project's `DTResults/` directory.
 
-For the legacy single-Java-file adapter, first infer a Maven POM and then run
-the Docker wrapper:
-
-```bash
-python autoConfig.py --filepath /path/to/Main.java --config /secure/path/config.ini
-./test.sh /path/to/Main.java
-```
-
-The dependency helper uses the historical `aiAPI` client and is not required
-when the repository already contains its build file.
-
 Stop and remove the reusable container when it is no longer needed:
 
 ```bash

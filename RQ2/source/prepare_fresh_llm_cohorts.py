@@ -14,7 +14,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from rq2_revision.rule_attack import _build_parser, tree_sitter_syntax_valid
+from pipeline.rule_attack import _build_parser, tree_sitter_syntax_valid
 
 
 METHODS = ("srcmarker", "codemark")
