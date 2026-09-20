@@ -94,6 +94,7 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
         hash_key: int,
         z_threshold: float,
         prefix_length: int,
+        detector_scope: str = "generation_conditioned",
     ):
         # 1) Build a tiny config shim & reuse original utils/processor
         cfg = _ConfigShim(
@@ -109,9 +110,15 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
         )
         utils = EWDUtils(cfg)
         super().__init__(config=cfg, utils=utils)
+        if detector_scope not in ("generation_conditioned", "continuation"):
+            raise ValueError(
+                "EWD detector_scope must be 'generation_conditioned' or 'continuation'"
+            )
+        self._detector_scope = detector_scope
 
         # 2) Detection-time caches (do not affect biasing path)
         self._cache_full_ids_rows: Optional[List[Tensor]] = None
+        self._cache_prefix_len_rows: Optional[List[int]] = None
         self._prev_len_rows: Optional[List[int]] = None
         self._cache_bsz: Optional[int] = None
 
@@ -146,6 +153,7 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
             )
             if need_reset:
                 self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
+                self._cache_prefix_len_rows = [cur_len] * bsz
                 self._prev_len_rows = [0] * bsz
                 self._cache_bsz = bsz
 
@@ -186,16 +194,31 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
 
         results_bool: List[bool] = []
         results_score: List[float] = []
+        results_input_tokens: List[int] = []
+        results_scored_tokens: List[int] = []
 
-        for ids_cpu in self._cache_full_ids_rows:
-            if ids_cpu.numel() == 0:
+        prefix_lengths = self._cache_prefix_len_rows or [0] * len(self._cache_full_ids_rows)
+        for ids_cpu, generation_prefix_len in zip(
+            self._cache_full_ids_rows,
+            prefix_lengths,
+        ):
+            detector_ids = (
+                ids_cpu[int(generation_prefix_len):]
+                if self._detector_scope == "continuation"
+                else ids_cpu
+            )
+            results_input_tokens.append(int(detector_ids.numel()))
+            results_scored_tokens.append(
+                max(0, int(detector_ids.numel()) - int(self.config.prefix_length))
+            )
+            if detector_ids.numel() == 0:
                 results_bool.append(False)
                 results_score.append(float("-inf"))
                 continue
 
             try:
                 # 1) Decode cached ids to plain text (skip special tokens)
-                text = tok.decode(ids_cpu.tolist(), skip_special_tokens=True)
+                text = tok.decode(detector_ids.tolist(), skip_special_tokens=True)
                 if not text:
                     results_bool.append(False)
                     results_score.append(float("-inf"))
@@ -223,8 +246,20 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
             results_score.append(float(z_score))
 
         if len(results_bool) == 1:
-            return {"is_watermarked": results_bool[0], "score": results_score[0]}
-        return {"is_watermarked": results_bool, "score": results_score}
+            return {
+                "is_watermarked": results_bool[0],
+                "score": results_score[0],
+                "detector_scope": self._detector_scope,
+                "detector_input_tokens": results_input_tokens[0],
+                "num_tokens_scored": results_scored_tokens[0],
+            }
+        return {
+            "is_watermarked": results_bool,
+            "score": results_score,
+            "detector_scope": self._detector_scope,
+            "detector_input_tokens": results_input_tokens,
+            "num_tokens_scored": results_scored_tokens,
+        }
 
     def timing(self) -> Dict[str, Any]:
         """
@@ -243,6 +278,7 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
     def clear_cached(self) -> None:
         """Optional: manually clear caches (does not affect biasing state)."""
         self._cache_full_ids_rows = None
+        self._cache_prefix_len_rows = None
         self._prev_len_rows = None
         self._cache_bsz = None
 
@@ -264,6 +300,7 @@ def build_codewm(resources, params):
         hash_key=int(params.get("hash_key", 15485863)),
         z_threshold=float(params.get("z_threshold", 4.0)),
         prefix_length=int(params.get("prefix_length", 1)),
+        detector_scope=str(params.get("detector_scope", "generation_conditioned")),
     )
 
 

@@ -51,6 +51,7 @@ CODEWM_PLUGIN = MethodIntegrationPlugin(
             "language",
             "watermark_on_pl",
             "skipping_rule",
+            "detector_scope",
         ),
     ),
     detection_contract=MethodDetectionContract(

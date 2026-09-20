@@ -31,6 +31,7 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         device=None,
         z_threshold: float = 4.0,
         ignore_repeated_bigrams: bool = False,
+        detector_scope: str = "generation_conditioned",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -41,6 +42,11 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         self._device = device
         self._z_threshold = float(z_threshold)
         self._ignore_repeated_bigrams = bool(ignore_repeated_bigrams)
+        if detector_scope not in ("generation_conditioned", "continuation"):
+            raise ValueError(
+                "SWEET detector_scope must be 'generation_conditioned' or 'continuation'"
+            )
+        self._detector_scope = detector_scope
         if getattr(self, "rng", None) is None:
             self.rng = torch.Generator()
 
@@ -251,10 +257,11 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
 
         green_token_count, green_token_mask = 0, []
         for idx in range(prefix_len, len(input_ids)):
-            curr_token = int(input_ids[idx])
+            curr_token = input_ids[idx]
             greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
             if entropy[idx] > self.entropy_threshold:
-                if curr_token in set(int(t) for t in greenlist_ids):
+                # Preserve the upstream tensor-membership implementation.
+                if curr_token in greenlist_ids:
                     green_token_count += 1
                     green_token_mask.append(True)
                 else:
@@ -292,13 +299,22 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
             raise RuntimeError("No cached sequence for detection. Generate with this processor first.")
 
         full_ids: Tensor = self._cache_full_ids
-        prefix_len: int = int(self._cache_prefix_len)
-        entropy_full, entropy_stats = self._detector_entropy(full_ids, prefix_len)
+        generation_prefix_len: int = int(self._cache_prefix_len)
+        if self._detector_scope == "continuation":
+            detector_ids = full_ids[generation_prefix_len:]
+            detector_prefix_len = self._min_prefix_len
+        else:
+            detector_ids = full_ids
+            detector_prefix_len = generation_prefix_len
+        entropy_full, entropy_stats = self._detector_entropy(
+            detector_ids,
+            detector_prefix_len,
+        )
 
         out: Dict = {}
         score = self._score_sequence(
-            input_ids=full_ids,
-            prefix_len=prefix_len,
+            input_ids=detector_ids,
+            prefix_len=detector_prefix_len,
             entropy=entropy_full,
             return_num_tokens_scored=True,
             return_num_green_tokens=True,
@@ -310,6 +326,8 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
         )
         out.update(score)
         out["entropy"] = entropy_stats
+        out["detector_scope"] = self._detector_scope
+        out["detector_input_tokens"] = int(detector_ids.numel())
 
         thr = float(self._z_threshold)
         if score.pop("invalid", False):
@@ -347,6 +365,7 @@ def build_codewm(resources, params):
         device=resources.device,
         z_threshold=params.get("z_threshold", 4.0),
         ignore_repeated_bigrams=ignore_repeated_bigrams,
+        detector_scope=str(params.get("detector_scope", "generation_conditioned")),
     )
 
 

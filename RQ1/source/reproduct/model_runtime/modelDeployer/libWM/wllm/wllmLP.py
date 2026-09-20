@@ -34,6 +34,7 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         tokenizer=None,                 # Optional extension; not needed here.
         z_threshold: float = 4.0,
         ignore_repeated_bigrams: bool = False,
+        detector_scope: str = "generation_conditioned",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -41,6 +42,11 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
         self._tokenizer = tokenizer
         self._z_threshold = float(z_threshold)
         self._ignore_repeated_bigrams = bool(ignore_repeated_bigrams)
+        if detector_scope not in ("generation_conditioned", "continuation"):
+            raise ValueError(
+                "WLLM detector_scope must be 'generation_conditioned' or 'continuation'"
+            )
+        self._detector_scope = detector_scope
         if getattr(self, "rng", None) is None:
             self.rng = torch.Generator()
 
@@ -147,9 +153,12 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
 
         green_token_count, green_token_mask = 0, []
         for idx in range(prefix_len, len(input_ids)):
-            curr_token = int(input_ids[idx])
+            curr_token = input_ids[idx]
             greenlist_ids = self._get_greenlist_ids(input_ids[:idx])
-            if curr_token in set(int(t) for t in greenlist_ids):
+            # Match the upstream detector.  Constructing a Python set from a
+            # half-vocabulary tensor at every position changes the measured
+            # algorithm and dominates detector runtime.
+            if curr_token in greenlist_ids:
                 green_token_count += 1
                 green_token_mask.append(True)
             else:
@@ -185,11 +194,22 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
 
         full_ids = self._cache_full_ids
         pre_len = int(self._cache_prefix_len)
+        if self._detector_scope == "continuation":
+            detector_ids = full_ids[pre_len:]
+            detector_prefix_len = self._min_prefix_len
+        else:
+            detector_ids = full_ids
+            detector_prefix_len = pre_len
 
         out: Dict = {}
         # 1) Score using WatermarkDetector-compatible semantics.
-        score_dict = self._score_sequence(input_ids=full_ids, prefix_len=pre_len)
+        score_dict = self._score_sequence(
+            input_ids=detector_ids,
+            prefix_len=detector_prefix_len,
+        )
         out.update(score_dict)
+        out["detector_scope"] = self._detector_scope
+        out["detector_input_tokens"] = int(detector_ids.numel())
         # Return invalid for a sequence that is too short.
         if out.pop("invalid", False):
             self._last_detection = {"invalid": True}
@@ -233,6 +253,7 @@ def build_codewm(resources, params):
         tokenizer=resources.tokenizer,
         z_threshold=float(params.get("z_threshold", 4.0)),
         ignore_repeated_bigrams=ignore_repeated_bigrams,
+        detector_scope=str(params.get("detector_scope", "generation_conditioned")),
     )
 
 

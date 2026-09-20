@@ -89,6 +89,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
         language: str,
         watermark_on_pl: str = "True",
         skipping_rule: Optional[str] = None,
+        detector_scope: str = "generation_conditioned",
     ):
         # 1) Construct the lightweight configuration shim.
         cfg = _ConfigShim(
@@ -116,9 +117,15 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             watermark_on_pl=watermark_on_pl,
             language=language,
         )
+        if detector_scope not in ("generation_conditioned", "continuation"):
+            raise ValueError(
+                "STONE detector_scope must be 'generation_conditioned' or 'continuation'"
+            )
+        self._detector_scope = detector_scope
 
         # 3) Add a detection cache without altering biasing.
         self._cache_full_ids_rows: Optional[List[Tensor]] = None
+        self._cache_prefix_len_rows: Optional[List[int]] = None
         self._prev_len_rows: Optional[List[int]] = None
         self._cache_bsz: Optional[int] = None
 
@@ -153,6 +160,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             )
             if need_reset:
                 self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
+                self._cache_prefix_len_rows = [cur_len] * bsz
                 self._prev_len_rows = [0] * bsz
                 self._cache_bsz = bsz
 
@@ -177,9 +185,24 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
 
         results_bool: List[bool] = []
         results_score: List[float] = []
+        results_input_tokens: List[int] = []
+        results_scored_tokens: List[int] = []
 
-        for ids_cpu in self._cache_full_ids_rows:
-            if ids_cpu.numel() == 0:
+        prefix_lengths = self._cache_prefix_len_rows or [0] * len(self._cache_full_ids_rows)
+        for ids_cpu, generation_prefix_len in zip(
+            self._cache_full_ids_rows,
+            prefix_lengths,
+        ):
+            detector_ids = (
+                ids_cpu[int(generation_prefix_len):]
+                if self._detector_scope == "continuation"
+                else ids_cpu
+            )
+            results_input_tokens.append(int(detector_ids.numel()))
+            results_scored_tokens.append(
+                max(0, int(detector_ids.numel()) - int(self.config.prefix_length))
+            )
+            if detector_ids.numel() == 0:
                 results_bool.append(False)
                 results_score.append(float("-inf"))
                 continue
@@ -189,7 +212,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
                 tok = getattr(self.config, "generation_tokenizer", None)  # type: ignore[attr-defined]
                 if tok is None:
                     raise RuntimeError("no_tokenizer")
-                text = tok.decode(ids_cpu.tolist(), skip_special_tokens=True)
+                text = tok.decode(detector_ids.tolist(), skip_special_tokens=True)
                 if not text:
                     # Empty text cannot be detected.
                     results_bool.append(False)
@@ -217,8 +240,20 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
             results_score.append(float(z_score))
 
         if len(results_bool) == 1:
-            return {"is_watermarked": results_bool[0], "score": results_score[0]}
-        return {"is_watermarked": results_bool, "score": results_score}
+            return {
+                "is_watermarked": results_bool[0],
+                "score": results_score[0],
+                "detector_scope": self._detector_scope,
+                "detector_input_tokens": results_input_tokens[0],
+                "num_tokens_scored": results_scored_tokens[0],
+            }
+        return {
+            "is_watermarked": results_bool,
+            "score": results_score,
+            "detector_scope": self._detector_scope,
+            "detector_input_tokens": results_input_tokens,
+            "num_tokens_scored": results_scored_tokens,
+        }
 
     def timing(self) -> Dict[str, Any]:
         """
@@ -242,6 +277,7 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
     def clear_cached(self) -> None:
         """Clear the detection cache without changing biasing state."""
         self._cache_full_ids_rows = None
+        self._cache_prefix_len_rows = None
         self._prev_len_rows = None
         self._cache_bsz = None
 
@@ -260,6 +296,7 @@ def build_codewm(resources, params):
         language=str(params.get("language", "java")),
         watermark_on_pl=str(params.get("watermark_on_pl", "False")),
         skipping_rule=params.get("skipping_rule", "all_pl"),
+        detector_scope=str(params.get("detector_scope", "generation_conditioned")),
     )
 
 

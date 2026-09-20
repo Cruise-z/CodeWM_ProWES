@@ -107,8 +107,40 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
                 float(row["extraction_ms_per_1k_tokens"]),
                 f"{method} run {index} extraction",
             )
+            assert_close(
+                float(row["baseline_generation_seconds"]) * 1_000_000.0 / tokens,
+                float(row["baseline_generation_ms_per_1k_tokens"]),
+                f"{method} run {index} baseline generation",
+            )
+            assert_close(
+                float(row["generation_seconds"]) * 1_000_000.0 / tokens,
+                float(row["watermarked_generation_ms_per_1k_tokens"]),
+                f"{method} run {index} watermarked generation",
+            )
+            assert_close(
+                float(row["paired_generation_delta_seconds"]) * 1_000_000.0 / tokens,
+                float(row["paired_generation_delta_ms_per_1k_tokens"]),
+                f"{method} run {index} paired generation delta",
+            )
             if sha256_text(row["generated_text"]) != row["generated_text_sha256"]:
                 raise ValueError(f"{method} run {index}: generated-text digest mismatch")
+            if method in ("wllm", "ewd", "sweet", "stone"):
+                detector_inputs = mappings_with_field(
+                    row.get("wm_detection"), "detector_input_tokens"
+                )
+                if len(detector_inputs) != 1:
+                    raise ValueError(
+                        f"{method} run {index}: missing detector input evidence"
+                    )
+                detector = detector_inputs[0]
+                if detector.get("detector_scope") != "continuation":
+                    raise ValueError(
+                        f"{method} run {index}: detector scope is not continuation"
+                    )
+                if int(detector["detector_input_tokens"]) != tokens:
+                    raise ValueError(
+                        f"{method} run {index}: detector/completion token mismatch"
+                    )
             if method == "sweet":
                 scores = mappings_with_field(row.get("wm_detection"), "num_tokens_scored")
                 if len(scores) != 1 or int(scores[0]["num_tokens_scored"]) <= 0:
@@ -171,10 +203,16 @@ def flatten_records(
         "sample_or_seed",
         "repeat",
         "embedding_seconds",
+        "baseline_generation_seconds",
+        "watermarked_generation_seconds",
+        "paired_generation_delta_seconds",
         "extraction_seconds",
         "embedding_reference_tokens",
         "extraction_reference_tokens",
         "embedding_ms_per_1k_tokens",
+        "baseline_generation_ms_per_1k_tokens",
+        "watermarked_generation_ms_per_1k_tokens",
+        "paired_generation_delta_ms_per_1k_tokens",
         "extraction_ms_per_1k_tokens",
     ]
     token_fields = [
@@ -208,10 +246,16 @@ def flatten_records(
                         "sample_or_seed": row["rng_seed"],
                         "repeat": row["repeat"],
                         "embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
+                        "baseline_generation_seconds": f"{float(row['baseline_generation_seconds']):.12f}",
+                        "watermarked_generation_seconds": f"{float(row['generation_seconds']):.12f}",
+                        "paired_generation_delta_seconds": f"{float(row['paired_generation_delta_seconds']):.12f}",
                         "extraction_seconds": f"{float(row['extraction_seconds']):.12f}",
                         "embedding_reference_tokens": row["completion_tokens"],
                         "extraction_reference_tokens": row["completion_tokens"],
                         "embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
+                        "baseline_generation_ms_per_1k_tokens": f"{float(row['baseline_generation_ms_per_1k_tokens']):.9f}",
+                        "watermarked_generation_ms_per_1k_tokens": f"{float(row['watermarked_generation_ms_per_1k_tokens']):.9f}",
+                        "paired_generation_delta_ms_per_1k_tokens": f"{float(row['paired_generation_delta_ms_per_1k_tokens']):.9f}",
                         "extraction_ms_per_1k_tokens": f"{float(row['extraction_ms_per_1k_tokens']):.9f}",
                     }
                 )
@@ -241,10 +285,16 @@ def flatten_records(
                         "sample_or_seed": row["sample_uid"],
                         "repeat": row["repeat"],
                         "embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
+                        "baseline_generation_seconds": "",
+                        "watermarked_generation_seconds": "",
+                        "paired_generation_delta_seconds": "",
                         "extraction_seconds": f"{float(row['extraction_seconds']):.12f}",
                         "embedding_reference_tokens": row["input_tokens"],
                         "extraction_reference_tokens": row["watermarked_tokens"],
                         "embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
+                        "baseline_generation_ms_per_1k_tokens": "",
+                        "watermarked_generation_ms_per_1k_tokens": "",
+                        "paired_generation_delta_ms_per_1k_tokens": "",
                         "extraction_ms_per_1k_tokens": f"{float(row['extraction_ms_per_1k_tokens']):.9f}",
                     }
                 )
@@ -300,6 +350,15 @@ def main() -> int:
         records = logits["runs"][method]
         embedding = normalized(records, "embedding_seconds", "completion_tokens")
         extraction = normalized(records, "extraction_seconds", "completion_tokens")
+        baseline_generation = normalized(
+            records, "baseline_generation_seconds", "completion_tokens"
+        )
+        watermarked_generation = normalized(
+            records, "generation_seconds", "completion_tokens"
+        )
+        paired_generation_delta = normalized(
+            records, "paired_generation_delta_seconds", "completion_tokens"
+        )
         embedded = logits["summary"][method]
         assert_close(embedding, float(embedded["embedding_ms_per_1k_tokens"]), f"{method} embedding")
         assert_close(extraction, float(embedded["extraction_ms_per_1k_tokens"]), f"{method} extraction")
@@ -311,6 +370,11 @@ def main() -> int:
                 "embedding_ms_per_1k_tokens": embedding,
                 "embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
                 "embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
+                "baseline_generation_ms_per_1k_tokens": baseline_generation,
+                "watermarked_generation_ms_per_1k_tokens": watermarked_generation,
+                "paired_generation_delta_ms_per_1k_tokens": paired_generation_delta,
+                "paired_generation_delta_95ci_lower": embedded["paired_generation_delta_95ci_ms_per_1k_tokens"][0],
+                "paired_generation_delta_95ci_upper": embedded["paired_generation_delta_95ci_ms_per_1k_tokens"][1],
                 "extraction_ms_per_1k_tokens": extraction,
                 "extraction_95ci_lower": embedded["extraction_95ci_ms_per_1k_tokens"][0],
                 "extraction_95ci_upper": embedded["extraction_95ci_ms_per_1k_tokens"][1],
@@ -336,6 +400,11 @@ def main() -> int:
                 "embedding_ms_per_1k_tokens": embedding,
                 "embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
                 "embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
+                "baseline_generation_ms_per_1k_tokens": None,
+                "watermarked_generation_ms_per_1k_tokens": None,
+                "paired_generation_delta_ms_per_1k_tokens": None,
+                "paired_generation_delta_95ci_lower": None,
+                "paired_generation_delta_95ci_upper": None,
                 "extraction_ms_per_1k_tokens": extraction,
                 "extraction_95ci_lower": embedded["extraction_95ci_ms_per_1k_tokens"][0],
                 "extraction_95ci_upper": embedded["extraction_95ci_ms_per_1k_tokens"][1],

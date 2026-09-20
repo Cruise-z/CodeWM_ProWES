@@ -44,6 +44,7 @@ METHOD_PARAMS: dict[str, dict[str, Any]] = {
         "delta": EEI_MIDPOINTS["wllm"],
         "z_threshold": 4.0,
         "ignore_repeated_bigrams": False,
+        "detector_scope": "continuation",
     },
     "ewd": {
         "gamma": 0.5,
@@ -51,6 +52,7 @@ METHOD_PARAMS: dict[str, dict[str, Any]] = {
         "hash_key": 15485863,
         "z_threshold": 4.0,
         "prefix_length": 1,
+        "detector_scope": "continuation",
     },
     "sweet": {
         "gamma": 0.5,
@@ -58,6 +60,7 @@ METHOD_PARAMS: dict[str, dict[str, Any]] = {
         "entropy_threshold": 0.5,
         "z_threshold": 4.0,
         "ignore_repeated_bigrams": False,
+        "detector_scope": "continuation",
     },
     "stone": {
         "gamma": 0.5,
@@ -68,6 +71,7 @@ METHOD_PARAMS: dict[str, dict[str, Any]] = {
         "language": "java",
         "watermark_on_pl": "False",
         "skipping_rule": "all_pl",
+        "detector_scope": "continuation",
     },
     # Table X uses the released CodeIP random-message branch without the
     # optional PDA/type predictor.
@@ -177,6 +181,41 @@ def validate_detection(method: str, detection: Any, completion_tokens: int) -> N
     errors = detection_errors(detection or {})
     if errors:
         raise RuntimeError(f"{method} detector failed: {'; '.join(errors)}")
+    if method in ("wllm", "ewd", "sweet", "stone"):
+        input_rows = mappings_with_field(detection, "detector_input_tokens")
+        if len(input_rows) != 1:
+            raise RuntimeError(
+                f"{method} detector must return exactly one input-token record"
+            )
+        detector_row = input_rows[0]
+        if detector_row.get("detector_scope") != "continuation":
+            raise RuntimeError(f"{method} detector did not use continuation-only scope")
+        if int(detector_row["detector_input_tokens"]) != completion_tokens:
+            raise RuntimeError(
+                f"{method} detector input/completion mismatch: "
+                f"{detector_row['detector_input_tokens']} != {completion_tokens}"
+            )
+
+    if method in ("wllm", "ewd", "stone"):
+        score_rows = mappings_with_field(detection, "num_tokens_scored")
+        if len(score_rows) != 1 or int(score_rows[0]["num_tokens_scored"]) != completion_tokens - 1:
+            raise RuntimeError(
+                f"{method} detector must score completion_tokens - 1 positions"
+            )
+        return
+
+    if method == "codeip":
+        available_rows = mappings_with_field(detection, "available_message_num")
+        if len(available_rows) != 1 or int(available_rows[0]["available_message_num"]) <= 0:
+            raise RuntimeError("CodeIP detector decoded no complete message block")
+        return
+
+    if method == "waterfall":
+        score_rows = mappings_with_field(detection, "q_score")
+        if len(score_rows) != 1 or not math.isfinite(float(score_rows[0]["q_score"])):
+            raise RuntimeError("Waterfall detector returned no finite q_score")
+        return
+
     if method != "sweet":
         return
 
@@ -197,10 +236,10 @@ def validate_detection(method: str, detection: Any, completion_tokens: int) -> N
         raise RuntimeError(
             "SWEET detector did not use an independent detector model forward"
         )
-    if int(entropy.get("continuation_tokens", -1)) != completion_tokens:
+    if int(entropy.get("continuation_tokens", -1)) != completion_tokens - 1:
         raise RuntimeError(
             "SWEET detector entropy/token mismatch: "
-            f"entropy={entropy.get('continuation_tokens')}, completion={completion_tokens}"
+            f"entropy={entropy.get('continuation_tokens')}, expected={completion_tokens - 1}"
         )
     if int(entropy.get("qualified_tokens", -1)) != scored:
         raise RuntimeError(
@@ -219,6 +258,7 @@ def run_once(
     timeout: float,
     phase: str,
     repeat: int,
+    baseline: dict[str, Any],
 ) -> dict[str, Any]:
     payload = {
         "messages": [{"role": "user", "content": workload["rendered_prompt"]}],
@@ -255,6 +295,13 @@ def run_once(
         raise RuntimeError(f"{method} response omitted logits-processor timing")
     embedding_seconds = sum(float(row["lp_total_time_s"]) for row in components.values())
     generated_text = str(choice.get("message", {}).get("content", ""))
+    baseline_tokens = int(baseline["completion_tokens"])
+    if baseline_tokens != completion_tokens:
+        raise RuntimeError(
+            f"{method} paired baseline token mismatch: {baseline_tokens} != {completion_tokens}"
+        )
+    generation_seconds = float(generation_metrics.get("generation_elapsed_s", 0.0))
+    paired_delta_seconds = generation_seconds - float(baseline["generation_seconds"])
     return {
         "phase": phase,
         "method": method,
@@ -268,13 +315,73 @@ def run_once(
         "finish_reason": choice.get("finish_reason"),
         "embedding_seconds": embedding_seconds,
         "extraction_seconds": float(extraction_seconds),
-        "generation_seconds": float(generation_metrics.get("generation_elapsed_s", 0.0)),
+        "generation_seconds": generation_seconds,
+        "baseline_generation_seconds": float(baseline["generation_seconds"]),
+        "paired_generation_delta_seconds": paired_delta_seconds,
+        "baseline_generated_text_sha256": baseline["generated_text_sha256"],
         "client_seconds": client_elapsed,
         "embedding_ms_per_1k_tokens": embedding_seconds * 1_000_000.0 / completion_tokens,
         "extraction_ms_per_1k_tokens": float(extraction_seconds) * 1_000_000.0 / completion_tokens,
+        "baseline_generation_ms_per_1k_tokens": float(baseline["generation_seconds"]) * 1_000_000.0 / completion_tokens,
+        "watermarked_generation_ms_per_1k_tokens": generation_seconds * 1_000_000.0 / completion_tokens,
+        "paired_generation_delta_ms_per_1k_tokens": paired_delta_seconds * 1_000_000.0 / completion_tokens,
         "processor_calls": sum(int(row.get("lp_calls", 0)) for row in components.values()),
         "processor_components": components,
         "wm_detection": choice.get("wm_detection"),
+        "generated_text": generated_text,
+        "generated_text_sha256": sha256_bytes(generated_text.encode("utf-8")),
+    }
+
+
+def run_baseline_once(
+    endpoint: str,
+    workload: dict[str, Any],
+    *,
+    max_tokens: int,
+    seed: int,
+    timeout: float,
+    phase: str,
+    repeat: int,
+) -> dict[str, Any]:
+    """Run the synchronized WM-OFF member of a paired generation trial."""
+    payload = {
+        "messages": [{"role": "user", "content": workload["rendered_prompt"]}],
+        "temperature": 0.7,
+        "top_p": 1.0,
+        "max_tokens": max_tokens,
+        "stream": False,
+        "rng_seed": seed,
+        "internal_processor_names": [],
+        "external_processor_names": [],
+        "watermark_detect": False,
+    }
+    client_start = time.perf_counter()
+    response = json_request(f"{endpoint}/v1/chat/completions", payload, timeout)
+    client_elapsed = time.perf_counter() - client_start
+    usage = response["usage"]
+    choice = response["choices"][0]
+    generation_metrics = choice.get("generation_metrics") or {}
+    completion_tokens = int(usage["completion_tokens"])
+    if completion_tokens <= 0:
+        raise RuntimeError("WM-OFF baseline returned no completion tokens")
+    generation_seconds = generation_metrics.get("generation_elapsed_s")
+    if generation_seconds is None or float(generation_seconds) <= 0.0:
+        raise RuntimeError("WM-OFF baseline omitted synchronized generation timing")
+    generated_text = str(choice.get("message", {}).get("content", ""))
+    return {
+        "phase": phase,
+        "method": "wm_off",
+        "workload": workload["name"],
+        "repeat": repeat,
+        "rng_seed": seed,
+        "prompt_sha256": workload["rendered_prompt_sha256"],
+        "prompt_tokens": int(usage["prompt_tokens"]),
+        "completion_tokens": completion_tokens,
+        "total_tokens": int(usage["total_tokens"]),
+        "finish_reason": choice.get("finish_reason"),
+        "generation_seconds": float(generation_seconds),
+        "client_seconds": client_elapsed,
+        "generation_ms_per_1k_tokens": float(generation_seconds) * 1_000_000.0 / completion_tokens,
         "generated_text": generated_text,
         "generated_text_sha256": sha256_bytes(generated_text.encode("utf-8")),
     }
@@ -302,10 +409,12 @@ def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str
     rng = random.Random(seed)
     embed_bootstrap = []
     extract_bootstrap = []
+    delta_bootstrap = []
     for _ in range(bootstrap):
         sample = [rows[rng.randrange(len(rows))] for _ in rows]
         embed_bootstrap.append(ratio(sample, "embedding_seconds"))
         extract_bootstrap.append(ratio(sample, "extraction_seconds"))
+        delta_bootstrap.append(ratio(sample, "paired_generation_delta_seconds"))
     return {
         "runs": len(rows),
         "completion_tokens": sum(int(row["completion_tokens"]) for row in rows),
@@ -315,6 +424,13 @@ def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str
         "embedding_95ci_ms_per_1k_tokens": [
             percentile(embed_bootstrap, 0.025),
             percentile(embed_bootstrap, 0.975),
+        ],
+        "baseline_generation_ms_per_1k_tokens": ratio(rows, "baseline_generation_seconds"),
+        "watermarked_generation_ms_per_1k_tokens": ratio(rows, "generation_seconds"),
+        "paired_generation_delta_ms_per_1k_tokens": ratio(rows, "paired_generation_delta_seconds"),
+        "paired_generation_delta_95ci_ms_per_1k_tokens": [
+            percentile(delta_bootstrap, 0.025),
+            percentile(delta_bootstrap, 0.975),
         ],
         "extraction_ms_per_1k_tokens": ratio(rows, "extraction_seconds"),
         "extraction_median_ms_per_1k_tokens": statistics.median(extraction),
@@ -357,7 +473,18 @@ def main() -> int:
     server_catalog = json_request(f"{endpoint}/v1/_processors", None, args.timeout)
     workloads = load_workloads(args.workloads.resolve())
     warmup_rows = []
+    baseline_warmup_rows = []
     for warmup in range(args.warmups):
+        baseline = run_baseline_once(
+            endpoint,
+            workloads[0],
+            max_tokens=args.max_tokens,
+            seed=args.seed - args.warmups + warmup,
+            timeout=args.timeout,
+            phase="warmup",
+            repeat=warmup,
+        )
+        baseline_warmup_rows.append(baseline)
         for method in methods:
             print(f"warmup {warmup + 1}/{args.warmups}: {method}", file=sys.stderr, flush=True)
             warmup_rows.append(
@@ -370,14 +497,26 @@ def main() -> int:
                     timeout=args.timeout,
                     phase="warmup",
                     repeat=warmup,
+                    baseline=baseline,
                 )
             )
 
     rows_by_method = {method: [] for method in methods}
+    baseline_rows = []
     benchmark_start = time.perf_counter()
     for repeat in range(args.repeats):
         for workload_index, workload in enumerate(workloads):
             run_seed = args.seed + repeat * len(workloads) + workload_index
+            baseline = run_baseline_once(
+                endpoint,
+                workload,
+                max_tokens=args.max_tokens,
+                seed=run_seed,
+                timeout=args.timeout,
+                phase="measured",
+                repeat=repeat,
+            )
+            baseline_rows.append(baseline)
             for method in methods:
                 print(
                     f"measured {repeat + 1}/{args.repeats}: {workload['name']}: {method}",
@@ -394,21 +533,24 @@ def main() -> int:
                         timeout=args.timeout,
                         phase="measured",
                         repeat=repeat,
+                        baseline=baseline,
                     )
                 )
 
     result = {
-        "schema_version": 4,
+        "schema_version": 5,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "measurement_contract": {
-            "embedding": "method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
-            "extraction": "complete detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the completed sequence",
+            "embedding": "primary Table X estimator: method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
+            "paired_generation_delta": "secondary diagnostic: synchronized watermarked generation minus a same-workload, same-seed WM-OFF generation; retained because the difference also contains token-dependent model-path and system noise",
+            "extraction": "complete continuation-only detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the generated continuation",
             "normalization": "elapsed_seconds * 1,000,000 / authoritative completion_tokens",
             "aggregation": "sum elapsed seconds / sum reference tokens",
             "model_forward_in_embedding": False,
             "codeip_variant": "released random-message branch without PDA/type predictor",
             "strength": "arithmetic midpoint of each method's RQ1 EEI",
             "sweet_admission": "every measured run must score at least one token and report detector_model_forward entropy provenance",
+            "detector_scope": "generated continuation only; a one-token prefix is consumed by previous-token seeding and the remaining completion tokens are scored",
         },
         "workload": {
             "manifest": str(args.workloads.resolve()),
@@ -442,6 +584,8 @@ def main() -> int:
             for index, (method, rows) in enumerate(rows_by_method.items())
         },
         "warmups": warmup_rows,
+        "baseline_warmups": baseline_warmup_rows,
+        "baseline_runs": baseline_rows,
         "runs": rows_by_method,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

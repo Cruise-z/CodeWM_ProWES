@@ -39,7 +39,13 @@ CODEWM_PLUGIN = MethodIntegrationPlugin(
     builder=build_codewm,
     required_framework_components=(FrameworkComponent.TOKENIZER,),
     parameter_contract=MethodParameterContract(
-        accepted=("gamma", "delta", "z_threshold", "ignore_repeated_bigrams"),
+        accepted=(
+            "gamma",
+            "delta",
+            "z_threshold",
+            "ignore_repeated_bigrams",
+            "detector_scope",
+        ),
     ),
     detection_contract=MethodDetectionContract(
         mode=MethodDetectionMode.PROCESSOR_STATE,

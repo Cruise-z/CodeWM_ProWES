@@ -685,6 +685,11 @@ def hf_generate_single(
             generate_kwargs["stopping_criteria"] = post_sample_observer
         return model.generate(**generate_kwargs)
 
+    # Generation timing is also used by the RQ3 paired WM-OFF diagnostic.
+    # Synchronize the multi-GPU workload at both boundaries so queued kernels
+    # from a previous request cannot leak into this request's wall time.
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
     t0 = _time.perf_counter()
     try:
         out = _call_generate(gen)
@@ -709,6 +714,8 @@ def hf_generate_single(
             except Exception:
                 pass
             out = _call_generate(None)
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
     t1 = _time.perf_counter()
 
     seqs = out.sequences

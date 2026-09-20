@@ -43,7 +43,14 @@ CODEWM_PLUGIN = MethodIntegrationPlugin(
         FrameworkComponent.DEVICE,
     ),
     parameter_contract=MethodParameterContract(
-        accepted=("gamma", "delta", "hash_key", "z_threshold", "prefix_length"),
+        accepted=(
+            "gamma",
+            "delta",
+            "hash_key",
+            "z_threshold",
+            "prefix_length",
+            "detector_scope",
+        ),
     ),
     detection_contract=MethodDetectionContract(
         mode=MethodDetectionMode.PROCESSOR_STATE,

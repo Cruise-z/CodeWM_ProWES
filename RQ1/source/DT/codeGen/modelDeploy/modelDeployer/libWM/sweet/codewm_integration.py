@@ -49,6 +49,7 @@ CODEWM_PLUGIN = MethodIntegrationPlugin(
             "entropy_threshold",
             "z_threshold",
             "ignore_repeated_bigrams",
+            "detector_scope",
         ),
     ),
     detection_contract=MethodDetectionContract(
