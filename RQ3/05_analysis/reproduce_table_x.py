@@ -348,7 +348,9 @@ def main() -> int:
     rows = []
     for method in LOGITS_ORDER:
         records = logits["runs"][method]
-        embedding = normalized(records, "embedding_seconds", "completion_tokens")
+        processor_only_embedding = normalized(
+            records, "embedding_seconds", "completion_tokens"
+        )
         extraction = normalized(records, "extraction_seconds", "completion_tokens")
         baseline_generation = normalized(
             records, "baseline_generation_seconds", "completion_tokens"
@@ -360,16 +362,28 @@ def main() -> int:
             records, "paired_generation_delta_seconds", "completion_tokens"
         )
         embedded = logits["summary"][method]
-        assert_close(embedding, float(embedded["embedding_ms_per_1k_tokens"]), f"{method} embedding")
+        assert_close(
+            processor_only_embedding,
+            float(embedded["embedding_ms_per_1k_tokens"]),
+            f"{method} processor-only embedding",
+        )
+        assert_close(
+            paired_generation_delta,
+            float(embedded["table_x_embedding_ms_per_1k_tokens"]),
+            f"{method} Table X paired embedding",
+        )
         assert_close(extraction, float(embedded["extraction_ms_per_1k_tokens"]), f"{method} extraction")
         rows.append(
             {
                 "paradigm": "Logits-bias",
                 "method": DISPLAY[method],
                 "training_seconds": None,
-                "embedding_ms_per_1k_tokens": embedding,
-                "embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
-                "embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
+                "embedding_ms_per_1k_tokens": paired_generation_delta,
+                "embedding_95ci_lower": embedded["table_x_embedding_95ci_ms_per_1k_tokens"][0],
+                "embedding_95ci_upper": embedded["table_x_embedding_95ci_ms_per_1k_tokens"][1],
+                "processor_only_embedding_ms_per_1k_tokens": processor_only_embedding,
+                "processor_only_embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
+                "processor_only_embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
                 "baseline_generation_ms_per_1k_tokens": baseline_generation,
                 "watermarked_generation_ms_per_1k_tokens": watermarked_generation,
                 "paired_generation_delta_ms_per_1k_tokens": paired_generation_delta,
@@ -400,6 +414,9 @@ def main() -> int:
                 "embedding_ms_per_1k_tokens": embedding,
                 "embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
                 "embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
+                "processor_only_embedding_ms_per_1k_tokens": None,
+                "processor_only_embedding_95ci_lower": None,
+                "processor_only_embedding_95ci_upper": None,
                 "baseline_generation_ms_per_1k_tokens": None,
                 "watermarked_generation_ms_per_1k_tokens": None,
                 "paired_generation_delta_ms_per_1k_tokens": None,
@@ -444,6 +461,7 @@ def main() -> int:
             {
                 "schema_version": 1,
                 "normalization": "sum(seconds) * 1,000,000 / sum(reference tokens)",
+                "logits_embedding_estimator": "paired synchronized generation delta: watermarked minus adjacent WM-OFF, with alternating pair order",
                 "rows": rows,
             },
             indent=2,

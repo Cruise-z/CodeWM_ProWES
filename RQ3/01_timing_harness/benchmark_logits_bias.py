@@ -258,7 +258,7 @@ def run_once(
     timeout: float,
     phase: str,
     repeat: int,
-    baseline: dict[str, Any],
+    baseline: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     payload = {
         "messages": [{"role": "user", "content": workload["rendered_prompt"]}],
@@ -295,14 +295,8 @@ def run_once(
         raise RuntimeError(f"{method} response omitted logits-processor timing")
     embedding_seconds = sum(float(row["lp_total_time_s"]) for row in components.values())
     generated_text = str(choice.get("message", {}).get("content", ""))
-    baseline_tokens = int(baseline["completion_tokens"])
-    if baseline_tokens != completion_tokens:
-        raise RuntimeError(
-            f"{method} paired baseline token mismatch: {baseline_tokens} != {completion_tokens}"
-        )
     generation_seconds = float(generation_metrics.get("generation_elapsed_s", 0.0))
-    paired_delta_seconds = generation_seconds - float(baseline["generation_seconds"])
-    return {
+    row = {
         "phase": phase,
         "method": method,
         "workload": workload["name"],
@@ -316,21 +310,54 @@ def run_once(
         "embedding_seconds": embedding_seconds,
         "extraction_seconds": float(extraction_seconds),
         "generation_seconds": generation_seconds,
-        "baseline_generation_seconds": float(baseline["generation_seconds"]),
-        "paired_generation_delta_seconds": paired_delta_seconds,
-        "baseline_generated_text_sha256": baseline["generated_text_sha256"],
         "client_seconds": client_elapsed,
         "embedding_ms_per_1k_tokens": embedding_seconds * 1_000_000.0 / completion_tokens,
         "extraction_ms_per_1k_tokens": float(extraction_seconds) * 1_000_000.0 / completion_tokens,
-        "baseline_generation_ms_per_1k_tokens": float(baseline["generation_seconds"]) * 1_000_000.0 / completion_tokens,
         "watermarked_generation_ms_per_1k_tokens": generation_seconds * 1_000_000.0 / completion_tokens,
-        "paired_generation_delta_ms_per_1k_tokens": paired_delta_seconds * 1_000_000.0 / completion_tokens,
         "processor_calls": sum(int(row.get("lp_calls", 0)) for row in components.values()),
         "processor_components": components,
         "wm_detection": choice.get("wm_detection"),
         "generated_text": generated_text,
         "generated_text_sha256": sha256_bytes(generated_text.encode("utf-8")),
     }
+    return pair_with_baseline(row, baseline) if baseline is not None else row
+
+
+def pair_with_baseline(
+    method_row: dict[str, Any],
+    baseline: dict[str, Any],
+    *,
+    pair_order: str = "baseline_then_watermark",
+) -> dict[str, Any]:
+    """Attach one adjacent, same-seed WM-OFF measurement to a method row."""
+    baseline_tokens = int(baseline["completion_tokens"])
+    completion_tokens = int(method_row["completion_tokens"])
+    if baseline_tokens != completion_tokens:
+        raise RuntimeError(
+            f"{method_row['method']} paired baseline token mismatch: "
+            f"{baseline_tokens} != {completion_tokens}"
+        )
+    if baseline["workload"] != method_row["workload"]:
+        raise RuntimeError("paired baseline workload mismatch")
+    if int(baseline["rng_seed"]) != int(method_row["rng_seed"]):
+        raise RuntimeError("paired baseline seed mismatch")
+    baseline_seconds = float(baseline["generation_seconds"])
+    delta_seconds = float(method_row["generation_seconds"]) - baseline_seconds
+    method_row.update(
+        {
+            "pair_order": pair_order,
+            "baseline_generation_seconds": baseline_seconds,
+            "paired_generation_delta_seconds": delta_seconds,
+            "baseline_generated_text_sha256": baseline["generated_text_sha256"],
+            "baseline_generation_ms_per_1k_tokens": baseline_seconds
+            * 1_000_000.0
+            / completion_tokens,
+            "paired_generation_delta_ms_per_1k_tokens": delta_seconds
+            * 1_000_000.0
+            / completion_tokens,
+        }
+    )
+    return method_row
 
 
 def run_baseline_once(
@@ -432,6 +459,13 @@ def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str
             percentile(delta_bootstrap, 0.025),
             percentile(delta_bootstrap, 0.975),
         ],
+        "table_x_embedding_ms_per_1k_tokens": ratio(
+            rows, "paired_generation_delta_seconds"
+        ),
+        "table_x_embedding_95ci_ms_per_1k_tokens": [
+            percentile(delta_bootstrap, 0.025),
+            percentile(delta_bootstrap, 0.975),
+        ],
         "extraction_ms_per_1k_tokens": ratio(rows, "extraction_seconds"),
         "extraction_median_ms_per_1k_tokens": statistics.median(extraction),
         "extraction_sd_ms_per_1k_tokens": statistics.stdev(extraction) if len(extraction) > 1 else 0.0,
@@ -507,24 +541,34 @@ def main() -> int:
     for repeat in range(args.repeats):
         for workload_index, workload in enumerate(workloads):
             run_seed = args.seed + repeat * len(workloads) + workload_index
-            baseline = run_baseline_once(
-                endpoint,
-                workload,
-                max_tokens=args.max_tokens,
-                seed=run_seed,
-                timeout=args.timeout,
-                phase="measured",
-                repeat=repeat,
-            )
-            baseline_rows.append(baseline)
-            for method in methods:
+            for method_index, method in enumerate(methods):
+                pair_index = (
+                    (repeat * len(workloads) + workload_index) * len(methods)
+                    + method_index
+                )
+                baseline_first = pair_index % 2 == 0
+                pair_order = (
+                    "baseline_then_watermark"
+                    if baseline_first
+                    else "watermark_then_baseline"
+                )
                 print(
-                    f"measured {repeat + 1}/{args.repeats}: {workload['name']}: {method}",
+                    f"measured {repeat + 1}/{args.repeats}: {workload['name']}: "
+                    f"{method}: {pair_order}",
                     file=sys.stderr,
                     flush=True,
                 )
-                rows_by_method[method].append(
-                    run_once(
+                if baseline_first:
+                    baseline = run_baseline_once(
+                        endpoint,
+                        workload,
+                        max_tokens=args.max_tokens,
+                        seed=run_seed,
+                        timeout=args.timeout,
+                        phase="measured",
+                        repeat=repeat,
+                    )
+                    method_row = run_once(
                         endpoint,
                         method,
                         workload,
@@ -533,20 +577,49 @@ def main() -> int:
                         timeout=args.timeout,
                         phase="measured",
                         repeat=repeat,
-                        baseline=baseline,
+                    )
+                else:
+                    method_row = run_once(
+                        endpoint,
+                        method,
+                        workload,
+                        max_tokens=args.max_tokens,
+                        seed=run_seed,
+                        timeout=args.timeout,
+                        phase="measured",
+                        repeat=repeat,
+                    )
+                    baseline = run_baseline_once(
+                        endpoint,
+                        workload,
+                        max_tokens=args.max_tokens,
+                        seed=run_seed,
+                        timeout=args.timeout,
+                        phase="measured",
+                        repeat=repeat,
+                    )
+                baseline["paired_method"] = method
+                baseline["pair_order"] = pair_order
+                baseline["pair_index"] = pair_index
+                baseline_rows.append(baseline)
+                rows_by_method[method].append(
+                    pair_with_baseline(
+                        method_row,
+                        baseline,
+                        pair_order=pair_order,
                     )
                 )
 
     result = {
-        "schema_version": 5,
+        "schema_version": 6,
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "measurement_contract": {
-            "embedding": "primary Table X estimator: method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
-            "paired_generation_delta": "secondary diagnostic: synchronized watermarked generation minus a same-workload, same-seed WM-OFF generation; retained because the difference also contains token-dependent model-path and system noise",
+            "embedding": "primary Table X estimator: synchronized watermarked generation minus an adjacent same-workload, same-seed, same-length WM-OFF generation; pair order alternates to control order drift",
+            "processor_only_embedding": "secondary attribution diagnostic: method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
             "extraction": "complete continuation-only detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the generated continuation",
             "normalization": "elapsed_seconds * 1,000,000 / authoritative completion_tokens",
             "aggregation": "sum elapsed seconds / sum reference tokens",
-            "model_forward_in_embedding": False,
+            "shared_model_forward_removed_by_pairing": True,
             "codeip_variant": "released random-message branch without PDA/type predictor",
             "strength": "arithmetic midpoint of each method's RQ1 EEI",
             "sweet_admission": "every measured run must score at least one token and report detector_model_forward entropy provenance",
@@ -595,7 +668,7 @@ def main() -> int:
     for method in methods:
         row = result["summary"][method]
         print(
-            f"| {method.upper()} | {row['embedding_ms_per_1k_tokens']:.2f} | "
+            f"| {method.upper()} | {row['table_x_embedding_ms_per_1k_tokens']:.2f} | "
             f"{row['extraction_ms_per_1k_tokens']:.2f} | {row['runs']} | "
             f"{row['completion_tokens']} |"
         )
