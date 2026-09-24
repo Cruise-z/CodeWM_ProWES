@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+from importlib.metadata import version as package_version
 import hashlib
 import json
 import math
@@ -541,6 +542,7 @@ def main() -> int:
             "platform": platform.platform(),
             "torch": torch.__version__,
             "cuda": torch.version.cuda,
+            "tree_sitter": package_version("tree-sitter"),
             "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
             "gpu": torch.cuda.get_device_name(device) if device.type == "cuda" else None,
             "nvidia_smi": command_output([
