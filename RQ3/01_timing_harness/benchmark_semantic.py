@@ -529,6 +529,14 @@ def main() -> int:
             "files_sha256": tokenizer_files,
         },
         "environment": {
+            "artifact_source_commit": command_output([
+                "git",
+                "-C",
+                str(Path(__file__).resolve().parents[2]),
+                "rev-parse",
+                "HEAD",
+            ]),
+
             "python": platform.python_version(),
             "platform": platform.platform(),
             "torch": torch.__version__,
