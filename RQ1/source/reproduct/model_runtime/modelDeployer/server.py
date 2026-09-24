@@ -33,6 +33,8 @@ try:
         resolve_internal, resolve_external, concat_lp,
     )
     from generation import prep_inputs, model_ctx_limit, hf_generate_single, fmt_ms
+    from libWM.standalone_detection import detect_text, prepare_standalone_detector
+    from libWM.timing import runtime_observation, synchronize_all_cuda_devices
 except Exception as exc:
     report_exception("server import/startup failed", exc)
     raise
@@ -72,11 +74,24 @@ class ChatRequest(BaseModel):
     # Only applies to external builders: per-name parameter dict
     external_processor_params: Optional[Dict[str, Dict[str, Any]]] = None
     watermark_detect: Optional[bool] = True
+    # v2 timing controls. Defaults preserve the RQ1 generation/detection path.
+    instrument_processor_timing: Optional[bool] = True
+    capture_detection_state: Optional[bool] = True
+    force_max_tokens: Optional[bool] = False
 
     # Hidden knob (not in schema): server default sampling policy
     _do_sample: bool = PrivateAttr(default=SERVER_DO_SAMPLE)
 
-# -------------------------
+# Standalone extraction request schema.
+class WatermarkDetectionRequest(BaseModel):
+    method: str
+    text: str
+    method_params: Optional[Dict[str, Any]] = None
+    rng_seed: Optional[int] = 1234
+    temperature: Optional[float] = 0.7
+    top_p: Optional[float] = 1.0
+
+
 # FastAPI app
 # -------------------------
 app = FastAPI()
@@ -92,7 +107,7 @@ async def _unhandled_exception_handler(request: Request, exc: Exception):
 class LogReqSizeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Paths to log
-        if request.url.path in ("/v1/chat/completions", "/dbg/echo-len"):
+        if request.url.path in ("/v1/chat/completions", "/v1/watermark/detect", "/dbg/echo-len"):
             try:
                 body = await request.body()
                 size = len(body or b"")
@@ -303,6 +318,12 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
     if not req.messages:
         raise HTTPException(status_code=422, detail="messages must not be empty")
 
+    if bool(req.watermark_detect) and not bool(req.capture_detection_state):
+        raise HTTPException(
+            status_code=422,
+            detail="watermark_detect requires capture_detection_state=true",
+        )
+
     try:
         msgs = [m.model_dump() for m in req.messages]
         inputs = prep_inputs(msgs)
@@ -344,16 +365,21 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
 
     # Run a single generate() call (no more "parallel" dual-path).
     try:
-        text, prompt_tok, comp_tok, total_tok, finish_reason, gen_elapsed_s = await asyncio.to_thread(
-            hf_generate_single,
-            inputs,
-            lp_final,
-            req.temperature,
-            req.top_p,
-            req.max_tokens,
-            req._do_sample,
-            req.rng_seed,
-        )
+        with runtime_observation(
+            processor_timing=bool(req.instrument_processor_timing),
+            detection_state=bool(req.capture_detection_state),
+        ):
+            text, prompt_tok, comp_tok, total_tok, finish_reason, gen_elapsed_s = await asyncio.to_thread(
+                hf_generate_single,
+                inputs,
+                lp_final,
+                req.temperature,
+                req.top_p,
+                req.max_tokens,
+                req._do_sample,
+                req.rng_seed,
+                bool(req.force_max_tokens),
+            )
     except ValueError as e:
         report_exception("generation value error", e)
         raise HTTPException(status_code=400, detail=f"bad_sampling_args: {e}") from e
@@ -429,6 +455,9 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
         "generation_metrics": {
             "generation_elapsed_s": float(gen_elapsed_s),
             "watermark_detection_elapsed_s": det_elapsed_s,
+            "processor_timing_enabled": bool(req.instrument_processor_timing),
+            "detection_state_enabled": bool(req.capture_detection_state),
+            "force_max_tokens": bool(req.force_max_tokens),
         },
         "processor_metrics": processor_metrics,
     }
@@ -451,6 +480,88 @@ async def chat(req: ChatRequest) -> Dict[str, Any]:
     }
 
     return resp
+
+
+def _measure_standalone_detection(processor: Any, text: str) -> tuple[Dict[str, Any], int, float]:
+    """Measure final-text tokenization plus method-owned extraction."""
+
+    synchronize_all_cuda_devices()
+    started = time.perf_counter()
+    result, input_tokens = detect_text(processor, tokenizer, text)
+    synchronize_all_cuda_devices()
+    elapsed_s = float(time.perf_counter() - started)
+    return result, input_tokens, elapsed_s
+
+
+@app.post("/v1/watermark/detect")
+async def detect_watermark(req: WatermarkDetectionRequest) -> Dict[str, Any]:
+    """Run extraction independently from generation for the v2 timing protocol.
+
+    Processor construction and method-specific lazy initialization are outside
+    the timed boundary. Final-text tokenization, transfers performed by the
+    detector, and the complete detector call are inside it.
+    """
+
+    method = req.method.strip().lower()
+    if not method:
+        raise HTTPException(status_code=422, detail="method must not be empty")
+    if not req.text:
+        raise HTTPException(status_code=422, detail="text must not be empty")
+
+    context_req = ChatRequest(
+        messages=[Message(role="user", content=req.text)],
+        temperature=req.temperature,
+        top_p=req.top_p,
+        max_tokens=1,
+        rng_seed=req.rng_seed,
+        watermark_detect=False,
+        instrument_processor_timing=False,
+        capture_detection_state=False,
+    )
+    try:
+        context_inputs = prep_inputs(
+            [message.model_dump() for message in context_req.messages]
+        )
+        processors = resolve_external(
+            [method],
+            external_params={method: dict(req.method_params or {})},
+            runtime_context=_method_runtime_context(context_req, context_inputs),
+            framework_components=FRAMEWORK_RUNTIME_COMPONENTS,
+        )
+        if processors is None or len(processors) != 1:
+            raise RuntimeError("standalone detection requires exactly one processor")
+        processor = list(processors)[0]
+        prepare_standalone_detector(processor)
+        result, input_tokens, elapsed_s = await asyncio.to_thread(
+            _measure_standalone_detection,
+            processor,
+            req.text,
+        )
+        validate_processor_detection_result(processor, result)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        report_exception("standalone watermark detection failed", exc)
+        raise HTTPException(
+            status_code=500,
+            detail=f"standalone_detection_error: {exc.__class__.__name__}: {exc}",
+        ) from exc
+
+    return {
+        "method": method,
+        "input_tokens": int(input_tokens),
+        "extraction_elapsed_s": float(elapsed_s),
+        "wm_detection": result,
+        "measurement_contract": {
+            "processor_construction_timed": False,
+            "lazy_detector_initialization_timed": False,
+            "final_text_tokenization_timed": True,
+            "detector_execution_timed": True,
+            "generation_state_reused": False,
+            "cuda_boundary_synchronization": "all_visible_devices",
+        },
+    }
+
 
 # Startup examples:
 #   Sampling enabled:

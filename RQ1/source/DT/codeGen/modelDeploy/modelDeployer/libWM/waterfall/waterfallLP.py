@@ -8,7 +8,11 @@ from typing import Iterable, Optional, List, Union, Dict, Any, cast
 import torch
 from transformers.generation.logits_process import LogitsProcessor
 
-from ..timing import synchronized_perf_counter
+from ..timing import (
+    detection_state_enabled,
+    processor_timing_enabled,
+    synchronized_perf_counter,
+)
 
 from .WatermarkerBase import PerturbationProcessor, Watermarker
 from .WatermarkingFnFourier import WatermarkingFnFourier
@@ -130,6 +134,7 @@ class WaterfallLogitsProcessor(LogitsProcessor):
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor):
         bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
 
+        capture_detection = detection_state_enabled()
         need_reset = False
         if self._auto_reset:
             if self._detect_mode == "batch":
@@ -151,18 +156,19 @@ class WaterfallLogitsProcessor(LogitsProcessor):
         if need_reset:
             # Reset official perturbation state.
             self._proc.reset(self._n_gram)
-            # Reset side-channel caches.
-            self._reset_local_caches(bsz)
-            self._prev_seen_len_rows = [int(input_ids.shape[1])] * bsz
+            if capture_detection:
+                # Reset detection-only side-channel caches.
+                self._reset_local_caches(bsz)
+                self._prev_seen_len_rows = [int(input_ids.shape[1])] * bsz
 
         # Initialize caches on the first call or when auto-reset is disabled.
-        if self._cache_rows_ids is None or len(self._cache_rows_ids) != bsz:
+        if capture_detection and (self._cache_rows_ids is None or len(self._cache_rows_ids) != bsz):
             self._reset_local_caches(bsz)
-        if self._prev_seen_len_rows is None or len(self._prev_seen_len_rows) != bsz:
+        if capture_detection and (self._prev_seen_len_rows is None or len(self._prev_seen_len_rows) != bsz):
             self._prev_seen_len_rows = [cur_len] * bsz
 
         # Append exactly the continuation span introduced at this step.
-        for i in range(bsz):
+        for i in range(bsz) if capture_detection else ():
             prev = self._prev_seen_len_rows[i]
             if cur_len > prev:
                 # Only [prev:cur_len) contains newly introduced tokens.
@@ -175,20 +181,23 @@ class WaterfallLogitsProcessor(LogitsProcessor):
                         if overflow > 0:
                             self._cache_rows_ids[i] = self._cache_rows_ids[i][overflow:]
         # Update baseline lengths.
-        self._prev_seen_len_rows = [cur_len] * bsz
+        if capture_detection:
+            self._prev_seen_len_rows = [cur_len] * bsz
 
         # Delegate perturbation to the official implementation and time it.
-        t0 = synchronized_perf_counter(scores)
+        timing_enabled = processor_timing_enabled()
+        t0 = synchronized_perf_counter(scores) if timing_enabled else 0.0
         try:
             out = self._proc(input_ids, scores)
             return out
         finally:
-            # Best-effort timing: must never affect generation behavior
-            try:
-                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
-                self._lp_calls += 1
-            except Exception:
-                pass
+            if timing_enabled:
+                # Best-effort timing: must never affect generation behavior.
+                try:
+                    self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
+                    self._lp_calls += 1
+                except Exception:
+                    pass
 
     def timing(self) -> Dict[str, Any]:
         """

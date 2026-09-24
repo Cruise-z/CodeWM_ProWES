@@ -28,7 +28,12 @@ from torch.utils.data import DataLoader
 from transformers import AutoTokenizer
 
 from code_transform_provider import CodeTransformProvider
-from data_processing import CodeVocab, DynamicWMCollator, JsonlWMDatasetProcessor
+from data_processing import (
+    CodeVocab,
+    DataInstance,
+    DynamicWMCollator,
+    JsonlWMDatasetProcessor,
+)
 from experiment_config import build_code_transformers, validate_dataset_language
 from models import (
     ConcatApproximator,
@@ -99,6 +104,12 @@ def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str
         "runs": len(rows),
         "input_tokens": sum(int(row["input_tokens"]) for row in rows),
         "watermarked_tokens": sum(int(row["watermarked_tokens"]) for row in rows),
+        "input_model_tokens": sum(int(row["input_model_tokens"]) for row in rows),
+        "watermarked_model_tokens": sum(
+            int(row["watermarked_model_tokens"]) for row in rows
+        ),
+        "input_truncated_runs": sum(bool(row["input_truncated"]) for row in rows),
+        "watermarked_truncated_runs": sum(bool(row["watermarked_truncated"]) for row in rows),
         "embedding_seconds": sum(float(row["embedding_seconds"]) for row in rows),
         "extraction_seconds": sum(float(row["extraction_seconds"]) for row in rows),
         "embedding_ms_per_1k_tokens": ratio(rows, "embedding_seconds", "input_tokens"),
@@ -181,11 +192,29 @@ def build_models(
     return models
 
 
+def materialize_from_source(
+    template: DataInstance,
+    transform_manager: InMemoryJitRuntimeDataManager,
+) -> DataInstance:
+    """Re-tokenize raw source instead of reusing dataset-build token objects."""
+
+    source_tokens, tokens = transform_manager.code_tokenizer.get_tokens(template.source)
+    return DataInstance(
+        template.id,
+        template.source,
+        source_tokens,
+        tokens,
+        task_label=template.task_label,
+        transform_keys=template.transform_keys,
+    )
+
+
 def measure_batch(
     batch: Any,
     *,
     repeat: int,
     method: str,
+    dataset: str,
     transform_capacity: int,
     transform_manager: InMemoryJitRuntimeDataManager,
     models: dict[str, Any],
@@ -194,14 +223,19 @@ def measure_batch(
     random_mask: bool,
     var_transform_mode: str,
 ) -> dict[str, Any]:
-    x, lengths, src_mask, instance_ids, wms, wmids = batch
-    x = x.to(device)
-    wms = wms.float().to(device)
-    wmids = wmids.to(device)
-    src_mask = src_mask.to(device)
+    _, _, _, instance_ids, wms, wmids = batch
 
     synchronize(device)
     embed_start = time.perf_counter()
+    original_templates = transform_manager.get_original_instances(instance_ids)
+    original_instances = [
+        materialize_from_source(instance, transform_manager)
+        for instance in original_templates
+    ]
+    x, lengths, src_mask = transform_manager.load_to_tensor(original_instances)
+    x = x.to(device)
+    wms = wms.float().to(device)
+    src_mask = src_mask.to(device)
     feasible = transform_manager.get_feasible_transform_ids(instance_ids)
     style_masks = []
     for item in feasible:
@@ -219,7 +253,6 @@ def measure_batch(
         code_feature, wm_feature, transform_mask=style_masks_tensor
     )
     style_ids = torch.argmax(style_output, dim=1).tolist()
-    original_instances = transform_manager.get_original_instances(instance_ids)
     transformed_instances, updates = transform_manager.varname_transform_on_instances(
         original_instances, variable_ids, mode=var_transform_mode
     )
@@ -229,13 +262,17 @@ def measure_batch(
     synchronize(device)
     embedding_seconds = time.perf_counter() - embed_start
 
+    synchronize(device)
+    extraction_start = time.perf_counter()
+    detector_instances = [
+        materialize_from_source(instance, transform_manager)
+        for instance in transformed_instances
+    ]
     decoded_x, decoded_lengths, decoded_mask = transform_manager.load_to_tensor(
-        transformed_instances
+        detector_instances
     )
     decoded_x = decoded_x.to(device)
     decoded_mask = decoded_mask.to(device)
-    synchronize(device)
-    extraction_start = time.perf_counter()
     if models["extract_encoder"] is not None:
         features = models["extract_encoder"](decoded_x, decoded_lengths, decoded_mask)
     else:
@@ -254,9 +291,13 @@ def measure_batch(
     )
     if input_tokens <= 0 or watermarked_tokens <= 0:
         raise RuntimeError(f"empty reference-token sequence for {instance_ids[0]}")
+    input_internal_tokens = len(original_instances[0].tokens)
+    watermarked_internal_tokens = len(detector_instances[0].tokens)
+    input_model_tokens = int(lengths[0])
+    watermarked_model_tokens = int(decoded_lengths[0])
     return {
         "method": method,
-        "dataset": "csn_js",
+        "dataset": dataset,
         "sample_uid": str(instance_ids[0]),
         "repeat": repeat,
         "rng_watermark_id": int(wmids[0].detach().cpu().item()),
@@ -270,6 +311,12 @@ def measure_batch(
         "watermarked_source_sha256": sha256_text(watermarked_source),
         "input_tokens": input_tokens,
         "watermarked_tokens": watermarked_tokens,
+        "input_internal_tokens": input_internal_tokens,
+        "watermarked_internal_tokens": watermarked_internal_tokens,
+        "input_model_tokens": input_model_tokens,
+        "watermarked_model_tokens": watermarked_model_tokens,
+        "input_truncated": input_internal_tokens > input_model_tokens,
+        "watermarked_truncated": watermarked_internal_tokens > watermarked_model_tokens,
         "embedding_seconds": embedding_seconds,
         "extraction_seconds": extraction_seconds,
         "embedding_ms_per_1k_tokens": embedding_seconds * 1_000_000.0 / input_tokens,
@@ -284,6 +331,8 @@ def main() -> int:
     parser.add_argument("--lang", choices=["cpp", "java", "javascript"], default="javascript")
     parser.add_argument("--dataset-dir", type=Path, default=Path("datasets/csn_js"))
     parser.add_argument("--checkpoint-path", type=Path, required=True)
+    parser.add_argument("--parser-library", type=Path, default=Path("parser/languages.so"))
+    parser.add_argument("--metadata-dir", type=Path, default=Path("datasets"))
     parser.add_argument("--reference-tokenizer", type=Path, required=True)
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cuda")
     parser.add_argument("--preprocess-workers", type=int, default=8)
@@ -304,6 +353,12 @@ def main() -> int:
     if args.repeats < 1 or args.warmups < 0 or args.bootstrap < 1:
         parser.error("repeats/bootstrap must be positive and warmups non-negative")
 
+    args.dataset_dir = args.dataset_dir.resolve()
+    args.checkpoint_path = args.checkpoint_path.resolve()
+    args.parser_library = args.parser_library.resolve()
+    args.metadata_dir = args.metadata_dir.resolve()
+    args.reference_tokenizer = args.reference_tokenizer.resolve()
+
     device = torch.device(args.device)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA was requested but is unavailable")
@@ -312,7 +367,7 @@ def main() -> int:
     if device.type == "cuda":
         torch.cuda.manual_seed_all(args.seed)
 
-    parser_language = tree_sitter.Language("parser/languages.so", args.lang)
+    parser_language = tree_sitter.Language(str(args.parser_library), args.lang)
     parser_instance = tree_sitter.Parser()
     parser_instance.set_language(parser_language)
     code_transformers = build_code_transformers(args.method)
@@ -336,13 +391,16 @@ def main() -> int:
     transform_manager.register_vocab(vocab)
     if args.method == "srcmarker":
         transform_manager.load_transform_mask(
-            f"datasets/feasible_transform_{args.dataset}.json"
+            str(args.metadata_dir / f"feasible_transform_{args.dataset}.json")
         )
     else:
         transform_manager.load_transform_mask_from_components(
-            f"datasets/transforms_per_file_{args.dataset}.json", code_transformers
+            str(args.metadata_dir / f"transforms_per_file_{args.dataset}.json"),
+            code_transformers,
         )
-    transform_manager.load_varname_dict(f"datasets/variable_names_{args.dataset}.json")
+    transform_manager.load_varname_dict(
+        str(args.metadata_dir / f"variable_names_{args.dataset}.json")
+    )
     transform_capacity = transform_manager.get_transform_capacity()
     vocab_mask = vocab.get_valid_identifier_mask()
     models = build_models(
@@ -367,6 +425,7 @@ def main() -> int:
                     batch,
                     repeat=-1,
                     method=args.method,
+                    dataset=args.dataset,
                     transform_capacity=transform_capacity,
                     transform_manager=transform_manager,
                     models=models,
@@ -390,6 +449,7 @@ def main() -> int:
                     batch,
                     repeat=repeat,
                     method=args.method,
+                    dataset=args.dataset,
                     transform_capacity=transform_capacity,
                     transform_manager=transform_manager,
                     models=models,
@@ -412,16 +472,25 @@ def main() -> int:
         if path.is_file():
             tokenizer_files[name] = sha256_file(path)
     dataset_test_path = args.dataset_dir / "test.jsonl"
+    transform_metadata_paths = {
+        "feasible_transform": args.metadata_dir / f"feasible_transform_{args.dataset}.json",
+        "transforms_per_file": args.metadata_dir / f"transforms_per_file_{args.dataset}.json",
+        "variable_names": args.metadata_dir / f"variable_names_{args.dataset}.json",
+    }
     result = {
-        "schema_version": 1,
+        "schema_version": 2,
+        "protocol_version": "unintrusive-v2",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "measurement_contract": {
-            "embedding": "selector inference plus variable/style source transformation; CUDA synchronized before and after",
-            "extraction": "encoder plus bit decoder and threshold; CUDA synchronized before and after",
+            "embedding": "raw input source re-tokenization, vocabulary tensorization, host-to-device transfer, feasible-mask lookup, encoder/selector inference, and variable/style source transformation",
+            "extraction": "raw watermarked source re-tokenization, vocabulary tensorization, host-to-device transfer, encoder, bit decoder, and threshold",
+            "precomputed_state": "dataset split, candidate transformation metadata, variable dictionaries, model/checkpoint loading, and reference-tokenizer loading are setup costs outside online timing",
+            "cuda_synchronization": "the selected physical GPU is synchronized only at each outer online boundary",
             "embedding_normalization": "elapsed_seconds * 1,000,000 / Qwen reference tokens in input source",
             "extraction_normalization": "elapsed_seconds * 1,000,000 / Qwen reference tokens in watermarked source",
-            "aggregation": "sum elapsed seconds / sum corresponding reference tokens",
+            "aggregation": "sum elapsed seconds / sum corresponding reference tokens; 95% intervals use 10,000 sample-level bootstrap resamples",
             "canonical_dataset": "CodeSearchNet JavaScript test split",
+            "model_input_cap": 512,
         },
         "configuration": {
             "method": args.method,
@@ -431,6 +500,8 @@ def main() -> int:
             "checkpoint_sha256": sha256_file(args.checkpoint_path),
             "dataset_test": str(dataset_test_path.resolve()),
             "dataset_test_sha256": sha256_file(dataset_test_path),
+            "parser_library": str(args.parser_library),
+            "parser_library_sha256": sha256_file(args.parser_library),
             "seed": args.seed,
             "n_bits": args.n_bits,
             "model_arch": args.model_arch,
@@ -441,6 +512,13 @@ def main() -> int:
             "repeats": args.repeats,
             "measured_samples": len(rows),
             "bootstrap_replicates": args.bootstrap,
+        },
+        "transformation_metadata": {
+            name: {
+                "path": str(path.resolve()),
+                "sha256": sha256_file(path),
+            }
+            for name, path in transform_metadata_paths.items()
         },
         "reference_tokenizer": {
             "identifier": "Qwen/Qwen3-Coder-30B-A3B-Instruct",

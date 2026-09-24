@@ -26,7 +26,11 @@ from typing import Any, Dict, List, Optional
 
 import torch
 from torch import Tensor
-from ..timing import synchronized_perf_counter
+from ..timing import (
+    detection_state_enabled,
+    processor_timing_enabled,
+    synchronized_perf_counter,
+)
 # Adjust the import path to your project layout if needed
 from .ewd import EWDUtils, EWDLogitsProcessor
 
@@ -129,41 +133,42 @@ class EWDWMLogitsProcessor(EWDLogitsProcessor):
     # ---- Keep original biasing logic; just append caching afterwards ----
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
 
-        # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = synchronized_perf_counter(scores)
+        timing_enabled = processor_timing_enabled()
+        t0 = synchronized_perf_counter(scores) if timing_enabled else 0.0
         try:
             scores_out = super().__call__(input_ids, scores)  # original behavior unchanged
         finally:
-            # Must never affect generation; keep it best-effort
+            if timing_enabled:
+                try:
+                    self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
+                    self._lp_calls += 1
+                except Exception:
+                    pass
+
+        # Append: cache full input_ids per row for zero-arg detection later.
+        if detection_state_enabled():
             try:
-                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
-                self._lp_calls += 1
+                bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
+                need_reset = (
+                    self._cache_full_ids_rows is None
+                    or self._prev_len_rows is None
+                    or self._cache_bsz is None
+                    or self._cache_bsz != bsz
+                    or any(cur_len <= pl for pl in (self._prev_len_rows or []))
+                )
+                if need_reset:
+                    self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
+                    self._cache_prefix_len_rows = [cur_len] * bsz
+                    self._prev_len_rows = [0] * bsz
+                    self._cache_bsz = bsz
+
+                for i in range(bsz):
+                    # Store a CPU clone to avoid holding on to GPU memory.
+                    self._cache_full_ids_rows[i] = input_ids[i].detach().to("cpu").clone()
+                    self._prev_len_rows[i] = cur_len
             except Exception:
+                # Cache failures must not impact generation.
                 pass
-
-        # Append: cache full input_ids per row for zero-arg detection later
-        try:
-            bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
-            need_reset = (
-                self._cache_full_ids_rows is None
-                or self._prev_len_rows is None
-                or self._cache_bsz is None
-                or self._cache_bsz != bsz
-                or any(cur_len <= pl for pl in (self._prev_len_rows or []))
-            )
-            if need_reset:
-                self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
-                self._cache_prefix_len_rows = [cur_len] * bsz
-                self._prev_len_rows = [0] * bsz
-                self._cache_bsz = bsz
-
-            for i in range(bsz):
-                # Store a CPU clone to avoid holding on to GPU memory
-                self._cache_full_ids_rows[i] = input_ids[i].detach().to("cpu").clone()
-                self._prev_len_rows[i] = cur_len
-        except Exception:
-            # Cache failures must not impact generation
-            pass
 
         return scores_out
 

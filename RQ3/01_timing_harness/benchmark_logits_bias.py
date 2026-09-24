@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Measure RQ3 online costs for the six logits-bias watermark methods.
+"""Measure RQ3 costs with the non-intrusive v2 paired-generation protocol.
 
-The server exposes method-owned logits-processor time and the complete detector
-invocation time. This client preserves every measured invocation, normalizes by
-the authoritative completion-token count, and computes run-level uncertainty.
+Generation contains no per-token timer, CUDA synchronization, or detector
+cache. Extraction runs separately from final text through a fresh processor.
+Every raw paired observation is retained for independent recomputation.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import math
+import os
 import platform
 from pathlib import Path
 import random
@@ -106,21 +107,15 @@ def load_workloads(path: Path) -> list[dict[str, Any]]:
     root = path.parent
     workloads = []
     for item in payload["workloads"]:
-        context_path = root / item["context_file"]
-        context = context_path.read_text(encoding="utf-8")
-        prompt = (
-            f"You are implementing {item['target_file']} in the existing repository "
-            f"{item['repository']}.\n\n"
-            f"===== {item['context_file']} =====\n{context}\n\n"
-            f"===== TASK =====\n{item['instruction']}"
-        )
+        prompt_path = (root / item["prompt_file"]).resolve()
+        prompt = prompt_path.read_text(encoding="utf-8")
         workloads.append(
             {
                 "name": item["name"],
-                "repository": item["repository"],
+                "project": item["project"],
+                "language": item["language"],
                 "target_file": item["target_file"],
-                "context_file": item["context_file"],
-                "context_sha256": sha256_bytes(context.encode("utf-8")),
+                "prompt_file": str(prompt_path),
                 "rendered_prompt": prompt,
                 "rendered_prompt_sha256": sha256_bytes(prompt.encode("utf-8")),
             }
@@ -260,6 +255,9 @@ def run_once(
     repeat: int,
     baseline: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    method_params = dict(METHOD_PARAMS[method])
+    if method in {"stone", "codeip"}:
+        method_params["language"] = workload["language"]
     payload = {
         "messages": [{"role": "user", "content": workload["rendered_prompt"]}],
         "temperature": 0.7,
@@ -269,8 +267,11 @@ def run_once(
         "rng_seed": seed,
         "internal_processor_names": [],
         "external_processor_names": [method],
-        "external_processor_params": {method: METHOD_PARAMS[method]},
-        "watermark_detect": True,
+        "external_processor_params": {method: method_params},
+        "watermark_detect": False,
+        "force_max_tokens": True,
+        "instrument_processor_timing": False,
+        "capture_detection_state": False,
     }
     client_start = time.perf_counter()
     response = json_request(f"{endpoint}/v1/chat/completions", payload, timeout)
@@ -280,43 +281,75 @@ def run_once(
     generation_metrics = choice.get("generation_metrics") or {}
     processor_metrics = choice.get("processor_metrics") or {}
     completion_tokens = int(usage["completion_tokens"])
-    if completion_tokens <= 0:
-        raise RuntimeError(f"{method} returned no completion tokens")
-    extraction_seconds = generation_metrics.get("watermark_detection_elapsed_s")
-    if extraction_seconds is None:
-        raise RuntimeError(f"{method} response omitted detector timing")
-    validate_detection(method, choice.get("wm_detection") or {}, completion_tokens)
-    components = {
-        name: metrics
-        for name, metrics in processor_metrics.items()
-        if isinstance(metrics, dict) and "lp_total_time_s" in metrics
-    }
-    if not components:
-        raise RuntimeError(f"{method} response omitted logits-processor timing")
-    embedding_seconds = sum(float(row["lp_total_time_s"]) for row in components.values())
+    if completion_tokens != max_tokens or choice.get("finish_reason") != "length":
+        raise RuntimeError(
+            f"{method} did not produce the fixed {max_tokens}-token timing output: "
+            f"tokens={completion_tokens}, finish={choice.get('finish_reason')}"
+        )
     generated_text = str(choice.get("message", {}).get("content", ""))
     generation_seconds = float(generation_metrics.get("generation_elapsed_s", 0.0))
+    if not generated_text or generation_seconds <= 0.0:
+        raise RuntimeError(f"{method} returned empty text or invalid generation timing")
+    if generation_metrics.get("watermark_detection_elapsed_s") is not None:
+        raise RuntimeError(f"{method} unexpectedly ran detection during generation")
+    if generation_metrics.get("processor_timing_enabled") is not False:
+        raise RuntimeError(f"{method} did not disable generation-time processor timing")
+    if generation_metrics.get("detection_state_enabled") is not False:
+        raise RuntimeError(f"{method} did not disable generation-time detector state")
+    if generation_metrics.get("force_max_tokens") is not True:
+        raise RuntimeError(f"{method} did not acknowledge fixed-length generation")
+    if any(int(metrics.get("lp_calls", 0)) != 0 for metrics in processor_metrics.values()):
+        raise RuntimeError(f"{method} recorded per-token timing calls in v2 mode")
+
+    detect_payload = {
+        "method": method,
+        "text": generated_text,
+        "method_params": method_params,
+        "rng_seed": seed,
+        "temperature": 0.7,
+        "top_p": 1.0,
+    }
+    detector_client_start = time.perf_counter()
+    detection_response = json_request(
+        f"{endpoint}/v1/watermark/detect", detect_payload, timeout
+    )
+    detector_client_seconds = time.perf_counter() - detector_client_start
+    extraction_seconds = float(detection_response["extraction_elapsed_s"])
+    extraction_tokens = int(detection_response["input_tokens"])
+    detection = detection_response.get("wm_detection") or {}
+    if extraction_seconds <= 0.0 or extraction_tokens <= 0:
+        raise RuntimeError(f"{method} returned invalid standalone extraction metrics")
+    validate_detection(method, detection, extraction_tokens)
+    detector_contract = detection_response.get("measurement_contract") or {}
+    if detector_contract.get("generation_state_reused") is not False:
+        raise RuntimeError(f"{method} standalone detector reused generation state")
+
     row = {
         "phase": phase,
         "method": method,
         "workload": workload["name"],
+        "project": workload["project"],
+        "language": workload["language"],
         "repeat": repeat,
         "rng_seed": seed,
         "prompt_sha256": workload["rendered_prompt_sha256"],
         "prompt_tokens": int(usage["prompt_tokens"]),
         "completion_tokens": completion_tokens,
+        "extraction_reference_tokens": extraction_tokens,
         "total_tokens": int(usage["total_tokens"]),
         "finish_reason": choice.get("finish_reason"),
-        "embedding_seconds": embedding_seconds,
         "extraction_seconds": float(extraction_seconds),
         "generation_seconds": generation_seconds,
         "client_seconds": client_elapsed,
-        "embedding_ms_per_1k_tokens": embedding_seconds * 1_000_000.0 / completion_tokens,
-        "extraction_ms_per_1k_tokens": float(extraction_seconds) * 1_000_000.0 / completion_tokens,
+        "detector_client_seconds": detector_client_seconds,
+        "extraction_ms_per_1k_tokens": float(extraction_seconds)
+        * 1_000_000.0
+        / extraction_tokens,
         "watermarked_generation_ms_per_1k_tokens": generation_seconds * 1_000_000.0 / completion_tokens,
-        "processor_calls": sum(int(row.get("lp_calls", 0)) for row in components.values()),
-        "processor_components": components,
-        "wm_detection": choice.get("wm_detection"),
+        "processor_components": processor_metrics,
+        "wm_detection": detection,
+        "standalone_detection_contract": detector_contract,
+        "method_params": method_params,
         "generated_text": generated_text,
         "generated_text_sha256": sha256_bytes(generated_text.encode("utf-8")),
     }
@@ -359,7 +392,6 @@ def pair_with_baseline(
     )
     return method_row
 
-
 def run_baseline_once(
     endpoint: str,
     workload: dict[str, Any],
@@ -381,6 +413,9 @@ def run_baseline_once(
         "internal_processor_names": [],
         "external_processor_names": [],
         "watermark_detect": False,
+        "force_max_tokens": True,
+        "instrument_processor_timing": False,
+        "capture_detection_state": False,
     }
     client_start = time.perf_counter()
     response = json_request(f"{endpoint}/v1/chat/completions", payload, timeout)
@@ -389,9 +424,20 @@ def run_baseline_once(
     choice = response["choices"][0]
     generation_metrics = choice.get("generation_metrics") or {}
     completion_tokens = int(usage["completion_tokens"])
-    if completion_tokens <= 0:
-        raise RuntimeError("WM-OFF baseline returned no completion tokens")
+    if completion_tokens != max_tokens or choice.get("finish_reason") != "length":
+        raise RuntimeError(
+            f"WM-OFF did not produce the fixed {max_tokens}-token timing output: "
+            f"tokens={completion_tokens}, finish={choice.get('finish_reason')}"
+        )
     generation_seconds = generation_metrics.get("generation_elapsed_s")
+    if generation_metrics.get("processor_timing_enabled") is not False:
+        raise RuntimeError("WM-OFF baseline did not disable processor timing")
+    if generation_metrics.get("detection_state_enabled") is not False:
+        raise RuntimeError("WM-OFF baseline did not disable detector state")
+    if generation_metrics.get("force_max_tokens") is not True:
+        raise RuntimeError("WM-OFF baseline did not acknowledge fixed-length generation")
+    if choice.get("processor_metrics"):
+        raise RuntimeError("WM-OFF baseline unexpectedly returned processor metrics")
     if generation_seconds is None or float(generation_seconds) <= 0.0:
         raise RuntimeError("WM-OFF baseline omitted synchronized generation timing")
     generated_text = str(choice.get("message", {}).get("content", ""))
@@ -424,37 +470,63 @@ def percentile(values: list[float], probability: float) -> float:
     return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
 
 
-def ratio(rows: list[dict[str, Any]], field: str) -> float:
+def ratio(
+    rows: list[dict[str, Any]],
+    field: str,
+    token_field: str = "completion_tokens",
+) -> float:
     seconds = sum(float(row[field]) for row in rows)
-    tokens = sum(int(row["completion_tokens"]) for row in rows)
+    tokens = sum(int(row[token_field]) for row in rows)
     return seconds * 1_000_000.0 / tokens
 
 
+def hierarchical_sample(
+    rows: list[dict[str, Any]], rng: random.Random
+) -> list[dict[str, Any]]:
+    """Resample workload clusters, then observations within each cluster."""
+
+    clusters: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        clusters.setdefault(str(row["workload"]), []).append(row)
+    names = sorted(clusters)
+    sample = []
+    for _ in names:
+        cluster = clusters[names[rng.randrange(len(names))]]
+        sample.extend(cluster[rng.randrange(len(cluster))] for _ in cluster)
+    return sample
+
+
 def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str, Any]:
-    embedding = [float(row["embedding_ms_per_1k_tokens"]) for row in rows]
+    delta = [float(row["paired_generation_delta_ms_per_1k_tokens"]) for row in rows]
     extraction = [float(row["extraction_ms_per_1k_tokens"]) for row in rows]
     rng = random.Random(seed)
-    embed_bootstrap = []
     extract_bootstrap = []
     delta_bootstrap = []
     for _ in range(bootstrap):
-        sample = [rows[rng.randrange(len(rows))] for _ in rows]
-        embed_bootstrap.append(ratio(sample, "embedding_seconds"))
-        extract_bootstrap.append(ratio(sample, "extraction_seconds"))
+        sample = hierarchical_sample(rows, rng)
+        extract_bootstrap.append(
+            ratio(sample, "extraction_seconds", "extraction_reference_tokens")
+        )
         delta_bootstrap.append(ratio(sample, "paired_generation_delta_seconds"))
+    order_counts = {
+        order: sum(row["pair_order"] == order for row in rows)
+        for order in ("baseline_then_watermark", "watermark_then_baseline")
+    }
     return {
         "runs": len(rows),
+        "workload_clusters": len({row["workload"] for row in rows}),
         "completion_tokens": sum(int(row["completion_tokens"]) for row in rows),
-        "embedding_ms_per_1k_tokens": ratio(rows, "embedding_seconds"),
-        "embedding_median_ms_per_1k_tokens": statistics.median(embedding),
-        "embedding_sd_ms_per_1k_tokens": statistics.stdev(embedding) if len(embedding) > 1 else 0.0,
-        "embedding_95ci_ms_per_1k_tokens": [
-            percentile(embed_bootstrap, 0.025),
-            percentile(embed_bootstrap, 0.975),
-        ],
+        "extraction_reference_tokens": sum(
+            int(row["extraction_reference_tokens"]) for row in rows
+        ),
+        "pair_order_counts": order_counts,
         "baseline_generation_ms_per_1k_tokens": ratio(rows, "baseline_generation_seconds"),
         "watermarked_generation_ms_per_1k_tokens": ratio(rows, "generation_seconds"),
         "paired_generation_delta_ms_per_1k_tokens": ratio(rows, "paired_generation_delta_seconds"),
+        "paired_generation_delta_median_ms_per_1k_tokens": statistics.median(delta),
+        "paired_generation_delta_sd_ms_per_1k_tokens": statistics.stdev(delta)
+        if len(delta) > 1
+        else 0.0,
         "paired_generation_delta_95ci_ms_per_1k_tokens": [
             percentile(delta_bootstrap, 0.025),
             percentile(delta_bootstrap, 0.975),
@@ -466,7 +538,11 @@ def summarize(rows: list[dict[str, Any]], bootstrap: int, seed: int) -> dict[str
             percentile(delta_bootstrap, 0.025),
             percentile(delta_bootstrap, 0.975),
         ],
-        "extraction_ms_per_1k_tokens": ratio(rows, "extraction_seconds"),
+        "extraction_ms_per_1k_tokens": ratio(
+            rows,
+            "extraction_seconds",
+            "extraction_reference_tokens",
+        ),
         "extraction_median_ms_per_1k_tokens": statistics.median(extraction),
         "extraction_sd_ms_per_1k_tokens": statistics.stdev(extraction) if len(extraction) > 1 else 0.0,
         "extraction_95ci_ms_per_1k_tokens": [
@@ -508,48 +584,62 @@ def main() -> int:
     workloads = load_workloads(args.workloads.resolve())
     warmup_rows = []
     baseline_warmup_rows = []
+    warmup_cases = []
+    seen_languages = set()
+    for workload in workloads:
+        if workload["language"] not in seen_languages:
+            seen_languages.add(workload["language"])
+            warmup_cases.append(workload)
     for warmup in range(args.warmups):
-        baseline = run_baseline_once(
-            endpoint,
-            workloads[0],
-            max_tokens=args.max_tokens,
-            seed=args.seed - args.warmups + warmup,
-            timeout=args.timeout,
-            phase="warmup",
-            repeat=warmup,
-        )
-        baseline_warmup_rows.append(baseline)
-        for method in methods:
-            print(f"warmup {warmup + 1}/{args.warmups}: {method}", file=sys.stderr, flush=True)
-            warmup_rows.append(
-                run_once(
+        for workload_index, workload in enumerate(warmup_cases):
+            warmup_seed = args.seed - 10_000 + warmup * len(warmup_cases) + workload_index
+            baseline_warmup_rows.append(
+                run_baseline_once(
                     endpoint,
-                    method,
-                    workloads[0],
+                    workload,
                     max_tokens=args.max_tokens,
-                    seed=args.seed - args.warmups + warmup,
+                    seed=warmup_seed,
                     timeout=args.timeout,
                     phase="warmup",
                     repeat=warmup,
-                    baseline=baseline,
                 )
             )
+            for method in methods:
+                print(
+                    f"warmup {warmup + 1}/{args.warmups}: {workload['language']}: {method}",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                warmup_rows.append(
+                    run_once(
+                        endpoint,
+                        method,
+                        workload,
+                        max_tokens=args.max_tokens,
+                        seed=warmup_seed,
+                        timeout=args.timeout,
+                        phase="warmup",
+                        repeat=warmup,
+                    )
+                )
 
     rows_by_method = {method: [] for method in methods}
     baseline_rows = []
+    schedule = []
     benchmark_start = time.perf_counter()
     for repeat in range(args.repeats):
         for workload_index, workload in enumerate(workloads):
             run_seed = args.seed + repeat * len(workloads) + workload_index
-            for method_index, method in enumerate(methods):
+            block_methods = list(methods)
+            random.Random(args.seed + repeat * 10_000 + workload_index).shuffle(block_methods)
+            for method_index, method in enumerate(block_methods):
                 pair_index = (
                     (repeat * len(workloads) + workload_index) * len(methods)
                     + method_index
                 )
-                # Counterbalance within every method: the two workloads use
-                # opposite orders in each repeat, yielding exactly 5/5 over
-                # the ten measured rows for every method.
-                baseline_first = (repeat + workload_index + method_index) % 2 == 0
+                # Six workloads per repeat yield three pairs in each order for
+                # every method; five repeats therefore yield exactly 15/15.
+                baseline_first = (repeat + workload_index) % 2 == 0
                 pair_order = (
                     "baseline_then_watermark"
                     if baseline_first
@@ -560,6 +650,16 @@ def main() -> int:
                     f"{method}: {pair_order}",
                     file=sys.stderr,
                     flush=True,
+                )
+                schedule.append(
+                    {
+                        "pair_index": pair_index,
+                        "repeat": repeat,
+                        "workload": workload["name"],
+                        "method": method,
+                        "block_method_order": block_methods,
+                        "pair_order": pair_order,
+                    }
                 )
                 if baseline_first:
                     baseline = run_baseline_once(
@@ -624,19 +724,22 @@ def main() -> int:
             )
 
     result = {
-        "schema_version": 6,
+        "schema_version": 7,
+        "protocol_version": "unintrusive-v2",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "measurement_contract": {
-            "embedding": "primary Table X estimator: synchronized watermarked generation minus an adjacent same-workload, same-seed, same-length WM-OFF generation; pair order alternates to control order drift",
-            "processor_only_embedding": "secondary attribution diagnostic: method-owned logits-processor wall time with CUDA synchronized before and after each invocation",
-            "extraction": "complete continuation-only detect_last() invocation with CUDA synchronized before and after; SWEET includes an independent model forward over the generated continuation",
-            "normalization": "elapsed_seconds * 1,000,000 / authoritative completion_tokens",
-            "aggregation": "sum elapsed seconds / sum reference tokens",
+            "embedding": "outer-boundary synchronized watermarked generation minus an adjacent same-workload, same-seed, same-length WM-OFF generation; no per-token timing or detection-only cache is active in either member",
+            "pairing": "pair order is exactly balanced within every method and method order is independently shuffled in each workload-repeat block",
+            "output_length": "both pair members are forced to the exact max_tokens cap so EOS cannot create unequal work or an incomplete CodeIP message block",
+            "extraction": "fresh processor over final generated text; timed region includes final-text tokenization, detector transfers, and complete detect_last(), with no generation state reuse",
+            "normalization": "embedding uses completion_tokens; extraction uses independently tokenized final-text tokens; both compute elapsed_seconds * 1,000,000 / reference_tokens",
+            "aggregation": "ratio of summed seconds to summed reference tokens; 95% intervals use 10,000 hierarchical bootstrap resamples over workload clusters and runs within clusters",
+            "cuda_synchronization": "all CUDA devices visible to the process are synchronized only at outer measurement boundaries",
             "shared_model_forward_removed_by_pairing": True,
             "codeip_variant": "released random-message branch without PDA/type predictor",
             "strength": "arithmetic midpoint of each method's RQ1 EEI",
             "sweet_admission": "every measured run must score at least one token and report detector_model_forward entropy provenance",
-            "detector_scope": "generated continuation only; a one-token prefix is consumed by previous-token seeding and the remaining completion tokens are scored",
+            "detector_scope": "final generated text only; previous-token detectors consume one seed token and score the remaining tokens",
         },
         "workload": {
             "manifest": str(args.workloads.resolve()),
@@ -646,16 +749,17 @@ def main() -> int:
             "top_p": 1.0,
             "max_tokens": args.max_tokens,
             "base_seed": args.seed,
-            "warmups_per_method": args.warmups,
+            "warmups_per_language_method": args.warmups,
             "measured_repeats": args.repeats,
-            "method_order": list(methods),
+            "method_order": "seeded random permutation per workload-repeat block",
             "eei_bounds": EEI_BOUNDS,
             "eei_midpoints": EEI_MIDPOINTS,
-            "method_params": METHOD_PARAMS,
+            "base_method_params": METHOD_PARAMS,
         },
         "environment": {
             "python": platform.python_version(),
             "platform": platform.platform(),
+            "cuda_visible_devices": os.getenv("CUDA_VISIBLE_DEVICES"),
             "nvidia_smi": command_output([
                 "nvidia-smi",
                 "--query-gpu=index,name,uuid,driver_version,memory.total",
@@ -671,6 +775,7 @@ def main() -> int:
         },
         "warmups": warmup_rows,
         "baseline_warmups": baseline_warmup_rows,
+        "schedule": schedule,
         "baseline_runs": baseline_rows,
         "runs": rows_by_method,
     }

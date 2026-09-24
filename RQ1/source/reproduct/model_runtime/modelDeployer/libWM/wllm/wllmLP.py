@@ -13,7 +13,11 @@ import torch
 from torch import Tensor
 import scipy.stats
 
-from ..timing import synchronized_perf_counter
+from ..timing import (
+    detection_state_enabled,
+    processor_timing_enabled,
+    synchronized_perf_counter,
+)
 
 # Reuse the upstream implementation.
 from .watermark import WatermarkBase, WatermarkLogitsProcessor
@@ -64,34 +68,35 @@ class WLLMLogitsProcessor(WatermarkLogitsProcessor):
 
     # Preserve upstream embedding and append caching only.
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
-        # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = synchronized_perf_counter(scores)
+        timing_enabled = processor_timing_enabled()
+        t0 = synchronized_perf_counter(scores) if timing_enabled else 0.0
         try:
             # Delegate directly to the upstream embedding implementation.
             scores_out = super().__call__(input_ids, scores)
         finally:
-            # Best-effort timing: must never affect generation behavior
-            try:
-                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
-                self._lp_calls += 1
-            except Exception:
-                pass
+            if timing_enabled:
+                try:
+                    self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
+                    self._lp_calls += 1
+                except Exception:
+                    pass
 
         # Runtime cache for zero-argument detection (batch size one).
-        try:
-            bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
-            if bsz == 1:
-                if self._cache_prev_len is None or cur_len <= self._cache_prev_len:
-                    # A shorter/equal sequence starts a new generation.
-                    self._cache_prefix_len = cur_len
-                self._cache_prev_len = cur_len
-                # Copy the full sequence to CPU to avoid GPU lifetime issues.
-                self._cache_full_ids = input_ids[0].detach().to("cpu").clone()
-        except Exception:
-            # Cache failures must not affect generation.
-            pass
+        if detection_state_enabled():
+            try:
+                bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
+                if bsz == 1:
+                    if self._cache_prev_len is None or cur_len <= self._cache_prev_len:
+                        # A shorter/equal sequence starts a new generation.
+                        self._cache_prefix_len = cur_len
+                    self._cache_prev_len = cur_len
+                    # Copy the full sequence to CPU to avoid GPU lifetime issues.
+                    self._cache_full_ids = input_ids[0].detach().to("cpu").clone()
+            except Exception:
+                # Cache failures must not affect generation.
+                pass
 
-        return scores
+        return scores_out
 
     def timing(self) -> Dict[str, float]:
         """

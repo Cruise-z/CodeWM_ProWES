@@ -14,6 +14,7 @@ from transformers.generation.logits_process import (
 )
 
 from config import SAMPLING_MODE, ALLOW_GENERATOR_FALLBACK, RNG_SEED_FALLBACK
+from libWM.timing import detection_state_enabled, synchronize_all_cuda_devices
 from processors import WatermarkPlacement
 from runtime import model, tokenizer
 
@@ -559,6 +560,8 @@ def finalize_generation_evidence(
     continuation_rows: Sequence[Sequence[int]],
 ) -> None:
     """Synchronize complete generated IDs into opt-in detector evidence sinks."""
+    if not detection_state_enabled():
+        return
     for processor in list(logits_processors or []):
         finalizer = getattr(
             processor,
@@ -603,6 +606,8 @@ def build_post_sample_observer(
     logits_processors: Optional[LogitsProcessorList],
     prompt_len: int,
 ) -> Optional[StoppingCriteriaList]:
+    if not detection_state_enabled():
+        return None
     callbacks = []
     for processor in list(logits_processors or []):
         callback = getattr(processor, "codewm_on_sampled_token", None)
@@ -630,6 +635,7 @@ def hf_generate_single(
     max_new_tokens: int,
     do_sample: bool,
     rng_seed: Optional[int],
+    force_max_tokens: bool = False,
 ) -> Tuple[str, int, int, int, str, float]:
     """
     Single-path generation wrapper returning:
@@ -679,6 +685,8 @@ def hf_generate_single(
             generator=gen_arg,
             return_dict_in_generate=True,
         )
+        if force_max_tokens:
+            generate_kwargs["min_new_tokens"] = capped
         if sampling_plan.host_top_k is not None:
             generate_kwargs["top_k"] = sampling_plan.host_top_k
         if post_sample_observer is not None:
@@ -688,8 +696,7 @@ def hf_generate_single(
     # Generation timing is also used by the RQ3 paired WM-OFF diagnostic.
     # Synchronize the multi-GPU workload at both boundaries so queued kernels
     # from a previous request cannot leak into this request's wall time.
-    if torch.cuda.is_available():
-        torch.cuda.synchronize()
+    synchronize_all_cuda_devices()
     t0 = _time.perf_counter()
     try:
         out = _call_generate(gen)
@@ -714,8 +721,7 @@ def hf_generate_single(
             except Exception:
                 pass
             out = _call_generate(None)
-    if torch.cuda.is_available():
-        torch.cuda.synchronize()
+    synchronize_all_cuda_devices()
     t1 = _time.perf_counter()
 
     seqs = out.sequences

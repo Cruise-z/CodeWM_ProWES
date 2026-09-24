@@ -9,7 +9,9 @@ import csv
 from datetime import datetime
 import hashlib
 import json
+import math
 from pathlib import Path
+import random
 import re
 from typing import Any
 
@@ -51,6 +53,47 @@ def normalized(rows: list[dict[str, Any]], seconds: str, tokens: str) -> float:
     return sum(float(row[seconds]) for row in rows) * 1_000_000.0 / token_total
 
 
+def percentile(values: list[float], probability: float) -> float:
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * probability
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    return ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
+
+
+def bootstrap_ratio(
+    rows: list[dict[str, Any]],
+    seconds_field: str,
+    tokens_field: str,
+    *,
+    seed: int,
+    replicates: int = 10_000,
+    cluster_field: str | None = None,
+) -> list[float]:
+    """Recompute an interval from raw rows; never consume embedded CI values."""
+
+    rng = random.Random(seed)
+    estimates = []
+    if cluster_field is None:
+        for _ in range(replicates):
+            sample = [rows[rng.randrange(len(rows))] for _ in rows]
+            estimates.append(normalized(sample, seconds_field, tokens_field))
+    else:
+        clusters: dict[str, list[dict[str, Any]]] = {}
+        for row in rows:
+            clusters.setdefault(str(row[cluster_field]), []).append(row)
+        names = sorted(clusters)
+        for _ in range(replicates):
+            sample = []
+            for _ in names:
+                cluster = clusters[names[rng.randrange(len(names))]]
+                sample.extend(cluster[rng.randrange(len(cluster))] for _ in cluster)
+            estimates.append(normalized(sample, seconds_field, tokens_field))
+    return [percentile(estimates, 0.025), percentile(estimates, 0.975)]
+
+
 def training_seconds(path: Path) -> float:
     timestamps = []
     for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -82,14 +125,16 @@ def mappings_with_field(value: Any, field: str) -> list[dict[str, Any]]:
 
 
 def verify_logits_records(payload: dict[str, Any]) -> None:
-    if int(payload.get("schema_version", 0)) < 6:
-        raise ValueError("logits timing evidence predates the paired schema v6 contract")
-    if tuple(payload["workload"]["method_order"]) != LOGITS_ORDER:
-        raise ValueError("logits method order does not match the Table X contract")
+    if int(payload.get("schema_version", 0)) != 7:
+        raise ValueError("logits timing evidence is not the final schema v7 contract")
+    if payload.get("protocol_version") != "unintrusive-v2":
+        raise ValueError("logits timing evidence is not the non-intrusive v2 protocol")
+    if len(payload["workload"]["cases"]) != 6:
+        raise ValueError("v2 requires six RQ1 prompt workloads")
     for case in payload["workload"]["cases"]:
         if sha256_text(case["rendered_prompt"]) != case["rendered_prompt_sha256"]:
             raise ValueError(f"{case['name']}: rendered-prompt digest mismatch")
-    sweet_params = payload["workload"]["method_params"]["sweet"]
+    sweet_params = payload["workload"]["base_method_params"]["sweet"]
     if float(sweet_params["entropy_threshold"]) != 0.5:
         raise ValueError("SWEET Table X campaign must use the paper's ET=0.5 setting")
     baselines = payload.get("baseline_runs") or []
@@ -116,20 +161,18 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
             raise ValueError(f"{method}: raw-run count disagrees with summary")
         order_counts = Counter(row.get("pair_order") for row in records)
         if order_counts != Counter(
-            {"baseline_then_watermark": 5, "watermark_then_baseline": 5}
+            {"baseline_then_watermark": 15, "watermark_then_baseline": 15}
         ):
-            raise ValueError(f"{method}: pair order is not 5/5 counterbalanced")
+            raise ValueError(f"{method}: pair order is not 15/15 counterbalanced")
         for index, row in enumerate(records):
             tokens = int(row["completion_tokens"])
-            if tokens <= 0:
-                raise ValueError(f"{method} run {index}: non-positive token count")
+            extraction_tokens = int(row["extraction_reference_tokens"])
+            if tokens != int(payload["workload"]["max_tokens"]):
+                raise ValueError(f"{method} run {index}: output is not fixed length")
+            if extraction_tokens <= 0:
+                raise ValueError(f"{method} run {index}: non-positive extraction tokens")
             assert_close(
-                float(row["embedding_seconds"]) * 1_000_000.0 / tokens,
-                float(row["embedding_ms_per_1k_tokens"]),
-                f"{method} run {index} embedding",
-            )
-            assert_close(
-                float(row["extraction_seconds"]) * 1_000_000.0 / tokens,
+                float(row["extraction_seconds"]) * 1_000_000.0 / extraction_tokens,
                 float(row["extraction_ms_per_1k_tokens"]),
                 f"{method} run {index} extraction",
             )
@@ -138,6 +181,15 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
                 float(row["baseline_generation_ms_per_1k_tokens"]),
                 f"{method} run {index} baseline generation",
             )
+            if any(
+                int(component.get("lp_calls", 0)) != 0
+                for component in row.get("processor_components", {}).values()
+            ):
+                raise ValueError(f"{method} run {index}: intrusive processor timing was active")
+            if (
+                row.get("standalone_detection_contract", {}).get("generation_state_reused") is not False
+            ):
+                raise ValueError(f"{method} run {index}: extraction reused generation state")
             assert_close(
                 float(row["generation_seconds"]) * 1_000_000.0 / tokens,
                 float(row["watermarked_generation_ms_per_1k_tokens"]),
@@ -183,9 +235,9 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
                     raise ValueError(
                         f"{method} run {index}: detector scope is not continuation"
                     )
-                if int(detector["detector_input_tokens"]) != tokens:
+                if int(detector["detector_input_tokens"]) != extraction_tokens:
                     raise ValueError(
-                        f"{method} run {index}: detector/completion token mismatch"
+                        f"{method} run {index}: detector/extraction token mismatch"
                     )
             if method == "sweet":
                 scores = mappings_with_field(row.get("wm_detection"), "num_tokens_scored")
@@ -207,6 +259,10 @@ def verify_logits_records(payload: dict[str, Any]) -> None:
 def verify_semantic_records(
     root: Path, method: str, payload: dict[str, Any]
 ) -> None:
+    if int(payload.get("schema_version", 0)) != 2:
+        raise ValueError(f"{method}: semantic timing evidence is not schema v2")
+    if payload.get("protocol_version") != "unintrusive-v2":
+        raise ValueError(f"{method}: semantic timing evidence is not v2")
     records = payload["runs"]
     if len(records) != int(payload["configuration"]["measured_samples"]):
         raise ValueError(f"{method}: measured-sample count disagrees with raw rows")
@@ -218,11 +274,33 @@ def verify_semantic_records(
     recorded_checkpoint = payload["configuration"]["checkpoint_sha256"]
     if sha256_file(checkpoint) != recorded_checkpoint:
         raise ValueError(f"{method}: released checkpoint digest mismatch")
+    released_parser = root / "RQ2/source/cStyleLang/parser/languages.so"
+    if sha256_file(released_parser) != payload["configuration"]["parser_library_sha256"]:
+        raise ValueError(f"{method}: released parser-library digest mismatch")
+    metadata = payload.get("transformation_metadata") or {}
+    expected_metadata = {
+        "feasible_transform",
+        "transforms_per_file",
+        "variable_names",
+    }
+    if set(metadata) != expected_metadata:
+        raise ValueError(f"{method}: incomplete transformation-metadata manifest")
+    if any(not re.fullmatch(r"[0-9a-f]{64}", str(item.get("sha256", ""))) for item in metadata.values()):
+        raise ValueError(f"{method}: invalid transformation-metadata digest")
     for index, row in enumerate(records):
         input_tokens = int(row["input_tokens"])
         watermarked_tokens = int(row["watermarked_tokens"])
         if input_tokens <= 0 or watermarked_tokens <= 0:
             raise ValueError(f"{method} run {index}: non-positive token count")
+        for prefix in ("input", "watermarked"):
+            internal = int(row[f"{prefix}_internal_tokens"])
+            model_tokens = int(row[f"{prefix}_model_tokens"])
+            if internal <= 0 or model_tokens <= 0 or model_tokens > 512:
+                raise ValueError(f"{method} run {index}: invalid {prefix} model-token evidence")
+            if bool(row[f"{prefix}_truncated"]) != (internal > model_tokens):
+                raise ValueError(
+                    f"{method} run {index}: inconsistent {prefix} truncation flag"
+                )
         assert_close(
             float(row["embedding_seconds"]) * 1_000_000.0 / input_tokens,
             float(row["embedding_ms_per_1k_tokens"]),
@@ -249,7 +327,6 @@ def flatten_records(
         "sample_or_seed",
         "repeat",
         "embedding_seconds",
-        "processor_only_embedding_seconds",
         "baseline_generation_seconds",
         "watermarked_generation_seconds",
         "paired_generation_delta_seconds",
@@ -257,7 +334,6 @@ def flatten_records(
         "embedding_reference_tokens",
         "extraction_reference_tokens",
         "embedding_ms_per_1k_tokens",
-        "processor_only_embedding_ms_per_1k_tokens",
         "baseline_generation_ms_per_1k_tokens",
         "watermarked_generation_ms_per_1k_tokens",
         "paired_generation_delta_ms_per_1k_tokens",
@@ -271,7 +347,14 @@ def flatten_records(
         "repeat",
         "input_or_prompt_tokens",
         "generated_or_watermarked_tokens",
+        "extraction_reference_tokens",
         "baseline_generated_tokens",
+        "input_internal_tokens",
+        "watermarked_internal_tokens",
+        "input_model_tokens",
+        "watermarked_model_tokens",
+        "input_truncated",
+        "watermarked_truncated",
         "input_sha256",
         "output_sha256",
         "baseline_output_sha256",
@@ -297,15 +380,13 @@ def flatten_records(
                         "sample_or_seed": row["rng_seed"],
                         "repeat": row["repeat"],
                         "embedding_seconds": f"{float(row['paired_generation_delta_seconds']):.12f}",
-                        "processor_only_embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
                         "baseline_generation_seconds": f"{float(row['baseline_generation_seconds']):.12f}",
                         "watermarked_generation_seconds": f"{float(row['generation_seconds']):.12f}",
                         "paired_generation_delta_seconds": f"{float(row['paired_generation_delta_seconds']):.12f}",
                         "extraction_seconds": f"{float(row['extraction_seconds']):.12f}",
                         "embedding_reference_tokens": row["completion_tokens"],
-                        "extraction_reference_tokens": row["completion_tokens"],
+                        "extraction_reference_tokens": row["extraction_reference_tokens"],
                         "embedding_ms_per_1k_tokens": f"{float(row['paired_generation_delta_ms_per_1k_tokens']):.9f}",
-                        "processor_only_embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
                         "baseline_generation_ms_per_1k_tokens": f"{float(row['baseline_generation_ms_per_1k_tokens']):.9f}",
                         "watermarked_generation_ms_per_1k_tokens": f"{float(row['watermarked_generation_ms_per_1k_tokens']):.9f}",
                         "paired_generation_delta_ms_per_1k_tokens": f"{float(row['paired_generation_delta_ms_per_1k_tokens']):.9f}",
@@ -321,6 +402,13 @@ def flatten_records(
                         "repeat": row["repeat"],
                         "input_or_prompt_tokens": row["prompt_tokens"],
                         "generated_or_watermarked_tokens": row["completion_tokens"],
+                        "extraction_reference_tokens": row["extraction_reference_tokens"],
+                        "input_internal_tokens": "",
+                        "watermarked_internal_tokens": "",
+                        "input_model_tokens": "",
+                        "watermarked_model_tokens": "",
+                        "input_truncated": "",
+                        "watermarked_truncated": "",
                         "baseline_generated_tokens": row["completion_tokens"],
                         "input_sha256": row["prompt_sha256"],
                         "output_sha256": row["generated_text_sha256"],
@@ -341,7 +429,6 @@ def flatten_records(
                         "sample_or_seed": row["sample_uid"],
                         "repeat": row["repeat"],
                         "embedding_seconds": f"{float(row['embedding_seconds']):.12f}",
-                        "processor_only_embedding_seconds": "",
                         "baseline_generation_seconds": "",
                         "watermarked_generation_seconds": "",
                         "paired_generation_delta_seconds": "",
@@ -349,7 +436,6 @@ def flatten_records(
                         "embedding_reference_tokens": row["input_tokens"],
                         "extraction_reference_tokens": row["watermarked_tokens"],
                         "embedding_ms_per_1k_tokens": f"{float(row['embedding_ms_per_1k_tokens']):.9f}",
-                        "processor_only_embedding_ms_per_1k_tokens": "",
                         "baseline_generation_ms_per_1k_tokens": "",
                         "watermarked_generation_ms_per_1k_tokens": "",
                         "paired_generation_delta_ms_per_1k_tokens": "",
@@ -365,6 +451,13 @@ def flatten_records(
                         "repeat": row["repeat"],
                         "input_or_prompt_tokens": row["input_tokens"],
                         "generated_or_watermarked_tokens": row["watermarked_tokens"],
+                        "extraction_reference_tokens": row["watermarked_tokens"],
+                        "input_internal_tokens": row["input_internal_tokens"],
+                        "watermarked_internal_tokens": row["watermarked_internal_tokens"],
+                        "input_model_tokens": row["input_model_tokens"],
+                        "watermarked_model_tokens": row["watermarked_model_tokens"],
+                        "input_truncated": row["input_truncated"],
+                        "watermarked_truncated": row["watermarked_truncated"],
                         "baseline_generated_tokens": "",
                         "input_sha256": row["input_source_sha256"],
                         "output_sha256": row["watermarked_source_sha256"],
@@ -409,27 +502,35 @@ def main() -> int:
     rows = []
     for method in LOGITS_ORDER:
         records = logits["runs"][method]
-        processor_only_embedding = normalized(
-            records, "embedding_seconds", "completion_tokens"
+        embedding = normalized(
+            records, "paired_generation_delta_seconds", "completion_tokens"
         )
-        extraction = normalized(records, "extraction_seconds", "completion_tokens")
+        extraction = normalized(
+            records, "extraction_seconds", "extraction_reference_tokens"
+        )
         baseline_generation = normalized(
             records, "baseline_generation_seconds", "completion_tokens"
         )
         watermarked_generation = normalized(
             records, "generation_seconds", "completion_tokens"
         )
-        paired_generation_delta = normalized(
-            records, "paired_generation_delta_seconds", "completion_tokens"
+        embedding_ci = bootstrap_ratio(
+            records,
+            "paired_generation_delta_seconds",
+            "completion_tokens",
+            seed=20260917 + LOGITS_ORDER.index(method),
+            cluster_field="workload",
+        )
+        extraction_ci = bootstrap_ratio(
+            records,
+            "extraction_seconds",
+            "extraction_reference_tokens",
+            seed=20261017 + LOGITS_ORDER.index(method),
+            cluster_field="workload",
         )
         embedded = logits["summary"][method]
         assert_close(
-            processor_only_embedding,
-            float(embedded["embedding_ms_per_1k_tokens"]),
-            f"{method} processor-only embedding",
-        )
-        assert_close(
-            paired_generation_delta,
+            embedding,
             float(embedded["table_x_embedding_ms_per_1k_tokens"]),
             f"{method} Table X paired embedding",
         )
@@ -439,23 +540,22 @@ def main() -> int:
                 "paradigm": "Logits-bias",
                 "method": DISPLAY[method],
                 "training_seconds": None,
-                "embedding_ms_per_1k_tokens": paired_generation_delta,
-                "embedding_95ci_lower": embedded["table_x_embedding_95ci_ms_per_1k_tokens"][0],
-                "embedding_95ci_upper": embedded["table_x_embedding_95ci_ms_per_1k_tokens"][1],
-                "processor_only_embedding_ms_per_1k_tokens": processor_only_embedding,
-                "processor_only_embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
-                "processor_only_embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
+                "embedding_ms_per_1k_tokens": embedding,
+                "embedding_95ci_lower": embedding_ci[0],
+                "embedding_95ci_upper": embedding_ci[1],
                 "baseline_generation_ms_per_1k_tokens": baseline_generation,
                 "watermarked_generation_ms_per_1k_tokens": watermarked_generation,
-                "paired_generation_delta_ms_per_1k_tokens": paired_generation_delta,
-                "paired_generation_delta_95ci_lower": embedded["paired_generation_delta_95ci_ms_per_1k_tokens"][0],
-                "paired_generation_delta_95ci_upper": embedded["paired_generation_delta_95ci_ms_per_1k_tokens"][1],
+                "paired_generation_delta_ms_per_1k_tokens": embedding,
+                "paired_generation_delta_95ci_lower": embedding_ci[0],
+                "paired_generation_delta_95ci_upper": embedding_ci[1],
                 "extraction_ms_per_1k_tokens": extraction,
-                "extraction_95ci_lower": embedded["extraction_95ci_ms_per_1k_tokens"][0],
-                "extraction_95ci_upper": embedded["extraction_95ci_ms_per_1k_tokens"][1],
+                "extraction_95ci_lower": extraction_ci[0],
+                "extraction_95ci_upper": extraction_ci[1],
                 "measured_runs": len(records),
                 "embedding_reference_tokens": sum(int(row["completion_tokens"]) for row in records),
-                "extraction_reference_tokens": sum(int(row["completion_tokens"]) for row in records),
+                "extraction_reference_tokens": sum(
+                    int(row["extraction_reference_tokens"]) for row in records
+                ),
             }
         )
 
@@ -464,6 +564,19 @@ def main() -> int:
         records = payload["runs"]
         embedding = normalized(records, "embedding_seconds", "input_tokens")
         extraction = normalized(records, "extraction_seconds", "watermarked_tokens")
+        method_offset = 0 if method == "codemark" else 1
+        embedding_ci = bootstrap_ratio(
+            records,
+            "embedding_seconds",
+            "input_tokens",
+            seed=20261117 + method_offset,
+        )
+        extraction_ci = bootstrap_ratio(
+            records,
+            "extraction_seconds",
+            "watermarked_tokens",
+            seed=20261217 + method_offset,
+        )
         embedded = payload["summary"]
         assert_close(embedding, float(embedded["embedding_ms_per_1k_tokens"]), f"{method} embedding")
         assert_close(extraction, float(embedded["extraction_ms_per_1k_tokens"]), f"{method} extraction")
@@ -473,19 +586,16 @@ def main() -> int:
                 "method": DISPLAY[method],
                 "training_seconds": training_seconds(training_logs[method]),
                 "embedding_ms_per_1k_tokens": embedding,
-                "embedding_95ci_lower": embedded["embedding_95ci_ms_per_1k_tokens"][0],
-                "embedding_95ci_upper": embedded["embedding_95ci_ms_per_1k_tokens"][1],
-                "processor_only_embedding_ms_per_1k_tokens": None,
-                "processor_only_embedding_95ci_lower": None,
-                "processor_only_embedding_95ci_upper": None,
+                "embedding_95ci_lower": embedding_ci[0],
+                "embedding_95ci_upper": embedding_ci[1],
                 "baseline_generation_ms_per_1k_tokens": None,
                 "watermarked_generation_ms_per_1k_tokens": None,
                 "paired_generation_delta_ms_per_1k_tokens": None,
                 "paired_generation_delta_95ci_lower": None,
                 "paired_generation_delta_95ci_upper": None,
                 "extraction_ms_per_1k_tokens": extraction,
-                "extraction_95ci_lower": embedded["extraction_95ci_ms_per_1k_tokens"][0],
-                "extraction_95ci_upper": embedded["extraction_95ci_ms_per_1k_tokens"][1],
+                "extraction_95ci_lower": extraction_ci[0],
+                "extraction_95ci_upper": extraction_ci[1],
                 "measured_runs": len(records),
                 "embedding_reference_tokens": sum(int(row["input_tokens"]) for row in records),
                 "extraction_reference_tokens": sum(int(row["watermarked_tokens"]) for row in records),
@@ -520,9 +630,12 @@ def main() -> int:
     (output / "table_x.json").write_text(
         json.dumps(
             {
-                "schema_version": 1,
+                "schema_version": 2,
+                "protocol_version": "unintrusive-v2",
                 "normalization": "sum(seconds) * 1,000,000 / sum(reference tokens)",
-                "logits_embedding_estimator": "paired synchronized generation delta: watermarked minus adjacent WM-OFF, with alternating pair order",
+                "logits_embedding_estimator": "fixed-length paired synchronized generation delta: watermarked minus adjacent WM-OFF, with exactly balanced order and no generation-time observation",
+                "logits_extraction_estimator": "fresh processor over final text, including tokenization and detector execution without generation-state reuse",
+                "confidence_intervals": "recomputed here from raw rows: workload-cluster hierarchical bootstrap for logits methods and sample bootstrap for semantic methods; 10,000 replicates",
                 "rows": rows,
             },
             indent=2,

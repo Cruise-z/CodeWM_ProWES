@@ -23,7 +23,11 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 import torch
-from ..timing import synchronized_perf_counter
+from ..timing import (
+    detection_state_enabled,
+    processor_timing_enabled,
+    synchronized_perf_counter,
+)
 from torch import Tensor
 
 # stone.py is colocated with this wrapper.
@@ -136,39 +140,40 @@ class STONEWMLogitsProcessor(STONELogitsProcessor):
     # Preserve upstream biasing and append caching only.
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
 
-        # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = synchronized_perf_counter(scores)
+        timing_enabled = processor_timing_enabled()
+        t0 = synchronized_perf_counter(scores) if timing_enabled else 0.0
         try:
             scores_out = super().__call__(input_ids, scores)
         finally:
-            # Best-effort timing: must never affect generation behavior
-            try:
-                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
-                self._lp_calls += 1
-            except Exception:
-                pass
+            if timing_enabled:
+                try:
+                    self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
+                    self._lp_calls += 1
+                except Exception:
+                    pass
 
         # Cache each row's complete input IDs for zero-argument detection.
-        try:
-            bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
-            need_reset = (
-                self._cache_full_ids_rows is None
-                or self._prev_len_rows is None
-                or self._cache_bsz is None
-                or self._cache_bsz != bsz
-                or any(cur_len <= pl for pl in (self._prev_len_rows or []))
-            )
-            if need_reset:
-                self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
-                self._cache_prefix_len_rows = [cur_len] * bsz
-                self._prev_len_rows = [0] * bsz
-                self._cache_bsz = bsz
+        if detection_state_enabled():
+            try:
+                bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
+                need_reset = (
+                    self._cache_full_ids_rows is None
+                    or self._prev_len_rows is None
+                    or self._cache_bsz is None
+                    or self._cache_bsz != bsz
+                    or any(cur_len <= pl for pl in (self._prev_len_rows or []))
+                )
+                if need_reset:
+                    self._cache_full_ids_rows = [torch.empty(0, dtype=input_ids.dtype) for _ in range(bsz)]
+                    self._cache_prefix_len_rows = [cur_len] * bsz
+                    self._prev_len_rows = [0] * bsz
+                    self._cache_bsz = bsz
 
-            for i in range(bsz):
-                self._cache_full_ids_rows[i] = input_ids[i].detach().to("cpu").clone()
-                self._prev_len_rows[i] = cur_len
-        except Exception:
-            pass  # Cache failures must not affect generation.
+                for i in range(bsz):
+                    self._cache_full_ids_rows[i] = input_ids[i].detach().to("cpu").clone()
+                    self._prev_len_rows[i] = cur_len
+            except Exception:
+                pass  # Cache failures must not affect generation.
 
         return scores_out
 

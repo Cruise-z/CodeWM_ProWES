@@ -28,8 +28,9 @@ def _parse_max_memory():
     Example:
         export GPU_MAX_MEMORY="22GiB,22GiB,22GiB,22GiB"
 
-    The number of values must match the number of visible CUDA devices.
-    CUDA_VISIBLE_DEVICES controls which physical GPUs are visible.
+    One value is broadcast to every visible device. Otherwise, the number of
+    values must match the visible-device count. CUDA_VISIBLE_DEVICES controls
+    which physical GPUs are visible.
     """
     raw = os.getenv("GPU_MAX_MEMORY", "").strip()
     if not raw:
@@ -40,6 +41,8 @@ def _parse_max_memory():
 
     parts = [x.strip() for x in raw.split(",") if x.strip()]
     visible_n = torch.cuda.device_count()
+    if len(parts) == 1 and visible_n > 1:
+        parts *= visible_n
 
     if len(parts) != visible_n:
         raise ValueError(

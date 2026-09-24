@@ -4,7 +4,11 @@ from typing import Any, List, Dict, Optional
 from math import sqrt
 
 import torch
-from ..timing import synchronized_perf_counter
+from ..timing import (
+    detection_state_enabled,
+    processor_timing_enabled,
+    synchronized_perf_counter,
+)
 from torch import Tensor
 
 # Reuse the WLLM base while preserving SWEET embedding behavior.
@@ -65,8 +69,8 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
 
     # Preserve embedding behavior and append caching only.
     def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor) -> torch.FloatTensor:
-        # Time ONLY the logits-processor path (pure watermark LP overhead)
-        t0 = synchronized_perf_counter(scores)
+        timing_enabled = processor_timing_enabled()
+        t0 = synchronized_perf_counter(scores) if timing_enabled else 0.0
         try:
             # Initialize the RNG lazily.
             if self.rng is None:
@@ -89,28 +93,29 @@ class SWEETLogitsProcessor(WatermarkLogitsProcessor):
             green_tokens_mask = green_tokens_mask * entropy_mask
             scores = self._bias_greenlist_logits(scores=scores, greenlist_mask=green_tokens_mask, greenlist_bias=self.delta)
         finally:
-            # Best-effort timing: must never affect generation behavior
-            try:
-                self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
-                self._lp_calls += 1
-            except Exception:
-                pass
+            if timing_enabled:
+                try:
+                    self._lp_time_s += float(synchronized_perf_counter(scores) - t0)
+                    self._lp_calls += 1
+                except Exception:
+                    pass
 
         # 4) Cache the prefix length, full IDs, and per-step entropy.
-        try:
-            bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
-            if bsz == 1:
-                if self._cache_prev_len is None or cur_len <= self._cache_prev_len:
-                    # A shorter/equal sequence starts a new generation.
-                    self._cache_prefix_len = cur_len
-                    self._cache_entropy = []
-                self._cache_prev_len = cur_len
-                # Full sequence through the current step.
-                self._cache_full_ids = input_ids[0].detach().to("cpu").clone()
-                # Entropy aligned with the token about to be sampled.
-                self._cache_entropy.append(float(ent[0].item()))
-        except Exception:
-            pass  # Cache failures must not affect generation.
+        if detection_state_enabled():
+            try:
+                bsz, cur_len = int(input_ids.shape[0]), int(input_ids.shape[1])
+                if bsz == 1:
+                    if self._cache_prev_len is None or cur_len <= self._cache_prev_len:
+                        # A shorter/equal sequence starts a new generation.
+                        self._cache_prefix_len = cur_len
+                        self._cache_entropy = []
+                    self._cache_prev_len = cur_len
+                    # Full sequence through the current step.
+                    self._cache_full_ids = input_ids[0].detach().to("cpu").clone()
+                    # Entropy aligned with the token about to be sampled.
+                    self._cache_entropy.append(float(ent[0].item()))
+            except Exception:
+                pass  # Cache failures must not affect generation.
 
         return scores
 
