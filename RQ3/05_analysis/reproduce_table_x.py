@@ -263,6 +263,8 @@ def verify_semantic_records(
         raise ValueError(f"{method}: semantic timing evidence is not schema v2")
     if payload.get("protocol_version") != "unintrusive-v2":
         raise ValueError(f"{method}: semantic timing evidence is not v2")
+    if payload.get("environment", {}).get("tree_sitter") != "0.20.1":
+        raise ValueError(f"{method}: semantic timing did not use Tree-sitter 0.20.1")
     records = payload["runs"]
     if len(records) != int(payload["configuration"]["measured_samples"]):
         raise ValueError(f"{method}: measured-sample count disagrees with raw rows")
