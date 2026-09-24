@@ -9,8 +9,10 @@ Before writing outputs it verifies schema-v2/v7 contracts, normalization,
 hashes, one-to-one baseline linkage, paired subtraction, fixed lengths, 15/15
 within-method pair balance, zero generation-time observation, standalone
 detector state, internal semantic token counts, run counts, and both released
-semantic checkpoint digests. SWEET must use `ET=0.5`, score positive tokens,
-and report independent model-forward entropy provenance.
+semantic checkpoint digests. It also verifies the released parser digest,
+Tree-sitter 0.20.1 runtime, and complete transformation-metadata manifests.
+SWEET must use `ET=0.5`, score positive tokens, and report independent
+model-forward entropy provenance.
 
 All 95% intervals are recomputed from raw rows with 10,000 replicates. Logits
 methods use workload-cluster hierarchical bootstrap; semantic methods use

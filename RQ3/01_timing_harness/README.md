@@ -16,7 +16,9 @@
 - `benchmark_semantic.py` loads the fresh RQ2 checkpoint and canonical 3,150-row
   CodeSearchNet JavaScript test split. Its embedding timer begins with raw-source
   tokenization; its extraction timer independently begins with raw watermarked
-  source. Both include tensorization and device transfer.
+  source. Both include tensorization and device transfer. The formal run used
+  Python 3.10.18, PyTorch 2.7.1+cu126, and Tree-sitter 0.20.1; every raw result
+  records these versions and all parser/input hashes.
 
 The released logits campaign binds the sharded model server and client to
 physical GPUs 2 and 3:

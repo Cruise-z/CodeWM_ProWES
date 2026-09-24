@@ -9,7 +9,9 @@
 - `codemark_csn_js_raw.json` and `srcmarker_csn_js_raw.json` contain the 20
   excluded warm-ups and all 3,150 measured CodeSearchNet JavaScript samples
   per method. Every row retains source hashes, transformations, bits, raw
-  seconds, reference tokens, internal model tokens, and truncation flags.
+  seconds, reference tokens, internal model tokens, and truncation flags. The
+  manifests additionally bind the checkpoint, dataset, parser binary,
+  Tree-sitter 0.20.1 runtime, and three transformation-metadata files.
 - `raw_timings.csv` is generated from those JSON records by
   `../05_analysis/reproduce_table_x.py`; JSON remains authoritative.
 
